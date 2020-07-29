@@ -1,7 +1,20 @@
 # e-global-zone
 영진전문대학교 글로벌 존 온라인 예약 시스템
 
-## [2020-07-07] 사용자 요구 분석
+## 목차
+
+[1. 사용자 요구 분석 (2020-07-07)](#사용자-요구-분석)
+
+[2. 스토리 보드 구상 (2020-07-08 ~ 2020-07-00)](#스토리-보드-구상)
+
+[3. Sequence Diagram 작성 (2020-07-29 ~ 2020-07-00)](#Sequence-Diagram-작성)
+
+[4. DataBase 설계 (2020-07-00 ~ 2020-07-00)](#DataBase-설계)
+
+[5. Component 구성 (2020-07-00 ~ 2020-07-00)](#Component-구성)
+
+## 사용자 요구 분석
+진행 일시 : 2020-07-07
 
 #### 전체 기능 요약
 
@@ -72,16 +85,20 @@
     - 환경설정 기능
     
     
-## [2020-07-08 ~ ] 스토리 보드 구상
-
+## 스토리 보드 구상
+진행 일시 : 2020-07-08 ~
+ 
 - [예약 및 스케줄 관리](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/fd2e4017-2bfb-4d1b-b916-a4877fc9cb0a/__2.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20200729%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200729T180311Z&X-Amz-Expires=86400&X-Amz-Signature=da5d2b7c100b6ba5a4311a03b6f78c3a419478d3e12c51d4590de3387b54a00d&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22%25E1%2584%2580%25E1%2585%25B3%25E1%2586%25AF%25E1%2584%2585%25E1%2585%25A9%25E1%2584%2587%25E1%2585%25A5%25E1%2586%25AF%25E1%2584%258C%25E1%2585%25A9%25E1%2586%25AB%25E1%2584%258B%25E1%2585%25A8%25E1%2584%258B%25E1%2585%25A3%25E1%2586%25A8_%25E1%2584%2589%25E1%2585%25B3%25E1%2584%2590%25E1%2585%25A9%25E1%2584%2585%25E1%2585%25B5%25E1%2584%2587%25E1%2585%25A9%25E1%2584%2583%25E1%2585%25B3_2%25E1%2584%258E%25E1%2585%25A1.pdf%22)
 - [유학생 및 한국인 학생 관리](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4649b4bd-8292-4b21-b3c1-c45cd06027bf/_____%282020-07-17%29.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20200729%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200729T180122Z&X-Amz-Expires=86400&X-Amz-Signature=92a2ad8cf65f4e80ef99fad1cd16ffa2db34648371ac0448e26a1c99ef568f4b&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22%25E1%2584%258B%25E1%2585%25B2%25E1%2584%2592%25E1%2585%25A1%25E1%2586%25A8%25E1%2584%2589%25E1%2585%25A2%25E1%2586%25BC%252C%2520%25E1%2584%2592%25E1%2585%25A1%25E1%2586%25AB%25E1%2584%2580%25E1%2585%25AE%25E1%2586%25A8%25E1%2584%258B%25E1%2585%25B5%25E1%2586%25AB%2520%25E1%2584%2592%25E1%2585%25A1%25E1%2586%25A8%25E1%2584%2589%25E1%2585%25A2%25E1%2586%25BC%2520%25E1%2584%2580%25E1%2585%25AA%25E1%2586%25AB%25E1%2584%2585%25E1%2585%25B5%2520%25E1%2584%2589%25E1%2585%25B3%25E1%2584%2590%25E1%2585%25A9%25E1%2584%2585%25E1%2585%25B5%2520%25E1%2584%2587%25E1%2585%25A9%25E1%2584%2583%25E1%2585%25B3%282020-07-17%29.pdf%22)
 - 환경 설정 (진행중)
 
-## [2020-07-30 ~ ] Sequence Diagram 작성
+## Sequence Diagram 작성
+진행 일시 : 2020-07-29 ~
 
 ![KakaoTalk_Photo_2020-07-30-03-06-57](https://user-images.githubusercontent.com/53788601/88836506-c2a39980-d211-11ea-93eb-1bd824d7d946.png)
 
-## [2020-07-00 ~ ] DataBase 설계
+## DataBase 설계
+진행 일시 : 2020-07-00 ~
 
-## [2020-07-00 ~ ] Component 구성
+## Component 구성
+진행 일시 : 2020-07-00 ~
