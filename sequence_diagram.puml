@@ -1,0 +1,191 @@
+@startuml
+
+title e-Global Zone
+footer Page %page% of %lastpage%
+
+' <<-- 변수명 정리
+'   student_id : 학생id
+'   foreign_id : 유학생id
+'   manager_id : 매니저id
+
+'   schedule_id : 일정 id
+'   reservation_id : 예약 id
+
+'   attendance_state : 출석 상태
+'   reservation_state : 예약 상태
+'       - fail : 예약 실패
+'       - success : 예약 성공
+'       - approval : 예약 승인
+
+'   start_date : 조회 시작일
+'   end_date : 조회 종료일
+' -->>
+
+actor 한국인 as Korean
+control Server
+actor 유학생 as Foreign
+actor 관리자 as Manager
+
+==스케줄 관리==
+' <<-- 관리자
+Manager --> Manager : 웹 페이지 접속
+activate Manager
+'참고 : https://quickadminpanel.com/blog/how-to-import-csv-in-laravel-and-choose-matching-fields/
+    Manager -> Server : [Request] CSV 스케줄 입력
+    activate Server #yellow
+
+        alt 스케줄 수정
+            Manager -> Server : [Request] 스케줄 등록
+        end
+
+        Server --> Server : [Query-Create] 스케줄 저장
+        note left : date, foreign_id
+
+        Server -> Manager : [Response] 스케줄 등록 결과 반환
+    deactivate Server
+deactivate Manager
+' 관리자 -->>
+
+' <<-- 유학생
+Foreign --> Foreign : 웹 페이지 접속
+activate Foreign
+    Foreign -> Server : [Request] 유학생 스케줄 목록 조회
+    note left : foreign_id, start_date, end_date
+
+    activate Server #yellow
+        Server --> Server : [Query-Select] 스케줄 조회
+        Server -> Foreign : [Response] 유학생 스케줄 목록 반환
+    deactivate Server
+deactivate Foreign
+' 유학생-->>
+
+==예약 신청 및 승인==
+' <<-- 한국인 예약 신청
+Korean --> Korean : 모바일 페이지 접속
+activate Korean
+    Korean -> Server : [Request] 일자별 스케줄 목록 조회
+    activate Server #yellow
+        Server --> Server : [Query-Select] 스케줄 조회
+        Server -> Korean : [Response] 스케줄 목록(schedule_id)
+    deactivate Server
+
+    Korean -> Server : [Request] 예약 신청
+    note right : schedule_id, student_id
+
+    activate Server #yellow
+        alt 예약 성공 시
+            Server --> Server : [Query-Create] 예약 등록
+            Server -> Korean : [Response] 예약 결과
+            note right: reservation_state(success), reservation_id
+        else 예약 실패(기준 횟수, 인원 초과 등) 시
+            Server -> Korean : [Response] 예약 실패 메세지
+            note right: reservation_state(fail)
+    deactivate Server
+        end
+
+deactivate Korean
+' 한국인 예약 신청 -->>
+
+' <<-- 유학생 예약 승인
+Foreign --> Foreign : 웹 페이지 접속
+activate Foreign
+    Foreign -> Server : [Request] 신청된 예약 목록 요청
+    note right: foreign_id
+
+    activate Server #yellow
+        Server --> Server : [Query-Select] 예약 목록 조회
+        Server -> Foreign : [Response] 신청된 예약 목록
+        note left: reservation_id, reservation_state(success)
+    deactivate Server
+
+    Foreign --> Foreign : 예약 목록 확인
+    Foreign -> Server : [Request] 한국인 예약 승인
+    note right: reservation_id, 승인한 student_id
+
+    activate Server #yellow
+        Server --> Server : [Query-Update] 예약 승인 적용
+        note left: reservation_state(update)
+        Server -> Foreign : [Response] 한국인 예약 승인 결과
+    deactivate Server
+deactivate Foreign
+' 유학생 예약 승인 -->>
+
+' <<-- 관리자 예약 승인 확인
+Manager --> Manager : 웹 페이지 접속
+activate Manager
+    Manager -> Server : [Request] 예약 승인 결과
+    note left: start_date, end_date
+    activate Server #yellow
+        Server --> Server : [Query-Select] 예약 미승인 조회
+        Server -> Manager : [Response] 예약 미승인 목록
+    deactivate Server
+
+    Manager -> Foreign : 예약 승인 요청
+deactivate Manager
+' 관리자 예약 승인 확인 -->>
+
+alt 예약 승인 미실시 시
+    Server -> Server : [Query-Update] 위반 횟수 적용
+end
+
+' <<-- 한국인 학생 승인 결과 확인
+Korean --> Korean : 모바일 페이지 접속
+activate Korean
+    Korean -> Server : [Request] 예약 승인 결과 확인
+    note right: student_id
+
+    activate Server #yellow
+        Server --> Server : [Query-Select] 승인 결과 조회
+        Server -> Korean : [Response] 예약 승인 결과
+    deactivate Server
+deactivate Korean
+' 한국인 학생 승인 결과 확인 -->>
+
+==결과 입력 및 확인==
+' <<-- 완료된 일정에 대한 유학생 결과 입력
+Foreign --> Foreign : 웹 페이지 접속
+activate Foreign
+    Foreign -> Server : [Request] 출석 결과 입력
+    note right: reservation_id, student_id, attendance_state, img
+
+    activate Server #yellow
+        Server --> Server : [Query-Update] 출석 결과, 한국인 횟수 저장
+        note left: reservation_id -> schedule_id 등록
+        Server -> Foreign : [Response] 입력 결과
+    deactivate Server
+deactivate Foreign
+' 완료된 일정에 대한 유학생 결과 입력 -->>
+
+' <<-- 한국인 학생 완료된 일정 확인
+Korean --> Korean : 모바일 페이지 접속
+activate Korean
+    Korean -> Server : [Request] 한국인 학생 일정 참석 목록 조회
+    note right: student_id
+    activate Server #yellow
+        Server --> Server : [Query-Select] 일정 참석 목록 조회
+        Server -> Korean : [Response] 일정 참석 목록
+    deactivate Server
+deactivate Korean
+' 한국인 학생 완료된 일정 확인 -->>
+
+' <<-- 관리자 출석 결과 확인
+Manager --> Manager : 웹 페이지 접속
+activate Manager
+    Manager -> Server : [Request] 출석 결과 승인 필요 목록 조회
+    activate Server #yellow
+        Server --> Server : [Query-Select] 목록 조회
+        Server -> Manager : [Response] 승인 필요 목록
+    deactivate Server
+    Manager -> Manager : 입력 결과 승인
+
+    Manager -> Server : [Request] 출석 결과 승인 입력
+    note right: schedule_id
+
+    activate Server #yellow
+        Server -> Server : [Query-Update] 승인 결과, 유학생 횟수 저장
+        Server -> Manager : [Response] 승인 결과
+    deactivate Server
+deactivate Manager
+' 관리자 출석 결과 확인 —>>
+
+@enduml
