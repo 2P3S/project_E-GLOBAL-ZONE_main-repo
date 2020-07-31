@@ -12,7 +12,9 @@ const CalendarContainer = styled.div`
 
 export default function CalendarSmall() {
 	const [selectDate, setSelectDate] = useState(new Date());
-	useEffect(() => {}, [selectDate]);
+	useEffect(() => {
+		console.log(selectDate);
+	}, [selectDate]);
 	return (
 		<CalendarContainer>
 			<Calendar value={selectDate} onChange={setSelectDate} />

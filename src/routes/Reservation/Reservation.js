@@ -52,15 +52,32 @@ let array = [
 		start_time: "오전 09:00",
 		end_time: "오후 01:00",
 	},
+	{
+		id: 6,
+		status: "참석",
+		language: "English",
+		foreign_name: "name",
+		start_time: "오전 09:00",
+		end_time: "오후 01:00",
+	},
 ];
 
+/**
+ * Mobile Reservation page for Korean students
+ * @return {Component} CalendarSmall, ReservationList
+ */
 export default function Reservation() {
 	return (
 		<MobileTemplate
 			content={
 				<>
 					<CalendarSmall />
-					<ReservationList list={array} />
+					<ReservationList
+						list={array}
+						myCallback={function () {
+							console.log("clicked");
+						}}
+					/>
 				</>
 			}
 		/>

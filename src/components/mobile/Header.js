@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, withRouter } from "react-router-dom";
 import layout from "../../config/layout";
 import color from "../../config/color";
+import "./test.css";
 
 const Head = styled.div`
 	width: ${layout.mobile.body.width};
@@ -54,7 +55,7 @@ const Menu = styled(Link)`
 
 const Header = (props) => {
 	return (
-		<Head>
+		<Head className="test">
 			<MenuBar>
 				<Menu to="/reservation" selected={props.location.pathname === "/reservation"}>
 					예약 조회

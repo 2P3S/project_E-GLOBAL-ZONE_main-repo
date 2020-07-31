@@ -57,12 +57,12 @@ const Item = ({ element }) => {
 	const colorCode =
 		language === "English" ? "#6061b3" : language === "Chinese" ? "#82abf7" : "#f59c9f";
 	return (
-		<ItemContainer bgc={colorCode}>
+		<ItemContainer bgc={colorCode} id={element.id}>
 			<Infomation>{`[${convertedLanguage}] ${foreign_name}`}</Infomation>
 			<TimeStamp>{`${start_time} ~ ${end_time}`}</TimeStamp>
 			<Status>
-				{element.status}
-				{element.status === "출석인증 완료" ? "" : <DeleteBtn>X</DeleteBtn>}
+				{status}
+				{status === "출석인증 완료" ? "" : <DeleteBtn>X</DeleteBtn>}
 			</Status>
 		</ItemContainer>
 	);
