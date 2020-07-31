@@ -1,6 +1,8 @@
 |-- CODES
+    |-- .env
     |-- .gitignore
     |-- README.md
+    |-- directoryList.md
     |-- package.json
     |-- yarn.lock
     |-- public
@@ -11,8 +13,30 @@
     |   |-- manifest.json
     |   |-- robots.txt
     |-- src
-        |-- App.js
         |-- index.js
         |-- app
+        |   |-- App.js
+        |   |-- Routes.js
+        |-- components
+        |   |-- common
+        |   |   |-- CalendarSmall.js
+        |   |   |-- ReservationList.js
+        |   |-- mobile
+        |   |   |-- Header.js
+        |   |   |-- MobileTemplate.js
+        |   |-- web
+        |-- config
+        |   |-- color.js
+        |   |-- globalStyles.js
+        |   |-- layout.js
+        |-- redux
         |   |-- store.js
-        |-- features
+        |   |-- loginSlice
+        |       |-- loginSlice.js
+        |-- routes
+            |-- Reservation
+            |   |-- Reservation.js
+            |-- Result
+            |   |-- Result.js
+            |-- Schedule
+                |-- Schedule.js
