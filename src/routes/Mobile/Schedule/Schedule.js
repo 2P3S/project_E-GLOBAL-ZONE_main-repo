@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function Header() {
+export default function Schedule() {
 	return <div></div>;
 }
