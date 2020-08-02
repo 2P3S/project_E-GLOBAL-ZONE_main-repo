@@ -18,9 +18,7 @@ class CreateWorkStudentForeignersTable extends Migration
             $table->unsignedBigInteger('work_std_for');
             $table->unsignedBigInteger('work_sect');
 
-            /*
-                외래키 설정
-            */
+            /* 외래키 설정 */
             $table->foreign('work_std_for')
                 ->references('std_for_id')
                 ->on('student_foreigners');

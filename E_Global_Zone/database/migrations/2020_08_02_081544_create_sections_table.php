@@ -15,7 +15,7 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->bigIncrements('sect_id');
-            $table->string('sect_name');
+            $table->string('sect_name')->unique();;
             $table->dateTime('sect_start_date');
             $table->dateTime('sect_end_date');
         });

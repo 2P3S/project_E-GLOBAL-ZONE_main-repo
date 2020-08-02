@@ -19,18 +19,17 @@ class CreateStudentKoreansTable extends Migration
             $table->string('std_kor_name');
             $table->string('std_kor_phone')->unique();
             $table->string('std_kor_mail')->unique();
-            $table->unsignedBigInteger('std_kor_num_of_attendance');
-            $table->unsignedBigInteger('std_kor_num_of_absent');
-            $table->tinyInteger('std_kor_state_of_permission');
-            $table->tinyInteger('std_kor_state_of_restriction');
+            $table->unsignedBigInteger('std_kor_num_of_attendance')->default(0);
+            $table->unsignedBigInteger('std_kor_num_of_absent')->default(0);
+            $table->tinyInteger('std_kor_state_of_permission')->default(false);
+            $table->tinyInteger('std_kor_state_of_restriction')->default(false);
             $table->timestamps();
 
-            /*
-                외래키 설정
-            */
-            $table->foreign('std_kor_dept')
-                ->references('dept_id')
-                ->on('departments');
+            /* 기본키 설정 */
+            $table->primary('std_kor_id');
+
+            /* 외래키 설정 */
+            $table->foreign('std_kor_dept')->references('dept_id')->on('departments');
         });
     }
 
