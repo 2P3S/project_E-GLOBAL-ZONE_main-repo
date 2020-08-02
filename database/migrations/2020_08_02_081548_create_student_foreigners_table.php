@@ -23,9 +23,10 @@ class CreateStudentForeignersTable extends Migration
             $table->unsignedTinyInteger('std_for_state_of_favorite');
             $table->timestamps();
 
-            /*
-                외래키 설정
-            */
+            /* 기본키 설정 */
+            $table->primary('std_for_id');
+
+            /* 외래키 설정 */
             $table->foreign('std_for_dept')
                 ->references('dept_id')
                 ->on('departments');

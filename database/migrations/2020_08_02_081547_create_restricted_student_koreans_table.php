@@ -21,9 +21,8 @@ class CreateRestrictedStudentKoreansTable extends Migration
             $table->dateTime('restrict_end_date');
             $table->timestamps();
 
-            /*
-                외래키
-            */
+
+            /* 외래키 설정 */
             $table->foreign('restrict_std_kor')
                 ->references('std_kor_id')
                 ->on('student_koreans');

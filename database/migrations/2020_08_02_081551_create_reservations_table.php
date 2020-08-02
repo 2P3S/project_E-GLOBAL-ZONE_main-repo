@@ -17,13 +17,11 @@ class CreateReservationsTable extends Migration
             $table->bigIncrements('res_id');
             $table->unsignedBigInteger('res_sch');
             $table->unsignedBigInteger('res_std_kor');
-            $table->unsignedTinyInteger('res_state_of_permission');
-            $table->unsignedTinyInteger('res_state_of_attendance');
+            $table->unsignedTinyInteger('res_state_of_permission')->default(false);
+            $table->unsignedTinyInteger('res_state_of_attendance')->default(false);
             $table->timestamps();
 
-            /*
-                외래키 설정
-            */
+            /* 외래키 설정 */
             $table->foreign('res_std_kor')
                 ->references('std_kor_id')
                 ->on('student_koreans');
