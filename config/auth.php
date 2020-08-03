@@ -41,11 +41,16 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+        // Add Foreigner Guard
+        'foreigner' => [
+            'driver' => 'passport',
+            'provider' => 'foreigners',
         ],
+        // Add Korean Guard
+        'korean' => [
+            'driver' => 'passport',
+            'provider' => 'koreans',
+        ]
     ],
 
     /*
@@ -66,15 +71,22 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\User::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
+        // TODO 어드민 auth - provider 작업.
+        // 'admins' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\User::class,
         // ],
+
+        // Add Foreigner Provider
+        'foreigners' => [
+            'driver' => 'eloquent',
+            'model' => App\Student_foreigner::class,
+        ],
+        // Add Korean Provider
+        'koreans' => [
+            'driver' => 'eloquent',
+            'model' => App\Student_korean::class,
+        ]
     ],
 
     /*

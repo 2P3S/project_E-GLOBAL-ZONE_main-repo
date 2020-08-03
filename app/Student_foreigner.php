@@ -8,6 +8,9 @@ use Illuminate\Notifications\Notifiable;
 class Student_foreigner extends Model
 {
     use Notifiable;
+
+    protected $guard = 'foreigner';
+
     /**
      * The attributes that are mass assignable.
      *
