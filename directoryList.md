@@ -8,6 +8,7 @@
     |-- public
     |   |-- favicon.ico
     |   |-- index.html
+    |   |-- info.js
     |   |-- logo192.png
     |   |-- logo512.png
     |   |-- manifest.json
@@ -19,24 +20,23 @@
         |   |-- Routes.js
         |-- components
         |   |-- common
-        |   |   |-- CalendarSmall.js
-        |   |   |-- ReservationList.js
         |   |-- mobile
-        |   |   |-- Header.js
-        |   |   |-- MobileTemplate.js
-        |   |-- web
-        |-- config
-        |   |-- color.js
-        |   |-- globalStyles.js
-        |   |-- layout.js
+        |       |-- Calendar.js
+        |       |-- Header.js
+        |       |-- Item.js
+        |       |-- List.js
+        |       |-- TabView.js
         |-- redux
         |   |-- store.js
         |   |-- loginSlice
         |       |-- loginSlice.js
         |-- routes
-            |-- Reservation
-            |   |-- Reservation.js
-            |-- Result
-            |   |-- Result.js
-            |-- Schedule
-                |-- Schedule.js
+            |-- Mobile
+                |-- ApplicationForm
+                |   |-- ApplicationForm.js
+                |-- Reservation
+                |   |-- Reservation.js
+                |-- Results
+                |   |-- Results.js
+                |-- Schedule
+                    |-- Schedule.js

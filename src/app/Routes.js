@@ -1,17 +1,21 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import { selectIsLogin, selectIsMobile } from "../redux/loginSlice/loginSlice";
+import { selectIsLogin, selectWhoAmI } from "../redux/loginSlice/loginSlice";
 import { useSelector } from "react-redux";
-import Reservation from "../routes/Mobile/Reservation/Reservation";
-import Schedule from "../routes/Mobile/Schedule/Schedule";
-import Results from "../routes/Mobile/Results/Results";
 
-import ApplicationForm from "../routes/Mobile/ApplicationForm/ApplicationForm";
+import {
+	Reservation,
+	Schedules as Schedule,
+	Results,
+	ApplicationForm,
+} from "../routes/Mobile/Korean";
+
+import { Schedules, Students, Settings } from "../routes/Web/Manager";
 
 /**
  * Functional Component of React to routing app
  * @constant {state} isLogin -> get login status from redux:login
- * @constant {state} isMobile -> get device environment status from redux:login
+ * @constant {state} whoAmI -> get device environment status from redux:login
  * @constant {state} id -> if user is loged in then get user id from redux:login
  *
  *
@@ -20,16 +24,15 @@ import ApplicationForm from "../routes/Mobile/ApplicationForm/ApplicationForm";
  *  @elseif(web) => Header + Router(web)
  *  @else(not loged in) => Redirection to Login Page
  */
-
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
-	const isMobile = useSelector(selectIsMobile);
+	const whoAmI = useSelector(selectWhoAmI);
 	const id = 0;
 
 	return (
 		<Router>
 			{isLogin ? (
-				isMobile ? (
+				whoAmI === "Korean" ? (
 					//mobile
 					<>
 						<Switch>
@@ -46,10 +49,23 @@ function Routes() {
 							<Route path="/result" component={Results} />
 						</Switch>
 					</>
-				) : (
+				) : whoAmI === "Foreigner" ? (
 					// web
 					<Switch>
-						<Route path="/" exact component={home} />
+						<Redirect exact path="/" to={`/student`} />
+					</Switch>
+				) : (
+					// whoAmI === "Manager"
+					<Switch>
+						<Redirect exact path="/" to={`/schedules/now`} />
+
+						<Route exact path="/schedules/:term" component={Schedules} />
+						{/* term => 학기 */}
+
+						<Route exact path="/students/:term/:category" component={Students} />
+						{/* category => foreigner, Korean */}
+
+						<Route path="/settings" component={Settings} />
 					</Switch>
 				)
 			) : (
@@ -65,6 +81,5 @@ function Routes() {
 	);
 }
 const login = () => <></>;
-const home = () => <></>;
 
 export default Routes;
