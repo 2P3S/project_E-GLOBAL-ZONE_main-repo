@@ -1,0 +1,33 @@
+@charset "utf-8";
+
+html, body, div, span, object, iframe,
+p, blockquote, pre,
+a, abbr, address, big, cite, code,
+del, dfn, em, font, ins, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, h1, h2, h3, h4, h5, h6,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend, 
+table, caption, tbody, tfoot, thead, tr, th, td 
+{margin:0; padding:0; border:0;}
+
+img, input.type-image { border: 0 none; }
+ol, ul, li {list-style:none;}
+blockquote, q {quotes:none;}
+ins {text-decoration:none;}
+del {text-decoration:line-through;}
+table {border-spacing:0;} 
+address,caption,cite,code,dfn,em,strong,th,var {font-style:normal;}
+select{font-size: 1em;}
+.radio {margin-bottom:-2px;}
+
+hr{height:0; width:0; font-size:0; line-height:0;text-indent:-5000px;}
+legend{height:0; width:0; font-size:0; line-height:0;text-indent:-5000px;}
+noscript{height:0; width:0; font-size:0; line-height:0;text-indent:-5000px;}
+caption{height:0; width:0; font-size:0; line-height:0;text-indent:-5000px;}
+
+
+
+/*INPUT*/
+textarea {border:1px solid #dfdfdf; font-size: 1em; width:98%;}
+select, textarea {vertical-align: middle; font-size:1em; font-family:'Noto Sans KR', sans-serif;}
