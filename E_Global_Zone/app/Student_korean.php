@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Student_korean extends Model
 {
     use Notifiable;
+
+    protected $guard = 'korean';
+
     /**
      * The attributes that are mass assignable.
      *

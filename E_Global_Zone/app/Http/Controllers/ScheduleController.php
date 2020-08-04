@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class ScheduleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 전체 스케줄 조회
      *
      * @return \Illuminate\Http\Response
      */
@@ -19,9 +19,19 @@ class ScheduleController extends Controller
         return $allSchdules;
     }
 
+    /**
+     * 특정 날짜 개인 스케줄 조회
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
     /**
-     * Store a newly created resource in storage.
+     * 스케줄 등록
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -32,19 +42,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-
-    /**
-     * Update the specified resource in storage.
+     * 특정 스케줄 업데이트
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -56,7 +54,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 특정 스케줄 삭제
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
