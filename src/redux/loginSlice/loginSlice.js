@@ -4,7 +4,7 @@ export const loginSlice = createSlice({
 	name: "login",
 	initialState: {
 		isLogin: true,
-		whoAmI: "Manager",
+		whoAmI: "Korean",
 	},
 	reducers: {
 		logIn: (state) => {

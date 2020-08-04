@@ -11,6 +11,7 @@ import {
 } from "../routes/Mobile/Korean";
 
 import { Schedules, Students, Settings } from "../routes/Web/Manager";
+import MobileHeader from "../components/mobile/Header";
 
 /**
  * Functional Component of React to routing app
@@ -27,7 +28,7 @@ import { Schedules, Students, Settings } from "../routes/Web/Manager";
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const whoAmI = useSelector(selectWhoAmI);
-	const id = 0;
+	// const id = 0;
 
 	return (
 		<Router>
@@ -35,19 +36,23 @@ function Routes() {
 				whoAmI === "Korean" ? (
 					//mobile
 					<>
-						<Switch>
-							<Redirect exact path="/" to={`/reservation`} />
-							{/* 예약 조회 페이지 */}
-							<Route exact path="/reservation" component={Reservation} />
-							<Route path="/reservation/:id" component={ApplicationForm} />
-							{/* 예약 폼 */}
+						<div className="wrap">
+							<MobileHeader />
+							<Switch>
+								<Redirect exact path="/" to={`/reservation`} />
 
-							{/* 스케쥴 페이지 */}
-							<Route path="/schedule" component={Schedule} />
+								{/* 예약 조회 페이지 */}
+								<Route exact path="/reservation" component={Reservation} />
+								<Route path="/reservation/:id" component={ApplicationForm} />
+								{/* 예약 폼 */}
 
-							{/* 결과 페이지 */}
-							<Route path="/result" component={Results} />
-						</Switch>
+								{/* 스케쥴 페이지 */}
+								<Route path="/schedule" component={Schedule} />
+
+								{/* 결과 페이지 */}
+								<Route path="/result" component={Results} />
+							</Switch>
+						</div>
 					</>
 				) : whoAmI === "Foreigner" ? (
 					// web

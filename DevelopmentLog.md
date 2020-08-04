@@ -17,4 +17,11 @@
 
 #### @이재원
 
--
+
+## 0805
+
+### 한 일
+- 모바일 reservation페이지 component
+
+### 해야 할 일
+- Item css 수정
