@@ -80,11 +80,6 @@ Route::prefix('/admin')->group(function () {
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
     });
-
-    /* 관리자 인증 관련 */
-    Route::prefix('/auth')->group(function () {
-        /** 로그인 */
-    });
 });
 
 /* 유학생 라우터 */
@@ -97,12 +92,6 @@ Route::prefix('/foreigner')->group(function () {
         Route::put('{id}', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
         /** 해당 스케줄 출석 결과 입력 */
         Route::post('', 'ReservationController@storeResult')->name('reservations.storeResult');
-    });
-
-    /* 유학생 인증 관련 */
-    Route::prefix('/auth')->group(function () {
-        /** 로그인 */
-        /** 토큰 검사 */
     });
 });
 
@@ -117,10 +106,25 @@ Route::prefix('/')->group(function () {
         /** 내 예약 일정 삭제 */
         Route::delete('{id}', 'ReservationController@destroy')->name('reservations.destroy');
     });
+});
 
+/* 로그인 라우터 */
+Route::prefix('/auth')->group(function () {
     /* 학생 인증 관련 */
-    Route::prefix('/auth')->group(function () {
+    Route::prefix('/korean')->group(function () {
         /** 로그인 */
         /** 토큰 검사 */
     });
+
+    /* 유학생 인증 관련 */
+    Route::prefix('/foreigner')->group(function () {
+        /** 로그인 */
+        /** 토큰 검사 */
+    });
+
+    /* 관리자 인증 관련 */
+    Route::prefix('/admin')->group(function () {
+        /** 로그인 */
+    });
+
 });

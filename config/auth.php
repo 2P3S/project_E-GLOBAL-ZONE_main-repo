@@ -72,6 +72,11 @@ return [
 
     'providers' => [
         // TODO 어드민 auth - provider 작업.
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Student_korean::class,
+        ],
+
         // 'admins' => [
         //     'driver' => 'eloquent',
         //     'model' => App\User::class,

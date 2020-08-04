@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Schedule;
+use App\Student_foreigner;
+use App\Department;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -14,9 +16,28 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $allSchdules = Schedule::all();
+        //TODO 날짜 계산 찾아보기.
+        $allSchdules = Schedule::where('sch_start_date', '>=', '2020-08-05')
+            ->where('sch_start_date', '<', '2020-08-06')
+            ->get();
 
-        return $allSchdules;
+        // 등록된 스케줄이 없을 경우
+        if ($allSchdules->count() === 0) {
+            return response()->json([
+                'message' => '등록된 스케줄이 없습니다.',
+            ], 404);
+        }
+
+        // 각 스케줄에 대한 유학생 정보 추가.
+        foreach ($allSchdules as $schedule) {
+            $student_data = Student_foreigner::where('std_for_id', $schedule->sch_std_for)->get()->first();
+            $schedule->{"foreign_info"} = $student_data;
+        }
+
+        return response()->json([
+            'message' => '일정 조회를 성공하였습니다.',
+            'result' => $allSchdules,
+        ], 200);
     }
 
     /**
@@ -27,7 +48,12 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
-        //
+        $result_foreigner_schedules = Schedule::where('sch_std_for', $id)
+            ->where('sch_start_date', '>=', '2020-08-06')
+            ->where('sch_start_date', '<', '2020-08-07')
+            ->get();
+
+        return $result_foreigner_schedules;
     }
 
     /**

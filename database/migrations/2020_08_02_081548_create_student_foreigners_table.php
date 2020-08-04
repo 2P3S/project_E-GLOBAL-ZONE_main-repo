@@ -20,7 +20,7 @@ class CreateStudentForeignersTable extends Migration
             $table->string('std_for_name');
             $table->string('std_for_lang');
             $table->string('std_for_contry');
-            $table->unsignedTinyInteger('std_for_state_of_favorite');
+            $table->unsignedTinyInteger('std_for_state_of_favorite')->default(0);
             $table->timestamps();
 
             /* 기본키 설정 */
