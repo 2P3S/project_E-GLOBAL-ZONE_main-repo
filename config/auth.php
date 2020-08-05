@@ -83,15 +83,15 @@ return [
         // ],
 
         // Add Foreigner Provider
-        'foreigners' => [
-            'driver' => 'eloquent',
-            'model' => App\Student_foreigner::class,
-        ],
+        // 'foreigners' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Student_foreigner::class,
+        // ],
         // Add Korean Provider
-        'koreans' => [
-            'driver' => 'eloquent',
-            'model' => App\Student_korean::class,
-        ]
+        // 'koreans' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Student_korean::class,
+        // ]
     ],
 
     /*
