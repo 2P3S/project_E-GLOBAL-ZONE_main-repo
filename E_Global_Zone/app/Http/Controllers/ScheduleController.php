@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Schedule;
 use App\Student_foreigner;
-use App\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
@@ -41,7 +41,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 특정 날짜 개인 스케줄 조회
+     * 특정 날짜 유학생 개인 스케줄 조회
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -49,8 +49,8 @@ class ScheduleController extends Controller
     public function show($id)
     {
         $result_foreigner_schedules = Schedule::where('sch_std_for', $id)
-            ->where('sch_start_date', '>=', '2020-08-06')
-            ->where('sch_start_date', '<', '2020-08-07')
+            ->where('sch_start_date', '>=', '2020-08-11')
+            ->where('sch_start_date', '<', '2020-08-12')
             ->get();
 
         return $result_foreigner_schedules;
@@ -64,7 +64,34 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 줌 비밀번호 생성
+        $zoom_pw = mt_rand(1000, 9999);
+
+        $validator = Validator::make($request->all(), [
+            'sch_sect' => 'required|integer',
+            'sch_std_for' => 'required|integer',
+            'sch_start_date' => 'required|date',
+            'sch_end_date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+        $create_schedule = Schedule::create([
+            'sch_sect' => $request->sch_sect,
+            'sch_std_for' => $request->sch_std_for,
+            'sch_start_date' => $request->sch_start_date,
+            'sch_end_date' => $request->sch_end_date,
+            'sch_for_zoom_pw' => $zoom_pw,
+        ]);
+
+        return response()->json([
+            'message' => '스케줄 생성 완료',
+            'result' => $create_schedule,
+        ], 200);
     }
 
     /**
@@ -74,9 +101,32 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Schedule $sch_id)
     {
-        //
+
+        //TODO 입력한 날짜에 대한 벨리데이션 검사 기능 추가..
+        $validator = Validator::make($request->all(), [
+            'sch_sect' => 'required|integer',
+            'sch_std_for' => 'required|integer',
+            'sch_start_date' => 'required|date',
+            'sch_end_date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+        $update_schedule = $sch_id->update([
+            'sch_start_date' => $request->sch_start_date,
+            'sch_end_date' => $request->sch_end_date,
+        ]);
+
+        return response()->json([
+            'message' => '스케줄 업데이트 완료',
+            'result' => $update_schedule,
+        ], 200);
     }
 
     /**
@@ -85,8 +135,12 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Schedule $sch_id)
     {
-        //
+        $sch_id->delete();
+
+        return response()->json([
+            'message' => '스케줄 삭제 완료',
+        ], 200);
     }
 }

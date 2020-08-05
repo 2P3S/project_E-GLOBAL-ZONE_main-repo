@@ -8,6 +8,10 @@ use Illuminate\Notifications\Notifiable;
 class Work_student_foreigner extends Model
 {
     use Notifiable;
+
+    /* 기본키 설정 */
+    protected $primaryKey = 'work_list_id';
+
     /**
      * The attributes that are mass assignable.
      *

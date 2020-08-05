@@ -18,17 +18,18 @@ use Illuminate\Http\Request;
 // });
 
 /* 스케줄 라우터 */
+
 Route::prefix('/schedule')->group(function () {
     /* 전체 스케줄 조회 */
     Route::get('', 'ScheduleController@index')->name('schedules.index');
     /* 스케줄 - 특정 날짜 개인(유학생, 한국인학생) 스케줄 조회 */
-    Route::get('{id}', 'ScheduleController@show')->name('schedules.show');
+    Route::get('{date}', 'ScheduleController@show')->name('schedules.show');
     /* 스케줄 등록 */
     Route::post('', 'ScheduleController@store')->name('schedules.store');
     /* 특정 스케줄 업데이트 */
-    Route::put('{id}', 'ScheduleController@update')->name('schedules.update');
+    Route::put('{sch_id}', 'ScheduleController@update')->name('schedules.update');
     /* 특정 스케줄 삭제 */
-    Route::delete('{id}', 'ScheduleController@destroy')->name('schedules.destroy');
+    Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
 });
 
 /* 관리자 라우터 */
@@ -87,16 +88,16 @@ Route::prefix('/foreigner')->group(function () {
     /* 예약 관련 */
     Route::prefix('/reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
-        Route::get('{id}', 'ReservationController@showReservation')->name('reservations.showReservation');
+        Route::get('{sch_id}', 'ReservationController@showReservation')->name('reservations.showReservation');
         /** 해당 스케줄 신청 학생 명단 승인 */
-        Route::put('{id}', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
+        Route::patch('', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
         /** 해당 스케줄 출석 결과 입력 */
         Route::post('', 'ReservationController@storeResult')->name('reservations.storeResult');
     });
 });
 
 /* 한국인학생 라우터 */
-Route::prefix('/')->group(function () {
+Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
     Route::prefix('/reservation')->group(function () {
         /** 예약 신청 */
@@ -126,5 +127,4 @@ Route::prefix('/auth')->group(function () {
     Route::prefix('/admin')->group(function () {
         /** 로그인 */
     });
-
 });

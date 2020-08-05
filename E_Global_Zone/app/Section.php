@@ -8,6 +8,10 @@ use Illuminate\Notifications\Notifiable;
 class Section extends Model
 {
     use Notifiable;
+
+    /* 기본키 설정 */
+    protected $primaryKey = 'sect_id';
+
     /**
      * The attributes that are mass assignable.
      *

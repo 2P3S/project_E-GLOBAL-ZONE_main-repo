@@ -11,6 +11,9 @@ class Student_foreigner extends Model
 
     protected $guard = 'foreigner';
 
+    /* 기본키 설정 */
+    protected $primaryKey = 'std_for_id';
+
     /**
      * The attributes that are mass assignable.
      *

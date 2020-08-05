@@ -8,6 +8,10 @@ use Illuminate\Notifications\Notifiable;
 class Restricted_student_korean extends Model
 {
     use Notifiable;
+
+    /* 기본키 설정 */
+    protected $primaryKey = 'restrict_id';
+
     /**
      * The attributes that are mass assignable.
      *
