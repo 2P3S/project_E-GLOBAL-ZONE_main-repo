@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Student_korean extends Model
 {
@@ -10,16 +11,13 @@ class Student_korean extends Model
 
     protected $guard = 'korean';
 
+    /* 기본키 설정 */
+    protected $primaryKey = 'std_kor_id';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'std_kor_id',
-        'std_kor_dept',
-        'std_kor_name',
-        'std_kor_phone',
-        'std_kor_mail'
-    ];
+    protected $guarded = [];
 }
