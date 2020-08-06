@@ -8,6 +8,7 @@ use App\Schedule;
 use App\Student_korean;
 use App\Student_foreigner;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
@@ -41,6 +42,8 @@ class ReservationController extends Controller
                 'message' => '이미 등록된 스케줄입니다.',
             ], 404);
 
+        //TODO 하루에 한번 예약 가능 Validation 추가.
+
         $create_reservation = Reservation::create([
             'res_sch' => $request->res_sch,
             'res_std_kor' => $request->res_std_kor,
@@ -49,11 +52,11 @@ class ReservationController extends Controller
         return response()->json([
             'message' => '예약 신청 완료',
             'result' => $create_reservation,
-        ], 200);
+        ], 201);
     }
 
     /**
-     * 한국인학생 - 내 예약 일정 조회
+     * 한국인학생 - 해당 일자 예약 조회
      *
      * @return \Illuminate\Http\Response
      */
@@ -61,31 +64,55 @@ class ReservationController extends Controller
     {
         // 사용자 정보 -> 학번 가져오기.
         $res_std_kor = 1955408;
-        $result_reservations = Reservation::where('res_std_kor', $res_std_kor)
-            ->where(function ($query) {
-                $query->orwhere('res_state_of_permission', '!=', true)
-                    ->orwhere('res_state_of_attendance', '!=', true);
-            })
+        $sch_start_date = "2020-08-10";
+
+        $result_reservations = Reservation::select('std_for_lang', 'std_for_name', 'sch_start_date', 'sch_end_date', 'res_state_of_permission', 'res_state_of_attendance', 'sch_state_of_result_input', 'sch_state_of_permission', 'sch_for_zoom_pw')
+            ->join('schedules as sch', 'sch.sch_id', '=', 'reservations.res_sch')
+            ->join('student_foreigners as for', 'for.std_for_id', '=', 'sch.sch_std_for')
+            ->where('reservations.res_std_kor', $res_std_kor)
+            ->whereDate('sch.sch_start_date', $sch_start_date)
             ->get();
-
-        foreach ($result_reservations as $reservation) {
-            // 스케줄 정보 추가.
-            $schedule_data = Schedule::find($reservation->res_sch);
-            $reservation->{"res_sch"} = $schedule_data;
-
-            // 유학생 정보 추가.
-            $foreigner_data = Student_foreigner::where('std_for_id', $schedule_data->sch_std_for)
-                ->select('std_for_id', 'std_for_lang', 'std_for_contry')
-                ->get()->first();
-
-            $schedule_data->{"sch_std_for"} = $foreigner_data;
-        }
 
         return response()->json([
             'message' => '진행중인 예약 조회 완료',
             'result' => $result_reservations,
         ], 200);
     }
+
+    // /**
+    //  * 한국인학생 - 내 예약 일정 조회
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function show()
+    // {
+    //     // 사용자 정보 -> 학번 가져오기.
+    //     $res_std_kor = 1955408;
+    //     $result_reservations = Reservation::where('res_std_kor', $res_std_kor)
+    //         ->where(function ($query) {
+    //             $query->orwhere('res_state_of_permission', '!=', true)
+    //                 ->orwhere('res_state_of_attendance', '!=', true);
+    //         })
+    //         ->get();
+
+    //     foreach ($result_reservations as $reservation) {
+    //         // 스케줄 정보 추가.
+    //         $schedule_data = Schedule::find($reservation->res_sch);
+    //         $reservation->{"res_sch"} = $schedule_data;
+
+    //         // 유학생 정보 추가.
+    //         $foreigner_data = Student_foreigner::where('std_for_id', $schedule_data->sch_std_for)
+    //             ->select('std_for_id', 'std_for_lang', 'std_for_contry')
+    //             ->get()->first();
+
+    //         $schedule_data->{"sch_std_for"} = $foreigner_data;
+    //     }
+
+    //     return response()->json([
+    //         'message' => '진행중인 예약 조회 완료',
+    //         'result' => $result_reservations,
+    //     ], 200);
+    // }
 
     /**
      * 한국인학생 - 내 예약 일정 삭제
@@ -99,7 +126,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'message' => '예약 삭제 완료',
-        ], 200);
+        ], 204);
     }
 
     /**
@@ -110,13 +137,16 @@ class ReservationController extends Controller
      */
     public function showReservation($sch_id)
     {
-        $result_foreigner_reservation = Reservation::where('res_sch', $sch_id)->get();
+        $result_foreigner_reservation = Reservation::select('res_id', 'std_kor_id', 'std_kor_name', 'std_kor_phone', 'res_state_of_permission', 'res_state_of_attendance')
+        ->join('student_koreans as kor', 'kor.std_kor_id', 'reservations.res_std_kor')
+        ->where('reservations.res_sch', $sch_id)
+        ->get();
 
         // 각 예약에 대한 한국인 학생 정보 추가.
-        foreach ($result_foreigner_reservation as $reservation) {
-            $student_data = Student_korean::where('std_kor_id', $reservation->res_std_kor)->get()->first();
-            $reservation->{"res_std_kor"} = $student_data;
-        }
+        // foreach ($result_foreigner_reservation as $reservation) {
+        //     $student_data = Student_korean::where('std_kor_id', $reservation->res_std_kor)->get()->first();
+        //     $reservation->{"res_std_kor"} = $student_data;
+        // }
 
         return response()->json([
             'message' => '해당 스케줄에 대한 예약 조회 성공.',
