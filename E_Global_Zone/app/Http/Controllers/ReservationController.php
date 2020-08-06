@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Reservation;
+use App\Section;
 use App\Schedule;
 use App\Student_korean;
+use App\Student_foreigner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,18 +20,71 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //TODO 학생 학번 받아올 수 있으면 res_sch를 parms로 받아오자.
+        $validator = Validator::make($request->all(), [
+            'res_sch' => 'required|integer',
+            'res_std_kor' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
+        // 중복 예약 방지를 위한 조회.
+        $isDuplicateRes = Reservation::where('res_sch', $request->res_sch)
+            ->where('res_std_kor', $request->res_std_kor)->get()->first();
+
+        if ($isDuplicateRes)
+            return response()->json([
+                'message' => '이미 등록된 스케줄입니다.',
+            ], 404);
+
+        $create_reservation = Reservation::create([
+            'res_sch' => $request->res_sch,
+            'res_std_kor' => $request->res_std_kor,
+        ]);
+
+        return response()->json([
+            'message' => '예약 신청 완료',
+            'result' => $create_reservation,
+        ], 200);
     }
 
     /**
      * 한국인학생 - 내 예약 일정 조회
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //
+        // 사용자 정보 -> 학번 가져오기.
+        $res_std_kor = 1955408;
+        $result_reservations = Reservation::where('res_std_kor', $res_std_kor)
+            ->where(function ($query) {
+                $query->orwhere('res_state_of_permission', '!=', true)
+                    ->orwhere('res_state_of_attendance', '!=', true);
+            })
+            ->get();
+
+        foreach ($result_reservations as $reservation) {
+            // 스케줄 정보 추가.
+            $schedule_data = Schedule::find($reservation->res_sch);
+            $reservation->{"res_sch"} = $schedule_data;
+
+            // 유학생 정보 추가.
+            $foreigner_data = Student_foreigner::where('std_for_id', $schedule_data->sch_std_for)
+                ->select('std_for_id', 'std_for_lang', 'std_for_contry')
+                ->get()->first();
+
+            $schedule_data->{"sch_std_for"} = $foreigner_data;
+        }
+
+        return response()->json([
+            'message' => '진행중인 예약 조회 완료',
+            'result' => $result_reservations,
+        ], 200);
     }
 
     /**
@@ -38,9 +93,13 @@ class ReservationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Reservation $res_id)
     {
-        //
+        $res_id->delete();
+
+        return response()->json([
+            'message' => '예약 삭제 완료',
+        ], 200);
     }
 
     /**
@@ -124,8 +183,8 @@ class ReservationController extends Controller
 
             // 스케줄 - 학생 수 업데이트
             if (isset($isAddMode)) {
-            $isAddMode ? $schedule->increment('sch_res_count') : $schedule->decrement('sch_res_count');
-            unset($isAddMode);
+                $isAddMode ? $schedule->increment('sch_res_count') : $schedule->decrement('sch_res_count');
+                unset($isAddMode);
             }
         }
 
