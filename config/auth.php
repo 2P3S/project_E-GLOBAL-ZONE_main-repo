@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * 수정일 : 2020-08-08
+ * 작성자 : 정재순
+ * 내용 : Laravel Passport Multi-Auth
+ * 세부내용
+ *   - guards, providers 적용
+ *   - 관리자, 외국인
+ */
+
 return [
 
     /*
@@ -14,7 +23,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'foreigner',
         'passwords' => 'users',
     ],
 
@@ -35,22 +44,16 @@ return [
     |
     */
 
+    // [Guard] 관리자, 외국인
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+        'admin' => [
+            'driver' => 'passport',
+            'provider' => 'admins',
         ],
-
-        // Add Foreigner Guard
         'foreigner' => [
             'driver' => 'passport',
             'provider' => 'foreigners',
         ],
-        // Add Korean Guard
-        'korean' => [
-            'driver' => 'passport',
-            'provider' => 'koreans',
-        ]
     ],
 
     /*
@@ -71,27 +74,14 @@ return [
     */
 
     'providers' => [
-        // TODO 어드민 auth - provider 작업.
-        'users' => [
+        'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Student_korean::class,
+            'model' => App\Admin::class,
         ],
-
-        // 'admins' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\User::class,
-        // ],
-
-        // Add Foreigner Provider
-        // 'foreigners' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Student_foreigner::class,
-        // ],
-        // Add Korean Provider
-        // 'koreans' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Student_korean::class,
-        // ]
+        'foreigners' => [
+            'driver' => 'eloquent',
+            'model' => App\Student_foreigner::class,
+        ],
     ],
 
     /*
@@ -110,25 +100,12 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'foreigners' => [
+            'provider' => 'foreigners',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define the amount of seconds before a password confirmation
-    | times out and the user is prompted to re-enter their password via the
-    | confirmation screen. By default, the timeout lasts for three hours.
-    |
-    */
-
-    'password_timeout' => 10800,
 
 ];
