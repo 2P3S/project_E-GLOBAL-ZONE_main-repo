@@ -11,7 +11,8 @@
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "smartins/passport-multiauth": "^7.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
@@ -27,7 +28,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/passport"
+            ]
         }
     },
     "autoload": {
