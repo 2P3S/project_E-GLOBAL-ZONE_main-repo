@@ -9,16 +9,19 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
+    //TODO whereDate / whereMonth / whereDay / whereYear / whereTime 메서드 사용하기.
     /**
-     * 전체 스케줄 조회
+     * 해당 주차 전체 스케줄 조회
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         //TODO 날짜 계산 찾아보기.
-        $allSchdules = Schedule::where('sch_start_date', '>=', '2020-08-05')
-            ->where('sch_start_date', '<', '2020-08-06')
+        $allSchdules = Schedule::select('sch_id', 'sch_res_count','sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
+            ->where('schedules.sch_start_date', '>=', '2020-08-05')
+            ->where('schedules.sch_start_date', '<', '2020-08-06')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->get();
 
         // 등록된 스케줄이 없을 경우
@@ -26,12 +29,6 @@ class ScheduleController extends Controller
             return response()->json([
                 'message' => '등록된 스케줄이 없습니다.',
             ], 404);
-        }
-
-        // 각 스케줄에 대한 유학생 정보 추가.
-        foreach ($allSchdules as $schedule) {
-            $student_data = Student_foreigner::where('std_for_id', $schedule->sch_std_for)->get()->first();
-            $schedule->{"foreign_info"} = $student_data;
         }
 
         return response()->json([
@@ -91,7 +88,7 @@ class ScheduleController extends Controller
         return response()->json([
             'message' => '스케줄 생성 완료',
             'result' => $create_schedule,
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -141,6 +138,6 @@ class ScheduleController extends Controller
 
         return response()->json([
             'message' => '스케줄 삭제 완료',
-        ], 200);
+        ], 204);
     }
 }
