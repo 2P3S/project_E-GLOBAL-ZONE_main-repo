@@ -3,7 +3,16 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Passport;
+
+/*
+ * 수정일 : 2020-08-08
+ * 작성자 : 정재순
+ * 내용 : Laravel Passport Multi-Auth
+ * 세부내용
+ *   - AuthServiceProvider boot() 적용
+ */
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +22,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+//        'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -25,6 +34,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Passport::routes();
+
+        // Middleware `oauth.providers` middleware defined on $routeMiddleware above
+        Route::group(['middleware' => 'oauth.providers'], function () {
+            Passport::routes(function ($router) {
+                return $router->forAccessTokens();
+            });
+        });
     }
 }

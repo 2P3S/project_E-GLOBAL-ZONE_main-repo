@@ -24,9 +24,13 @@
   <component name="ChangeListManager">
     <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Admin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Student_foreigner.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Student_foreigner.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_08_031034_create_admins_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_08_031034_create_admins_table.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +163,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1596814498716</updated>
-      <workItem from="1596814500869" duration="7676000" />
+      <workItem from="1596814500869" duration="10039000" />
     </task>
     <servers />
   </component>
@@ -187,9 +191,9 @@
     </state>
     <state x="629" y="279" width="584" height="522" key="find.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596819159200" />
     <state x="668" y="279" width="584" height="522" key="find.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596815365938" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596823543574">
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596825685693">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596823543574" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596825685693" />
   </component>
 </project>

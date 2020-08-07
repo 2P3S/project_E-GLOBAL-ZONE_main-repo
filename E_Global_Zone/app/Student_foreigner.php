@@ -2,12 +2,21 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
-class Student_foreigner extends Model
+/*
+ * 수정일 : 2020-08-08
+ * 작성자 : 정재순
+ * 내용 : Laravel Passport Multi-Auth
+ * 세부내용
+ *   - HasMultiAuthApiTokens 등록
+ */
+
+class Student_foreigner extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasMultiAuthApiTokens;
 
     protected $guard = 'foreigner';
 

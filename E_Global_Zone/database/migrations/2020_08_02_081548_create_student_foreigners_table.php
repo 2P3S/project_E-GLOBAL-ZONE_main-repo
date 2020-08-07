@@ -4,6 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/*
+ * 수정일 : 2020-08-08
+ * 작성자 : 정재순
+ * 내용 : Laravel Passport Multi-Auth
+ * 세부내용
+ *   - 테이블 구조 수정
+ *   - rememberToken() 적용
+ */
+
 class CreateStudentForeignersTable extends Migration
 {
     /**
@@ -21,6 +30,7 @@ class CreateStudentForeignersTable extends Migration
             $table->string('std_for_lang');
             $table->string('std_for_contry');
             $table->unsignedTinyInteger('std_for_state_of_favorite')->default(0);
+            $table->rememberToken();
             $table->timestamps();
 
             /* 기본키 설정 */
