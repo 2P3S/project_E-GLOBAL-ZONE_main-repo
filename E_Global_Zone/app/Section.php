@@ -22,4 +22,6 @@ class Section extends Model
         'sect_start_date',
         'sect_end_date'
     ];
+
+    public $timestamps = false;
 }
