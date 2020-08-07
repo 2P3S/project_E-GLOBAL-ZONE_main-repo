@@ -1,22 +1,10 @@
 import React, { useRef, useState } from "react";
 import List from "./List";
 import useClick from "modules/hooks/useClick";
+import mockup from "../../test/mockup";
 
 export default function TabView() {
-	const [data, setData] = useState([
-		{
-			language: "English",
-			name: "이재원",
-			time: ["시작시간", "종료시간"],
-			status: "reserved",
-		},
-		{
-			language: "Japanese",
-			name: "이재원",
-			time: ["시작시간", "종료시간"],
-			status: "done",
-		},
-	]); // 스케줄 데이터 배열로 초기화
+	const [data, setData] = useState(mockup); // 스케줄 데이터 배열로 초기화
 	const setClass = (e) => {
 		for (const key in tabs) {
 			if (tabs.hasOwnProperty(key)) {

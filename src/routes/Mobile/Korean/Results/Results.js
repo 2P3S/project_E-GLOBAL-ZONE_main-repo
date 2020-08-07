@@ -4,20 +4,6 @@ export default function Results() {
 	return (
 		<div>
 			<div class="wrap mobile_result">
-				<ul class="tab no3">
-					<li>
-						<a href="student_reservation.php">예약 조회</a>
-					</li>
-					<li>
-						<a href="student_schedule.php">스케줄 조회</a>
-					</li>
-					<li>
-						<a href="student_result.php" class="on">
-							결과 관리
-						</a>
-					</li>
-				</ul>
-
 				<p class="tit">2020년 1학기</p>
 				<div class="point_info">
 					<p>
