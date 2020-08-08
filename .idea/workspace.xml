@@ -19,15 +19,19 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/refactor-login" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Model/Authenticator.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Model/Authenticator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Student_foreigner.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Student_foreigner.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +195,7 @@
       <updated>1596814498716</updated>
       <workItem from="1596814500869" duration="10163000" />
       <workItem from="1596857203615" duration="8857000" />
-      <workItem from="1596869115823" duration="4288000" />
+      <workItem from="1596869115823" duration="6380000" />
     </task>
     <servers />
   </component>
@@ -203,7 +207,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/refactor-login" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -242,10 +258,10 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="1268" y="466" width="353" height="151" key="NewPhpFileDialog/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596863666625" />
-    <state x="469" y="179" key="SettingsEditor" timestamp="1596874922963">
+    <state x="469" y="179" key="SettingsEditor" timestamp="1596876010303">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="469" y="179" key="SettingsEditor/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596874922963" />
+    <state x="469" y="179" key="SettingsEditor/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596876010303" />
     <state x="629" y="167" width="584" height="634" key="find.popup" timestamp="1596874969817">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>

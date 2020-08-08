@@ -63,6 +63,31 @@ class LoginController extends Controller
     }
 
     /**
+     * 로그인 시, 사용자 정보 인증
+     * @param Request $request
+     * @param string $key
+     * @return array|null
+     */
+    private function login_authenticator(
+        Request $request,
+        string $key
+    ): ?array
+    {
+        $credentials = array_values($request->only($key, 'password', 'provider'));
+        $credentials[] = $key;
+
+        if (!$user = $this->authenticator->attempt(...$credentials)) {
+            return null;
+        }
+
+        $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
+        return [
+            'result' => $user,
+            'token' => $token
+        ];
+    }
+
+    /**
      * 관리자 로그인
      *
      * @param Request $request
@@ -81,27 +106,22 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $credentials = array_values($request->only($rules['key'], 'password', 'provider'));
-        $credentials[] = $rules['key'];
-
-        if (!$admin = $this->authenticator->attempt(...$credentials)) {
+        if (empty($admin = $this->login_authenticator($request, $rules['key']))) {
             return response()->json([
                 'message' => self::LOGIN_ERROR_MSG
             ]);
         }
 
-        $token = $admin->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
-
         return response()->json([
-            'message' => $admin['name'] . self::LOGIN_SUCCESS_MSG,
-            'name' => $admin['name'],
-            'access_token' => $token
+            'message' => $admin['result']['name'] . self::LOGIN_SUCCESS_MSG,
+            'name' => $admin['result']['name'],
+            'access_token' => $admin['token']
         ]);
     }
 
-    // 외국인 유학생 로그인
-
     /**
+     * 외국인 유학생 로그인
+     *
      * @param Request $request
      * @return Json
      */
@@ -118,25 +138,20 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $credentials = array_values($request->only($rules['key'], 'password', 'provider'));
-        $credentials[] = $rules['key'];
-
-        if (!$foreigner = $this->authenticator->attempt(...$credentials)) {
+        if (empty($foreigner = $this->login_authenticator($request, $rules['key']))) {
             return response()->json([
                 'message' => self::LOGIN_ERROR_MSG
             ]);
         }
 
-        $token = $foreigner->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
-
         return response()->json([
-            'message' => $foreigner['std_for_name'] . self::LOGIN_SUCCESS_MSG,
-            'id' => $foreigner['std_for_id'],
-            'name' => $foreigner['std_for_name'],
-            'lang' => $foreigner['std_for_lang'],
-            'country' => $foreigner['std_for_country'],
-            'favorite' => $foreigner['std_for_state_of_favorite'],
-            'access_token' => $token
+            'message' => $foreigner['result']['std_for_name'] . self::LOGIN_SUCCESS_MSG,
+            'id' => $foreigner['result']['std_for_id'],
+            'name' => $foreigner['result']['std_for_name'],
+            'lang' => $foreigner['result']['std_for_lang'],
+            'country' => $foreigner['result']['std_for_country'],
+            'favorite' => $foreigner['result']['std_for_state_of_favorite'],
+            'access_token' => $foreigner['token']
         ]);
     }
 }
