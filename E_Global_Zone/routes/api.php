@@ -157,5 +157,10 @@ Route::prefix('login')->group(static function () {
 
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
+
+    Route::prefix('request')->group(static function () {
+        Route::get('admin', 'LoginController@adminRequest')->name('auth.adminsRequest');
+        Route::get('foreigner', 'LoginController@foreignerRequest')->name('auth.foreignersRequest');
+    });
 });
 
