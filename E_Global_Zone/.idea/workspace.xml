@@ -22,16 +22,14 @@
     <select>
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="BRANCH:server-laravel" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/server-laravel" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/Admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Admin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" afterDir="false" />
-    </list>
+    <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
