@@ -14,7 +14,7 @@ class CreateWorkStudentForeignersTable extends Migration
     public function up()
     {
         Schema::create('work_student_foreigners', function (Blueprint $table) {
-            $table->bigIncrements('wokr_list_id');
+            $table->bigIncrements('work_list_id');
             $table->unsignedBigInteger('work_std_for');
             $table->unsignedBigInteger('work_sect');
 
