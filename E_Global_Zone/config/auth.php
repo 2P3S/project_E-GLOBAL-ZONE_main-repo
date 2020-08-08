@@ -1,15 +1,5 @@
 <?php
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth
- * 세부내용
- *   - guards, providers 적용
- *   - 관리자, 외국인
- */
-
 return [
 
     /*

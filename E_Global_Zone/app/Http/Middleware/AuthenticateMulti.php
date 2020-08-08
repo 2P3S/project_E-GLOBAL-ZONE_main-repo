@@ -7,15 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth
- * 세부내용
- *   - Middleware AuthenticateMulti 정의
- */
-
 class AuthenticateMulti
 {
     private const ACCESS_ERROR = '잘못된 접근입니다.';

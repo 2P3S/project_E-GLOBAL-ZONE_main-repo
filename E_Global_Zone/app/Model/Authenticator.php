@@ -6,16 +6,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Hashing\HashManager;
 use RuntimeException;
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth 적용
- * 세부내용
- *   - class Authenticator 정의
- *   - provider Query Column 수
- */
-
 class Authenticator
 {
     /**

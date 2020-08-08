@@ -4,17 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth
- * 세부내용
- *   - 테이블 구조 수정
- *   - rememberToken() 추가
- *   - column 수정(std_for_passwd -> password)
- */
-
 class CreateStudentForeignersTable extends Migration
 {
     /**
