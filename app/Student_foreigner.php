@@ -13,6 +13,8 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
  * 내용 : Laravel Passport Multi-Auth
  * 세부내용
  *   - HasMultiAuthApiTokens 등록
+ *   - $fillable, $hidden 수정 : password
+ *   - 오타 수정 : std_for_country
  */
 
 class Student_foreigner extends Authenticatable
@@ -31,11 +33,11 @@ class Student_foreigner extends Authenticatable
      */
     protected $fillable = [
         'std_for_id',
-        'std_for_passwd',
+        'password',
         'std_for_dept',
         'std_for_name',
         'std_for_lang',
-        'std_for_contry'
+        'std_for_country'
     ];
 
     /**
@@ -44,6 +46,6 @@ class Student_foreigner extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'std_for_passwd'
+        'password'
     ];
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Schema;
  * 세부내용
  *   - 테이블 구조 수정
  *   - rememberToken() 적용
+ *   - column 수정(std_for_passwd -> password)
  */
 
 class CreateStudentForeignersTable extends Migration
@@ -25,11 +26,11 @@ class CreateStudentForeignersTable extends Migration
     {
         Schema::create('student_foreigners', function (Blueprint $table) {
             $table->unsignedBigInteger('std_for_id');
-            $table->string('std_for_passwd');
+            $table->string('password');
             $table->unsignedBigInteger('std_for_dept');
             $table->string('std_for_name');
             $table->string('std_for_lang');
-            $table->string('std_for_contry');
+            $table->string('std_for_country');
             $table->unsignedTinyInteger('std_for_state_of_favorite')->default(0);
             $table->rememberToken();
             $table->timestamps();
