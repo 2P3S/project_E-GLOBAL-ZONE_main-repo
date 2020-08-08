@@ -91,7 +91,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'message' => '예약 삭제 완료',
-        ], 204);
+        ], 200);
     }
 
     /**
