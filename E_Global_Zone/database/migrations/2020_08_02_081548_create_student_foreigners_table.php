@@ -15,7 +15,7 @@ class CreateStudentForeignersTable extends Migration
     {
         Schema::create('student_foreigners', function (Blueprint $table) {
             $table->unsignedBigInteger('std_for_id');
-            $table->string('password');
+            $table->string('password')->default('$2y$10$UGkHe7JlJAGcto9F9pHKveMdiXQT4C/ktm8t3OmXDD7njV0wq2ACS');
             $table->unsignedBigInteger('std_for_dept');
             $table->string('std_for_name');
             $table->string('std_for_lang');
