@@ -13,14 +13,26 @@ class ScheduleController extends Controller
     /**
      * 해당 주차 전체 스케줄 조회
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'sch_start_date' => 'required|date',
+            'sch_end_date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+            ], 422);
+        }
+
         //TODO 날짜 계산 찾아보기.
         $allSchdules = Schedule::select('sch_id', 'sch_res_count','sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
-            ->where('schedules.sch_start_date', '>=', '2020-08-05')
-            ->where('schedules.sch_start_date', '<', '2020-08-06')
+            ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
+            ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->get();
 
@@ -38,16 +50,16 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 특정 날짜 유학생 개인 스케줄 조회
+     * 유학생 - 특정 날짜 개인 스케줄 조회
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($date)
     {
-        $result_foreigner_schedules = Schedule::where('sch_std_for', $id)
-            ->where('sch_start_date', '>=', '2020-08-11')
-            ->where('sch_start_date', '<', '2020-08-12')
+        $std_for_id = 1372367;
+        $result_foreigner_schedules = Schedule::where('sch_std_for', $std_for_id)
+            ->whereDate('sch_start_date', $date)
             ->get();
 
         return $result_foreigner_schedules;
