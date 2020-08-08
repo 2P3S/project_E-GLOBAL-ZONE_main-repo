@@ -29,15 +29,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/AuthenticateMulti.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Student_foreigner.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Student_foreigner.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,10 +267,10 @@
     </state>
     <state x="629" y="167" width="639" height="634" key="find.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596888488243" />
     <state x="668" y="279" width="584" height="522" key="find.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596815365938" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596889796624">
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596890125996">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596889796624" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596890125996" />
     <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596884016760" />
   </component>
 </project>
