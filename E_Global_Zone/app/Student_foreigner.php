@@ -8,11 +8,11 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /*
  * TODO
- * 수정일 : 2020-08-08
+ * 작성일 : 2020-08-08
  * 작성자 : 정재순
  * 내용 : Laravel Passport Multi-Auth
  * 세부내용
- *   - HasMultiAuthApiTokens 등록
+ *   - HasMultiAuthApiTokens 추가
  *   - $fillable, $hidden 수정 : password
  *   - 오타 수정 : std_for_country
  */

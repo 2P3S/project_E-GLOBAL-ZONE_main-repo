@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -151,7 +150,12 @@ Route::prefix('/auth')->group(function () {
  *      - 토큰검사 : check/foreigner
  */
 
-Route::prefix('login')->group(function () {
-    Route::get("admin", "LoginController@adminLogin")->name('admins.login');
-    Route::get("foreigner", "LoginController@foreignerLogin")->name('foreigners.login');
+Route::prefix('login')->group(static function () {
+    Route::post('admin', 'LoginController@adminLogin')->name('auth.adminsLogin');
+    Route::post('foreigner', 'LoginController@foreignerLogin')->name('auth.foreignersLogin');
 });
+
+Route::middleware('auth.multi')->group(static function () {
+    Route::post('logout', 'LoginController@logout')->name('auth.logout');
+});
+
