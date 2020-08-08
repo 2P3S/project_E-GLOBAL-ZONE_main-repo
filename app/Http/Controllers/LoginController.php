@@ -13,13 +13,23 @@ use Illuminate\Support\Facades\Validator;
  * 작성자 : 정재순
  * 내용 : Laravel Passport Multi-Auth 적용
  * 세부내용
- *   - login_validator
- *   - adminLogin
+ *   - login_validator()
+ *   - login_authenticator()
+ *   - adminLogin()
  *      - Request : account, password, provider
  *      - Response : message, admin 정보(이름), bearer token
- *   - foreignerLogin
+ *   - foreignerLogin()
  *      - Request : std_for_id, password, provider
  *      - Response : message, foreigner 정보(학번, 이름, 숫자, 언어, 국가, 즐겨찾기), bearer token
+ *   - logout()
+ *      - Request : Authorization - Bearer token
+ *      - Response : message
+ *   - adminRequest()
+ *     - Request : Authorization - Bearer token
+ *     - Response : admin 정보(이름)
+ *   - foreignerRequest()
+ *     - Request : Authorization - Bearer token
+ *     - Response : foreigner 정보(학번, 이름, 숫자, 언어, 국가, 즐겨찾기)
  */
 
 class LoginController extends Controller
@@ -157,12 +167,40 @@ class LoginController extends Controller
         ], 200);
     }
 
-    public function logout(Request $request)
+    /**
+     * 관리자, 유학생 로그아웃
+     *
+     * @param Request $request
+     * @return Json
+     */
+    public function logout(Request $request): Json
     {
         $request->user($request['guard'])->token()->revoke();
 
         return response()->json([
             'message' => self::LOGOUT_SUCCESS
+        ], 200);
+    }
+
+    public function adminRequest(Request $request)
+    {
+        $admin = $request->user($request['guard']);
+
+        return response()->json([
+            'name' => $admin['name']
+        ], 200);
+    }
+
+    public function foreignerRequest(Request $request)
+    {
+        $foreigner = $request->user($request['guard']);
+
+        return response()->json([
+            'id' => $foreigner['std_for_id'],
+            'name' => $foreigner['std_for_name'],
+            'lang' => $foreigner['std_for_lang'],
+            'country' => $foreigner['std_for_country'],
+            'favorite' => $foreigner['std_for_state_of_favorite'],
         ], 200);
     }
 }
