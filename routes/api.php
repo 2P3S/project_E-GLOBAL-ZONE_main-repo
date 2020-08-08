@@ -18,18 +18,29 @@ use Illuminate\Http\Request;
 // });
 
 /* 스케줄 라우터 */
-
 Route::prefix('/schedule')->group(function () {
-    /* 전체 스케줄 조회 */
-    Route::get('', 'ScheduleController@index')->name('schedules.index');
-    /* 스케줄 - 특정 날짜 개인(유학생, 한국인학생) 스케줄 조회 */
+    /* 유학생 - 특정 날짜 개인 스케줄 조회 */
     Route::get('{date}', 'ScheduleController@show')->name('schedules.show');
+    /* 한국인학생 - 해당 일자 전체 스케줄 조회 */
+    Route::post('korean', 'ScheduleController@index')->name('schedules.index');
     /* 스케줄 등록 */
     Route::post('', 'ScheduleController@store')->name('schedules.store');
     /* 특정 스케줄 업데이트 */
     Route::put('{sch_id}', 'ScheduleController@update')->name('schedules.update');
     /* 특정 스케줄 삭제 */
     Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
+});
+
+/* 계열 / 학과 관리 라우터 */
+Route::prefix('/department')->group(function () {
+    /** 등록된 계열 & 학과 목록 조회 */
+    Route::get('', 'DepartmentController@index')->name('departments.index');
+    /** 계열 & 학과 등록 */
+    Route::post('', 'DepartmentController@store')->name('departments.store');
+    /** 계열 & 학과 이름 변경 */
+    Route::patch('{dept_id}', 'DepartmentController@update')->name('departments.update');
+    /** 계열 & 학과 삭제 */
+    Route::delete('{dept_id}', 'DepartmentController@destroy')->name('departments.destroy');
 });
 
 /* 관리자 라우터 */
