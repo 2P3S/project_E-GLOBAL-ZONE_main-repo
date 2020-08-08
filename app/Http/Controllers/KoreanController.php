@@ -97,7 +97,7 @@ class KoreanController extends Controller
             ], 422);
         }
 
-        $create_student = Student_korean::create([
+        Student_korean::create([
             'std_kor_id' => $request->std_kor_id,
             'std_kor_dept' => $request->std_kor_dept,
             'std_kor_name' => $request->std_kor_name,
