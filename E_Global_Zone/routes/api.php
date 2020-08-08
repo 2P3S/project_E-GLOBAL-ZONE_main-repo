@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 /* 스케줄 라우터 */
 Route::prefix('/schedule')->group(function () {
     /* 유학생 - 특정 날짜 개인 스케줄 조회 */
@@ -48,20 +44,20 @@ Route::prefix('/admin')->group(function () {
     /* 유학생 관리 */
     Route::prefix('/foreigner')->group(function () {
         /** 학기별 전체 유학생 정보 조회 */
-        Route::get('', 'ForeignerController@index')->name('foreigners.index');
+        Route::get('{wokr_sect}', 'ForeignerController@index')->name('foreigners.index');
         /** 특정 유학생 정보 조회 */
-        Route::get('{id}', 'ForeignerController@show')->name('foreigners.show');
+        Route::post('', 'ForeignerController@show')->name('foreigners.show');
         /** 학기별 유학생 등록 */
-        Route::post('', 'ForeignerController@store')->name('foreigners.store');
+        Route::post('/work', 'ForeignerController@store')->name('foreigners.store');
         /** 학기별 유학생 수정 */
-        Route::put('', 'ForeignerController@update')->name('foreigners.update');
+        Route::delete('{work_list_id}', 'ForeignerController@destroy')->name('foreigners.destroy');
 
         /** 유학생 계정 생성 */
         Route::post('account', 'ForeignerController@registerAccount')->name('foreigners.registerAccount');
-        /** 비밀번호 초기화 */
-        Route::put('account/{id}', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
-        /** 계정 삭제 */
-        Route::delete('account/{id}', 'ScheduleController@destroyAccount')->name('foreigners.destroyAccount');
+        /** 유학생 비밀번호 변경 */
+        Route::patch('account/{std_for_id}', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
+        /** 유학생 계정 삭제 */
+        Route::delete('account/{std_for_id}', 'ScheduleController@destroyAccount')->name('foreigners.destroyAccount');
 
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');

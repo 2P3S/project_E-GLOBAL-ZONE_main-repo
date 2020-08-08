@@ -17,8 +17,6 @@ class Student_foreigners_contact extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'std_for_phone', 'std_for_mail', 'std_for_zoom_id'
-    ];
+    protected $guarded = [];
 
 }
