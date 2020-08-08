@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,4 +130,28 @@ Route::prefix('/auth')->group(function () {
     Route::prefix('/admin')->group(function () {
         /** 로그인 */
     });
+});
+
+/*
+ * TODO
+ * 작성일 : 2020-08-08
+ * 작성자 : 정재순
+ * 내용 : Laravel Passport Multi-Auth 적용
+ * 세부내용
+ *   - 공통
+ *      - 로그인, 로그아웃 : POST
+ *      - 로그아웃, 토큰검사 : middleware(auth.multi)
+ *   - 관리자
+ *      - 로그인 : login/admin
+ *      - 로그아웃 : logout/admin
+ *      - 토큰검사 : check/admin
+ *   - 유학생
+ *      - 로그인 : login/foreigner
+ *      - 로그아웃 : logout/foreigner
+ *      - 토큰검사 : check/foreigner
+ */
+
+Route::prefix('login')->group(function () {
+    Route::get("admin", "LoginController@adminLogin")->name('admins.login');
+    Route::get("foreigner", "LoginController@foreignerLogin")->name('foreigners.login');
 });
