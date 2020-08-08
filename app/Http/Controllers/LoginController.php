@@ -24,8 +24,10 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
-    private const LOGIN_ERROR_MSG = '아이디 또는 비밀번호를 다시 확인하세요.';
-    private const LOGIN_SUCCESS_MSG = ' 님 로그인 되셨습니다. 어서오세요';
+    private const LOGIN_ERROR = '아이디 또는 비밀번호를 다시 확인하세요.';
+    private const LOGIN_SUCCESS = ' 님 로그인 되습니다. 어서오세요';
+    private const LOGOUT_SUCCESS = '로그아웃되었습니다.';
+
     /**
      * @var Authenticator
      */
@@ -108,15 +110,15 @@ class LoginController extends Controller
 
         if (empty($admin = $this->login_authenticator($request, $rules['key']))) {
             return response()->json([
-                'message' => self::LOGIN_ERROR_MSG
-            ]);
+                'message' => self::LOGIN_ERROR
+            ], 401);
         }
 
         return response()->json([
-            'message' => $admin['result']['name'] . self::LOGIN_SUCCESS_MSG,
+            'message' => $admin['result']['name'] . self::LOGIN_SUCCESS,
             'name' => $admin['result']['name'],
             'access_token' => $admin['token']
-        ]);
+        ], 200);
     }
 
     /**
@@ -140,18 +142,27 @@ class LoginController extends Controller
 
         if (empty($foreigner = $this->login_authenticator($request, $rules['key']))) {
             return response()->json([
-                'message' => self::LOGIN_ERROR_MSG
-            ]);
+                'message' => self::LOGIN_ERROR
+            ], 401);
         }
 
         return response()->json([
-            'message' => $foreigner['result']['std_for_name'] . self::LOGIN_SUCCESS_MSG,
+            'message' => $foreigner['result']['std_for_name'] . self::LOGIN_SUCCESS,
             'id' => $foreigner['result']['std_for_id'],
             'name' => $foreigner['result']['std_for_name'],
             'lang' => $foreigner['result']['std_for_lang'],
             'country' => $foreigner['result']['std_for_country'],
             'favorite' => $foreigner['result']['std_for_state_of_favorite'],
             'access_token' => $foreigner['token']
-        ]);
+        ], 200);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user($request['guard'])->token()->revoke();
+
+        return response()->json([
+            'message' => self::LOGOUT_SUCCESS
+        ], 200);
     }
 }

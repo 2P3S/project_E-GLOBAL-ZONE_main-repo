@@ -4,18 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="BranchesTreeState">
-    <expand />
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
     <select>
       <path>
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:multi-auth" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a44053f-64a0-4180-964f-f9435f712afc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/AuthenticateMulti.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Student_foreigner.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Student_foreigner.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_02_081548_create_student_foreigners_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,12 +176,14 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/vendor/laravel/framework/src/Illuminate/Http/Request.php" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Http/Middleware" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/Http/Middleware" />
       <recent name="$PROJECT_DIR$/app" />
     </key>
   </component>
@@ -197,7 +221,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/refactor-login" />
+                        <option value="multi-auth" />
                       </list>
                     </value>
                   </entry>
@@ -234,10 +258,10 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="908" height="251" key="GridCell.Tab.0.right/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596860782654" />
-    <state x="1102" y="257" key="NewPhpClassDialog" timestamp="1596860778050">
+    <state x="1102" y="257" key="NewPhpClassDialog" timestamp="1596884729997">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="1102" y="257" key="NewPhpClassDialog/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596860778050" />
+    <state x="1102" y="257" key="NewPhpClassDialog/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596884729997" />
     <state x="1268" y="466" width="353" height="151" key="NewPhpFileDialog" timestamp="1596863666625">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
@@ -246,15 +270,15 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="469" y="179" key="SettingsEditor/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596876010303" />
-    <state x="629" y="167" width="584" height="634" key="find.popup" timestamp="1596874969817">
+    <state x="629" y="167" width="639" height="634" key="find.popup" timestamp="1596888488243">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="629" y="167" width="584" height="634" key="find.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596874969817" />
+    <state x="629" y="167" width="639" height="634" key="find.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596888488243" />
     <state x="668" y="279" width="584" height="522" key="find.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596815365938" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596875250965">
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1596889796624">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596875250965" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596874959055" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.0.1792.1120/0.0.1920.1080@0.0.1920.1080" timestamp="1596889796624" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1792.23.1792.1097/0.0.1920.1080@0.0.1920.1080" timestamp="1596884016760" />
   </component>
 </project>
