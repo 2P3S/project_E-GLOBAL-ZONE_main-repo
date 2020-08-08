@@ -18,6 +18,7 @@ class Work_student_foreigner extends Model
      * @var array
      */
     protected $fillable = [
+        'work_list_id',
         'work_std_for',
         'work_sect',
     ];
