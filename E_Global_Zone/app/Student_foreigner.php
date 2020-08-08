@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /*
+ * TODO
  * 수정일 : 2020-08-08
  * 작성자 : 정재순
  * 내용 : Laravel Passport Multi-Auth
