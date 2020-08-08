@@ -37,9 +37,9 @@ export default function Item({ language, name, time, status }) {
 	};
 	const scheduleInfo = {
 		class:
-			language === "English"
+			status === "done" || status === "confirm"
 				? "box puple"
-				: language === "Japanese"
+				: status === "pending" || status === "reserved"
 				? "box blue"
 				: "box pink",
 		language:
@@ -48,7 +48,6 @@ export default function Item({ language, name, time, status }) {
 		time,
 		status: setStatus(status),
 	};
-	console.log(scheduleInfo.status);
 	return (
 		<>
 			<div className={scheduleInfo.class}>
@@ -56,16 +55,16 @@ export default function Item({ language, name, time, status }) {
 					<li>{`${scheduleInfo.language} ${scheduleInfo.name}`}</li>
 					<li className="eng">{scheduleInfo.time.map((e) => e)} </li>
 				</ul>
-				{/* {((status) => {
+				{((status) => {
 					if (status !== "done" && status !== "confirm") {
 						return (
-							<a href="#">
-								<img src="/img/cancel_btn.png" alt="삭제 버튼" />
+							<a href>
+								<img src="/global/mobile/img/cancel_btn.png" alt="삭제 버튼" />
 							</a>
 						);
 					}
 				})(status)}
-				<span>{`${scheduleInfo.status}`}</span> */}
+				<span>{`${scheduleInfo.status}`}</span>
 			</div>
 			{/* <div className="box puple">
 				<ul>

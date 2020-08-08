@@ -1,13 +1,13 @@
 import React from "react";
-import "../../content.css";
-import Calendar from "../../../../components/mobile/Calendar";
-import List from "../../../../components/mobile/List";
+import Calendar from "components/mobile/Calendar";
+import List from "components/mobile/List";
+import mockup from "test/mockup";
 
 export default function Reservation() {
 	return (
 		<>
 			<Calendar />
-			<List />
+			<List data={mockup} />
 		</>
 	);
 }

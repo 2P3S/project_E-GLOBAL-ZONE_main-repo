@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect, useParams } from "react-router-dom";
 import { selectIsLogin, selectWhoAmI } from "../redux/loginSlice/loginSlice";
 import { useSelector } from "react-redux";
 
@@ -12,6 +12,8 @@ import {
 
 import { Schedules, Students, Settings } from "../routes/Web/Manager";
 import MobileHeader from "../components/mobile/Header";
+import Footer from "../components/common/Footer";
+import MobileLogin from "../components/mobile/Login";
 
 /**
  * Functional Component of React to routing app
@@ -25,11 +27,11 @@ import MobileHeader from "../components/mobile/Header";
  *  @elseif(web) => Header + Router(web)
  *  @else(not loged in) => Redirection to Login Page
  */
+
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const whoAmI = useSelector(selectWhoAmI);
 	// const id = 0;
-
 	return (
 		<Router>
 			{isLogin ? (
@@ -51,7 +53,11 @@ function Routes() {
 
 								{/* 결과 페이지 */}
 								<Route path="/result" component={Results} />
+
+								{/* 임시 로그인 */}
+								<Route path="/login" component={MobileLogin} />
 							</Switch>
+							<Footer />
 						</div>
 					</>
 				) : whoAmI === "Foreigner" ? (
@@ -78,13 +84,12 @@ function Routes() {
 				<Switch>
 					<Redirect exact path="/" to={`/student`} />
 
-					<Route path="/student" component={login} />
-					<Route path="/manager" component={login} />
+					<Route path="/student" component={MobileLogin} />
+					<Route path="/manager" component={MobileLogin} />
 				</Switch>
 			)}
 		</Router>
 	);
 }
-const login = () => <></>;
 
 export default Routes;
