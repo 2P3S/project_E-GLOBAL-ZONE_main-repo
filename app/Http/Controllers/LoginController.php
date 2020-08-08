@@ -12,16 +12,20 @@ class LoginController extends Controller
     private const LOGIN_ERROR = '아이디 또는 비밀번호를 다시 확인하세요.';
     private const LOGIN_SUCCESS = ' 님 로그인 되습니다. 어서오세요';
     private const LOGOUT_SUCCESS = '로그아웃되었습니다.';
+    private const PASSWORD_CHANGE_REQUIRE = '초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.';
 
     /**
      * @var Authenticator
      */
     private $authenticator;
     private $validator;
+    private $response_msg;
+
 
     public function __construct(Authenticator $authenticator)
     {
         $this->authenticator = $authenticator;
+        $this->response_msg = self::PASSWORD_CHANGE_REQUIRE;
     }
 
     /**
@@ -51,6 +55,7 @@ class LoginController extends Controller
 
     /**
      * 로그인 시, 사용자 정보 인증
+     *
      * @param Request $request
      * @param string $key
      * @return array|null
@@ -67,7 +72,16 @@ class LoginController extends Controller
             return null;
         }
 
-        $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
+        $token = '';
+        $initial_password = [
+            'admins' => 'IAC@23yju5630-115',
+            'foreigners' => '1q2w3e4r!'
+        ];
+
+        if ($initial_password[$credentials[2]] !== $credentials[1]) {
+            $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
+        }
+
         return [
             'result' => $user,
             'token' => $token
@@ -99,8 +113,12 @@ class LoginController extends Controller
             ], 401);
         }
 
+        if (!empty($admin['token'])) {
+            $this->response_msg = $admin['result']['name'] . self::LOGIN_SUCCESS;
+        }
+
         return response()->json([
-            'message' => $admin['result']['name'] . self::LOGIN_SUCCESS,
+            'message' => $this->response_msg,
             'name' => $admin['result']['name'],
             'access_token' => $admin['token']
         ], 200);
@@ -131,8 +149,12 @@ class LoginController extends Controller
             ], 401);
         }
 
+        if (!empty($admin['token'])) {
+            $this->response_msg = $foreigner['result']['std_for_name'] . self::LOGIN_SUCCESS;
+        }
+
         return response()->json([
-            'message' => $foreigner['result']['std_for_name'] . self::LOGIN_SUCCESS,
+            'message' => $this->response_msg,
             'id' => $foreigner['result']['std_for_id'],
             'name' => $foreigner['result']['std_for_name'],
             'lang' => $foreigner['result']['std_for_lang'],
