@@ -4,15 +4,6 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth
- * 세부내용
- *   - $routeMiddleware[] 수정 : auth.multi 추가
- */
-
 class Kernel extends HttpKernel
 {
     /**

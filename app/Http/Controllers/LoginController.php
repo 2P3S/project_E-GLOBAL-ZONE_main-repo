@@ -7,31 +7,6 @@ use Illuminate\Http\JsonResponse as Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-/*
- * TODO
- * 작성일 : 2020-08-08
- * 작성자 : 정재순
- * 내용 : Laravel Passport Multi-Auth 적용
- * 세부내용
- *   - login_validator()
- *   - login_authenticator()
- *   - adminLogin()
- *      - Request : account, password, provider
- *      - Response : message, admin 정보(이름), bearer token
- *   - foreignerLogin()
- *      - Request : std_for_id, password, provider
- *      - Response : message, foreigner 정보(학번, 이름, 숫자, 언어, 국가, 즐겨찾기), bearer token
- *   - logout()
- *      - Request : Authorization - Bearer token
- *      - Response : message
- *   - adminRequest()
- *     - Request : Authorization - Bearer token
- *     - Response : admin 정보(이름)
- *   - foreignerRequest()
- *     - Request : Authorization - Bearer token
- *     - Response : foreigner 정보(학번, 이름, 숫자, 언어, 국가, 즐겨찾기)
- */
-
 class LoginController extends Controller
 {
     private const LOGIN_ERROR = '아이디 또는 비밀번호를 다시 확인하세요.';
