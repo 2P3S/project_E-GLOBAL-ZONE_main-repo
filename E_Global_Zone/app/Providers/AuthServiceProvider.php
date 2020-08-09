@@ -27,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
+        Passport::personalAccessTokensExpireIn(now()->addDay());
 
         // Middleware `oauth.providers` middleware defined on $routeMiddleware above
         Route::group(['middleware' => 'oauth.providers'], function () {
