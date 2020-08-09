@@ -25,7 +25,8 @@ class CreateSettingsTable extends Migration
             $table->unsignedInteger('max_absent')->default(5);
             $table->unsignedInteger('once_limit_period')->default(3);
             $table->unsignedInteger('result_input_deadline')->default(1);
-
+            $table->string('default_admin_pw');
+            $table->string('default_std_for_pw');
             /* 기본키 설정 */
             $table->primary('setting_date');
         });
