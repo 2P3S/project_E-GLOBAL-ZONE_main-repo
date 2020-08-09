@@ -133,7 +133,7 @@ class ForeignerController extends Controller
         //TODO 비밀번호 길이 조정.
         $validator = Validator::make($request->all(), [
             'std_for_id' => 'required|integer|min:7',
-            'std_for_passwd' => 'required|string',
+            'std_for_passwd' => 'required|string|min:8',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2',
@@ -153,7 +153,7 @@ class ForeignerController extends Controller
         try {
             Student_foreigner::create([
                 'std_for_id' => $request->std_for_id,
-                'std_for_passwd' => $request->std_for_passwd,
+                'password' => Hash::make($request->std_for_passwd),
                 'std_for_dept' => $request->std_for_dept,
                 'std_for_name' => $request->std_for_name,
                 'std_for_lang' => $request->std_for_lang,
@@ -189,11 +189,12 @@ class ForeignerController extends Controller
     public function updateAccount(Student_foreigner $std_for_id, Request $request)
     {
         $is_user_admin = true;                                          /* 관리자 인증 여부 */
+        //TODO 리셋 비밀번호 env에 저장하기.
         $user_password = "1q2w3e4r!";
 
         if (!$is_user_admin) {
             $validator = Validator::make($request->all(), [
-                'std_for_passwd' => 'required|string',
+                'std_for_passwd' => 'required|string|min:8',
             ]);
 
             if ($validator->fails()) {
@@ -207,7 +208,7 @@ class ForeignerController extends Controller
         }
 
         $std_for_id->update([
-            'std_for_passwd' => $user_password,
+            'password' => Hash::make($user_password),
         ]);
 
         return response()->json([
