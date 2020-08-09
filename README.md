@@ -101,10 +101,22 @@
 
 
 ## DataBase 설계
-진행 일시 : 2020-07-30 ~
+진행 일시 : 2020-07-30 ~ 08-09
 
-## API 설계-
+- 모의 DB `.csv` 생성
+- DB 세부 구조 수정
+- Laravel Migrations, Model 정의
+- Entity-Relation Diagram (ERD)
+![e-global-zone_DB-ERD 001](https://user-images.githubusercontent.com/53788601/89729135-b7e8d000-da6d-11ea-9ca2-6a353e9adc35.jpeg)
+
+## API 설계
 진행 일시 : 2020-07-30 ~
 
 ## Component 구성
 진행 일시 : 2020-07-30 ~
+
+## 개발 과정
+진행 일시 : 2020-08-04 ~
+
+#### WEB PAGE 구현
+#### API 구현
