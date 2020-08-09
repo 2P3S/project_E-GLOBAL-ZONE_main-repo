@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Schedule;
 use App\Student_foreigner;
+use App\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,7 +31,7 @@ class ScheduleController extends Controller
         }
 
         //TODO 날짜 계산 찾아보기.
-        $allSchdules = Schedule::select('sch_id', 'sch_res_count','sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
+        $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
             ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
             ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
@@ -73,34 +74,104 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        // 줌 비밀번호 생성
-        $zoom_pw = mt_rand(1000, 9999);
+        $data = json_decode($request->getContent(), true);
+        $ecept_date = $data['ecept_data'];                                              /* 제외날짜 */
+        $sect = Section::find($data['sect_id']);                                        /* 학기 데이터 */
 
-        $validator = Validator::make($request->all(), [
-            'sch_sect' => 'required|integer',
-            'sch_std_for' => 'required|integer',
-            'sch_start_date' => 'required|date',
-            'sch_end_date' => 'required|date',
-        ]);
+        $sect_start_date = strtotime($sect->sect_start_date);
+        $sect_start_date = date("Y-m-d", $sect_start_date);
+        $sect_end_date = strtotime($sect->sect_end_date);
+        $sect_end_date = date("Y-m-d", $sect_end_date);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
+        $yoil = array("일", "월", "화", "수", "목", "금", "토");
+
+        $sect_start_yoil = $yoil[date('w', strtotime($sect_start_date))];               /* 시작날짜 요일 */
+        // echo ($yoil[date('w', strtotime($sect_end_date))]);                          /* 종료날짜 요일 */
+
+        // 학기 시작 날짜에 맞춰 시작 날짜 재설정
+        if ($sect_start_yoil == "토") {
+            $sect_start_date = strtotime("{$sect_start_date} +2 day");
+            /* 날짜 String 변경 */
+            $sect_start_date = date("Y-m-d", $sect_start_date);
+        } else if ($sect_start_yoil == "일") {
+            $sect_start_date = strtotime("{$sect_start_date} +1 day");
+            /* 날짜 String 변경 */
+            $sect_start_date = date("Y-m-d", $sect_start_date);
         }
 
-        $create_schedule = Schedule::create([
-            'sch_sect' => $request->sch_sect,
-            'sch_std_for' => $request->sch_std_for,
-            'sch_start_date' => $request->sch_start_date,
-            'sch_end_date' => $request->sch_end_date,
-            'sch_for_zoom_pw' => $zoom_pw,
-        ]);
+        $isRepeatMode = true;                                                           /* 반복모드 설정 */
+
+        while ($isRepeatMode) {
+            // 요일별 데이터 출력
+            foreach ($data['schedule'] as $day) {
+                // 제외 날짜인 경우 패스.
+                if (!empty($ecept_date[0]) && $sect_start_date == $ecept_date[0]) {
+                    // 해당 날짜 배열에서 제거.
+                    $ecept_date = array_splice($ecept_date, 0, 1);
+                    continue;
+                }
+
+                // 요일별 학생 목록
+                foreach ($day as $student_id => $student) {
+                    // 시간 리스트 목록
+                    foreach ($student as $hour) {
+                        // 줌 비밀번호 생성
+                        $zoom_pw = mt_rand(1000, 9999);
+
+                        $sch_start_date = strtotime($sect_start_date . ' ' . $hour . ':00:00');
+                        $sch_end_date = strtotime($sect_start_date . ' ' . $hour . ':20:00');
+                        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
+                        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+
+                        Schedule::create([
+                            'sch_sect' => $sect->sect_id,
+                            'sch_std_for' => $student_id,
+                            'sch_start_date' => $sch_start_date,
+                            'sch_end_date' => $sch_end_date,
+                            'sch_for_zoom_pw' => $zoom_pw,
+                        ]);
+
+                        //TODO 환경변수 추가해서 시작 - 종료시간 설정.
+                        // 줌 비밀번호 생성
+                        $zoom_pw = mt_rand(1000, 9999);
+
+                        $sch_start_date = strtotime($sect_start_date . ' ' . $hour . ':30:00');
+                        $sch_end_date = strtotime($sect_start_date . ' ' . $hour . ':50:00');
+
+                        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
+                        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+
+                        Schedule::create([
+                            'sch_sect' => $sect->sect_id,
+                            'sch_std_for' => $student_id,
+                            'sch_start_date' => $sch_start_date,
+                            'sch_end_date' => $sch_end_date,
+                            'sch_for_zoom_pw' => $zoom_pw,
+                        ]);
+                    }
+                }
+
+                // 종료 날짜에 맞춰 반복문 종료.
+                if ($sect_start_date == $sect_end_date) {
+                    $isRepeatMode = false;
+                    break;
+                }
+
+                /*  날짜 변경 공식
+                    월 ~ 목 => +1day
+                    금      => +3day
+                */
+                $sect_start_date = $yoil[date('w', strtotime($sect_start_date))] == '금' ?
+                    strtotime("{$sect_start_date} +3 day") :
+                    strtotime("{$sect_start_date} +1 day");
+                /* 날짜 String 변경 */
+                $sect_start_date = date("Y-m-d", $sect_start_date);
+            }
+        }
 
         return response()->json([
             'message' => '스케줄 생성 완료',
-            'result' => $create_schedule,
-        ], 201);
+        ], 200);
     }
 
     /**

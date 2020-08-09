@@ -36,6 +36,7 @@ class LoginController extends Controller
         array $rules
     ): bool
     {
+        //TODO password HASH 처리!!
         $this->validator = Validator::make($request->all(), [
             $rules['key'] => 'required|string',
             'password' => 'required|string|min:8',
