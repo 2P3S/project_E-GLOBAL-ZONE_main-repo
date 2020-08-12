@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Schedule;
 use App\Student_foreigner;
 use App\Section;
+use App\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -74,8 +76,10 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
+        $setting_value = Setting::orderBy('setting_date', 'DESC')->get()->first();      /* 환경설정 변수 */
+
         $data = json_decode($request->getContent(), true);
-        $ecept_date = $data['ecept_data'];                                              /* 제외날짜 */
+        $ecept_date = $data['ecept_date'];                                              /* 제외날짜 */
         $sect = Section::find($data['sect_id']);                                        /* 학기 데이터 */
 
         $sect_start_date = strtotime($sect->sect_start_date);
@@ -107,7 +111,13 @@ class ScheduleController extends Controller
                 // 제외 날짜인 경우 패스.
                 if (!empty($ecept_date[0]) && $sect_start_date == $ecept_date[0]) {
                     // 해당 날짜 배열에서 제거.
-                    $ecept_date = array_splice($ecept_date, 0, 1);
+                    array_shift($ecept_date);
+                    // 날짜 변경
+                    $sect_start_date = $yoil[date('w', strtotime($sect_start_date))] == '금' ?
+                        strtotime("{$sect_start_date} +3 day") :
+                        strtotime("{$sect_start_date} +1 day");
+                    /* 날짜 String 변경 */
+                    $sect_start_date = date("Y-m-d", $sect_start_date);
                     continue;
                 }
 
@@ -118,8 +128,8 @@ class ScheduleController extends Controller
                         // 줌 비밀번호 생성
                         $zoom_pw = mt_rand(1000, 9999);
 
-                        $sch_start_date = strtotime($sect_start_date . ' ' . $hour . ':00:00');
-                        $sch_end_date = strtotime($sect_start_date . ' ' . $hour . ':20:00');
+                        $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
+                        $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
                         $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
                         $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
 
@@ -134,9 +144,10 @@ class ScheduleController extends Controller
                         //TODO 환경변수 추가해서 시작 - 종료시간 설정.
                         // 줌 비밀번호 생성
                         $zoom_pw = mt_rand(1000, 9999);
-
-                        $sch_start_date = strtotime($sect_start_date . ' ' . $hour . ':30:00');
-                        $sch_end_date = strtotime($sect_start_date . ' ' . $hour . ':50:00');
+                        $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
+                        $end_time = $start_time + $setting_value->once_meet_time;
+                        $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
+                        $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$end_time}:00");
 
                         $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
                         $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
