@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* 스케줄 라우터 */
+
 Route::prefix('/schedule')->group(function () {
     /* 유학생 - 특정 날짜 개인 스케줄 조회 */
     Route::get('{date}', 'ScheduleController@show')->name('schedules.show');
@@ -101,6 +102,15 @@ Route::prefix('/admin')->group(function () {
         /** 학기 삭제 */
         Route::delete('{sect_id}', 'SectionController@destroy')->name('sections.destroy');
     });
+
+    /* 환경변수 관리 라우터 */
+    Route::prefix('/setting')->group(function () {
+        /** 등록된 환경변수 조회 */
+        Route::get('', 'SettingController@index')->name('settings.index');
+
+        /** 환경변수 저장 */
+        Route::post('', 'SettingController@store')->name('settings.store');
+    });
 });
 
 /* 유학생 라우터 */
@@ -164,4 +174,3 @@ Route::middleware('auth.multi')->group(static function () {
         Route::get('foreigner', 'LoginController@foreignerRequest')->name('auth.foreignersRequest');
     });
 });
-
