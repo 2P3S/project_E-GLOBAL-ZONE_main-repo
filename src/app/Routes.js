@@ -1,92 +1,39 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect, useParams } from "react-router-dom";
-import { selectIsLogin, selectWhoAmI } from "../redux/loginSlice/loginSlice";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { selectIsLogin, selectUser } from "redux/loginSlice/loginSlice";
 import { useSelector } from "react-redux";
 
-import {
-	Reservation,
-	Schedules as Schedule,
-	Results,
-	ApplicationForm,
-} from "../routes/Mobile/Korean";
-
-import { Schedules, Students, Settings } from "../routes/Web/Manager";
-import MobileHeader from "../components/mobile/Header";
-import Footer from "../components/common/Footer";
-import MobileLogin from "../components/mobile/Login";
-
-/**
- * Functional Component of React to routing app
- * @constant {state} isLogin -> get login status from redux:login
- * @constant {state} whoAmI -> get device environment status from redux:login
- * @constant {state} id -> if user is loged in then get user id from redux:login
- *
- *
- * @returns
- *  @if(mobile) => Header + Router(mobile)
- *  @elseif(web) => Header + Router(web)
- *  @else(not loged in) => Redirection to Login Page
- */
+import MobileRouter from "app/Routers/Router.Mobile";
+import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
+import { LoginRouter } from "app/Routers/Router.Login";
+import conf from "../conf/userConf";
+import { logIn } from "../redux/loginSlice/loginSlice";
 
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
-	const whoAmI = useSelector(selectWhoAmI);
+	const User = useSelector(selectUser);
 	// const id = 0;
+	useEffect(() => {
+		logIn();
+	}, []);
 	return (
 		<Router>
 			{isLogin ? (
-				whoAmI === "Korean" ? (
+				User.getUserClass() === conf.userClass.KOREAN ? (
 					//mobile
 					<>
-						<div className="wrap">
-							<MobileHeader />
-							<Switch>
-								<Redirect exact path="/" to={`/reservation`} />
-
-								{/* 예약 조회 페이지 */}
-								<Route exact path="/reservation" component={Reservation} />
-								<Route path="/reservation/:id" component={ApplicationForm} />
-								{/* 예약 폼 */}
-
-								{/* 스케쥴 페이지 */}
-								<Route path="/schedule" component={Schedule} />
-
-								{/* 결과 페이지 */}
-								<Route path="/result" component={Results} />
-
-								{/* 임시 로그인 */}
-								<Route path="/login" component={MobileLogin} />
-							</Switch>
-							<Footer />
-						</div>
+						<MobileRouter />
 					</>
-				) : whoAmI === "Foreigner" ? (
+				) : User.getUserClass() === conf.userClass.FOREIGNER ? (
 					// web
-					<Switch>
-						<Redirect exact path="/" to={`/student`} />
-					</Switch>
+					<ForeignerRouter />
 				) : (
-					// whoAmI === "Manager"
-					<Switch>
-						<Redirect exact path="/" to={`/schedules/now`} />
-
-						<Route exact path="/schedules/:term" component={Schedules} />
-						{/* term => 학기 */}
-
-						<Route exact path="/students/:term/:category" component={Students} />
-						{/* category => foreigner, Korean */}
-
-						<Route path="/settings" component={Settings} />
-					</Switch>
+					// User === "Manager"
+					<ManagerRouter />
 				)
 			) : (
 				//notlogin
-				<Switch>
-					<Redirect exact path="/" to={`/student`} />
-
-					<Route path="/student" component={MobileLogin} />
-					<Route path="/manager" component={MobileLogin} />
-				</Switch>
+				<LoginRouter />
 			)}
 		</Router>
 	);
