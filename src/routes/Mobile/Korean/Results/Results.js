@@ -3,30 +3,30 @@ import React from "react";
 export default function Results() {
 	return (
 		<div>
-			<div class="wrap mobile_result">
-				<p class="tit">2020년 1학기</p>
-				<div class="point_info">
+			<div className="wrap mobile_result">
+				<p className="tit">2020년 1학기</p>
+				<div className="point_info">
 					<p>
-						<span class="name">이구슬</span> 학생의
+						<span className="name">이구슬</span> 학생의
 						<br />
 						글로벌 포인트 현황
 					</p>
-					<div class="result">
-						<span class="rank">상위 10%</span>8<span class="times">회</span>
+					<div className="result">
+						<span className="rank">상위 10%</span>8<span className="times">회</span>
 					</div>
 				</div>
 
-				<select name="" id="" class="mt50">
+				<select name="" id="" className="mt50">
 					<option value="">2020년 1학기</option>
 					<option value="">2020년 여름학기</option>
 					<option value="">2020년 2학기</option>
 					<option value="">2020년 겨울학기</option>
 				</select>
 
-				<div class="history_wrap">
-					<div class="month_move">
+				<div className="history_wrap">
+					<div className="month_move">
 						<p>2020년 7월</p>
-						<div class="arrow">
+						<div className="arrow">
 							<a href="#">
 								<img src="/global/mobile/img/month_move_prev.gif" alt="이전 달" />
 							</a>
@@ -55,7 +55,7 @@ export default function Results() {
 							<tr>
 								<td>7/10 9시 - 12시</td>
 								<td>쉬라이 알리오트 시나</td>
-								<td class="score">+5</td>
+								<td className="score">+5</td>
 							</tr>
 						</tbody>
 					</table>
