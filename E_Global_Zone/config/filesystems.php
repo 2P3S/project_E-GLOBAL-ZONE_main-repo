@@ -48,12 +48,14 @@ return [
             'root' => storage_path('app'),
         ],
 
+        // 이미지 업로드 시스템 구성.
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => public_path(),
+            'url' => env('APP_URL') . '/public',
             'visibility' => 'public',
         ],
+
 
         's3' => [
             'driver' => 's3',
@@ -64,6 +66,12 @@ return [
             'endpoint' => env('AWS_URL'),
         ],
 
+    ],
+
+    // 이미지 업로드 심롤릭 링크 구성.
+    'links' => [
+        public_path('storage') => storage_path('app/public'),
+        public_path('images') => storage_path('app/images'),
     ],
 
 ];
