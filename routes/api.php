@@ -81,8 +81,10 @@ Route::prefix('/admin')->group(function () {
 
         // 작성일 : 2020. 08. 15
         // 작성자 : 정재순
-        // 작성내용 : 이용제한 한국인 학생 api 수정
-        //   - 조회, 추가, 수정(상태 변경)
+        // 작성내용 : 이용제한 한국인 학생 api 제작
+        //   - 조회, 추가, 수정(상태 변경) controller
+        //   - 학기 유효성 검사
+        //   - 제한 시작일 기본값 지정
 
         // <-- 이용제한 한국인 학생
         Route::prefix("restrict")->group(function () {
