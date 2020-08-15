@@ -21,7 +21,6 @@ class RestrictKoreanController extends Controller
 
     private const _UPDATE_SUCCESS = " 학생의 이용 제한 해제가 완료되었습니다.";
 
-
     public function index(Request $request): Json
     {
         $validator = Validator::make($request->all(), [
@@ -123,7 +122,7 @@ class RestrictKoreanController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Restricted_student_korean $restrict_id)
+    public function update(Request $request, Restricted_student_korean $restrict_id): Json
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
