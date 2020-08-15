@@ -79,10 +79,18 @@ Route::prefix('/admin')->group(function () {
         /** 계정 삭제 */
         Route::delete('account/{std_kor_id}', 'KoreanController@destroyAccount')->name('koreans.destroyAccount');
 
-        /** 이용 제한 등록 */
-        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
-        /** 이용 제한 해제 */
-        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
+        // <-- 이용제한 한국인 학생
+        Route::prefix("restrict")->group(function () {
+            Route::get("/", "RestrictKoreanController@index")->name("koreans.indexRestrict");
+            Route::post("/", "RestrictKoreanController@register")->name("koreans.registerRestrict");
+            Route::patch("/{restrict_id}", "RestrictKoreanController@update")->name("koreans.updateRestrict");
+        });
+
+        // 이용제한 한국인 학생-->
+//        /** 이용 제한 등록 */
+//        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
+//        /** 이용 제한 해제 */
+//        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
 
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
@@ -138,6 +146,7 @@ Route::prefix('/foreigner')->group(function () {
     });
 });
 
+// TODO 한국인 학생의 이용제한 확인??
 /* 한국인학생 라우터 */
 Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
