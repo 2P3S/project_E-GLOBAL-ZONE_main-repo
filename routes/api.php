@@ -122,7 +122,7 @@ Route::prefix('/foreigner')->group(function () {
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
         /** 해당 스케줄 출석 결과 입력 */
-        Route::patch('/result', 'ReservationController@updateResult')->name('reservations.updateResult');
+        Route::post('/result', 'ReservationController@inputResult')->name('reservations.inputResult');
     });
 });
 

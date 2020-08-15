@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Reservation;
 use App\Section;
 use App\Schedule;
+use App\SchedulesResultImg;
 use App\Student_korean;
 use App\Student_foreigner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
@@ -103,9 +105,9 @@ class ReservationController extends Controller
     public function showReservation($sch_id)
     {
         $result_foreigner_reservation = Reservation::select('res_id', 'std_kor_id', 'std_kor_name', 'std_kor_phone', 'res_state_of_permission', 'res_state_of_attendance')
-        ->join('student_koreans as kor', 'kor.std_kor_id', 'reservations.res_std_kor')
-        ->where('reservations.res_sch', $sch_id)
-        ->get();
+            ->join('student_koreans as kor', 'kor.std_kor_id', 'reservations.res_std_kor')
+            ->where('reservations.res_sch', $sch_id)
+            ->get();
 
         return response()->json([
             'message' => '해당 스케줄에 대한 예약 조회 성공.',
@@ -188,33 +190,78 @@ class ReservationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updateResult(Request $request)
+    public function inputResult(Request $request)
     {
-        //TODO 사진 업로드 기능 추가해야 함.
-        $data = json_decode($request->getContent(), true);
+        // 이미지 사진 Validation 확인.
+        if (empty($request->file('result_start_img')) || empty($request->file('result_end_img'))) {
+            return response()->json([
+                'message' => '결과 사진을 올려주세요. 사진은 총 2장 시작, 끝 사진이 필요합니다.',
+            ], 422);
+        }
 
         // 각 예약에 대한 한국인 학생 결과 업데이트
-        foreach ($data['reservation'] as $reservation) {
-            $validator = Validator::make($reservation, [
-                'res_id' => 'required|integer',
-                'res_state_of_attendance' => 'required|boolean',
-            ]);
+        foreach ($request->reservation as $res_id => $reservation_result) {
+            // 해당 예약건이 존재하는지 확인.
+            $reservation_data = Reservation::where('res_id', $res_id)->get()->first();
 
-            if ($validator->fails()) {
+            // Validation :: res_id & reservation_result
+            if(!$reservation_data) {
                 return response()->json([
-                    'message' => $validator->errors(),
+                    'message' => $res_id.' 번의 예약이 존재하지 않습니다.',
                 ], 422);
             }
 
             // 해당 예약에 대한 정보 조회 -> 출석결과 업데이트.
-            $reservation_data = Reservation::where('res_id', $reservation['res_id'])->get()->first();
             $reservation_data->update([
-                'res_state_of_attendance' => $reservation['res_state_of_attendance'],
+                'res_state_of_attendance' => $reservation_result,
             ]);
         }
+
+        // 유학생 해당 스케줄 결과 입력 booleanValue 업데이트.
+        $schedule_data   = Schedule::find($reservation_data['res_sch']);
+        // dd($schedule_data);
+        $schedule_data->update(['sch_state_of_result_input' => true]);
+
+        // 파일 이름 규칙 정의.
+        $foreigner_id    = $schedule_data['sch_std_for'];
+        $start_time      = explode(' ', str_replace(':', '-', $schedule_data['sch_start_date']));
+        $end_time        = explode(' ', str_replace(':', '-', $schedule_data['sch_end_date']));
+        $file_name_start = "{$start_time[0]}-{$foreigner_id}-{$start_time[1]}-S";
+        $file_name_end   = "{$end_time[0]}-{$foreigner_id}-{$end_time[1]}-E";
+
+
+        // 로컬 스토리지에 이미지 파일 저장 -> 경로 반환
+        $path_to_start_time = $this->set_img($request->file('result_start_img'), $file_name_start);
+        $path_to_end_time   = $this->set_img($request->file('result_end_img'), $file_name_end);
+
+        SchedulesResultImg::create([
+            'sch_id' => $schedule_data['sch_id'],
+            'start_img_url' => $path_to_start_time,
+            'end_img_url' => $path_to_end_time,
+        ]);
+        // Storage::download('public/1701314.png');                                     /* ( 추후 써먹을것 ) 이미지 다운로드 */
 
         return response()->json([
             'message' => '해당 스케줄에 대한 학생 결과 입력 완료.',
         ], 200);
+    }
+
+    public function set_img($img_file, $img_name)
+    {
+        $extension  = $img_file->extension();                                           /* 확장자 얻기 */
+
+        $img_save_path = Storage::putFileAs(                                            /* 파일 저장 후 경로 반환 */
+            'public',
+            $img_file,
+            $img_name . "." . $extension
+        );
+
+        return $img_save_path;
+    }
+
+    public function get_img($img_name)
+    {
+        $img_url = 'http://127.0.0.1:8000' . Storage::url('public/' . $img_name);       /* 이미지 URL */
+        return $img_url;
     }
 }
