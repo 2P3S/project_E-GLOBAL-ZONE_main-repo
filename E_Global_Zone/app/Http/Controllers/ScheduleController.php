@@ -268,10 +268,29 @@ class ScheduleController extends Controller
      * 관리자 - 출석 결과 미승인 건 승인
      *
      * @param  int  $sch_id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updateApprovalOfUnapprovedCase(Schedule $sch_id)
+    public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
+        // 학생 출석 결과 변경 요청 -> 해당 학생 출석결과 변경 진행.
+        if(!empty($request->reservation)) {
+            $reservation = $request->reservation;
 
+            foreach($reservation as $data) {
+                Reservation::find($data['res_id'])->update([
+                    'res_state_of_attendance' => $data['res_state_of_attendance']
+                ]);
+            }
+        }
+
+        // 출석결과 승인
+        $sch_id->update([
+          'sch_state_of_permission' => true
+        ]);
+
+        return response()->json([
+            'message' => '출석 결과 승인',
+        ], 200);
     }
 }
