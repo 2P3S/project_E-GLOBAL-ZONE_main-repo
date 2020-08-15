@@ -1,6 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "react-modal";
+import InsertSchedule from "components/common/modal/InsertSchedule";
 
+const modalStyle = {
+	content: {
+		top: "50%",
+		left: "50%",
+		right: "auto",
+		bottom: "auto",
+		marginRight: "-50%",
+		transform: "translate(-50%, -50%)",
+		zIndex: "2",
+		overflow: "hidden",
+	},
+};
+Modal.setAppElement(document.getElementById("modal-root"));
 export default function Schedules() {
+	const [schIsOpen, setSchIsOpen] = useState(false);
+	const openSch = () => {
+		setSchIsOpen(true);
+	};
+	const closeSch = () => {
+		setSchIsOpen(false);
+	};
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -61,7 +83,6 @@ export default function Schedules() {
 					</div>
 				</div>
 			</div>
-
 			<div className="wrap">
 				<div className="scroll_area">
 					<ul className="sch_time">
@@ -366,7 +387,12 @@ export default function Schedules() {
 				</div>
 
 				<div className="table_btn">
-					<a href="#">개별 입력</a>
+					<a href="#" onClick={openSch}>
+						개별 입력
+					</a>
+					<Modal isOpen={schIsOpen} onRequestClose={closeSch} style={modalStyle}>
+						<InsertSchedule closeSch={closeSch} />
+					</Modal>
 					<a href="#">CSV 입력</a>
 				</div>
 			</div>

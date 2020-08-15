@@ -31,19 +31,19 @@ export default function Header() {
 	}, [pathname]);
 	return (
 		<>
-			<div className="head">
-				<div className="logo">
-					<Link to="/" ref={home}>
+			<div class="mhead">
+				<div class="logo">
+					<a href="/">
 						<img
 							src="/global/mobile/img/logo.gif"
 							alt="영진전문대학교 글로벌존 영문로고"
 						/>
-					</Link>
+					</a>
 				</div>
-				<div className="login">
-					<Link ref={login} to="/login">
+				<div class="login">
+					<a href="/global/mobile/login.php">
 						<img src="/global/mobile/img/login_ico.gif" alt="로그인 페이지 이동" />
-					</Link>
+					</a>
 				</div>
 			</div>
 			{pathname !== "/login" ? (
