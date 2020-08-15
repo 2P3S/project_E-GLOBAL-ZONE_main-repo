@@ -79,10 +79,18 @@ Route::prefix('/admin')->group(function () {
         /** 계정 삭제 */
         Route::delete('account/{std_kor_id}', 'KoreanController@destroyAccount')->name('koreans.destroyAccount');
 
-        /** 이용 제한 등록 */
-        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
-        /** 이용 제한 해제 */
-        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
+        // <-- 이용제한 한국인 학생
+        Route::prefix("restrict")->group(function () {
+            Route::get("/", "RestrictKoreanController@index")->name("koreans.indexRestrict");
+            Route::post("/", "RestrictKoreanController@register")->name("koreans.registerRestrict");
+            Route::patch("/{restrict_id}", "RestrictKoreanController@update")->name("koreans.updateRestrict");
+        });
+
+        // 이용제한 한국인 학생-->
+//        /** 이용 제한 등록 */
+//        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
+//        /** 이용 제한 해제 */
+//        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
 
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
@@ -111,6 +119,18 @@ Route::prefix('/admin')->group(function () {
         /** 환경변수 저장 */
         Route::post('', 'SettingController@store')->name('settings.store');
     });
+
+    /* 스케줄 관리 라우터 */
+    Route::prefix('/schedule')->group(function () {
+        /** 해당 날짜 출석 결과 미입력건 조회 */
+        Route::get('no_input/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
+
+        /** 해당 날짜 출석 결과 미승인건 조회 */
+        Route::get('no_result/{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+
+        /** 출석 결과 미승인 건 승인 */
+        Route::patch('no_result/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+    });
 });
 
 /* 유학생 라우터 */
@@ -122,10 +142,11 @@ Route::prefix('/foreigner')->group(function () {
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
         /** 해당 스케줄 출석 결과 입력 */
-        Route::patch('/result', 'ReservationController@updateResult')->name('reservations.updateResult');
+        Route::post('/result', 'ReservationController@inputResult')->name('reservations.inputResult');
     });
 });
 
+// TODO 한국인 학생의 이용제한 확인??
 /* 한국인학생 라우터 */
 Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
