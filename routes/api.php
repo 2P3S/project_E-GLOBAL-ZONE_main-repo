@@ -79,10 +79,23 @@ Route::prefix('/admin')->group(function () {
         /** 계정 삭제 */
         Route::delete('account/{std_kor_id}', 'KoreanController@destroyAccount')->name('koreans.destroyAccount');
 
-        /** 이용 제한 등록 */
-        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
-        /** 이용 제한 해제 */
-        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
+        // 작성일 : 2020. 08. 15
+        // 작성자 : 정재순
+        // 작성내용 : 이용제한 한국인 학생 api 수정
+        //   - 조회, 추가, 수정(상태 변경)
+
+        // <-- 이용제한 한국인 학생
+        Route::prefix("restrict")->group(function () {
+            Route::get("/", "RestrictKoreanController@index")->name("koreans.indexRestrict");
+            Route::post("/", "RestrictKoreanController@register")->name("koreans.registerRestrict");
+            Route::patch("/{restrict_id}", "RestrictKoreanController@update")->name("koreans.updateRestrict");
+        });
+
+        // 이용제한 한국인 학생-->
+//        /** 이용 제한 등록 */
+//        Route::get('restrict/{std_kor_id}', 'RestrictKoreanController@indexRestrict')->name('koreans.indexRestrict');
+//        /** 이용 제한 해제 */
+//        Route::delete('restrict/{std_kor_id}', 'RestrictKoreanController@destroyRestrict')->name('koreans.destroyRestrict');
 
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
