@@ -108,7 +108,7 @@ class SectionController extends Controller
     ): bool
     {
         return (
-        is_null(Section::where('sect_id', $sect_id)
+        empty(Section::where('sect_id', $sect_id)
             ->where('sect_end_date', $sect_end_date)
             ->where('sect_end_date', '>=', now())
             ->where('sect_start_date', '<=', now())
