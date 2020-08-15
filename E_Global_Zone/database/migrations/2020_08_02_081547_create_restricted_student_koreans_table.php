@@ -17,7 +17,7 @@ class CreateRestrictedStudentKoreansTable extends Migration
             $table->bigIncrements('restrict_id');
             $table->unsignedBigInteger('restrict_std_kor');
             $table->string('restrict_reason');
-            $table->dateTime('restrict_start_date');
+            $table->dateTime('restrict_start_date')->useCurrent();
             $table->dateTime('restrict_end_date');
             $table->timestamps();
 
