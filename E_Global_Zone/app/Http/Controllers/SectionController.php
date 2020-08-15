@@ -15,6 +15,7 @@ class SectionController extends Controller
      */
     public function index()
     {
+        // TODO : 수정필요 validation, 전체 조회X -> 년도기준 학기 조회
         return response()->json([
             'message' => '등록된 학기 목록 조회',
             'result' => Section::all(),
@@ -24,7 +25,7 @@ class SectionController extends Controller
     /**
      * 학기 등록
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -56,8 +57,8 @@ class SectionController extends Controller
     /**
      * 학기 수정
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $sect_id
+     * @param \Illuminate\Http\Request $request
+     * @param int $sect_id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Section $sect_id)
@@ -89,7 +90,7 @@ class SectionController extends Controller
     /**
      * 학기 삭제
      *
-     * @param  int  $sect_id
+     * @param int $sect_id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Section $sect_id)
@@ -99,5 +100,19 @@ class SectionController extends Controller
         return response()->json([
             'message' => '학기 삭제 완료',
         ], 204);
+    }
+
+    public function validate_request_section(
+        int $sect_id,
+        string $sect_end_date
+    ): bool
+    {
+        return (
+        empty(Section::where('sect_id', $sect_id)
+            ->where('sect_end_date', $sect_end_date)
+            ->where('sect_end_date', '>=', now())
+            ->where('sect_start_date', '<=', now())
+            ->first())
+        );
     }
 }

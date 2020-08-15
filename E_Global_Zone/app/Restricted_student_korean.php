@@ -18,7 +18,7 @@ class Restricted_student_korean extends Model
      * @var array
      */
     protected $fillable = [
-        'restrict_reason',
+        'restrict_std_kor',
         'restrict_reason',
         'restrict_start_date',
         'restrict_end_date',
