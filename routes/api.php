@@ -111,6 +111,18 @@ Route::prefix('/admin')->group(function () {
         /** 환경변수 저장 */
         Route::post('', 'SettingController@store')->name('settings.store');
     });
+
+    /* 스케줄 관리 라우터 */
+    Route::prefix('/schedule')->group(function () {
+        /** 해당 날짜 출석 결과 미입력건 조회 */
+        Route::get('no_input/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
+
+        /** 해당 날짜 출석 결과 미승인건 조회 */
+        Route::get('no_result/{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+
+        /** 출석 결과 미승인 건 승인 */
+        Route::patch('no_result/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+    });
 });
 
 /* 유학생 라우터 */
@@ -122,7 +134,7 @@ Route::prefix('/foreigner')->group(function () {
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
         /** 해당 스케줄 출석 결과 입력 */
-        Route::patch('/result', 'ReservationController@updateResult')->name('reservations.updateResult');
+        Route::post('/result', 'ReservationController@inputResult')->name('reservations.inputResult');
     });
 });
 
