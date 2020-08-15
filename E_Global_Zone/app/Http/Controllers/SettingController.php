@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 class SettingController extends Controller
 {
     /**
-     * 등록된 전체 학기 목록 조회
+     * 등록된 환경변수 조회
      *
      * @return \Illuminate\Http\Response
      */
