@@ -114,11 +114,14 @@ Route::prefix('/admin')->group(function () {
 
     /* 스케줄 관리 라우터 */
     Route::prefix('/schedule')->group(function () {
+        /** 해당 날짜 출석 결과 미입력건 조회 */
+        Route::get('no_input/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
+
         /** 해당 날짜 출석 결과 미승인건 조회 */
-        Route::get('{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+        Route::get('no_result/{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
 
         /** 출석 결과 미승인 건 승인 */
-        Route::patch('{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+        Route::patch('no_result/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
     });
 });
 

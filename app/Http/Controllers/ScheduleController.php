@@ -234,6 +234,35 @@ class ScheduleController extends Controller
     }
 
     /**
+     * 관리자 - 해당 날짜 출석 결과 미입력건 조회
+     *
+     * @param  string  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function indexUninputedList($date)
+    {
+        $uninput_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+            ->whereDate('sch_start_date', $date)
+            ->where('sch_state_of_result_input', false)
+            ->get();
+
+        foreach($uninput_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
+            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+            ->where('res_sch', $schedule['sch_id'])
+            ->get();
+            // 한국인 학생 정보 추가.
+            $schedule['student_korean'] = $kor_data;
+        }
+
+        return response()->json([
+            'message' => $date . ' 일 출석 결과 미입력건 조회',
+            'data' => $uninput_list,
+        ], 200);
+    }
+
+    /**
      * 관리자 - 해당 날짜 출석 결과 미승인건 조회
      *
      * @param  string  $date
