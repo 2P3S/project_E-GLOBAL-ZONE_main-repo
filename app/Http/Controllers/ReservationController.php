@@ -8,6 +8,7 @@ use App\Schedule;
 use App\SchedulesResultImg;
 use App\Student_korean;
 use App\Student_foreigner;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -205,9 +206,9 @@ class ReservationController extends Controller
             $reservation_data = Reservation::where('res_id', $res_id)->get()->first();
 
             // Validation :: res_id & reservation_result
-            if(!$reservation_data) {
+            if (!$reservation_data) {
                 return response()->json([
-                    'message' => $res_id.' 번의 예약이 존재하지 않습니다.',
+                    'message' => $res_id . ' 번의 예약이 존재하지 않습니다.',
                 ], 422);
             }
 
@@ -229,16 +230,24 @@ class ReservationController extends Controller
         $file_name_start = "{$start_time[0]}-{$foreigner_id}-{$start_time[1]}-S";
         $file_name_end   = "{$end_time[0]}-{$foreigner_id}-{$end_time[1]}-E";
 
-
         // 로컬 스토리지에 이미지 파일 저장 -> 경로 반환
         $path_to_start_time = $this->set_img($request->file('result_start_img'), $file_name_start);
         $path_to_end_time   = $this->set_img($request->file('result_end_img'), $file_name_end);
 
-        SchedulesResultImg::create([
-            'sch_id' => $schedule_data['sch_id'],
-            'start_img_url' => $path_to_start_time,
-            'end_img_url' => $path_to_end_time,
-        ]);
+        try {
+            SchedulesResultImg::create([
+                'sch_id' => $schedule_data['sch_id'],
+                'start_img_url' => $path_to_start_time,
+                'end_img_url' => $path_to_end_time,
+            ]);
+        }
+        // 유학생 -> 이미지 재 업로드 요청 로직.
+        catch (Exception $e) {
+            SchedulesResultImg::find($schedule_data['sch_id'])->update([
+                'start_img_url' => $path_to_start_time,
+                'end_img_url' => $path_to_end_time,
+            ]);
+        }
         // Storage::download('public/1701314.png');                                     /* ( 추후 써먹을것 ) 이미지 다운로드 */
 
         return response()->json([
@@ -249,14 +258,15 @@ class ReservationController extends Controller
     public function set_img($img_file, $img_name)
     {
         $extension  = $img_file->extension();                                           /* 확장자 얻기 */
+        $image_path = $img_name . "." . $extension;
 
-        $img_save_path = Storage::putFileAs(                                            /* 파일 저장 후 경로 반환 */
+        Storage::putFileAs(                                            /* 파일 저장 후 경로 반환 */
             'public',
             $img_file,
-            $img_name . "." . $extension
+            $image_path
         );
 
-        return $img_save_path;
+        return $image_path;
     }
 
     public function get_img($img_name)

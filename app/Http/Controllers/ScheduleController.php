@@ -6,15 +6,15 @@ use App\Schedule;
 use App\Student_foreigner;
 use App\Section;
 use App\Setting;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
-    //TODO whereDate / whereMonth / whereDay / whereYear / whereTime 메서드 사용하기.
     /**
-     * 해당 주차 전체 스케줄 조회
+     * 한국인학생 - 해당 일자 전체 스케줄 조회
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -69,7 +69,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 스케줄 등록
+     * 관리자 - 스케줄 등록
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -186,7 +186,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 특정 스케줄 업데이트
+     * 관리자 - 특정 스케줄 업데이트
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -194,8 +194,6 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, Schedule $sch_id)
     {
-
-        //TODO 입력한 날짜에 대한 벨리데이션 검사 기능 추가..
         $validator = Validator::make($request->all(), [
             'sch_sect' => 'required|integer',
             'sch_std_for' => 'required|integer',
@@ -221,9 +219,9 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 특정 스케줄 삭제
+     * 관리자 - 특정 스케줄 삭제
      *
-     * @param  int  $id
+     * @param  int  $sch_id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Schedule $sch_id)
@@ -233,5 +231,47 @@ class ScheduleController extends Controller
         return response()->json([
             'message' => '스케줄 삭제 완료',
         ], 204);
+    }
+
+    /**
+     * 관리자 - 해당 날짜 출석 결과 미승인건 조회
+     *
+     * @param  string  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function indexUnapprovedList($date)
+    {
+        $unapproved_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date', 'start_img_url', 'end_img_url')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+            ->join('schedules_result_imgs as img', 'schedules.sch_id', '=', 'img.sch_id')
+            ->whereDate('sch_start_date', $date)
+            ->where('sch_state_of_result_input', true)
+            ->where('sch_state_of_permission', false)
+            ->get();
+
+        foreach($unapproved_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
+            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+            ->where('res_sch', $schedule['sch_id'])
+            ->get();
+            // 한국인 학생 정보 추가.
+            $schedule['student_korean'] = $kor_data;
+        }
+
+        return response()->json([
+            'message' => $date . ' 일 출석 결과 미승인건 조회',
+            'data' => $unapproved_list,
+        ], 200);
+    }
+
+    /**
+     * 관리자 - 출석 결과 미승인 건 승인
+     *
+     * @param  int  $sch_id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateApprovalOfUnapprovedCase(Schedule $sch_id)
+    {
+
     }
 }

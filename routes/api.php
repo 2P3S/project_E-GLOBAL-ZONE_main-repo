@@ -111,6 +111,15 @@ Route::prefix('/admin')->group(function () {
         /** 환경변수 저장 */
         Route::post('', 'SettingController@store')->name('settings.store');
     });
+
+    /* 스케줄 관리 라우터 */
+    Route::prefix('/schedule')->group(function () {
+        /** 해당 날짜 출석 결과 미승인건 조회 */
+        Route::get('{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+
+        /** 출석 결과 미승인 건 승인 */
+        Route::patch('{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+    });
 });
 
 /* 유학생 라우터 */
