@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="59045d52-96df-4720-a22c-1270eb7a012e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/LoginController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RestrictKoreanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RestrictKoreanController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SectionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Restricted_student_korean.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Restricted_student_korean.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2020_08_02_081547_create_restricted_student_koreans_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_08_02_081547_create_restricted_student_koreans_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
@@ -27,13 +26,15 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="598" y="299" width="650" height="522" key="find.popup" timestamp="1597479711227">
+    <state x="598" y="299" width="650" height="522" key="find.popup" timestamp="1597497105428">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="598" y="299" width="650" height="522" key="find.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1597479711227" />
-    <state x="561" y="222" width="670" height="676" key="search.everywhere.popup" timestamp="1597479600777">
+    <state x="598" y="299" width="650" height="522" key="find.popup/1792.96.1366.1024/0.0.1792.1120@0.0.1792.1120" timestamp="1597497105428" />
+    <state x="561" y="222" width="670" height="676" key="search.everywhere.popup" timestamp="1597498882839">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="561" y="222" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1597479600777" />
+    <state x="561" y="222" width="670" height="676" key="search.everywhere.popup/1792.96.1366.1024/0.0.1792.1120@0.0.1792.1120" timestamp="1597498882839" />
   </component>
 </project>
