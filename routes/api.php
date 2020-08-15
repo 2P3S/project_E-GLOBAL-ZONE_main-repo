@@ -141,6 +141,7 @@ Route::prefix('/foreigner')->group(function () {
     });
 });
 
+// TODO 한국인 학생의 이용제한 확인??
 /* 한국인학생 라우터 */
 Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
