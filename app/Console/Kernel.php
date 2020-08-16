@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Department;
+use App\Schedule as ScheduleList;
+use App\Student_foreigner;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -32,10 +33,30 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            Department::create([
-                'dept_name' => now()
-            ]);
+//            $start_date = date("Y-m-d", strtotime("-1 days"));
+//            $end_date = date("Y-m-d");
+
+            $start_date = date("Y-m-d", strtotime("+1 days"));
+            $end_date = date("Y-m-d", strtotime("+2 days"));
+
+            $student_foreigners = ScheduleList::join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
+                ->where('sch_state_of_result_input', 0)
+                ->where('sch_start_date', '>=', $start_date)
+                ->where('sch_start_date', '<', $end_date)
+                ->where('sch_end_date', '>=', $start_date)
+                ->where('sch_end_date', '<', $end_date)
+                ->get();
+
+            foreach ($student_foreigners as $student_foreigner) {
+                $tmp_student_foreigner = Student_foreigner::find($student_foreigner['std_for_id']);
+
+                $tmp_student_foreigner->update([
+                    'std_for_num_of_delay_input' => $tmp_student_foreigner['std_for_num_of_delay_input'] + 1
+                ]);
+            }
+
         })->everyMinute();
+//        })->dailyAt('00:00');
     }
 
     /**
