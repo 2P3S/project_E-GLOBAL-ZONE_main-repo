@@ -260,6 +260,7 @@ class ReservationController extends Controller
         $extension  = $img_file->extension();                                           /* 확장자 얻기 */
         $image_path = $img_name . "." . $extension;
 
+        //TODO 파일 경로 수정.
         Storage::putFileAs(                                            /* 파일 저장 후 경로 반환 */
             'public',
             $img_file,

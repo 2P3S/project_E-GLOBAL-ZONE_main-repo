@@ -66,6 +66,7 @@ class KoreanController extends Controller
      */
     public function index()
     {
+        //TODO 페이지네이션 기능 추가. + 이용제한 학생인경우 제한 사유 같이 보내기.
         $allSchdules = Student_korean::all();
 
         return $allSchdules;
