@@ -182,7 +182,7 @@ table.sch_table tbody td .status p.yellow {
 	background: #ffa400;
 	border: 1px solid #ffa400;
 }
-table.sch_table tbody td .status p.puple {
+table.sch_table tbody td .status p.purple {
 	background: #6e4bdd;
 	border: 1px solid #6e4bdd;
 }
@@ -195,6 +195,7 @@ table.sch_table tbody td .status p.oneline {
 	min-height: 42px;
 	line-height: 42px;
 	padding: 0;
+	border: none;
 }
 table.sch_table tbody tr:hover {
 	background: #f7f7f7;
@@ -253,9 +254,74 @@ table.sch_table tbody tr:hover td:first-child {
 	font-size: 12px;
 	font-weight: 600;
 }
+.hover_btn {
+	position: absolute;
+	z-index: 1;
+	left: -50%;
+	margin-left: 50%;
+	bottom: 44px;
+	background: #fff;
+	height: 48px;
+	padding: 0 3px;
+	border: 1px solid #bcbfc7;
+	border-radius: 3px;
+	width: 170px;
+	-webkit-box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2);
+}
+/* 유학생 관리, 한국인 학생 관리 공용 */
+.hover_btn.kor {
+	width: 275px;
+}
+.hover_btn .area {
+	display: inline-block;
+	height: 100%;
+	background: url(/global/img/hover_btn_bg.gif) no-repeat 50% bottom;
+	padding-bottom: 6px;
+}
+.hover_btn.kor .area {
+	background-position: 30% bottom;
+}
+.hover_btn .area div {
+	float: left;
+	margin: 3px 0 0 3px;
+	cursor: pointer;
+	padding: 0 15px;
+	height: 40px;
+	line-height: 40px;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 3px;
+}
+.hover_btn .area div:first-child {
+	margin-left: 0;
+}
+.hover_btn .area div.navy {
+	background: #373a44;
+	border: 1px solid #373a44;
+}
+.hover_btn .area div.lightGray {
+	background: #eaeaea;
+	color: #373a44;
+	border: 1px solid #cfcfcf;
+}
+.hover_btn .area div.mint {
+	background: #34bcad;
+	color: #fff;
+	border: 1px solid #34bcad;
+}
+.hover_btn .area div:hover {
+	background: #6e4bdd;
+	border: 1px solid #6e4bdd;
+	transition-duration: 0.4s;
+	color: #fff;
+}
+
 /* 유학생 관리, 한국인 학생 관리 공용 테이블 */
 table.student_manage_table {
 	width: 100%;
+	border-collapse: collapse;
 	color: #373a44;
 	font-size: 12px;
 	font-weight: 500;
@@ -263,14 +329,18 @@ table.student_manage_table {
 }
 table.student_manage_table th,
 table.student_manage_table td {
+	position: relative;
 	text-align: center;
 	border: 1px solid #bcbfc7;
-	border-bottom: none;
-	border-left: none;
 	padding: 12px 0;
 }
 table.student_manage_table td .favor,
 table.student_manage_table td .restriction {
+	cursor: pointer;
+}
+table.student_manage_table td.name:hover {
+	color: #6e4bdd;
+	text-decoration: underline;
 	cursor: pointer;
 }
 table.student_manage_table thead .bg {
@@ -289,13 +359,6 @@ table.student_manage_table thead th.align:hover {
 table.student_manage_table thead th.align img {
 	display: inline-block;
 	margin: -3px 0 0 6px;
-}
-table.student_manage_table thead th:first-child,
-table.student_manage_table tbody td:first-child {
-	border-left: 1px solid #bcbfc7;
-}
-table.student_manage_table tbody td:last-child {
-	border-left: 1px solid #bcbfc7;
 }
 table.student_manage_table tr.eng {
 	background: #eaf8f7;
@@ -335,25 +398,45 @@ table.student_manage_table td:first-child {
 	width: 100%;
 	margin-top: 30px;
 	text-align: center;
+	display: inline-block;
 }
 .popup .btn_area.right {
 	text-align: right;
 }
-.popup .btn_area a {
+.popup .btn_area a,
+.popup .btn_area div {
+	cursor: pointer;
 	display: inline-block;
-	padding: 0 20px;
+	padding: 0 15px;
 	height: 40px;
 	line-height: 40px;
-	background: #373a44;
 	border-radius: 5px;
 	font-size: 13px;
 	color: #fff;
+	font-weight: 600;
 }
-.popup .btn_area a.mint {
+.popup .btn_area .mint {
 	background: #34bcad;
 }
-.popup .btn_area a.blue {
+.popup .btn_area .blue {
 	background: #2050e6;
+}
+.popup .btn_area .gray {
+	background: #989ead;
+}
+.popup .btn_area .darkGray {
+	background: #373a44;
+}
+.popup .btn_area .white {
+	background: #fff;
+	color: #373a44;
+	border: 1px solid #d7d9e1;
+}
+.popup .btn_area .left {
+	float: left;
+}
+.popup .btn_area .right {
+	float: right;
 }
 /* SCROLL */
 .popup .scroll_area {
@@ -456,6 +539,19 @@ table.pop_table2 td {
 	border-bottom: 1px solid #d5d5db;
 	padding: 12px 0;
 }
+/* 변경 필요 */
+table.pop_table3 {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: center;
+	font-size: 13px;
+	border-top: 1px solid #373a44;
+}
+table.pop_table3 th,
+table.pop_table3 td {
+	border-bottom: 1px solid #d5d5db;
+	padding: 12px 0;
+}
 /* 스케줄 입력 */
 .popup.sch {
 	width: 700px;
@@ -525,6 +621,306 @@ table.pop_table2 td {
 	cursor: pointer;
 	font-size: 14px;
 }
+/* 신청 학생 명단보기 */
+.popup.enrol {
+	width: 500px;
+	text-align: left;
+	color: #373a44;
+	font-weight: 600;
+}
+.top_tit {
+	display: inline-block;
+	width: 100%;
+	font-weight: 600;
+	margin-bottom: 35px;
+}
+.top_tit .left {
+	float: left;
+}
+.top_tit .left p.tit {
+	font-size: 24px;
+	margin-bottom: 0px;
+}
+.top_tit .left p.txt {
+	font-size: 13px;
+	font-weight: 800;
+}
+.top_tit .left p.txt span {
+	font-family: "Lato", sans-serif;
+}
+.top_tit p.name {
+	float: right;
+	padding: 8px 20px;
+	background: #373a44;
+	color: #fff;
+	border-radius: 5px;
+	font-size: 13px;
+}
+.popup.enrol .area {
+	width: 100%;
+	border: 1px solid #e8e8ee;
+	background: #f7f7f9;
+}
+.popup.enrol .area ul {
+	display: inline-block;
+	padding-top: 12px;
+}
+.popup.enrol .area ul li {
+	float: left;
+	margin: 0 0 12px 12px;
+	width: 232px;
+}
+.popup.enrol .area ul li .student {
+	height: 70px;
+	padding: 0 15px 0 25px;
+	background: #fff;
+	border: 1px solid #d7d9e1;
+	border-radius: 5px;
+}
+.popup.enrol .area ul li .del_btn,
+.popup.enrol .area ul li .name {
+	float: left;
+}
+.popup.enrol .area ul li .del_btn {
+	cursor: pointer;
+	margin-top: 30px;
+}
+.popup.enrol .area ul li .name {
+	margin: 22px 0 0 19px;
+	font-size: 16px;
+}
+.popup.enrol .area ul li .edd-root {
+	width: 80px;
+	height: 32px;
+	line-height: 32px;
+	margin: 18px 0 0 35px;
+	border-radius: 5px;
+	padding: 0;
+	border: 1px solid #34bcad;
+	border-radius: 3px;
+	background: #cff6f2;
+	color: #109586;
+}
+.popup.enrol .area ul li .edd-root::after {
+	background: #109586;
+}
+.popup.enrol .area ul li .edd-option-selected::before {
+	border-bottom: 2px solid #109586;
+	border-left: 2px solid #109586;
+}
+.popup.enrol .area ul li .edd-option-focused:not(.edd-option-disabled) {
+	color: #109586;
+}
+.popup.enrol .area ul li .edd-arrow {
+	color: #3ca497;
+	right: 9px;
+}
+.popup.enrol .area ul li .edd-head {
+	cursor: pointer;
+	padding: 0 25px 0 10px;
+}
+.popup.enrol .area ul li .add_student {
+	cursor: pointer;
+	text-align: center;
+	line-height: 70px;
+	width: 100%;
+}
+.popup.enrol .area ul li .add_student img {
+	padding: 0 5px;
+}
+/* 출석결과 미입력, 미승인 */
+.popup.not_attend {
+	width: 950px;
+	padding: 40px 0;
+	display: inline-block;
+	background: url(/global/img/not_attend_bg.gif) repeat-y 0px 50%;
+}
+.popup.not_attend .left_wrap,
+.popup.not_attend .right_wrap {
+	float: left;
+	position: relative;
+	padding: 0 30px;
+	min-height: 470px;
+}
+.popup.not_attend .left_wrap .tit,
+.popup.not_attend .right_wrap .tit {
+	font-size: 20px;
+}
+.popup.not_attend .left_wrap {
+	width: 465px;
+}
+.popup.not_attend .right_wrap {
+	width: 365px;
+}
+/* [관리자]출석결과 미입력, 미승인 / [유학생] 출석결과 입력 동일 */
+.student_list {
+	width: 100%;
+	border: 1px solid #e8e8ee;
+	background: #fff;
+	font-weight: 600;
+	border-radius: 10px;
+}
+.student_list ul {
+	display: inline-block;
+	padding-top: 10px;
+	background: #f7f7f9;
+}
+.popup.not_attend .right_wrap .student_list ul {
+	background: #fff;
+}
+.student_list ul li {
+	float: left;
+	margin: 0 0 10px 12px;
+	width: 165px;
+}
+.student_list ul li .student {
+	height: 70px;
+	padding: 0px 15px;
+	background: #fff;
+	border: 1px solid #d7d9e1;
+	border-radius: 5px;
+}
+.student_list ul li .del_btn,
+.student_list ul li .name {
+	float: left;
+}
+.student_list ul li .del_btn {
+	cursor: pointer;
+	margin-top: 30px;
+}
+.student_list ul li .name {
+	margin: 22px 0 0 0;
+	font-size: 14px;
+}
+.student_list ul li .edd-root {
+	width: 76px;
+	height: 32px;
+	line-height: 32px;
+	margin: 18px 0 0 18px;
+	padding: 0;
+	border: 1px solid #34bcad;
+	border-radius: 3px;
+	background: #cff6f2;
+	color: #109586;
+}
+.student_list ul li .edd-root::after {
+	background: #109586;
+}
+.student_list ul li .edd-option-selected::before {
+	border-bottom: 2px solid #109586;
+	border-left: 2px solid #109586;
+}
+.student_list ul li .edd-option-focused:not(.edd-option-disabled) {
+	color: #109586;
+}
+.student_list ul li .edd-arrow {
+	color: #3ca497;
+	right: 9px;
+}
+.student_list ul li .edd-head {
+	cursor: pointer;
+	padding: 0 25px 0 10px;
+}
+.student_list ul li .add_student {
+	cursor: pointer;
+	text-align: center;
+	line-height: 70px;
+	width: 100%;
+}
+.student_list ul li .add_student img {
+	padding: 0 5px;
+}
+/* [유학생] 출석결과 입력, 신청 학생 명단보기 동일 */
+.popup.list {
+	position: relative;
+	width: 390px;
+}
+.popup.list .student_list ul li {
+	width: 176px;
+}
+.popup.list .attend_rate {
+	left: 40px;
+	bottom: 45px;
+}
+.popup.list .btn_area {
+	margin-top: 50px;
+}
+.popup.not_attend .btn_area {
+	position: absolute;
+	right: 30px;
+	bottom: 0;
+}
+ul.img_file {
+	width: 100%;
+	font-size: 12px;
+}
+ul.img_file li {
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	overflow: hidden;
+	border-bottom: 1px solid #e8e8ee;
+}
+ul.img_file p {
+	float: left;
+}
+ul.img_file li p.file_no {
+	color: #000;
+	font-weight: 600;
+	margin-left: 10px;
+}
+ul.img_file li p.file_name {
+	cursor: pointer;
+	color: #8f94a4;
+	margin-left: 25px;
+}
+ul.img_file li p.file_name:hover {
+	text-decoration: underline;
+}
+.img_file div {
+	float: right;
+	width: 25px;
+	padding: 8px 0;
+	margin-top: 8px;
+	cursor: pointer;
+	text-align: center;
+}
+.img_upload {
+	width: 100%;
+	display: inline-block;
+}
+.img_upload div {
+	float: left;
+	cursor: pointer;
+	font-weight: 600;
+	background: #eeeef6 url(/global/img/img_upload_ico.gif) no-repeat center 40%;
+	margin-top: 10px;
+	padding-top: 90px;
+	height: 50px;
+	width: 175px;
+	border: 1px solid #d5d5ea;
+	border-radius: 5px;
+	color: #b8bdd2;
+	font-size: 13px;
+	text-align: center;
+}
+.img_upload div:first-child {
+	margin-right: 11px;
+}
+.attend_rate {
+	position: absolute;
+	left: 30px;
+	bottom: 2px;
+	font-size: 14px;
+	color: #373a44;
+	font-weight: 600;
+}
+.attend_rate span {
+	font-size: 24px;
+	color: #34bcad;
+	font-family: "Lato", sans-serif;
+	font-weight: 900;
+}
 
 /********************* DEFAULT *********************/
 /* TABLE BTN */
@@ -533,7 +929,9 @@ table.pop_table2 td {
 	text-align: right;
 	margin-top: 25px;
 }
-.table_btn a {
+.table_btn a,
+.table_btn div {
+	cursor: pointer;
 	display: inline-block;
 	text-align: center;
 	border: 1px solid #cbcbd2;
@@ -546,7 +944,8 @@ table.pop_table2 td {
 	font-weight: 600;
 	margin-left: 5px;
 }
-.table_btn a:hover {
+.table_btn a:hover,
+.table_btn div:hover {
 	background: #f7f7f7;
 }
 
@@ -692,8 +1091,4 @@ table.pop_table2 td {
 	color: #071985;
 	font-size: 13px;
 	font-weight: 600;
-}
-
-.ReactModal__Body--open {
-	overflow: hidden;
 }

@@ -1,11 +1,135 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import Modal from "components/common/modal/Modal";
+import ConfirmStudent from "components/common/modal/ConfirmStudent";
+import useClick from "modules/hooks/useClick";
+import conf from "conf/userConf";
 
 const Test = () => <>Test</>;
+let i = 2001200;
+let j = 0;
 
 export default function Students() {
+	let mokup = {
+		sort: null,
+		data: [
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.DESIGN,
+				std_id: i++,
+				name: "name",
+				status: true,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+			{
+				dept: conf.department.COMINFO,
+				std_id: i++,
+				name: "name",
+				status: false,
+				ph: "010-0000-0000",
+				e_mail: "nea4182@g.yju.ac.kr",
+				count: j++,
+				absent: 0,
+			},
+		],
+	};
+	const [data, setData] = useState(mokup.data);
+	const [isOpen, setIsOpen] = useState(false);
+	const table = useRef();
+
 	useEffect(() => {
 		window.easydropdown.all();
 	}, []);
+	const sort = (sortBy) => {
+		if (mokup.sort === sortBy) {
+			setData(mokup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
+			mokup.sort = null;
+		} else {
+			setData(mokup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
+			mokup.sort = sortBy;
+		}
+	};
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -35,8 +159,15 @@ export default function Students() {
 					<table className="student_manage_table">
 						<thead>
 							<tr>
-								<th scope="col" className="bg align">
-									계열학과{" "}
+								<th
+									scope="col"
+									className="bg align"
+									ref={useClick(() => {
+										setData([]);
+										sort("dept");
+									})}
+								>
+									계열학과
 									<img
 										src="/global/img/table_align_arrow.gif"
 										alt="언어 기준 정렬"
@@ -48,7 +179,14 @@ export default function Students() {
 								<th scope="col" className="bg">
 									이름
 								</th>
-								<th scope="col" className="bg align">
+								<th
+									scope="col"
+									className="bg align"
+									ref={useClick(() => {
+										setData([]);
+										sort("status");
+									})}
+								>
 									이용제한
 									<img
 										src="/global/img/table_align_arrow.gif"
@@ -61,15 +199,29 @@ export default function Students() {
 								<th scope="col" className="bg">
 									G Suite 계정
 								</th>
-								<th scope="col" className="bg align">
-									활동 횟수{" "}
+								<th
+									scope="col"
+									className="bg align"
+									ref={useClick(() => {
+										setData([]);
+										sort("count");
+									})}
+								>
+									활동 횟수
 									<img
 										src="/global/img/table_align_arrow.gif"
 										alt="언어 기준 정렬"
 									/>
 								</th>
-								<th scope="col" className="bg align">
-									미참석 횟수{" "}
+								<th
+									scope="col"
+									className="bg align"
+									ref={useClick(() => {
+										setData([]);
+										sort("absent");
+									})}
+								>
+									미참석 횟수
 									<img
 										src="/global/img/table_align_arrow.gif"
 										alt="언어 기준 정렬"
@@ -77,34 +229,70 @@ export default function Students() {
 								</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td>컴정</td>
-								<td>1901191</td>
-								<td>이일영</td>
-								<td>
-									<div className="restriction">
-										<img
-											src="/global/img/restriction_off.png"
-											alt="이용제한 해제"
-											onClick={() => <Test />}
-										/>
-									</div>
-								</td>
-								<td>010-0000-0000</td>
-								<td>zxc1234@g.yju.ac.kr</td>
-								<td>1회</td>
-								<td>-</td>
-							</tr>
+						<tbody ref={table}>
+							{data.map((v) => (
+								<tr key={v.std_id}>
+									<td>{v.dept}</td>
+									<td>{v.std_id}</td>
+									<td>{v.name}</td>
+									<td>
+										{v.status ? (
+											<div className="restriction">
+												<img
+													src="/global/img/restriction_on.png"
+													alt="이용제한 해제"
+													onClick={() => <Test />}
+												/>
+											</div>
+										) : (
+											<div className="restriction">
+												<img
+													src="/global/img/restriction_off.png"
+													alt="이용제한 해제"
+													onClick={() => <Test />}
+												/>
+											</div>
+										)}
+									</td>
+									<td>{v.ph}</td>
+									<td>{v.e_mail}</td>
+									<td>{v.count}회</td>
+									<td>{v.absent}회</td>
+								</tr>
+							))}
 						</tbody>
 					</table>
 				</div>
 
 				<div className="table_btn">
-					<a href="#">신청 승인</a>
-					<a href="#">CSV 다운</a>
+					<div
+						ref={useClick(() => {
+							setIsOpen(true);
+						})}
+					>
+						신청 승인
+					</div>
+					<div
+						ref={useClick(function () {
+							alert("엑셀 다운");
+						})}
+					>
+						CSV 다운
+					</div>
 				</div>
 			</div>
+			<Modal
+				isOpen={isOpen}
+				hadleClose={() => {
+					setIsOpen(false);
+				}}
+			>
+				<ConfirmStudent
+					handleClose={() => {
+						setIsOpen(false);
+					}}
+				/>
+			</Modal>
 		</div>
 	);
 }

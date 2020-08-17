@@ -11,6 +11,7 @@
  * @property {int}  sch_state_of_result_input 스캐ㅔ줄 결과 입력 상태
  * @property {int}  sch_state_of_permission 스케줄 결과 승인 상태
  * @property {string}  sch_for_zoom_pw 스케줄 zoom pw
+ *
  */
 class Schedule {
 	sch_id;
@@ -23,6 +24,10 @@ class Schedule {
 	sch_state_of_permission;
 	sch_for_zoom_pw;
 
+	/**
+	 * constructor
+	 * @param {object} argObj {sch_id, sch_sect, sch_std_for, sch_start_date, sch_end_date, sch_res_count,sch_state_of_result_input, sch_state_of_permission, sch_for_zoom_pw}
+	 */
 	constructor(argObj) {
 		this.sch_id = argObj["sch_id"];
 		this.sch_sect = argObj["sch_sect"];
@@ -37,3 +42,5 @@ class Schedule {
 	// 스케줄
 	static getListOfStudents = (sceduleId) => {};
 }
+
+export default Schedule;
