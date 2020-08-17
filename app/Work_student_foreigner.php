@@ -22,4 +22,6 @@ class Work_student_foreigner extends Model
         'work_std_for',
         'work_sect',
     ];
+
+    public $timestamps = false;
 }

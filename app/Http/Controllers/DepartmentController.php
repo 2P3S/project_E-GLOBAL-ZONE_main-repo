@@ -90,6 +90,6 @@ class DepartmentController extends Controller
 
         return response()->json([
             'message' => '삭제 완료',
-        ], 204);
+        ], 200);
     }
 }

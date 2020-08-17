@@ -189,7 +189,7 @@ class ScheduleController extends Controller
      * 관리자 - 특정 스케줄 업데이트
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $sch_id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Schedule $sch_id)

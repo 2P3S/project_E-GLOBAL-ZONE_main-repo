@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Work_student_foreigner;
 use App\Student_foreigners_contact;
 use App\Student_foreigner;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class ForeignerController extends Controller
@@ -13,14 +15,14 @@ class ForeignerController extends Controller
     /**
      * 학기별 전체 유학생 정보 조회
      *
-     * @param  int  $wokr_sect
+     * @param  int  $work_sect
      * @return \Illuminate\Http\Response
      */
-    public function index($wokr_sect)
+    public function index($work_sect)
     {
-        $search_result = Work_student_foreigner::select('work_list_id', 'std_for_id', 'std_for_dept', 'std_for_name', 'std_for_lang', 'std_for_contry')
+        $search_result = Work_student_foreigner::select('work_list_id', 'std_for_id', 'std_for_dept', 'std_for_name', 'std_for_lang', 'std_for_country')
             ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
-            ->where('work_sect', $wokr_sect)
+            ->where('work_sect', $work_sect)
             ->get();
 
         return response()->json([
@@ -133,11 +135,10 @@ class ForeignerController extends Controller
         //TODO 비밀번호 길이 조정.
         $validator = Validator::make($request->all(), [
             'std_for_id' => 'required|integer|min:7',
-            'std_for_passwd' => 'required|string|min:8',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2',
-            'std_for_contry' => 'required|string|min:2',
+            'std_for_country' => 'required|string|min:2',
             'std_for_phone' => 'required|string',                             /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
             'std_for_mail' => 'required|email',
             'std_for_zoom_id' => 'required|string',
@@ -153,13 +154,13 @@ class ForeignerController extends Controller
         try {
             Student_foreigner::create([
                 'std_for_id' => $request->std_for_id,
-                'password' => Hash::make($request->std_for_passwd),
+                'password' => Hash::make("1q2w3e4r!"),
                 'std_for_dept' => $request->std_for_dept,
                 'std_for_name' => $request->std_for_name,
                 'std_for_lang' => $request->std_for_lang,
-                'std_for_contry' => $request->std_for_contry,
+                'std_for_country' => $request->std_for_country,
             ]);
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => "이미 가입된 유학생입니다.",
             ], 422);
@@ -190,6 +191,7 @@ class ForeignerController extends Controller
     {
         $is_user_admin = true;                                          /* 관리자 인증 여부 */
         //TODO 리셋 비밀번호 env에 저장하기.
+        //TODO auth 정보로 로직 나누기.
         $user_password = "1q2w3e4r!";
 
         if (!$is_user_admin) {
@@ -224,10 +226,11 @@ class ForeignerController extends Controller
      */
     public function destroyAccount(Student_foreigner $std_for_id)
     {
+        Student_foreigners_contact::find($std_for_id['std_for_id'])->delete();
         $std_for_id->delete();
 
         return response()->json([
             'message' => '유학생 계정 삭제 완료',
-        ], 204);
+        ], 200);
     }
 }
