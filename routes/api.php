@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* 관리자 라우터 */
+
 Route::prefix('/admin')->group(function () {
     /* 유학생 관리 */
     Route::prefix('/foreigner')->group(function () {
@@ -26,12 +27,12 @@ Route::prefix('/admin')->group(function () {
         /* 학기별 유학생 관리 */
         Route::prefix('work')->group(function () {
             /** 학기별 전체 유학생 정보 조회 */
-            Route::get('{wokr_sect}', 'ForeignerController@index')->name('foreigners.index');
+            Route::get('{work_sect}', 'ForeignerController@index')->name('foreigners.index');
 
             /** 학기별 유학생 등록 */
             Route::post('', 'ForeignerController@store')->name('foreigners.store');
 
-            /** 학기별 유학생 수정 */
+            /** 학기별 유학생 삭제 */
             Route::delete('{work_list_id}', 'ForeignerController@destroy')->name('foreigners.destroy');
         });
 
@@ -66,16 +67,21 @@ Route::prefix('/admin')->group(function () {
 
             /** 계정 삭제 */
             Route::delete('{std_kor_id}', 'KoreanController@destroyAccount')->name('koreans.destroyAccount');
+
+            //TODO 한국인 학생 비밀번호 변경
         });
 
 
         /* 이용제한 한국인 학생 관리 */
         Route::prefix("restrict")->group(function () {
-            Route::get("/", "RestrictKoreanController@index")->name("koreans.indexRestrict");
+            /** 이용제한 학생 조회 */
+            Route::get('', "RestrictKoreanController@index")->name("koreans.indexRestrict");
 
-            Route::post("/", "RestrictKoreanController@register")->name("koreans.registerRestrict");
+            /** 이용제한 등록 */
+            Route::post('', "RestrictKoreanController@register")->name("koreans.registerRestrict");
 
-            Route::patch("/{restrict_id}", "RestrictKoreanController@update")->name("koreans.updateRestrict");
+            /** 이용제한 해제 */
+            Route::patch('{restrict_id}', "RestrictKoreanController@update")->name("koreans.updateRestrict");
         });
     });
 
@@ -106,16 +112,14 @@ Route::prefix('/admin')->group(function () {
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
 
         /* 스케줄 관련 미입력 관리 라우터 */
-        Route::prefix('/no_input')->group(function () {
-            /** 해당 날짜 출석 결과 미입력건 조회 */
-            Route::get('{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
+        /** 해당 날짜 출석 결과 미입력건 조회 */
+        Route::get('uninputed/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
 
-            /** 해당 날짜 출석 결과 미승인건 조회 */
-            Route::get('{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+        /** 해당 날짜 출석 결과 미승인건 조회 */
+        Route::get('unapproved/{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
 
-            /** 출석 결과 미승인 건 승인 */
-            Route::patch('{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
-        });
+        /** 출석 결과 미승인 건 승인 */
+        Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
     });
 
     /* 계열 / 학과 관리 라우터 */
@@ -174,19 +178,24 @@ Route::prefix('/korean')->group(function () {
     Route::post('schedule', 'ScheduleController@index')->name('schedules.index');
 
     /** 등록된 계열 & 학과 목록 조회 */
-    Route::get('', 'DepartmentController@index')->name('departments.index');
+    Route::get('department', 'DepartmentController@index')->name('departments.index');
 
     /* 예약 관련 */
     Route::prefix('/reservation')->group(function () {
         /** 내 예약 일정 조회 */
         Route::get('', 'ReservationController@show')->name('reservations.show');
+
         /** 예약 신청 */
         Route::post('', 'ReservationController@store')->name('reservations.store');
+
         /** 내 예약 일정 삭제 */
         Route::delete('{res_id}', 'ReservationController@destroy')->name('reservations.destroy');
+
         /** 학기별 참석 결과 조회 */
         // Route::get('', 'ReservationController@showResult')->name('reservations.show');
     });
+
+    //TODO 한국인 학생 비밀번호 변경
 });
 
 /* 로그인 라우터 */
