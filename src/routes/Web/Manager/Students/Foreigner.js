@@ -1,9 +1,158 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import conf from "conf/userConf";
+import useClick from "modules/hooks/useClick";
 
+let i = 1601214;
+let j = 0;
 export default function Foreigner() {
+	let mockup = {
+		sort: null,
+		data: [
+			{
+				language: conf.language.ENGLISH,
+				country: "미국",
+				favorite: false,
+				std_id: i++,
+				name: "Emma Stone",
+				dept: conf.shortDepartment[1],
+				curruntMonth: 120,
+				lastMonth: 150,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.ENGLISH,
+				country: "미국",
+				favorite: true,
+				std_id: i++,
+				name: "Scarlett Johansson",
+				dept: conf.shortDepartment[14],
+				curruntMonth: 150,
+				lastMonth: 160,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.ENGLISH,
+				country: "영국",
+				favorite: true,
+				std_id: i++,
+				name: "Emma Watson",
+				dept: conf.shortDepartment[1],
+				curruntMonth: 120,
+				lastMonth: 150,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.JAPANESE,
+				country: "일본",
+				favorite: false,
+				std_id: i++,
+				name: "이시하라 사토미",
+				dept: conf.shortDepartment[3],
+				curruntMonth: 120,
+				lastMonth: 330,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.JAPANESE,
+				country: "일본",
+				favorite: false,
+				std_id: i++,
+				name: "마야자키 아오이",
+				dept: conf.shortDepartment[2],
+				curruntMonth: 120,
+				lastMonth: 330,
+				thePastMonth: 50,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.JAPANESE,
+				country: "일본",
+				favorite: false,
+				std_id: i++,
+				name: "이케우치 히로유키",
+				dept: conf.shortDepartment[2],
+				curruntMonth: 120,
+				lastMonth: 310,
+				thePastMonth: 50,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.CHINESE,
+				country: "중국",
+				favorite: false,
+				std_id: i++,
+				name: "판빙빙",
+				dept: conf.shortDepartment[1],
+				curruntMonth: 130,
+				lastMonth: 310,
+				thePastMonth: 510,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.CHINESE,
+				country: "중국",
+				favorite: true,
+				std_id: i++,
+				name: "장쯔이",
+				dept: conf.shortDepartment[6],
+				curruntMonth: 130,
+				lastMonth: 350,
+				thePastMonth: 510,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+			{
+				language: conf.language.CHINESE,
+				country: "중국",
+				favorite: false,
+				std_id: i++,
+				name: "탕웨이",
+				dept: conf.shortDepartment[14],
+				curruntMonth: 130,
+				lastMonth: 30,
+				thePastMonth: 510,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+		],
+	};
+	const [data, setData] = useState(mockup.data);
+	const [checkId, setCheckId] = useState([]);
 	useEffect(() => {
 		window.easydropdown.all();
 	}, []);
+	useEffect(() => {
+		console.log(checkId);
+	}, [checkId]);
+	const sort = (sortBy) => {
+		if (mockup.sort === sortBy) {
+			setData(mockup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
+			mockup.sort = null;
+		} else {
+			setData(mockup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
+			mockup.sort = sortBy;
+		}
+	};
 	return (
 		<div>
 			<div className="content">
@@ -131,85 +280,90 @@ export default function Foreigner() {
 								</tr>
 							</thead>
 							<tbody>
-								<tr className="eng">
-									<td>
-										<div className="table_check">
-											<input type="checkbox" id="a2" name="" />
-											<label htmlFor="a2"></label>
-										</div>
-									</td>
-									<td>영어</td>
-									<td>미국</td>
-									<td>
-										<div className="favor">
-											<img src="/global/img/favor_on.png" alt="즐겨찾기 on" />
-										</div>
-									</td>
-
-									<td>1901192</td>
-									<td>알무카메토바 아니사</td>
-									<td>건축</td>
-									<td>3시간 30분</td>
-									<td>2시간</td>
-									<td>1시간</td>
-									<td>1시간</td>
-									<td>1회</td>
-									<td>-</td>
-								</tr>
-								<tr className="jp">
-									<td>
-										<div className="table_check">
-											<input type="checkbox" id="a3" name="" />
-											<label htmlFor="a3"></label>
-										</div>
-									</td>
-									<td>영어</td>
-									<td>미국</td>
-									<td>
-										<div className="favor">
-											<img
-												src="/global/img/favor_off.png"
-												alt="즐겨찾기 off"
-											/>
-										</div>
-									</td>
-									<td>1901192</td>
-									<td>알무카메토바 아니사</td>
-									<td>건축</td>
-									<td>3시간 30분</td>
-									<td>2시간</td>
-									<td>1시간</td>
-									<td>1시간</td>
-									<td>1회</td>
-									<td>-</td>
-								</tr>
-								<tr className="ch">
-									<td>
-										<div className="table_check">
-											<input type="checkbox" id="row_check" name="" />
-											<label htmlFor="row_check"></label>
-										</div>
-									</td>
-									<td>영어</td>
-									<td>미국</td>
-									<td>
-										<div className="favor">
-											<img
-												src="/global/img/favor_off.png"
-												alt="즐겨찾기 off"
-											/>
-										</div>
-									</td>
-									<td>1901192</td>
-									<td>알무카메토바 아니사</td>
-									<td>건축</td>
-									<td>3시간 30분</td>
-									<td>2시간</td>
-									<td>1시간</td>
-									<td>1시간</td>
-									<td>1회</td>
-									<td>-</td>
-								</tr>
+								{data.map((value) => {
+									return (
+										<tr
+											className={
+												value.language === conf.language.ENGLISH
+													? "eng"
+													: value.language === conf.language.JAPANESE
+													? "jp"
+													: "ch"
+											}
+											key={value.std_id}
+										>
+											<td>
+												<div className="table_check">
+													<input
+														type="checkbox"
+														id={value.std_id}
+														name=""
+														ref={value.ref}
+														onClick={() => {
+															if (value.check) {
+																value.check = false;
+															} else {
+																value.check = true;
+															}
+															console.log(value.check);
+														}}
+													/>
+													<label htmlFor={value.std_id}></label>
+												</div>
+											</td>
+											<td>{value.language}</td>
+											<td>{value.country}</td>
+											<td>
+												{value.favorite ? (
+													<div className="favor">
+														<img
+															src="/global/img/favor_on.png"
+															alt="즐겨찾기 on"
+														/>
+													</div>
+												) : (
+													<div className="favor">
+														<img
+															src="/global/img/favor_off.png"
+															alt="즐겨찾기 off"
+														/>
+													</div>
+												)}
+											</td>
+											<td>{value.std_id}</td>
+											<td>{value.name}</td>
+											<td>{value.dept}</td>
+											<td>
+												{(
+													(value.curruntMonth +
+														value.lastMonth +
+														value.thePastMonth) /
+													60
+												).toFixed(0)}
+												시간{" "}
+												{(value.curruntMonth +
+													value.lastMonth +
+													value.thePastMonth) %
+													60}
+												분
+											</td>
+											<td>
+												{(value.thePastMonth / 60).toFixed(0)}시간{" "}
+												{value.thePastMonth % 60}분
+											</td>
+											<td>
+												{(value.lastMonth / 60).toFixed(0)}시간{" "}
+												{value.lastMonth % 60}분
+											</td>
+											<td>
+												{(value.curruntMonth / 60).toFixed(0)}시간{" "}
+												{value.curruntMonth % 60}분
+											</td>
+											<td>{value.count}회</td>
+											<td>{value.delay === 0 ? "-" : value.delay}</td>
+										</tr>
+									);
+								})}
 							</tbody>
 						</table>
 					</div>

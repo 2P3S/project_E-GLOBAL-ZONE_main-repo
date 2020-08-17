@@ -9,7 +9,7 @@ let i = 2001200;
 let j = 0;
 
 export default function Students() {
-	let mokup = {
+	let mockup = {
 		sort: null,
 		data: [
 			{
@@ -114,7 +114,7 @@ export default function Students() {
 			},
 		],
 	};
-	const [data, setData] = useState(mokup.data);
+	const [data, setData] = useState(mockup.data);
 	const [isOpen, setIsOpen] = useState(false);
 	const table = useRef();
 
@@ -122,12 +122,12 @@ export default function Students() {
 		window.easydropdown.all();
 	}, []);
 	const sort = (sortBy) => {
-		if (mokup.sort === sortBy) {
-			setData(mokup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
-			mokup.sort = null;
+		if (mockup.sort === sortBy) {
+			setData(mockup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
+			mockup.sort = null;
 		} else {
-			setData(mokup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
-			mokup.sort = sortBy;
+			setData(mockup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
+			mockup.sort = sortBy;
 		}
 	};
 	return (
