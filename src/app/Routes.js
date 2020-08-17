@@ -1,23 +1,22 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { selectIsLogin, selectUser } from "redux/loginSlice/loginSlice";
-import { useSelector } from "react-redux";
+import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { selectIsLogin, selectUser } from "redux/userSlice/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 import MobileRouter from "app/Routers/Router.Mobile";
 import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
 import { LoginRouter } from "app/Routers/Router.Login";
 import conf from "../conf/userConf";
-import { logIn } from "../redux/loginSlice/loginSlice";
+import { logOut, setClass } from "redux/userSlice/userSlice";
 
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const User = useSelector(selectUser);
-	// const id = 0;
-	useEffect(() => {
-		logIn();
-	}, []);
+
+	// const dispatch = useDispatch();
 	return (
 		<Router>
+			<Test />
 			{isLogin ? (
 				User.getUserClass() === conf.userClass.KOREAN ? (
 					//mobile
@@ -38,5 +37,29 @@ function Routes() {
 		</Router>
 	);
 }
+
+const Test = () => {
+	const dispatch = useDispatch();
+	const history = useHistory();
+	const student = () => {
+		dispatch(setClass(conf.userClass.KOREAN));
+		history.push("/");
+	};
+	const foreigner = () => {
+		dispatch(setClass(conf.userClass.FOREIGNER));
+		history.push("/");
+	};
+	const manager = () => {
+		dispatch(setClass(conf.userClass.MANAGER));
+		history.push("/");
+	};
+	return (
+		<div>
+			<button onClick={student}>학생</button>
+			<button onClick={foreigner}>유학생</button>
+			<button onClick={manager}>관리자</button>
+		</div>
+	);
+};
 
 export default Routes;
