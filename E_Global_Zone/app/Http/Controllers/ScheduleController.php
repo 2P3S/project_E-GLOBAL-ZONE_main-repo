@@ -59,10 +59,41 @@ class ScheduleController extends Controller
      */
     public function show($date)
     {
+        //TODO 미들웨어를 통해 유학생 학번 가져오기.
         $std_for_id = 1372367;
         $result_foreigner_schedules = Schedule::where('sch_std_for', $std_for_id)
             ->whereDate('sch_start_date', $date)
             ->get();
+
+        return $result_foreigner_schedules;
+    }
+
+    /**
+     * 관리자 - 특정 날짜 유학생 전체 스케줄 조회
+     *
+     * @param  string  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function showForeignerSchedules($date)
+    {
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+            ->whereDate('sch_start_date', $date)
+            ->orderBy('std_for_lang')
+            ->get();
+
+        foreach ($result_foreigner_schedules as $schedule) {
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+            // 전체 예약 한국인 인원수
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+            // 예약 미승인 한국인 인원수
+            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+            $schedule['reservated_count'] = $reservated_count;
+            $schedule['un_permission_count'] = $un_permission_count;
+        }
 
         return $result_foreigner_schedules;
     }
@@ -246,11 +277,11 @@ class ScheduleController extends Controller
             ->where('sch_state_of_result_input', false)
             ->get();
 
-        foreach($uninput_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
-            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
-            ->where('res_sch', $schedule['sch_id'])
-            ->get();
+        foreach ($uninput_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+                ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->where('res_sch', $schedule['sch_id'])
+                ->get();
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
         }
@@ -277,11 +308,11 @@ class ScheduleController extends Controller
             ->where('sch_state_of_permission', false)
             ->get();
 
-        foreach($unapproved_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
-            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
-            ->where('res_sch', $schedule['sch_id'])
-            ->get();
+        foreach ($unapproved_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+                ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->where('res_sch', $schedule['sch_id'])
+                ->get();
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
         }
@@ -302,10 +333,10 @@ class ScheduleController extends Controller
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
         // 학생 출석 결과 변경 요청 -> 해당 학생 출석결과 변경 진행.
-        if(!empty($request->reservation)) {
+        if (!empty($request->reservation)) {
             $reservation = $request->reservation;
 
-            foreach($reservation as $data) {
+            foreach ($reservation as $data) {
                 Reservation::find($data['res_id'])->update([
                     'res_state_of_attendance' => $data['res_state_of_attendance']
                 ]);
@@ -314,7 +345,7 @@ class ScheduleController extends Controller
 
         // 출석결과 승인
         $sch_id->update([
-          'sch_state_of_permission' => true
+            'sch_state_of_permission' => true
         ]);
 
         return response()->json([
