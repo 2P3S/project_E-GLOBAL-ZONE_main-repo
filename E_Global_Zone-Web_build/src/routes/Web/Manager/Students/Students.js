@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import Modal from "components/common/modal/Modal";
 import ConfirmStudent from "components/common/modal/ConfirmStudent";
 import useClick from "modules/hooks/useClick";
-import conf from "conf/userConf";
+import conf from "conf/conf";
+import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 
-const Test = () => <>Test</>;
 let i = 2001200;
 let j = 0;
 
 export default function Students() {
-	let mokup = {
+	let mockup = {
 		sort: null,
 		data: [
 			{
@@ -114,20 +114,30 @@ export default function Students() {
 			},
 		],
 	};
-	const [data, setData] = useState(mokup.data);
+	const [data, setData] = useState(mockup.data);
 	const [isOpen, setIsOpen] = useState(false);
-	const table = useRef();
+	const [isRestrict, setIsRestrict] = useState(false);
+	function handleOpen() {
+		setIsRestrict(true);
+	}
+	function handleClose() {
+		setIsRestrict(false);
+	}
+
+	const ref = useClick(() => {
+		handleOpen();
+	});
 
 	useEffect(() => {
 		window.easydropdown.all();
 	}, []);
 	const sort = (sortBy) => {
-		if (mokup.sort === sortBy) {
-			setData(mokup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
-			mokup.sort = null;
+		if (mockup.sort === sortBy) {
+			setData(mockup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
+			mockup.sort = null;
 		} else {
-			setData(mokup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
-			mokup.sort = sortBy;
+			setData(mockup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
+			mockup.sort = sortBy;
 		}
 	};
 	return (
@@ -229,7 +239,7 @@ export default function Students() {
 								</th>
 							</tr>
 						</thead>
-						<tbody ref={table}>
+						<tbody>
 							{data.map((v) => (
 								<tr key={v.std_id}>
 									<td>{v.dept}</td>
@@ -240,17 +250,26 @@ export default function Students() {
 											<div className="restriction">
 												<img
 													src="/global/img/restriction_on.png"
-													alt="이용제한 해제"
-													onClick={() => <Test />}
+													alt="이용제한"
 												/>
 											</div>
 										) : (
-											<div className="restriction">
+											<div
+												className="restriction"
+												onClick={() => {
+													setIsRestrict(true);
+												}}
+											>
 												<img
 													src="/global/img/restriction_off.png"
 													alt="이용제한 해제"
-													onClick={() => <Test />}
 												/>
+												<Modal
+													isOpen={isRestrict}
+													onRequestClose={handleClose}
+												>
+													<ConfirmRestriction />
+												</Modal>
 											</div>
 										)}
 									</td>

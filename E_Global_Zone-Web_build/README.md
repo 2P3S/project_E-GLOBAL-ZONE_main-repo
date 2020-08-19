@@ -123,7 +123,7 @@
         |-- conf
         |   |-- routeConf.js
         |   |-- scheduleConf.js
-        |   |-- userConf.js
+        |   |-- conf.js
         |   |-- class
         |       |-- Schedule.js
         |       |-- User.js

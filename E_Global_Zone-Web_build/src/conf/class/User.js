@@ -1,4 +1,4 @@
-import conf from "../userConf";
+import conf from "../conf";
 
 export default class User {
 	id;
