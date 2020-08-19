@@ -3,20 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Department;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
+    private const _DEPT_INDEX_SUCCESS = "계열/학과 목록 조회에 성공하였습니다.";
+
+    private const _DEPT_STORE_SUCCESS = "(을)를 계열/학과 목록에 추가하였습니다.";
+    private const _DEPT_STORE_FAILURE = "계열/학과 목록 추가에 실패하였습니다.";
+
+    private const _DEPT_UPDATE_SUCCESS1 = "계열/학과 이름을 ";
+    private const _DEPT_UPDATE_SUCCESS2 = "(으)로 변경하였습니다.";
+    private const _DEPT_UPDATE_FAILURE = "계열/학과 이름 변경을 실패하였습니다.";
+
+    private const _DEPT_DELETE_SUCCESS = "(을)를 계열/학과 목록에서 제거하였습니다.";
+
+    private $validator;
+
+    /**
+     * 계열 / 학과에 대한 유효성 검사 실시
+     *
+     * @param Request $request
+     * @param array $rules
+     * @return bool
+     */
+    private function department_validator(
+        Request $request,
+        array $rules
+    ): bool
+    {
+        $this->validator = Validator::make($request->all(), $rules);
+
+        if ($this->validator->fails()) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * 등록된 계열 / 학과 목록 조회
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
-            'message' => '등록된 학기 목록 조회',
+            'message' => self::_DEPT_INDEX_SUCCESS,
             'result' => Department::all(),
         ], 200);
     }
@@ -24,72 +60,86 @@ class DepartmentController extends Controller
     /**
      * 계열 / 학과 등록
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'dept_name' => 'required|string',
-        ]);
+        $rules = [
+            'dept_name' => 'required|string|unique:departments,dept_name'
+        ];
 
-        if ($validator->fails()) {
+        if (!$this->department_validator($request, $rules)) {
             return response()->json([
-                'message' => $validator->errors(),
+                'message' => self::_DEPT_STORE_FAILURE,
+                'error' => $this->validator->errors(),
             ], 422);
         }
 
-        $create_department = Department::create([
-            'dept_name' => $request->dept_name,
+        $new_dept_name = $request->input('dept_name');
+
+        $created_department = Department::create([
+            'dept_name' => $new_dept_name
         ]);
 
         return response()->json([
-            'message' => '등록 완료',
-            'result' => $create_department,
+            'message' => $new_dept_name . self::_DEPT_STORE_SUCCESS,
+            'result' => $created_department,
         ], 201);
     }
 
     /**
      * 계열 / 학과 이름 변경
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $dept_id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Department $dept_id
+     * @return JsonResponse
      */
-    public function update(Request $request, Department $dept_id)
+    public function update(Request $request, Department $dept_id): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'dept_name' => 'required|string',
-        ]);
+        $rules = [
+            'dept_name' => 'required|string|unique:departments,dept_name',
+        ];
 
-        if ($validator->fails()) {
+        if (!$this->department_validator($request, $rules)) {
             return response()->json([
-                'message' => $validator->errors(),
+                'message' => self::_DEPT_UPDATE_FAILURE,
+                'error' => $this->validator->errors(),
             ], 422);
         }
 
-        $update_department = $dept_id->update([
-            'dept_name' => $request->dept_name,
+        // <<-- 계열/학과 이름 변경 -> 메세지 저장
+        $old_dept_name = $dept_id['dept_name'];
+        $new_dept_name = $request->input('dept_name');
+        $message_template =
+            self::_DEPT_UPDATE_SUCCESS1 . $old_dept_name . "에서 " .
+            $new_dept_name . self::_DEPT_UPDATE_SUCCESS2;
+        // -->>
+
+        $updated_department = $dept_id->update([
+            'dept_name' => $new_dept_name
         ]);
 
         return response()->json([
-            'message' => '업데이트 완료',
-            'result' => $update_department,
+            'message' => $message_template,
+            'result' => $updated_department,
         ], 200);
     }
 
     /**
      * 계열 / 학과 삭제
      *
-     * @param  int  $dept_id
-     * @return \Illuminate\Http\Response
+     * @param Department $dept_id
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function destroy(Department $dept_id)
+    public function destroy(Department $dept_id): JsonResponse
     {
+        $deleted_dept_name = $dept_id['dept_name'];
         $dept_id->delete();
 
         return response()->json([
-            'message' => '삭제 완료',
+            'message' => $deleted_dept_name . self::_DEPT_DELETE_SUCCESS
         ], 200);
     }
 }

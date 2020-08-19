@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
+    // TODO : 학기 하나에 대해서만 정보를 가져올 필요가 있음
+
     /**
      * 등록된 전체 학기 목록 조회
      *
