@@ -122,6 +122,17 @@ class ForeignerController extends Controller
                     ], 422);
                 }
 
+                // 이미 해당 학기에 등록한 학생인 경우
+                $isDuplicatedStudent = Work_student_foreigner::where('work_std_for', $foreigner_id)
+                    ->where('work_sect', $data['sect_id'])
+                    ->count();
+
+                if ($isDuplicatedStudent) {
+                    return response()->json([
+                        'message' => "{$foreigner_id} 학번의 학생의 데이터가 중복입니다.",
+                    ], 422);
+                }
+
                 Work_student_foreigner::create([
                     'work_std_for' => $foreigner_id,
                     'work_sect' => $data['sect_id']
