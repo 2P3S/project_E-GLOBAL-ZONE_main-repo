@@ -59,7 +59,7 @@ class DailySchedule extends ScheduleConf {
         super();
         let array = [];
         for (const element of scheduleIds) {
-            array.push(DailySchedule.setSchedule(element, Math.ceil(Math.random() * 10)));
+            array.push(DailySchedule.setSchedule(element, Math.floor(Math.random()*5), [2,3]));
         }
         this.name = name;
         this.language = language;

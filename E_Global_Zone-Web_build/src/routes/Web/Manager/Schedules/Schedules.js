@@ -6,21 +6,25 @@ import CheckBox from 'components/common/CheckBox';
 import DailySchedule from "../../../../conf/class/DailySchedule";
 import conf from "conf/conf";
 
+
 export default function Schedules() {
-    const mockup = [
-        [new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
-        new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
-        new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),],
-     [   new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
-        new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
-        new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),],
-       [ new DailySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),
-        new DailySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),]
+    const data = [
+        [new DailySchedule(1, "1", conf.language.ENGLISH, new Array(9)),
+            new DailySchedule(1, "2", conf.language.ENGLISH, new Array(9)),
+            new DailySchedule(1, "3", conf.language.ENGLISH, new Array(9)),],
+        [new DailySchedule(1, "4", conf.language.CHINESE, new Array(9)),
+            new DailySchedule(1, "5", conf.language.CHINESE, new Array(9)),
+            new DailySchedule(1, "6", conf.language.CHINESE, new Array(9)),],
+        [new DailySchedule(1, "7", conf.language.JAPANESE, new Array(9)),
+            new DailySchedule(1, "8", conf.language.JAPANESE, new Array(9)),]
     ];
+    // const [originData, setOriginData] = useState();
     const [insertIsOpen, setInsertIsOpen] = useState(false);
     const [scheduleList, setScheduleList] = useState();
+    const origin = JSON.parse(JSON.stringify(data));
     useEffect(() => {
-        setScheduleList(mockup);
+        setScheduleList(data);
+        // setOriginData(origin);
     }, [])
 
     const openSch = () => {
@@ -28,6 +32,29 @@ export default function Schedules() {
     };
     const closeSch = () => {
         setInsertIsOpen(false);
+    };
+    const handleAll = () => {
+        setScheduleList(origin)
+    }
+    const handleCheck = (data, status) => {
+        let array = [];
+        let miniArray = [];
+        for (let i = 0; i < data.length; i++) {
+            miniArray = [];
+            for (let j = 0; j < data[i].length; j++) {
+                for (let k = 0; k < data[i][j].schedule.length; k++) {
+                    try {
+                        if (data[i][j].schedule[k].status !== status) {
+                            data[i][j].schedule[k] = null;
+                        }
+                    } catch {
+                    }
+                }
+                miniArray.push(data[i][j]);
+            }
+            array.push(miniArray)
+        }
+        setScheduleList(array);
     };
 
     return (
@@ -37,7 +64,11 @@ export default function Schedules() {
                 <div className="select_date">
                     <img src="/global/img/select_date_ico.gif" alt="날짜 선택"/>
                 </div>
-                <CheckBox setScheduleList={setScheduleList}/>
+                <CheckBox
+                    data={scheduleList}
+                    handleAll={handleAll}
+                    handleCheck={handleCheck}
+                />
             </div>
             <div className="wrap">
                 {scheduleList ? <ScheduleTable

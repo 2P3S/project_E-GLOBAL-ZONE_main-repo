@@ -11,7 +11,6 @@ const Schedule = (props) => {
 
     function handleOpen() {
         setIsOpen(true);
-        console.log(props.scheduleId)
     }
 
     function handleClose() {
@@ -35,14 +34,13 @@ const Schedule = (props) => {
 
 export default function ScheduleTable({scheduleList}) {
     const printSchedule = (v) => {
-        console.log(v)
         if (v) {
             switch (v.status) {
                 case ScheduleConf.STATUS.RESERVATION_NOTHING:
                     return <Schedule status="gray oneline" scheduleId={v.scheduleId}>예약 없음</Schedule>;
                 case ScheduleConf.STATUS.RESERVATION_DONE:
                     return <Schedule status="mint oneline" scheduleId={v.scheduleId}>{v.value}명 예약 완료</Schedule>;
-                case ScheduleConf.STATUS.RESULT_IN_PROGRESS:
+                case ScheduleConf.STATUS.RESERVATION_IN_PROGRESS:
                     if (typeof v.value === "object") {
                         return (
                             <Schedule status="blue" scheduleId={v.scheduleId}>
@@ -68,7 +66,7 @@ export default function ScheduleTable({scheduleList}) {
                         </Schedule>
                     );
                 case ScheduleConf.STATUS.RESULT_DONE:
-                    return <Schedule status="purple oneline" scheduleId={v.scheduleId}>결과 입력완료</Schedule>;
+                    return <Schedule status="puple oneline" scheduleId={v.scheduleId}>결과 입력완료</Schedule>;
                 default:
                     return "";
             }
