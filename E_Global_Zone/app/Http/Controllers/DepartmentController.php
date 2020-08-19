@@ -11,10 +11,13 @@ use Illuminate\Support\Facades\Validator;
 class DepartmentController extends Controller
 {
     private const _DEPT_INDEX_SUCCESS = "계열/학과 목록 조회에 성공하였습니다.";
+
     private const _DEPT_STORE_SUCCESS = "(을)를 계열/학과 목록에 추가하였습니다.";
+    private const _DEPT_STORE_FAILURE = "계열/학과 목록 추가에 실패하였습니다.";
 
     private const _DEPT_UPDATE_SUCCESS1 = "계열/학과 이름을 ";
     private const _DEPT_UPDATE_SUCCESS2 = "(으)로 변경하였습니다.";
+    private const _DEPT_UPDATE_FAILURE = "계열/학과 이름 변경을 실패하였습니다.";
 
     private const _DEPT_DELETE_SUCCESS = "(을)를 계열/학과 목록에서 제거하였습니다.";
 
@@ -68,7 +71,8 @@ class DepartmentController extends Controller
 
         if (!$this->department_validator($request, $rules)) {
             return response()->json([
-                'message' => $this->validator->errors(),
+                'message' => self::_DEPT_STORE_FAILURE,
+                'error' => $this->validator->errors(),
             ], 422);
         }
 
@@ -99,11 +103,12 @@ class DepartmentController extends Controller
 
         if (!$this->department_validator($request, $rules)) {
             return response()->json([
-                'message' => $this->validator->errors(),
+                'message' => self::_DEPT_UPDATE_FAILURE,
+                'error' => $this->validator->errors(),
             ], 422);
         }
 
-        // <<-- 계열/학과 이름 변경 -> 메세지
+        // <<-- 계열/학과 이름 변경 -> 메세지 저장
         $old_dept_name = $dept_id['dept_name'];
         $new_dept_name = $request->input('dept_name');
         $message_template =
