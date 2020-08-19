@@ -3,19 +3,19 @@ import Modal from "components/common/modal/Modal";
 import InsertSchedule from "components/common/modal/InsertSchedule";
 import ScheduleTable from "components/common/ScheduleTable";
 import CheckBox from 'components/common/CheckBox';
-import WeeklySchedule from "../../../../conf/class/WeeklySchedule";
+import DailySchedule from "../../../../conf/class/DailySchedule";
 import conf from "conf/conf";
 
 export default function Schedules() {
     const mockup = [
-        new WeeklySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),
-        new WeeklySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),
+        [new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
+        new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),
+        new DailySchedule(1, "name1", conf.language.ENGLISH, new Array(9)),],
+     [   new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
+        new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),
+        new DailySchedule(1, "name1", conf.language.CHINESE, new Array(9)),],
+       [ new DailySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),
+        new DailySchedule(1, "name1", conf.language.JAPANESE, new Array(9)),]
     ];
     const [insertIsOpen, setInsertIsOpen] = useState(false);
     const [scheduleList, setScheduleList] = useState();

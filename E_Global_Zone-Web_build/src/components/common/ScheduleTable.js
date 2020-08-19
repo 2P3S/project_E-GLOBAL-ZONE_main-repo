@@ -6,7 +6,6 @@ import ConfirmResult from "./modal/ConfirmResult";
 import conf from 'conf/conf';
 import ScheduleConf from "../../conf/scheduleConf";
 
-let i = 0;
 const Schedule = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +53,8 @@ export default function ScheduleTable({scheduleList}) {
                     } else {
                         return (
                             <>
-                                <Schedule status="blue oneline" scheduleId={v.scheduleId}>{`예약 미승인:${v.value}`}</Schedule>
+                                <Schedule status="blue oneline"
+                                          scheduleId={v.scheduleId}>{`예약 미승인:${v.value}`}</Schedule>
                             </>
                         );
                     }
@@ -75,6 +75,7 @@ export default function ScheduleTable({scheduleList}) {
             return "";
         }
     };
+
     // 필요기능 클릭 시 해당 스케줄 정보
     return (
         <div className="scroll_area">
@@ -97,23 +98,21 @@ export default function ScheduleTable({scheduleList}) {
                     <col width="9%" span="9"/>
                 </colgroup>
                 <tbody>
-                {scheduleList.map((value, index) => {
-                    return (
-                        <tr key={i++}>
-                            {value.language === conf.language.ENGLISH ?
-                                <th scope="row">
-                                    영어
-                                </th> : value.language === conf.language.CHINESE ?
-                                    <th scope="row" >중국어</th> :
-                                    <th scope="row" >일본어</th>}
-
-                            <td>{value.name}</td>
-                            {value.schedule.map((v) => (
-                                <td key={i++}>{printSchedule(v)}</td>
-                            ))}
-                        </tr>
-                    );
-                })}
+                {
+                    scheduleList.map((value) => {
+                        console.log(value)
+                        value.map((value, index)=>{
+                            return (
+                                <tr key={index}>
+                                    <td>{value.name}</td>
+                                    {value.schedule.map((v, index) => (
+                                        <td key={index}>{printSchedule(v)}</td>
+                                    ))}
+                                </tr>
+                            )
+                        })
+                    })
+                }
                 </tbody>
             </table>
         </div>

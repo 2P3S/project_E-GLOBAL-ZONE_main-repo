@@ -1,9 +1,9 @@
 import ScheduleConf from "../scheduleConf";
 
 /**
- * WeeklySchedule for one foreigner student
+ * DailySchedule for one foreigner student
  */
-class WeeklySchedule extends ScheduleConf {
+class DailySchedule extends ScheduleConf {
     id;
     name;
     language;
@@ -59,7 +59,7 @@ class WeeklySchedule extends ScheduleConf {
         super();
         let array = [];
         for (const element of scheduleIds) {
-            array.push(WeeklySchedule.setSchedule(element, Math.ceil(Math.random() * 10)));
+            array.push(DailySchedule.setSchedule(element, Math.ceil(Math.random() * 10)));
         }
         this.name = name;
         this.language = language;
@@ -67,4 +67,4 @@ class WeeklySchedule extends ScheduleConf {
     }
 }
 
-export default WeeklySchedule;
+export default DailySchedule;
