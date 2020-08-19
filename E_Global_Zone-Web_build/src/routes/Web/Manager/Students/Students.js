@@ -241,7 +241,7 @@ export default function Students() {
 						</thead>
 						<tbody>
 							{data.map((v) => (
-								<tr key={v.std_id}>
+								<tr key={v.std_id} className={v.status?"restriction_on":""}>
 									<td>{v.dept}</td>
 									<td>{v.std_id}</td>
 									<td>{v.name}</td>

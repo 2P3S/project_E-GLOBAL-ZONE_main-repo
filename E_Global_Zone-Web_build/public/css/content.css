@@ -183,7 +183,7 @@ table.sch_table tbody td .status p.yellow {
 	background: #ffa400;
 	border: 1px solid #ffa400;
 }
-table.sch_table tbody td .status p.purple {
+table.sch_table tbody td .status p.puple {
 	background: #6e4bdd;
 	border: 1px solid #6e4bdd;
 }
@@ -255,12 +255,9 @@ table.sch_table tbody tr:hover td:first-child {
 	font-size: 12px;
 	font-weight: 600;
 }
-.off{
-	display: none;
-}
 .hover_btn {
 	position: absolute;
-	z-index: 9999;
+	z-index: 1;
 	left: -50%;
 	margin-left: 50%;
 	bottom: 44px;
@@ -275,6 +272,10 @@ table.sch_table tbody tr:hover td:first-child {
 	box-shadow: 5px 5px 20px 0px rgba(0, 0, 0, 0.2);
 }
 /* 유학생 관리, 한국인 학생 관리 공용 */
+.off{
+	display: none;
+}
+
 .hover_btn.kor {
 	width: 275px;
 }

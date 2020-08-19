@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "components/common/modal/Modal";
 import ShowList from "components/common/modal/ShowList";
 import useClick from "../../modules/hooks/useClick";
@@ -11,6 +11,7 @@ const Schedule = (props) => {
 
     function handleOpen() {
         setIsOpen(true);
+        console.log(props.scheduleId)
     }
 
     function handleClose() {
@@ -18,7 +19,6 @@ const Schedule = (props) => {
     }
 
     const ref = useClick(handleOpen);
-
     return (
         <div className="status" ref={ref}>
             <p className={props.status}>{props.children}</p>
@@ -35,6 +35,7 @@ const Schedule = (props) => {
 
 export default function ScheduleTable({scheduleList}) {
     const printSchedule = (v) => {
+        console.log(v)
         if (v) {
             switch (v.status) {
                 case ScheduleConf.STATUS.RESERVATION_NOTHING:
@@ -98,19 +99,54 @@ export default function ScheduleTable({scheduleList}) {
                     <col width="9%" span="9"/>
                 </colgroup>
                 <tbody>
+                <tr>
+                    <th scope="row" rowSpan={scheduleList[0].length+1}>
+                        {conf.language.ENGLISH}
+                    </th>
+                </tr>
                 {
-                    scheduleList.map((value) => {
-                        console.log(value)
-                        value.map((value, index)=>{
-                            return (
-                                <tr key={index}>
-                                    <td>{value.name}</td>
-                                    {value.schedule.map((v, index) => (
-                                        <td key={index}>{printSchedule(v)}</td>
-                                    ))}
-                                </tr>
-                            )
-                        })
+                    scheduleList[0].map((value, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{value.name}</td>
+                                {value.schedule.map((v, index) => (
+                                    <td key={index}>{printSchedule(v)}</td>
+                                ))}
+                            </tr>
+                        )
+                    })}
+                <tr>
+                    <th scope="row" rowSpan={scheduleList[1].length+1}>
+                        {conf.language.CHINESE}
+                    </th>
+                </tr>
+                {
+                    scheduleList[1].map((value, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{value.name}</td>
+                                {value.schedule.map((v, index) => (
+                                    <td key={index}>{printSchedule(v)}</td>
+                                ))}
+                            </tr>
+                        )
+                    })
+                }
+                <tr>
+                    <th scope="row" rowSpan={scheduleList[2].length+1}>
+                        {conf.language.JAPANESE}
+                    </th>
+                </tr>
+                {
+                    scheduleList[2].map((value, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{value.name}</td>
+                                {value.schedule.map((v, index) => (
+                                    <td key={index}>{printSchedule(v)}</td>
+                                ))}
+                            </tr>
+                        )
                     })
                 }
                 </tbody>
