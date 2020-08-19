@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ForeignerController extends Controller
 {
-    // TODO 공식문서 에러 메세지 커스텀하기 확인하기
+    // TODO 공식문서 에러 메세지 커스텀하기 확인하기 -> FORM REQUEST 적용
     private const _WORK_STD_FOR_INDEX_SUCCESS = "의 근로유학생 목록 조회에 성공하였습니다.";
     private const _WORK_STD_FOR_INDEX_FAILURE = "등록된 근로유학생이 없습니다.";
 

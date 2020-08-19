@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/dragonmantank/cron-expression" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/composer" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/vlucas/phpdotenv" />
+      <path value="$PROJECT_DIR$/E_Global_Zone/vendor/symfony/polyfill-ctype" />
+    </include_path>
+  </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
+</project>
