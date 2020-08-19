@@ -19,7 +19,7 @@ Route::prefix('/admin')->group(function () {
     /* 유학생 관리 */
     Route::prefix('/foreigner')->group(function () {
         /** 특정 유학생 정보 조회 */
-        Route::post('', 'ForeignerController@show')->name('foreigners.show');
+        Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
@@ -27,7 +27,7 @@ Route::prefix('/admin')->group(function () {
         /* 학기별 유학생 관리 */
         Route::prefix('work')->group(function () {
             /** 학기별 전체 유학생 정보 조회 */
-            Route::get('{work_sect}', 'ForeignerController@index')->name('foreigners.index');
+            Route::get('{sect_id}', 'ForeignerController@index')->name('foreigners.index');
 
             /** 학기별 유학생 등록 */
             Route::post('', 'ForeignerController@store')->name('foreigners.store');
