@@ -162,7 +162,6 @@ class ForeignerController extends Controller
      */
     public function registerAccount(Request $request)
     {
-        //TODO 비밀번호 길이 조정.
         $validator = Validator::make($request->all(), [
             'std_for_id' => 'required|integer|min:7',
             'std_for_dept' => 'required|integer',
@@ -181,6 +180,7 @@ class ForeignerController extends Controller
         }
 
         // 계정 생성
+        //TODO 유학생 초기 비밀번호 환경변수 설정. (최종루트는 env)
         try {
             Student_foreigner::create([
                 'std_for_id' => $request->std_for_id,
@@ -220,7 +220,7 @@ class ForeignerController extends Controller
     public function updateAccount(Student_foreigner $std_for_id, Request $request)
     {
         $is_user_admin = true;                                          /* 관리자 인증 여부 */
-        //TODO 리셋 비밀번호 env에 저장하기.
+        //TODO 리셋 비밀번호 환경변수 설정 ( 최종루트는 env )
         //TODO auth 정보로 로직 나누기.
         $user_password = "1q2w3e4r!";
 
