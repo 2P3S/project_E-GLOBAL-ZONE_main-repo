@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static find($std_kor_id)
+ */
 class Student_korean extends Model
 {
     use Notifiable;
