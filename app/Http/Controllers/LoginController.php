@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Authenticator;
-use Illuminate\Http\JsonResponse as Json;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -93,9 +93,9 @@ class LoginController extends Controller
      * 관리자 로그인
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function adminLogin(Request $request): Json
+    public function adminLogin(Request $request): JsonResponse
     {
         $rules = [
             'key' => 'account',
@@ -129,9 +129,9 @@ class LoginController extends Controller
      * 외국인 유학생 로그인
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function foreignerLogin(Request $request): Json
+    public function foreignerLogin(Request $request): JsonResponse
     {
         $rules = [
             'key' => 'std_for_id',
@@ -169,9 +169,9 @@ class LoginController extends Controller
      * 관리자, 유학생 로그아웃
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function logout(Request $request): Json
+    public function logout(Request $request): JsonResponse
     {
         $request->user($request['guard'])->token()->revoke();
 
