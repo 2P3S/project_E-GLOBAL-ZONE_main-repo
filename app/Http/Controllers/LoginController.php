@@ -40,7 +40,6 @@ class LoginController extends Controller
         array $rules
     ): bool
     {
-        //TODO password HASH 처리!!
         $this->validator = Validator::make($request->all(), [
             $rules['key'] => 'required|string',
             'password' => 'required|string|min:8',
@@ -74,6 +73,7 @@ class LoginController extends Controller
         }
 
         $token = '';
+        //TODO 비밀번호 환경변수 설정 ( 최종루트는 env )
         $initial_password = [
             'admins' => 'IAC@23yju5630-115',
             'foreigners' => '1q2w3e4r!'

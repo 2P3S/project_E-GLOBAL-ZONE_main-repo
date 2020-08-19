@@ -67,8 +67,6 @@ Route::prefix('/admin')->group(function () {
 
             /** 계정 삭제 */
             Route::delete('{std_kor_id}', 'KoreanController@destroyAccount')->name('koreans.destroyAccount');
-
-            //TODO 한국인 학생 비밀번호 변경
         });
 
 
@@ -194,8 +192,6 @@ Route::prefix('/korean')->group(function () {
         /** 학기별 참석 결과 조회 */
         // Route::get('', 'ReservationController@showResult')->name('reservations.show');
     });
-
-    //TODO 한국인 학생 비밀번호 변경
 });
 
 /* 로그인 라우터 */

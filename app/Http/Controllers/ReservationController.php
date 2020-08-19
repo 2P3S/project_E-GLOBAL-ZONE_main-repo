@@ -24,7 +24,6 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        //TODO 학생 학번 받아올 수 있으면 res_sch를 parms로 받아오자.
         $validator = Validator::make($request->all(), [
             'res_sch' => 'required|integer',
             'res_std_kor' => 'required|integer',
