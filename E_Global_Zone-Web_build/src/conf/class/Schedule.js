@@ -24,23 +24,16 @@ class Schedule {
 	sch_state_of_permission;
 	sch_for_zoom_pw;
 
-	/**
-	 * constructor
-	 * @param {object} argObj {sch_id, sch_sect, sch_std_for, sch_start_date, sch_end_date, sch_res_count,sch_state_of_result_input, sch_state_of_permission, sch_for_zoom_pw}
-	 */
-	constructor(argObj) {
-		this.sch_id = argObj["sch_id"];
-		this.sch_sect = argObj["sch_sect"];
-		this.sch_std_for = argObj["sch_std_for"];
-		this.sch_start_date = argObj["sch_start_date"];
-		this.sch_end_date = argObj["sch_end_date"];
-		this.sch_res_count = argObj["sch_res_count"];
-		this.sch_state_of_result_input = argObj["sch_state_of_result_input"];
-		this.sch_state_of_permission = argObj["sch_state_of_permission"];
-		this.sch_for_zoom_pw = argObj["sch_for_zoom_pw"];
+	constructor(sch_id, sch_sect, sch_std_for, sch_start_date, sch_end_date, sch_res_count, sch_state_of_result_input, sch_state_of_permission, sch_for_zoom_pw) {
+		this.sch_id = sch_id;
+		this.sch_sect = sch_sect;
+		this.sch_std_for = sch_std_for;
+		this.sch_start_date = sch_start_date;
+		this.sch_end_date = sch_end_date;
+		this.sch_res_count = sch_res_count;
+		this.sch_state_of_result_input = sch_state_of_result_input;
+		this.sch_state_of_permission = sch_state_of_permission;
+		this.sch_for_zoom_pw = sch_for_zoom_pw;
 	}
-	// 스케줄
-	static getListOfStudents = (sceduleId) => {};
 }
-
 export default Schedule;

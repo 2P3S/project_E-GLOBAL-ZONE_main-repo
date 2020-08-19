@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import MobileRouter from "app/Routers/Router.Mobile";
 import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
 import { LoginRouter } from "app/Routers/Router.Login";
-import conf from "../conf/userConf";
+import conf from "../conf/conf";
 import { logOut, setClass } from "redux/userSlice/userSlice";
 
 function Routes() {

@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 
 import { Schedules, Students, Settings } from "routes/Web/Manager";
-import SchdulesForeign from "routes/Web/Foreign/Schedules/Schedules";
+
 import Header from "components/common/Header";
 import Footer from "components/common/Footer";
 import Foreigner from "routes/Web/Manager/Students/Foreigner";
+import ForeignerSchedules from "routes/Web/Foreign/Schedules/Schedules";
 
 export function ManagerRouter() {
 	useEffect(() => {
@@ -36,9 +37,13 @@ export function ManagerRouter() {
 }
 export function ForeignerRouter() {
 	return (
-		<Switch>
-			<Redirect exact path="/" to={`/1`} />
-			<Route path="/:id/schedule" component={SchdulesForeign} />
-		</Switch>
+		<>
+			<Header /> {/* 유학생용 헤더로 대체해야함 */}
+			<Switch>
+				<Redirect exact path="/" to={`/1`} />
+				<Route exact path="/:id" component={ForeignerSchedules} />
+			</Switch>
+			<Footer />
+		</>
 	);
 }

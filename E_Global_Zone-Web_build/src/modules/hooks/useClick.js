@@ -9,6 +9,7 @@ export default (onClick) => {
 	useEffect(() => {
 		if (element.current) {
 			element.current.addEventListener("click", onClick);
+			element.current.style.cursor = "pointer";
 		}
 		return () => {
 			if (element.current) {

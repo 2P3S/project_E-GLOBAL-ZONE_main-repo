@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import User from "conf/class/User";
-import conf from "conf/userConf";
+import conf from "conf/conf";
 
 export const userSlice = createSlice({
 	name: "user",

@@ -78,6 +78,7 @@ body {
 	margin: 0 auto;
 }
 .wrapper .content .sub_title {
+	position: relative;
 	width: 100%;
 	height: 90px;
 	display: inline-block;
@@ -254,9 +255,12 @@ table.sch_table tbody tr:hover td:first-child {
 	font-size: 12px;
 	font-weight: 600;
 }
+.off{
+	display: none;
+}
 .hover_btn {
 	position: absolute;
-	z-index: 1;
+	z-index: 9999;
 	left: -50%;
 	margin-left: 50%;
 	bottom: 44px;
@@ -380,6 +384,149 @@ table.student_manage_table tr.restriction_on td:first-child {
 }
 table.student_manage_table td:first-child {
 	background: #fff;
+}
+
+/* 유학생 스케줄관리*/
+.status_wrap {
+	float: left;
+	width: 300px;
+	text-align: left;
+}
+.status_wrap .status_box {
+	margin-top: 40px;
+}
+.status_wrap .status_box div {
+	overflow: hidden;
+	width: 200px;
+	height: 52px;
+	line-height: 52px;
+	margin-bottom: 5px;
+	padding: 0 30px;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 500;
+}
+.status_wrap .status_box div p {
+	float: right;
+}
+.status_wrap .status_box div p span {
+	font-family: "Lato", sans-serif;
+	font-size: 20px;
+}
+.status_wrap .status_box div.blue {
+	background: #2050e6;
+}
+.status_wrap .status_box div.mint {
+	background: #34bcad;
+}
+.status_wrap .status_box div.puple {
+	background: #6e4bdd;
+}
+.status_wrap .status_box div.yellow {
+	background: #ffa400;
+}
+.status_wrap .status_box div.gray {
+	background: #373a44;
+}
+.week_wrap {
+	position: relative;
+	float: right;
+	width: 884px;
+	padding-left: 15px;
+	border-left: 1px solid #eaebef;
+}
+.week_wrap .day_week {
+	position: absolute;
+	top: 30px;
+	right: 0;
+	width: 94%;
+}
+.week_wrap .day_week li {
+	float: left;
+	width: 120px;
+	font-size: 13px;
+	color: #373a44;
+	text-align: center;
+}
+.week_wrap .day_week li span {
+	width: 46px;
+	height: 46px;
+	line-height: 46px;
+	display: block;
+	margin: 8px auto 0 auto;
+	font-size: 22px;
+	font-family: "Lato", sans-serif;
+	font-weight: 400;
+}
+.week_wrap .day_week li span.today {
+	background: url(/global/img/day_week_bg.gif) no-repeat center 50%;
+	color: #fff;
+}
+.week_wrap .week_table {
+	width: 100%;
+	display: inline-block;
+}
+.week_wrap .week_table ul {
+	float: left;
+	margin-top: 138px;
+}
+.week_wrap .week_table ul li {
+	font-family: "Lato", sans-serif;
+	font-weight: 800;
+	font-size: 12px;
+	height: 15px;
+	margin-bottom: 43px;
+}
+.week_wrap .week_table table {
+	float: right;
+	width: 95%;
+	margin-top: 85px;
+	border-collapse: collapse;
+	color: #373a44;
+	font-size: 12px;
+	font-weight: 500;
+}
+.week_wrap .week_table table tbody td {
+	border: 1px solid #d5d5db;
+	border-top: none;
+	height: 58px;
+	color: #fff;
+}
+.week_wrap .week_table table tbody tr:first-child td {
+	border-top: none;
+	height: 30px;
+}
+.week_wrap .week_table table tbody tr:nth-child(2) td {
+	height: 30px;
+}
+.week_wrap .week_table table tbody td div {
+	display: table;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+.week_wrap .week_table table tbody td div p {
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 135%;
+	font-size: 11px;
+}
+.week_wrap .week_table table tbody td div.blue {
+	background: #2050e6;
+}
+.week_wrap .week_table table tbody td div.mint {
+	background: #34bcad;
+}
+.week_wrap .week_table table tbody td div.puple {
+	background: #6e4bdd;
+}
+.week_wrap .week_table table tbody td div.yellow {
+	background: #ffa400;
+}
+.week_wrap .week_table table tbody td div.gray {
+	background: #e1e1ea;
+	color: #373a44;
 }
 
 /********************* POPUP *********************/
