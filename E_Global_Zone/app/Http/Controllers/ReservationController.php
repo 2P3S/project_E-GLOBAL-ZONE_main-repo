@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Reservation;
-use App\Section;
+use App\Setting;
 use App\Schedule;
 use App\SchedulesResultImg;
-use App\Student_korean;
-use App\Student_foreigner;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,16 +33,28 @@ class ReservationController extends Controller
             ], 422);
         }
 
+        $setting_value = Setting::orderBy('setting_date', 'DESC')->get()->first();      /* 환경설정 변수 */
+
+        // 하루 최대 예약 횟수 제한 조건 검색.
+        $isOverCountRes = Reservation::where('res_std_kor', $request->res_std_kor)
+            ->whereDate('created_at', date("Y-m-d"))
+            ->count();
+
+        if ($isOverCountRes >= $setting_value->max_res_per_day) {
+            return response()->json([
+                'message' => '하루 최대 예약 가능 횟수를 초과하였습니다.',
+            ], 404);
+        }
+
         // 중복 예약 방지를 위한 조회.
         $isDuplicateRes = Reservation::where('res_sch', $request->res_sch)
             ->where('res_std_kor', $request->res_std_kor)->get()->first();
 
-        if ($isDuplicateRes)
+        if ($isDuplicateRes) {
             return response()->json([
                 'message' => '이미 등록된 스케줄입니다.',
             ], 404);
-
-        //TODO 하루에 한번 예약 가능 Validation 추가.
+        }
 
         $create_reservation = Reservation::create([
             'res_sch' => $request->res_sch,
