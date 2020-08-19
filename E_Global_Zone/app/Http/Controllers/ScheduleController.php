@@ -32,7 +32,6 @@ class ScheduleController extends Controller
             ], 422);
         }
 
-        //TODO 날짜 계산 찾아보기.
         $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
             ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
             ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
@@ -141,7 +140,7 @@ class ScheduleController extends Controller
                             'sch_for_zoom_pw' => $zoom_pw,
                         ]);
 
-                        //TODO 환경변수 추가해서 시작 - 종료시간 설정.
+                        //TODO 환경변수 설정 ( 1000 ~ 9999 )
                         // 줌 비밀번호 생성
                         $zoom_pw = mt_rand(1000, 9999);
                         $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
