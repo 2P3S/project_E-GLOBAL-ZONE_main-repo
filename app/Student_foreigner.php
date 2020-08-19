@@ -6,6 +6,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
+/**
+ * @method static select(string $string, string $string1, string $string2, string $string3, string $string4)
+ */
 class Student_foreigner extends Authenticatable
 {
     use Notifiable, HasMultiAuthApiTokens;
@@ -26,7 +29,8 @@ class Student_foreigner extends Authenticatable
         'std_for_dept',
         'std_for_name',
         'std_for_lang',
-        'std_for_country'
+        'std_for_country',
+        'std_for_num_of_delay_input'
     ];
 
     /**

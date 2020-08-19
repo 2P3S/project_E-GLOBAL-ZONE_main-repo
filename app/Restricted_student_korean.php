@@ -5,6 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static where(string $string, $std_kor_id)
+ * @method static create(array $array)
+ */
 class Restricted_student_korean extends Model
 {
     use Notifiable;
