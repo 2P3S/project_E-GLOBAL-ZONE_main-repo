@@ -15,13 +15,14 @@ class KoreanController extends Controller
      */
     public function indexApproval()
     {
-        //TODO 검색이 안된다.. 왜그러지?
-        $approval_result = Student_korean::where('std_kor_dept', 2);
+        $approval_result = Student_korean::select('std_kor_id', 'std_kor_dept', 'std_kor_name', 'std_kor_phone', 'std_kor_mail')
+        ->where('std_kor_state_of_permission', 0)
+        ->get();
 
         return response()->json([
             'message' => '회원가입 승인 대기중인 한국인 리스트 반환.',
             'data' => $approval_result
-        ], 201);
+        ], 200);
     }
 
     /**
