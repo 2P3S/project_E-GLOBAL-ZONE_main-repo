@@ -184,7 +184,7 @@ Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
     Route::prefix('/reservation')->group(function () {
         /** 내 예약 일정 조회 */
-        Route::get('', 'ReservationController@show')->name('reservations.show');
+        Route::get('{date}', 'ReservationController@show')->name('reservations.show');
 
         /** 예약 신청 */
         Route::post('', 'ReservationController@store')->name('reservations.store');

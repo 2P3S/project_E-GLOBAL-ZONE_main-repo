@@ -26,22 +26,21 @@ class ScheduleController extends Controller
         /* 예약 신청 시작 기준 종료 날짜 */
         $sch_end_date   = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
-        $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
+        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
             ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
             ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->orderBy('schedules.sch_start_date')
             ->get();
 
-        // 등록된 스케줄이 없을 경우
-        if ($allSchdules->count() === 0) {
-            return response()->json([
-                'message' => '등록된 스케줄이 없습니다.',
-            ], 200);
+        foreach ($allSchdules as $schedule) {
+            $res_count = $schedule->sch_res_count;
+            $max_std_once =  $setting_value->max_std_once;
+            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
         }
 
         return response()->json([
-            'message' => '일정 조회를 성공하였습니다.',
+            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
             'result' => $allSchdules,
         ], 200);
     }
