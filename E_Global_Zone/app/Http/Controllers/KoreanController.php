@@ -8,6 +8,21 @@ use Illuminate\Support\Facades\Validator;
 
 class KoreanController extends Controller
 {
+    /*
+     * [Refactoring]
+     * TODO RESPONSE 수정
+     * TODO validator 수정
+     */
+    // indexApproval
+    private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
+    private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";
+    private const _STD_KOR_APR_INDEX_FAILURE = "가입 승인 대기중인 한국인 학생이 없습니다.";
+
+    // updateApproval
+    private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
+    private const _STD_KOR_APR_UPDATE_FAILURE = "가입 승인에 실패하였습니다. 한국인 학생 다시 목록을 확인해주세요";
+
+
     /**
      * 계정 등록 - 대기 명단 조회
      *
@@ -16,9 +31,10 @@ class KoreanController extends Controller
     public function indexApproval()
     {
         $approval_result = Student_korean::select('std_kor_id', 'std_kor_dept', 'std_kor_name', 'std_kor_phone', 'std_kor_mail')
-        ->where('std_kor_state_of_permission', 0)
-        ->get();
+            ->where('std_kor_state_of_permission', 0)
+            ->get();
 
+        // TODO 학생 수 카운트 -> 승인 대기 중인 한국인 학생이 없을 경우
         return response()->json([
             'message' => '회원가입 승인 대기중인 한국인 리스트 반환.',
             'data' => $approval_result
@@ -28,11 +44,13 @@ class KoreanController extends Controller
     /**
      * 계정 등록 - 승인
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function updateApproval(Request $request)
     {
+        // TODO validation 적용 -> 참고 : ForeignerController@show()
+        // TODO Student_Korean Model 활용 -> (Student_Korean $std_kor_id)
         $data = json_decode($request->getContent(), true);
 
         // 한국인 학생 계정 승인여부 반환
@@ -76,7 +94,7 @@ class KoreanController extends Controller
     /**
      * 한국인 학생 계정 생성
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function registerAccount(Request $request)
@@ -115,7 +133,7 @@ class KoreanController extends Controller
     /**
      * 계정 삭제
      *
-     * @param  int  $std_kor_id
+     * @param int $std_kor_id
      * @return \Illuminate\Http\Response
      */
     public function destroyAccount(Student_korean $std_kor_id)
@@ -140,7 +158,7 @@ class KoreanController extends Controller
     /**
      * 이용 제한 해제
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroyRestrict($id)
@@ -151,7 +169,7 @@ class KoreanController extends Controller
     /**
      * 학년도별 학생정보 CSV 파일 다운로드
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     // public function csv($id)
