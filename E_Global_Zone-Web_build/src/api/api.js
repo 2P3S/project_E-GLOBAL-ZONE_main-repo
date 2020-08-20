@@ -1,14 +1,8 @@
-// Student
 
-// Schedule
-/**
- * Create
- * Read
- * 1. 학번
- * 2. 날짜
- * Update
- * Delete
- */
-// Foreigner
 
-// Manager
+export function test(url){
+    const {loading, data, error} = useAxios({
+        url
+    })
+    console.log(loading, data, error);
+}
