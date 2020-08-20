@@ -72,17 +72,17 @@ class ReservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($date)
     {
-        // 사용자 정보 -> 학번 가져오기.
+        //TODO 한국인 학생 학번으로 조회.
+        // $korean_id = $request->user($request['guard'])->std_kor_id;
         $res_std_kor = 1955408;
-        $sch_start_date = "2020-08-10";
 
         $result_reservations = Reservation::select('std_for_lang', 'std_for_name', 'sch_start_date', 'sch_end_date', 'res_state_of_permission', 'res_state_of_attendance', 'sch_state_of_result_input', 'sch_state_of_permission', 'sch_for_zoom_pw')
             ->join('schedules as sch', 'sch.sch_id', '=', 'reservations.res_sch')
             ->join('student_foreigners as for', 'for.std_for_id', '=', 'sch.sch_std_for')
             ->where('reservations.res_std_kor', $res_std_kor)
-            ->whereDate('sch.sch_start_date', $sch_start_date)
+            ->whereDate('sch.sch_start_date', $date)
             ->get();
 
         return response()->json([

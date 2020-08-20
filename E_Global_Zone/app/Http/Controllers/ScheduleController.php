@@ -6,45 +6,41 @@ use App\Schedule;
 use App\Section;
 use App\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Library\Services\Preference;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
     /**
-     * 한국인학생 - 해당 일자 전체 스케줄 조회
+     * 한국인학생 - 현재 날짜 기준 스케줄 조회
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Preference $preference_instance): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'sch_start_date' => 'required|date',
-            'sch_end_date' => 'required|date',
-        ]);
+        $setting_value = $preference_instance->getPreference();                                 /* 환경설정 변수 */
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
-        }
+        /* 시작 날짜 */
+        $sch_start_date = date("Y-m-d", strtotime("Now"));
+        /* 예약 신청 시작 기준 종료 날짜 */
+        $sch_end_date   = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
-        $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
-            ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
-            ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
+        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
+            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
+            ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
+            ->orderBy('schedules.sch_start_date')
             ->get();
 
-        // 등록된 스케줄이 없을 경우
-        if ($allSchdules->count() === 0) {
-            return response()->json([
-                'message' => '등록된 스케줄이 없습니다.',
-            ], 404);
+        foreach ($allSchdules as $schedule) {
+            $res_count = $schedule->sch_res_count;
+            $max_std_once =  $setting_value->max_std_once;
+            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
         }
 
         return response()->json([
-            'message' => '일정 조회를 성공하였습니다.',
+            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
             'result' => $allSchdules,
         ], 200);
     }

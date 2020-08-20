@@ -175,8 +175,8 @@ Route::prefix('/korean')->group(function () {
     /** 한국인 학생 계정 생성 (회원가입) */
     Route::post('account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
 
-    /* 한국인학생 - 해당 일자 전체 스케줄 조회 */
-    Route::post('schedule', 'ScheduleController@index')->name('schedules.index');
+    /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
+    Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
 
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
@@ -184,7 +184,7 @@ Route::prefix('/korean')->group(function () {
     /* 예약 관련 */
     Route::prefix('/reservation')->group(function () {
         /** 내 예약 일정 조회 */
-        Route::get('', 'ReservationController@show')->name('reservations.show');
+        Route::get('{date}', 'ReservationController@show')->name('reservations.show');
 
         /** 예약 신청 */
         Route::post('', 'ReservationController@store')->name('reservations.store');
