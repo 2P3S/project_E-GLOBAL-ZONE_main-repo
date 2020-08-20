@@ -15,12 +15,54 @@ use Illuminate\Support\Facades\Validator;
 
 class ForeignerController extends Controller
 {
-    // TODO 공식문서 에러 메세지 커스텀하기 확인하기 -> FORM REQUEST 적용
+    /*
+     * [Refactoring]
+     * TODO RESPONSE 수정
+     * TODO validator 수정
+     * TODO 공식문서 에러 메세지 커스텀하기 확인하기 -> FORM REQUEST 적용
+     * TODO 근로유학생 관련된 로직을 근로유학생 컨트롤러로 분리필요(구조가 복잡) -> Section $sect_id 적용
+     * TODO 접근 가능 범위 수정
+     */
     private const _WORK_STD_FOR_INDEX_SUCCESS = "의 근로유학생 목록 조회에 성공하였습니다.";
     private const _WORK_STD_FOR_INDEX_FAILURE = "등록된 근로유학생이 없습니다.";
 
-    private const _WORK_STD_FOR_SHOW_SUCCESS = "유학생 정보조회에 성공하였습니다.";
-    private const _WORK_STD_FOR_SHOW_FAILURE = "유학생 정보조회에 실패하였습니다.";
+    private const _STD_FOR_SHOW_SUCCESS = "유학생 정보조회에 성공하였습니다.";
+    private const _STD_FOR_SHOW_FAILURE = "유학생 정보조회에 실패하였습니다.";
+
+    // 0000학기의 근로유학생 목록에 00명이 동록되었습니다.
+    private const _SECT_STD_FOR_STORE_SUCCESS1 = "의 근로유학생 목록에 ";
+    private const _SECT_STD_FOR_STORE_SUCCESS2 = "명이 등록되었습니다.";
+    // 0000학기 근로유학생 등록에 실패하였습니다.
+    private const _SECT_STD_FOR_STORE_FAILURE = " 근로유학생 등록에 실패하였습니다.";
+
+    // 000 유학생이 0000학기의 근로유학생 목록에 등록되었습니다.
+    // 000 유학생의 근로유학생 등록에 실패하였습니다.
+    private const _SECT_STD_FOR_EACH = " 유학생이 ";
+
+    private const _SECT_STD_FOR_EACH_STORE_SUCCESS = " 근로유학생 목록에 등록되었습니다.";
+    private const _SECT_STD_FOR_EACH_STORE_FAILURE = " 유학생의 근로유학생 등록에 실패하였습니다.";
+
+    // 000 유학생이 0000학기의 근로유학생 목록에서 삭제되었습니다.
+    // 000 유학생의 근로유학생 삭제에 실패하였습니다.
+    private const _SECT_STD_FOR_EACH_DELETE_SUCCESS = " 근로유학생 목록에서 삭제되었습니다.";
+    private const _SECT_STD_FOR_EACH_DELETE_FAILURE = " 유학생의 근로유학생 삭제에 실패하였습니다.";
+
+    // 000 유학생이 등록되었습니다.
+    // 000 유학생 등록에 실패하였습니다.
+    private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
+    private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
+
+    private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
+    // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
+    // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
+    private const _STD_FOR_RESET_SUCCESS = " 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : " . self::_STD_FOR_INIT_PASSWORD . ")";
+    private const _STD_FOR_RESET_FAILURE = " 유학생의 비밀번호가 초기화에 실패하였습니다.";
+
+    // 000 유학생이 삭제되었습니다.
+    // 000 유학생 삭제에 실패하였습니다.
+    private const _STD_FOR_DELETE_SUCCESS = " 유학생이 삭제되었습니다.";
+    private const _STD_FOR_DELETE_FAILURE = " 유학생 삭제에 실패하였습니다.";
+
 
     /**
      * 학기별 전체 유학생 정보 조회
@@ -67,7 +109,7 @@ class ForeignerController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => self::_WORK_STD_FOR_SHOW_FAILURE,
+                'message' => self::_STD_FOR_SHOW_FAILURE,
                 'error' => $validator->errors()
             ], 422);
         }
@@ -94,12 +136,10 @@ class ForeignerController extends Controller
         }
 
         return response()->json([
-            'message' => self::_WORK_STD_FOR_SHOW_SUCCESS,
+            'message' => self::_STD_FOR_SHOW_SUCCESS,
             'data' => $data_std_for,
         ]);
     }
-
-    // TODO ========== 진행 중 ========== TODO
 
     /**
      * 학기별 유학생 등록
@@ -109,6 +149,8 @@ class ForeignerController extends Controller
      */
     public function store(Request $request)
     {
+        // TODO show 참고 validator 수정
+        // TODO Section $sect_id 활용
         $data = json_decode($request->getContent(), true);
 
         // 학생 정보 저장
@@ -116,6 +158,7 @@ class ForeignerController extends Controller
             // 숫자 Validation 검사
             if (is_numeric($foreigner_id)) {
                 // 존재하는 유학생인지 검사
+                // TODO 존재하지 않는 유학생 선택 시 수정
                 if (!Student_foreigner::find($foreigner_id)) {
                     return response()->json([
                         'message' => "{$foreigner_id} 학번은 존재하지 않는 학번입니다.",
@@ -127,6 +170,7 @@ class ForeignerController extends Controller
                     ->where('work_sect', $data['sect_id'])
                     ->count();
 
+                // TODO validator 에 추가 -> unique : student_foreigners,std_for_id
                 if ($isDuplicatedStudent) {
                     return response()->json([
                         'message' => "{$foreigner_id} 학번의 학생의 데이터가 중복입니다.",
@@ -156,6 +200,7 @@ class ForeignerController extends Controller
      * @param int $work_list_id
      * @return Response
      */
+    // TODO 한명의 유학생만 추가하는 경우는???
     public function destroy(Work_student_foreigner $work_list_id)
     {
         $work_list_id->delete();
@@ -173,6 +218,7 @@ class ForeignerController extends Controller
      */
     public function registerAccount(Request $request)
     {
+        // TODO unique 추가
         $validator = Validator::make($request->all(), [
             'std_for_id' => 'required|integer|min:7',
             'std_for_dept' => 'required|integer',
