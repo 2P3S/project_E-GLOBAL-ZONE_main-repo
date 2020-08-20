@@ -14,7 +14,8 @@ const modalStyle = {
 	},
 };
 Modal.setAppElement(document.getElementById("modal-root"));
-export default function MModal({ children, isOpen, handleClose }) {
+
+export default function ({ children, isOpen, handleClose }) {
 	return (
 		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
 			{children}
