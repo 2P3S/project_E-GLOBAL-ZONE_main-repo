@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * Korean :: 신청 양식
+ * @returns {JSX.Element}
+ * @constructor
+ * @todo setup
+ */
 export default function ApplicationForm() {
 	return (
 		<div className="wrap">

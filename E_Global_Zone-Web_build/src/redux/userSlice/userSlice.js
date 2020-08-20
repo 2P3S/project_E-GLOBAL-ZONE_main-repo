@@ -2,6 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import User from "conf/class/User";
 import conf from "conf/conf";
 
+/**
+ * ReduxSlice - user
+ * @type {Slice<{isLogin: boolean, user}, {setClass: reducers.setClass, logIn: reducers.logIn, logOut: reducers.logOut}, string>}
+ */
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {

@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * Login - <<추가예정>>
+ * @returns {JSX.Element}
+ * @constructor
+ * @todo use Google Oauth
+ */
 export default function Login() {
 	return (
 		<div className="wrap mobile_login">

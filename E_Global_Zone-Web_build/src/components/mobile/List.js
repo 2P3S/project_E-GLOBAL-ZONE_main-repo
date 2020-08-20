@@ -9,6 +9,13 @@ import Item from "./Item";
  * status => 출석 인증 완료, 출석 인증 대기, 예약 대기, 예약 완료, 미참석
  */
 
+/**
+ * List for Item
+ * @param tabView
+ * @param data
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function List({ tabView, data = [] }) {
 	return tabView ? (
 		<div className="reservation_boxs tab_wrap">

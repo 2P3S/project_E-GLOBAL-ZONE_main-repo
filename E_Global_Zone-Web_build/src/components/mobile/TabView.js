@@ -3,6 +3,11 @@ import List from "./List";
 import useClick from "modules/hooks/useClick";
 import mockup from "../../test/mockup";
 
+/**
+ * TabView for Mobile
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TabView() {
 	const [data, setData] = useState(mockup); // 스케줄 데이터 배열로 초기화
 	const setClass = (e) => {

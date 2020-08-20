@@ -4,10 +4,18 @@ import ConfirmStudent from "components/common/modal/ConfirmStudent";
 import useClick from "modules/hooks/useClick";
 import conf from "conf/conf";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
+import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
+import useModal from "../../../../modules/hooks/useModal";
+
 
 let i = 2001200;
 let j = 0;
 
+/**
+ * Manager :: 학생관리
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Students() {
     let mockup = {
         sort: null,
@@ -117,6 +125,7 @@ export default function Students() {
     const [data, setData] = useState(mockup.data);
     const [isOpen, setIsOpen] = useState(false);
     const [isRestrict, setIsRestrict] = useState(false);
+    const {isOpen: isUnrestrict, handleOpen: handleOpenForUnrestrict, handleClose: handleCloseForUnrestrict} = useModal();
 
     function handleOpen() {
         setIsRestrict(true);
@@ -170,9 +179,9 @@ export default function Students() {
                 <div className="scroll_area">
                     <table className="student_manage_table">
                         <colgroup>
-                            <col width="10%" />
-                            <col width="12%" />
-                            <col width="15%" />
+                            <col width="10%"/>
+                            <col width="12%"/>
+                            <col width="15%"/>
                         </colgroup>
                         <thead>
                         <tr>
@@ -254,9 +263,9 @@ export default function Students() {
                                 <td
                                     className="name"
                                     onMouseOver={() => {
-                                    document.getElementById(`hover_btn_${index}`).className = "hover_btn kor"
-                                }}
-                                    onMouseOut={()=>{
+                                        document.getElementById(`hover_btn_${index}`).className = "hover_btn kor"
+                                    }}
+                                    onMouseOut={() => {
                                         document.getElementById(`hover_btn_${index}`).className = "off"
                                     }}
                                 >{v.name}
@@ -270,11 +279,20 @@ export default function Students() {
                                 </td>
                                 <td>
                                     {v.status ? (
-                                        <div className="restriction">
+                                        <div className="restriction"
+                                             onClick={
+                                                 handleOpenForUnrestrict
+                                             }>
                                             <img
                                                 src="/global/img/restriction_on.png"
                                                 alt="이용제한"
                                             />
+                                            <Modal
+                                                isOpen={isUnrestrict}
+                                                onRequestClose={handleCloseForUnrestrict}
+                                            >
+                                                <ConfirmUnrestriction handleClose={handleCloseForUnrestrict}/>
+                                            </Modal>
                                         </div>
                                     ) : (
                                         <div
@@ -291,7 +309,7 @@ export default function Students() {
                                                 isOpen={isRestrict}
                                                 onRequestClose={handleClose}
                                             >
-                                                <ConfirmRestriction/>
+                                                <ConfirmRestriction handleClose={handleClose}/>
                                             </Modal>
                                         </div>
                                     )}

@@ -5,8 +5,13 @@ import ScheduleTable from "components/common/ScheduleTable";
 import CheckBox from 'components/common/CheckBox';
 import DailySchedule from "../../../../conf/class/DailySchedule";
 import conf from "conf/conf";
+import useModal from "../../../../modules/hooks/useModal";
 
-
+/**
+ * Manager :: 스케줄 조회
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Schedules() {
     const data = [
         [new DailySchedule(1, "1", conf.language.ENGLISH, new Array(9)),
@@ -21,6 +26,8 @@ export default function Schedules() {
     // const [originData, setOriginData] = useState();
     const [insertIsOpen, setInsertIsOpen] = useState(false);
     const [scheduleList, setScheduleList] = useState();
+    const {isOpen, handleClose, handleOpen} = useModal();
+
     const origin = JSON.parse(JSON.stringify(data));
     useEffect(() => {
         setScheduleList(data);
@@ -76,13 +83,16 @@ export default function Schedules() {
                 /> : <></>}
 
                 <div className="table_btn">
-                    <a href="#" onClick={openSch}>
+                    <div onClick={handleOpen}>
                         개별 입력
-                    </a>
-                    <Modal isOpen={insertIsOpen} onRequestClose={closeSch}>
-                        <InsertSchedule closeSch={closeSch}/>
+                    </div>
+                    <Modal isOpen={isOpen} hadleClose={handleClose}>
+                        <InsertSchedule closeSch={handleClose}/>
                     </Modal>
-                    <a href="#">CSV 입력</a>
+                    <div style={{display:"none"}}>
+                        {/* 추후 추가 예정 */}
+                        scv
+                    </div>
                 </div>
             </div>
         </div>

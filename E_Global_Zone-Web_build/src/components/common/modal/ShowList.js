@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
 
+/**
+ * Modal - 신청 학생 명단보기
+ * @param handleClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ShowList({ handleClose }) {
 	useEffect(() => {
 		window.easydropdown.all();

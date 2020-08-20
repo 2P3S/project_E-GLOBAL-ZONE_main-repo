@@ -8,6 +8,11 @@ import Footer from "components/common/Footer";
 import Foreigner from "routes/Web/Manager/Students/Foreigner";
 import ForeignerSchedules from "routes/Web/Foreign/Schedules/Schedules";
 
+/**
+ * ManagerRouter - Router for Manager
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function ManagerRouter() {
 	useEffect(() => {
 		window.easydropdown.all();
@@ -35,6 +40,12 @@ export function ManagerRouter() {
 		</>
 	);
 }
+
+/**
+ * ForeignerRouter - Router for Foreigner students
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function ForeignerRouter() {
 	return (
 		<>

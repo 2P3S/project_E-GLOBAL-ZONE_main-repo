@@ -1,5 +1,10 @@
 import React from "react";
 
+/**
+ * Footer for Mobile
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Footer() {
 	return (
 		<div className="mfooter">

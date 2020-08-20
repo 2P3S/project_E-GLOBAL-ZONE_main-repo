@@ -18,6 +18,15 @@ const PENDING = "예약 대기";
 const RESERVED = "예약 완료";
 const NON_ATTENDANCE = "미참석";
 
+/**
+ * Item for Mobile Schedule
+ * @param language
+ * @param name
+ * @param time
+ * @param status
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Item({ language, name, time, status }) {
 	const setStatus = (status) => {
 		switch (status) {

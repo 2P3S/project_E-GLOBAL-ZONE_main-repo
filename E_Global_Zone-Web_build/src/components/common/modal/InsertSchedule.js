@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * Modal - 스케줄 입력
+ * @param closeSch
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function InsertSchedule({ closeSch }) {
 	useEffect(() => {
 		window.easydropdown.all();

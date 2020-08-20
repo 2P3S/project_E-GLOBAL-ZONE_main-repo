@@ -1,6 +1,13 @@
 import React from "react";
 import ScheduleConf from "../../conf/scheduleConf";
 
+/**
+ * CheckBox - 스케줄 및 예약관리 체크박스
+ * @param handleAll
+ * @param handleCheck
+ * @param data
+ * @returns {JSX.Element}
+ */
 export default ({handleAll, handleCheck, data}) => {
     const checkBox = (id) => {
         const ids = ["allCheck","no_app_reservation","not_result","no_app_result","ok_result"];

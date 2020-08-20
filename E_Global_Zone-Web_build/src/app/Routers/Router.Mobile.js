@@ -5,6 +5,10 @@ import { Reservation, Schedules as Schedule, Results, ApplicationForm } from "ro
 import MobileLogin from "components/mobile/Login";
 import Footer from "components/mobile/Footer";
 
+/**
+ * MobileRouter - Router for Mobile(Korean students)
+ * @returns {JSX.Element}
+ */
 export default () => {
 	return (
 		<div className="wrap">
