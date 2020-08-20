@@ -14,6 +14,9 @@ class LoginController extends Controller
     private const _LOGOUT_SUCCESS = '로그아웃되었습니다.';
     private const _PASSWORD_CHANGE_REQUIRE = '초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.';
 
+    private const _ADMIN_INIT_PASSWORD = "IAC@23yju5630-115";
+    private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
+
     /**
      * @var Authenticator
      */
@@ -75,8 +78,8 @@ class LoginController extends Controller
         $token = '';
         //TODO 비밀번호 환경변수 설정 ( 최종루트는 env )
         $initial_password = [
-            'admins' => 'IAC@23yju5630-115',
-            'foreigners' => '1q2w3e4r!'
+            'admins' => self::_ADMIN_INIT_PASSWORD,
+            'foreigners' => self::_STD_FOR_INIT_PASSWORD
         ];
 
         if ($initial_password[$credentials[2]] !== $credentials[1]) {

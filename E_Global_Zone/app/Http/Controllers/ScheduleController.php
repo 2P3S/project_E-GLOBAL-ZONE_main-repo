@@ -80,12 +80,20 @@ class ScheduleController extends Controller
             $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
             // 전체 예약 한국인 인원수
+<<<<<<< HEAD
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+=======
             $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+>>>>>>> server-laravel
 
             // 예약 미승인 한국인 인원수
             $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
 
+<<<<<<< HEAD
+            $schedule['reservated_count'] = $reservated_count;
+=======
             $schedule['reserved_count'] = $reserved_count;
+>>>>>>> server-laravel
             $schedule['un_permission_count'] = $un_permission_count;
         }
 
