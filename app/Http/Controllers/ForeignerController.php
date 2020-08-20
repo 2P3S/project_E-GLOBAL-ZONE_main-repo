@@ -312,7 +312,9 @@ class ForeignerController extends Controller
      */
     public function destroyAccount(Student_foreigner $std_for_id)
     {
+        // 1. 연락처 정보 삭제
         Student_foreigners_contact::find($std_for_id['std_for_id'])->delete();
+        // 2. 계정 삭제
         $std_for_id->delete();
 
         return response()->json([
