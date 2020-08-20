@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import conf from "conf/conf";
 import useClick from "modules/hooks/useClick";
-import useHover from "../../../../modules/hooks/useHover";
-import index from "styled-components/dist/styled-components-macro.esm";
+import useModal from "../../../../modules/hooks/useModal";
+import Modal from "components/common/modal/Modal";
+import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 
 let i = 1601214;
 let j = 0;
@@ -139,14 +140,24 @@ export default function Foreigner() {
         ],
     };
     const [data, setData] = useState(mockup.data);
-    const [checkId, setCheckId] = useState([]);
-    const [hoverTab, setHoverTab] = useState([0]);
+    const {isOpen:contactIsOpen, handleOpen: handleOpenForContact, handleClose: handleCloseForContact} = useModal();
+    const {isOpen:addIsOpen, handleOpen: handleOpenForAdd, handleClose: handleCloseForAdd} = useModal();
+
+    function handleCheckAll() {
+        let flag = true;
+        return function () {
+            data.forEach(v => {
+                document.getElementById(v.std_id).checked = flag;
+                v.check = flag;
+            })
+            flag = !flag;
+            console.log(data);
+        }
+    }
     useEffect(() => {
         window.easydropdown.all();
     }, []);
-    useEffect(() => {
-        console.log(checkId);
-    }, [checkId]);
+
 
     const sort = (sortBy) => {
         setData([]); // reset
@@ -199,7 +210,7 @@ export default function Foreigner() {
                             <tr>
                                 <th rowSpan="2">
                                     <div className="table_check">
-                                        <input type="checkbox" id="a1" name=""/>
+                                        <input type="checkbox" id="a1" name="" onClick={handleCheckAll()}/>
                                         <label htmlFor="a1"></label>
                                     </div>
                                 </th>
@@ -335,8 +346,8 @@ export default function Foreigner() {
                                                         } else {
                                                             value.check = true;
                                                         }
-                                                        console.log(value.check);
                                                     }}
+
                                                 />
                                                 <label htmlFor={value.std_id}></label>
                                             </div>
@@ -364,9 +375,9 @@ export default function Foreigner() {
                                         <td onMouseOver={() => {
                                             document.getElementById(`hover_btn_${index}`).className = "hover_btn";
                                         }}
-                                        onMouseOut={()=>{
-                                            document.getElementById(`hover_btn_${index}`).className = "off";
-                                        }}
+                                            onMouseOut={() => {
+                                                document.getElementById(`hover_btn_${index}`).className = "off";
+                                            }}
                                         >{value.name}
                                             <div id={`hover_btn_${index}`} className="hover_btn off">
                                                 <div className="area">
@@ -412,9 +423,12 @@ export default function Foreigner() {
                     </div>
 
                     <div className="table_btn">
-                        <a href="#">연락처 정보</a>
-                        <a href="#">등록</a>
-                        <a href="#">CSV 다운</a>
+                        <div onClick={handleOpenForContact}>연락처 정보</div>
+                        <Modal isOpen={contactIsOpen} onRequestClose={handleCloseForContact}>
+                            <ForeignerContact list={{}} handleClose={handleCloseForContact}/>
+                        </Modal>
+                        <div>등록</div>
+                        {/*<div>CSV 다운</div>*/}
                     </div>
                 </div>
             </div>
