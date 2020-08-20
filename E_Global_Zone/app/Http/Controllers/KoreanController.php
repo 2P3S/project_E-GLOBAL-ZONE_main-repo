@@ -12,6 +12,8 @@ class KoreanController extends Controller
      * [Refactoring]
      * TODO RESPONSE 수정
      * TODO validator 수정
+     * TODO 접근 가능 범위 수정
+     * TODO 한국인 유학생 -> 학번 validation 수정 min, max, unique
      */
     // indexApproval
     private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
@@ -21,6 +23,13 @@ class KoreanController extends Controller
     // updateApproval
     private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
     private const _STD_KOR_APR_UPDATE_FAILURE = "가입 승인에 실패하였습니다. 한국인 학생 다시 목록을 확인해주세요";
+
+    private const _STD_KOR_RGS_SUCCESS = "가입 신청에 성공하였습니다. 글로벌 존 관리자 승인 시 이용가능합니다.";
+    private const _STD_KOR_RGS_FAILURE = "가입 신청에 실패하였습니다. 글로벌 존 관리자에게 문의해주세요.";
+    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입가능합니다.";
+
+    private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
+    private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
 
 
     /**
@@ -143,27 +152,6 @@ class KoreanController extends Controller
         return response()->json([
             'message' => '계정 삭제 완료',
         ], 204);
-    }
-
-    /**
-     * 이용 제한 등록
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indexRestrict()
-    {
-        //
-    }
-
-    /**
-     * 이용 제한 해제
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroyRestrict($id)
-    {
-        //
     }
 
     /**

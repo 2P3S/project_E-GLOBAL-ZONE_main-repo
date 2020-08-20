@@ -21,6 +21,7 @@ class ForeignerController extends Controller
      * TODO validator 수정
      * TODO 공식문서 에러 메세지 커스텀하기 확인하기 -> FORM REQUEST 적용
      * TODO 근로유학생 관련된 로직을 근로유학생 컨트롤러로 분리필요(구조가 복잡) -> Section $sect_id 적용
+     * TODO 접근 가능 범위 수정
      */
     private const _WORK_STD_FOR_INDEX_SUCCESS = "의 근로유학생 목록 조회에 성공하였습니다.";
     private const _WORK_STD_FOR_INDEX_FAILURE = "등록된 근로유학생이 없습니다.";
@@ -48,18 +49,18 @@ class ForeignerController extends Controller
 
     // 000 유학생이 등록되었습니다.
     // 000 유학생 등록에 실패하였습니다.
-    private const _STD_FOR_STORE_SUCCESS = " 유학생이 유학생 목록에 등록되었습니다.";
+    private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
     private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
 
     private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
-    private const _STD_FOR_RESET_SUCCESS = "유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : " . self::_STD_FOR_INIT_PASSWORD . ")";
+    private const _STD_FOR_RESET_SUCCESS = " 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : " . self::_STD_FOR_INIT_PASSWORD . ")";
     private const _STD_FOR_RESET_FAILURE = " 유학생의 비밀번호가 초기화에 실패하였습니다.";
 
-    // 000 유학생이 유학생 목록에서 삭제되었습니다.
+    // 000 유학생이 삭제되었습니다.
     // 000 유학생 삭제에 실패하였습니다.
-    private const _STD_FOR_DELETE_SUCCESS = " 유학생이 유학생 목록에서 삭제되었습니다.";
+    private const _STD_FOR_DELETE_SUCCESS = " 유학생이 삭제되었습니다.";
     private const _STD_FOR_DELETE_FAILURE = " 유학생 삭제에 실패하였습니다.";
 
 
