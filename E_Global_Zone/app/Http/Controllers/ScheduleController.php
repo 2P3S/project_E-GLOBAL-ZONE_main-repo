@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Schedule;
-use App\Student_foreigner;
 use App\Section;
-use App\Setting;
 use App\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+use App\Library\Services\Preference;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -86,12 +84,20 @@ class ScheduleController extends Controller
             $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
             // 전체 예약 한국인 인원수
+<<<<<<< HEAD
             $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+=======
+            $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+>>>>>>> server-laravel
 
             // 예약 미승인 한국인 인원수
             $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
 
+<<<<<<< HEAD
             $schedule['reservated_count'] = $reservated_count;
+=======
+            $schedule['reserved_count'] = $reserved_count;
+>>>>>>> server-laravel
             $schedule['un_permission_count'] = $un_permission_count;
         }
 
@@ -104,9 +110,9 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Preference $preference_instance)
     {
-        $setting_value = Setting::orderBy('setting_date', 'DESC')->get()->first();      /* 환경설정 변수 */
+        $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
         $data = json_decode($request->getContent(), true);
         $ecept_date = $data['ecept_date'];                                              /* 제외날짜 */
