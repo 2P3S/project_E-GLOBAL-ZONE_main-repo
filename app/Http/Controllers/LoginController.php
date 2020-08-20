@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Authenticator;
-use Illuminate\Http\JsonResponse as Json;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,6 +13,9 @@ class LoginController extends Controller
     private const _LOGIN_SUCCESS = ' 님 로그인 되습니다. 어서오세요';
     private const _LOGOUT_SUCCESS = '로그아웃되었습니다.';
     private const _PASSWORD_CHANGE_REQUIRE = '초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.';
+
+    private const _ADMIN_INIT_PASSWORD = "IAC@23yju5630-115";
+    private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
 
     /**
      * @var Authenticator
@@ -40,7 +43,6 @@ class LoginController extends Controller
         array $rules
     ): bool
     {
-        //TODO password HASH 처리!!
         $this->validator = Validator::make($request->all(), [
             $rules['key'] => 'required|string',
             'password' => 'required|string|min:8',
@@ -74,9 +76,10 @@ class LoginController extends Controller
         }
 
         $token = '';
+        //TODO 비밀번호 환경변수 설정 ( 최종루트는 env )
         $initial_password = [
-            'admins' => 'IAC@23yju5630-115',
-            'foreigners' => '1q2w3e4r!'
+            'admins' => self::_ADMIN_INIT_PASSWORD,
+            'foreigners' => self::_STD_FOR_INIT_PASSWORD
         ];
 
         if ($initial_password[$credentials[2]] !== $credentials[1]) {
@@ -93,9 +96,9 @@ class LoginController extends Controller
      * 관리자 로그인
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function adminLogin(Request $request): Json
+    public function adminLogin(Request $request): JsonResponse
     {
         $rules = [
             'key' => 'account',
@@ -129,9 +132,9 @@ class LoginController extends Controller
      * 외국인 유학생 로그인
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function foreignerLogin(Request $request): Json
+    public function foreignerLogin(Request $request): JsonResponse
     {
         $rules = [
             'key' => 'std_for_id',
@@ -169,9 +172,9 @@ class LoginController extends Controller
      * 관리자, 유학생 로그아웃
      *
      * @param Request $request
-     * @return Json
+     * @return JsonResponse
      */
-    public function logout(Request $request): Json
+    public function logout(Request $request): JsonResponse
     {
         $request->user($request['guard'])->token()->revoke();
 

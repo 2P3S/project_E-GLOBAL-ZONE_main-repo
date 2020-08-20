@@ -33,11 +33,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-//            $start_date = date("Y-m-d", strtotime("-1 days"));
-//            $end_date = date("Y-m-d");
-
-            $start_date = date("Y-m-d", strtotime("+1 days"));
-            $end_date = date("Y-m-d", strtotime("+2 days"));
+            $start_date = date("Y-m-d", strtotime("-1 days"));
+            $end_date = date("Y-m-d");
 
             $student_foreigners = ScheduleList::join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
                 ->where('sch_state_of_result_input', 0)
@@ -55,8 +52,7 @@ class Kernel extends ConsoleKernel
                 ]);
             }
 
-        })->everyMinute();
-//        })->dailyAt('00:00');
+        })->dailyAt('00:00');
     }
 
     /**

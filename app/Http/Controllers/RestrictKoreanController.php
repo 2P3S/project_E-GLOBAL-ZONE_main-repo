@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Restricted_student_korean;
 use App\Student_korean;
-use Illuminate\Http\JsonResponse as Json;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,7 +21,7 @@ class RestrictKoreanController extends Controller
 
     private const _UPDATE_SUCCESS = " 학생의 이용 제한 해제가 완료되었습니다.";
 
-    public function index(Request $request): Json
+    public function index(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
@@ -58,7 +58,7 @@ class RestrictKoreanController extends Controller
         ], 200);
     }
 
-    public function register(Request $request): Json
+    public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
@@ -122,7 +122,7 @@ class RestrictKoreanController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Restricted_student_korean $restrict_id): Json
+    public function update(Request $request, Restricted_student_korean $restrict_id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
