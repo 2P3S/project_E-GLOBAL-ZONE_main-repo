@@ -2,9 +2,10 @@ import defaultAxios from 'axios';
 import  {useEffect, useState} from "react";
 
 /**
- * useAxios is returns response dataset
+ * Hooks - useAxios is returns response dataset
  * @param {AxiosStatic, function} axiosInstance
  * @param {object} opts url,
+ * @return {object} state response data
  */
 const useAxios = ( opts,axiosInstance = defaultAxios) => {
     const [state, setState] = useState({

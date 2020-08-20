@@ -1,6 +1,12 @@
 import React from "react";
 import useClick from "../../../modules/hooks/useClick";
 
+/**
+ * Modal - 이용 제한 등록
+ * @param handleClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ConfirmRestriction({handleClose}) {
     return (
         <div className="popup restriction">

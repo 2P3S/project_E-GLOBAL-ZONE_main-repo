@@ -11,6 +11,11 @@ import useModal from "../../../../modules/hooks/useModal";
 let i = 2001200;
 let j = 0;
 
+/**
+ * Manager :: 학생관리
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Students() {
     let mockup = {
         sort: null,

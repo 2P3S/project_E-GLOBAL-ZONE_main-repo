@@ -9,6 +9,11 @@ import { LoginRouter } from "app/Routers/Router.Login";
 import conf from "../conf/conf";
 import { logOut, setClass } from "redux/userSlice/userSlice";
 
+/**
+ * Routes for Routers
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const User = useSelector(selectUser);

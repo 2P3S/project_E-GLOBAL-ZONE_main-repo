@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import useClick from "../../modules/hooks/useClick";
 
+/**
+ * Header for Mobile
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Header() {
 	const [pathname, setPathname] = useState(useHistory().location.pathname);
 	let useClicks;

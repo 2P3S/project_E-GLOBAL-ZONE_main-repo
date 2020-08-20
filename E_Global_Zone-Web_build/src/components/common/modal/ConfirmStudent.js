@@ -1,6 +1,12 @@
 import React from "react";
 import useClick from "../../../modules/hooks/useClick";
 
+/**
+ * Moadl - 학생 등록 승인
+ * @param handleClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ConfirmStudent({ handleClose }) {
 	return (
 		<div className="popup approval">

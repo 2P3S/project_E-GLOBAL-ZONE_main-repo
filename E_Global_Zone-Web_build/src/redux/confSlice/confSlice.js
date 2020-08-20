@@ -1,5 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
 
+/**
+ * ReduxSlice - conf
+ * @type {Slice<{dept: {}}, {setDept: reducers.setDept}, string>}
+ */
 export const confSlice = createSlice({
     name: "conf",
     initialState: {

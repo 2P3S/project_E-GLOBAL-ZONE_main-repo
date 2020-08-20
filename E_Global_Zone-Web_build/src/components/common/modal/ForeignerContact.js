@@ -1,5 +1,12 @@
 import React from "react";
 
+/**
+ * Modal - 유학생 연락처
+ * @param list
+ * @param handleClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ForeignerContact({list, handleClose}){
 
     return <div className="popup contact">

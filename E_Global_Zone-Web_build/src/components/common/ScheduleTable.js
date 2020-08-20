@@ -6,6 +6,12 @@ import ConfirmResult from "./modal/ConfirmResult";
 import conf from 'conf/conf';
 import ScheduleConf from "../../conf/scheduleConf";
 
+/**
+ * Schedule - a Schedule
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Schedule = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -32,6 +38,12 @@ const Schedule = (props) => {
     );
 };
 
+/**
+ * ScheduleTable - Manager :: 스케줄 및 예약관리
+ * @param scheduleList
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ScheduleTable({scheduleList}) {
     const printSchedule = (v) => {
         if (v) {

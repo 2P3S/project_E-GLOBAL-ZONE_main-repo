@@ -7,7 +7,11 @@ import DailySchedule from "../../../../conf/class/DailySchedule";
 import conf from "conf/conf";
 import useModal from "../../../../modules/hooks/useModal";
 
-
+/**
+ * Manager :: 스케줄 조회
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Schedules() {
     const data = [
         [new DailySchedule(1, "1", conf.language.ENGLISH, new Array(9)),

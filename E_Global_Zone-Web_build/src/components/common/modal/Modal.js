@@ -15,6 +15,13 @@ const modalStyle = {
 };
 Modal.setAppElement(document.getElementById("modal-root"));
 
+/**
+ * Modal from react-modal
+ * @param children
+ * @param isOpen
+ * @param handleClose
+ * @returns {JSX.Element}
+ */
 export default function ({ children, isOpen, handleClose }) {
 	return (
 		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>

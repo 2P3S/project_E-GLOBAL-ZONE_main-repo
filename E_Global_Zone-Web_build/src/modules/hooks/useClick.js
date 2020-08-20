@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from "react";
 
+/**
+ * Hooks - useClick for onClick event
+ * @param {callback} onClick - callback function
+ * @returns {React.MutableRefObject<undefined>}
+ */
 export default (onClick) => {
 	if (typeof onClick !== "function") {
 		return;

@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * Header for Manager
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Header() {
 	return (
 		<div className="head">

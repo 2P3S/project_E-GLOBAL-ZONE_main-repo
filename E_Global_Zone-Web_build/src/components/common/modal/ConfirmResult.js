@@ -1,5 +1,10 @@
 import React, {useEffect} from "react";
 
+/**
+ * Modal - 출석 결과 미승인
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ConfirmResult() {
     useEffect(() => {
         window.easydropdown.all();

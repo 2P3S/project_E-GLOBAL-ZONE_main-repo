@@ -1,5 +1,10 @@
 import React from "react";
 
+/**
+ * Korean :: 결과 조회
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Results() {
 	return (
 		<div>

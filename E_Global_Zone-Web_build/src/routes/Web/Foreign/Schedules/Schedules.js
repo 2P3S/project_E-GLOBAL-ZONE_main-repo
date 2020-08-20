@@ -1,5 +1,11 @@
 import React, {useEffect} from "react";
 
+/**
+ * Foreigner :: 스케줄 관리
+ * @returns {JSX.Element}
+ * @constructor
+ * @todo 구현바람
+ */
 export default function Schedules() {
     useEffect(() => {
         window.easydropdown.all();

@@ -5,7 +5,7 @@ import { setDept} from "../redux/confSlice/confSlice";
 import {useDispatch} from "react-redux";
 
 /**
- * this is react class component
+ * React App
  * @namespace App
  * @returns {JSX.Element} App with GlobalStyles, Routes
  */

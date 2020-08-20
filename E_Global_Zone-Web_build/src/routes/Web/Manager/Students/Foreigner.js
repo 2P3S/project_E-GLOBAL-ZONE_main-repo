@@ -7,6 +7,12 @@ import ForeignerContact from "../../../../components/common/modal/ForeignerConta
 
 let i = 1601214;
 let j = 0;
+
+/**
+ * Manager :: 유학생 관리
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Foreigner() {
     let mockup = {
         sort: null,

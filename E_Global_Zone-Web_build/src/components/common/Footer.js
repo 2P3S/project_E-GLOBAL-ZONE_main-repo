@@ -1,5 +1,10 @@
 import React from "react";
 
+/**
+ * Footer for Web
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Footer() {
 	return (
 		<div className="footer">
