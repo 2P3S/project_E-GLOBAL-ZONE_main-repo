@@ -1,25 +1,25 @@
-import React, { Component } from "react";
+import React, {useEffect} from "react";
 import Routes from "./Routes";
+import useAxios from "../modules/hooks/useAxios";
+import { setDept} from "../redux/confSlice/confSlice";
+import {useDispatch} from "react-redux";
 
 /**
  * this is react class component
  * @namespace App
- * @returns {ReactDOM} App with GlobalStyles, Routes
+ * @returns {JSX.Element} App with GlobalStyles, Routes
  */
-class App extends Component {
-	componentDidMount() {
-		fetch("http://13.124.189.186:8888/api/department").then((res) =>
-			res.json().then((json) => console.log(json))
-		);
-	}
-
-	render() {
-		return (
-			<>
-				<Routes />
-			</>
-		);
-	}
+const App = () => {
+    const {loading, error, data} = useAxios({url: "http://13.124.189.186:8888/api/department"});
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        if(data){
+            dispatch(setDept(data.result));
+        }
+    },[data])
+    return (<>
+        <Routes/>
+    </>)
 }
 
 export default App;
