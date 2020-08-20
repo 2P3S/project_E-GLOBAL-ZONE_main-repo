@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @method static create(array $array)
+ */
 class Department extends Model
 {
     use Notifiable;

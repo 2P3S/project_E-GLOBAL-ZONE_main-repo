@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Schedule;
-use App\Student_foreigner;
 use App\Section;
-use App\Setting;
 use App\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
+use App\Library\Services\Preference;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -32,7 +30,6 @@ class ScheduleController extends Controller
             ], 422);
         }
 
-        //TODO 날짜 계산 찾아보기.
         $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
             ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
             ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
@@ -60,10 +57,49 @@ class ScheduleController extends Controller
      */
     public function show($date)
     {
+        //TODO 미들웨어를 통해 유학생 학번 가져오기.
         $std_for_id = 1372367;
         $result_foreigner_schedules = Schedule::where('sch_std_for', $std_for_id)
             ->whereDate('sch_start_date', $date)
             ->get();
+
+        return $result_foreigner_schedules;
+    }
+
+    /**
+     * 관리자 - 특정 날짜 유학생 전체 스케줄 조회
+     *
+     * @param  string  $date
+     * @return \Illuminate\Http\Response
+     */
+    public function showForeignerSchedules($date)
+    {
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+            ->whereDate('sch_start_date', $date)
+            ->orderBy('std_for_lang')
+            ->get();
+
+        foreach ($result_foreigner_schedules as $schedule) {
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+            // 전체 예약 한국인 인원수
+<<<<<<< HEAD
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+=======
+            $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+>>>>>>> server-laravel
+
+            // 예약 미승인 한국인 인원수
+            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+<<<<<<< HEAD
+            $schedule['reservated_count'] = $reservated_count;
+=======
+            $schedule['reserved_count'] = $reserved_count;
+>>>>>>> server-laravel
+            $schedule['un_permission_count'] = $un_permission_count;
+        }
 
         return $result_foreigner_schedules;
     }
@@ -74,9 +110,9 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Preference $preference_instance)
     {
-        $setting_value = Setting::orderBy('setting_date', 'DESC')->get()->first();      /* 환경설정 변수 */
+        $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
         $data = json_decode($request->getContent(), true);
         $ecept_date = $data['ecept_date'];                                              /* 제외날짜 */
@@ -141,7 +177,7 @@ class ScheduleController extends Controller
                             'sch_for_zoom_pw' => $zoom_pw,
                         ]);
 
-                        //TODO 환경변수 추가해서 시작 - 종료시간 설정.
+                        //TODO 환경변수 설정 ( 1000 ~ 9999 )
                         // 줌 비밀번호 생성
                         $zoom_pw = mt_rand(1000, 9999);
                         $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
@@ -189,7 +225,7 @@ class ScheduleController extends Controller
      * 관리자 - 특정 스케줄 업데이트
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $sch_id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Schedule $sch_id)
@@ -247,11 +283,11 @@ class ScheduleController extends Controller
             ->where('sch_state_of_result_input', false)
             ->get();
 
-        foreach($uninput_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
-            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
-            ->where('res_sch', $schedule['sch_id'])
-            ->get();
+        foreach ($uninput_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+                ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->where('res_sch', $schedule['sch_id'])
+                ->get();
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
         }
@@ -278,11 +314,11 @@ class ScheduleController extends Controller
             ->where('sch_state_of_permission', false)
             ->get();
 
-        foreach($unapproved_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id','std_kor_name', 'res_state_of_attendance')
-            ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
-            ->where('res_sch', $schedule['sch_id'])
-            ->get();
+        foreach ($unapproved_list as $schedule) {
+            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+                ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->where('res_sch', $schedule['sch_id'])
+                ->get();
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
         }
@@ -303,10 +339,10 @@ class ScheduleController extends Controller
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
         // 학생 출석 결과 변경 요청 -> 해당 학생 출석결과 변경 진행.
-        if(!empty($request->reservation)) {
+        if (!empty($request->reservation)) {
             $reservation = $request->reservation;
 
-            foreach($reservation as $data) {
+            foreach ($reservation as $data) {
                 Reservation::find($data['res_id'])->update([
                     'res_state_of_attendance' => $data['res_state_of_attendance']
                 ]);
@@ -315,7 +351,7 @@ class ScheduleController extends Controller
 
         // 출석결과 승인
         $sch_id->update([
-          'sch_state_of_permission' => true
+            'sch_state_of_permission' => true
         ]);
 
         return response()->json([

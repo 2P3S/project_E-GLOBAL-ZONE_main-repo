@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         SMartins\PassportMultiauth\Providers\MultiauthServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
+        App\Providers\PreferenceProvider::class,                                    /* 환경변수 서비스 프로바이더 등록 */
 
     ],
 
