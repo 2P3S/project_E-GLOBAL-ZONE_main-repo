@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * @method static create(array $array)
+ * @method static create(array $dept_name)
  */
 class Department extends Model
 {

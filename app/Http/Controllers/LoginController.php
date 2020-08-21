@@ -176,7 +176,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user($request['guard'])->token()->revoke();
+        $request->user($request->input('guard'))->token()->revoke();
 
         return response()->json([
             'message' => self::_LOGOUT_SUCCESS
@@ -185,7 +185,7 @@ class LoginController extends Controller
 
     public function adminRequest(Request $request)
     {
-        $admin = $request->user($request['guard']);
+        $admin = $request->user($request->input('guard'));
 
         return response()->json([
             'name' => $admin['name']
@@ -194,7 +194,7 @@ class LoginController extends Controller
 
     public function foreignerRequest(Request $request)
     {
-        $foreigner = $request->user($request['guard']);
+        $foreigner = $request->user($request->input('guard'));
 
         return response()->json([
             'id' => $foreigner['std_for_id'],
