@@ -157,9 +157,9 @@ Route::prefix('/foreigner')->group(function () {
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
     /* 예약 관련 */
-    Route::prefix('/reservation')->group(function () {
+    Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
-        Route::get('{sch_id}', 'ReservationController@showReservation')->name('reservations.showReservation');
+        Route::get('{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
 
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
@@ -182,38 +182,18 @@ Route::prefix('/korean')->group(function () {
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
     /* 예약 관련 */
-    Route::prefix('/reservation')->group(function () {
-        /** 내 예약 일정 조회 */
-        Route::get('{date}', 'ReservationController@show')->name('reservations.show');
+    Route::prefix('reservation')->group(function () {
+        /** 해당 일자에 대한 예약 조회 */
+        Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
 
         /** 예약 신청 */
-        Route::post('/{sch_id}', 'ReservationController@store')->name('reservations.store');
+        Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');
 
         /** 내 예약 일정 삭제 */
-        Route::delete('{res_id}', 'ReservationController@destroy')->name('reservations.destroy');
+        Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
 
         /** 학기별 참석 결과 조회 */
         // Route::get('', 'ReservationController@showResult')->name('reservations.show');
-    });
-});
-
-/* 로그인 라우터 */
-Route::prefix('/auth')->group(function () {
-    /* 학생 인증 관련 */
-    Route::prefix('/korean')->group(function () {
-        /** 로그인 */
-        /** 토큰 검사 */
-    });
-
-    /* 유학생 인증 관련 */
-    Route::prefix('/foreigner')->group(function () {
-        /** 로그인 */
-        /** 토큰 검사 */
-    });
-
-    /* 관리자 인증 관련 */
-    Route::prefix('/admin')->group(function () {
-        /** 로그인 */
     });
 });
 
