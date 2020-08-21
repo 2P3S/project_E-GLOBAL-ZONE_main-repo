@@ -30,4 +30,21 @@ class Schedule extends Model
     ];
 
     public $timestamps = false;
+
+    // 오늘 기준 예약 신청 가능 여부를 검사
+    public function check_res_possibility(
+        Schedule $schedule
+    ): bool
+    {
+        $date_sch = date("Y-m-d", strtotime($schedule['sch_start_date']));
+
+        $settings = new Setting();
+        $date_sch_res_possible = $settings->get_res_possible_date();
+
+        return (
+            $date_sch_res_possible['from'] <= $date_sch &&
+            $date_sch < $date_sch_res_possible['to']
+        );
+
+    }
 }
