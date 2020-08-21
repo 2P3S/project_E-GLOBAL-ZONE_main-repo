@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 
 class RestrictKoreanController extends Controller
 {
+    // TODO request  값 사용 로직 변경하기
+
     private const _INDEX_SUCCESS = " 학생의 이용 제한을 해제하시겠습니까?";
     private const _INDEX_ERROR = "이용 제한 정보 조회에 실패하였습니다.";
     // -> 발생 시, DB 점검 필요
@@ -24,7 +26,7 @@ class RestrictKoreanController extends Controller
     public function index(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
         ]);
 
         if ($validator->fails()) {
@@ -61,10 +63,10 @@ class RestrictKoreanController extends Controller
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
             'restrict_reason' => 'required|string|max:300',
-            'restrict_period' => 'required|numeric|min:1|max:999',
-            'sect_id' => 'required|numeric|min:1',
+            'restrict_period' => 'required|integer|min:1|max:999',
+            'sect_id' => 'required|integer|min:1',
             'sect_end_date' => 'required|date'
         ]);
 
@@ -125,7 +127,7 @@ class RestrictKoreanController extends Controller
     public function update(Request $request, Restricted_student_korean $restrict_id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
         ]);
 
         if ($validator->fails()) {
