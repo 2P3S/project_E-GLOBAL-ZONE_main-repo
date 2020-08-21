@@ -30,7 +30,7 @@ class AuthenticateMulti
             ], 422);
         }
 
-        if (!Auth::guard($request['guard'])->check()) {
+        if (!Auth::guard($'guard'])->check()) {
             return response()->json([
                 'message' => self::ACCESS_ERROR
             ], 401);
