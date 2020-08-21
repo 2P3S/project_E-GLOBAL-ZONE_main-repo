@@ -17,18 +17,19 @@ class SettingController extends Controller
     {
         return response()->json([
             'message' => 'Setting Value 조회',
-            'result' =>  Setting::orderBy('setting_date', 'DESC')->get()->first(),
+            'result' => Setting::orderBy('setting_date', 'DESC')->get()->first(),
         ], 200);
     }
 
     /**
      * 환경변수 저장
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        // TODO 조건 추가 필요 : res_start_period >= res_end_period
         $validator = Validator::make($request->all(), [
             'max_res_per_day' => 'integer',
             'max_std_once' => 'integer',
