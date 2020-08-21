@@ -187,7 +187,7 @@ Route::prefix('/korean')->group(function () {
         Route::get('{date}', 'ReservationController@show')->name('reservations.show');
 
         /** 예약 신청 */
-        Route::post('', 'ReservationController@store')->name('reservations.store');
+        Route::post('/{sch_id}', 'ReservationController@store')->name('reservations.store');
 
         /** 내 예약 일정 삭제 */
         Route::delete('{res_id}', 'ReservationController@destroy')->name('reservations.destroy');

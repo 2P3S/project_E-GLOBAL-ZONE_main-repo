@@ -24,7 +24,7 @@ class RestrictKoreanController extends Controller
     public function index(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
         ]);
 
         if ($validator->fails()) {
@@ -61,10 +61,10 @@ class RestrictKoreanController extends Controller
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
             'restrict_reason' => 'required|string|max:300',
-            'restrict_period' => 'required|numeric|min:1|max:999',
-            'sect_id' => 'required|numeric|min:1',
+            'restrict_period' => 'required|integer|min:1|max:999',
+            'sect_id' => 'required|integer|min:1',
             'sect_end_date' => 'required|date'
         ]);
 
@@ -125,7 +125,7 @@ class RestrictKoreanController extends Controller
     public function update(Request $request, Restricted_student_korean $restrict_id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|numeric|min:1000000|max:9999999',
+            'std_kor_id' => 'required|integer|min:1000000|max:9999999',
         ]);
 
         if ($validator->fails()) {
