@@ -37,8 +37,8 @@ class ReservationController extends Controller
     private const _STD_FOR_RES_UPDATE_SUCCESS = "스케줄 예약 학생 승인결과 업데이트를 성공하였습니다.";
     private const _STD_FOR_RES_UPDATE_FAILURE = "스케줄 예약 학생 승인결과 업데이트에 실패하였습니다.";
 
+    private const _STD_FOR_RES_INDEX_FAILURE = "스케줄에 대한 예약 목록이 없습니다.";
     private const _STD_FOR_RES_RESULT_FAILURE = "스케줄 출석 결과 입력에 실패하였습니다.";
-    private const _STD_FOR_RES_RESULT_COMPLETED = "이미 결과 입력이 완료되어 수정 불가능합니다.";
 
     private $schedule;
     private $reservation;
@@ -249,8 +249,16 @@ class ReservationController extends Controller
         $sch_state_of_result_input = $sch_id['sch_state_of_result_input'];
 
         if ($sch_state_of_result_input) {
+//            return
+//                self::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 205);
+        }
+        // -->>
+
+        // <<-- 스케줄에 대한 예약 존재 여부 확인
+        $is_sch_no_res = $this->schedule->get_sch_res_std_kor_list($sch_id) === null;
+        if ($is_sch_no_res) {
             return
-                self::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 205);
+                self::response_json(self::_STD_FOR_RES_INDEX_FAILURE, 205);
         }
         // -->>
 
