@@ -61,21 +61,26 @@ class Schedule extends Model
      *
      * @param Schedule $schedule
      * @param string $column_name
-     * @param int $std_for_id
+     * @param int $std_id
      * @param bool $flag_make_json
      * @return JsonResponse|array
      */
     public function get_sch_res_std_kor_list(
         Schedule $schedule,
-        string $column_name,
-        int $std_for_id,
-        bool $flag_make_json
+        string $column_name = "",
+        int $std_id = 0,
+        bool $flag_make_json = false
     ): ?object
     {
         $result = $schedule
             ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
             ->join('student_koreans as kor', 'kor.std_kor_id', 'res.res_std_kor')
-            ->where($column_name, $std_for_id);
+            ->where('sch_id', $schedule['sch_id']);
+
+        $result =
+            $column_name === "" ?
+                $result :
+                $result->where($column_name, $std_id);
 
         $is_exist_sch_res = $result->count();
         if (!$is_exist_sch_res) {
