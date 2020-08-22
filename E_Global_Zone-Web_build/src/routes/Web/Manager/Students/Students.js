@@ -2,14 +2,75 @@ import React, {useEffect, useState, useRef} from "react";
 import Modal from "components/common/modal/Modal";
 import ConfirmStudent from "components/common/modal/ConfirmStudent";
 import useClick from "modules/hooks/useClick";
-import conf from "conf/conf";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
+import useAxios from "../../../../modules/hooks/useAxios";
+import {selectDept} from "../../../../redux/confSlice/confSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {selectData, setData} from "../../../../redux/managerSlice/managerSlice";
 
 
-let i = 2001200;
-let j = 0;
+class Student {
+    dept;
+    std_id;
+    name;
+    status;
+    ph;
+    count;
+    absent;
+    e_mail;
+
+    /**
+     * Student Constructor
+     * @param {int} dept std_kor_dept
+     * @param {int} std_id std_kor_id
+     * @param {string} name std_kor_name
+     * @param {boolean} status std_kor_state_of_restriction
+     * @param {string} ph std_kor_phone
+     * @param {string} e_mail std_kor_mail
+     * @param {int} count std_kor_num_of_attendance
+     * @param {int} absent std_kor_num_of_absent
+     * @param {array} deptList state.conf.dept
+     */
+    constructor(dept, std_id, name, status, ph, e_mail, count, absent, deptList) {
+        this.std_id = std_id;
+        this.name = name;
+        this.status = status;
+        this.ph = ph;
+        this.e_mail = e_mail;
+        this.count = count;
+        this.absent = absent;
+        this._dept = deptList[dept - 1];
+    }
+
+    get dept() {
+        return this._dept;
+    }
+}
+
+class Data {
+    get sort() {
+        return this._sort;
+    }
+
+    set sort(value) {
+        this._sort = value;
+    }
+
+    _sort = null;
+    data = [];
+
+    /**
+     * Data Constructor
+     * @param {[Student]} data
+     */
+    constructor(data, sort = null) {
+        this._sort = sort;
+        this.data = data;
+    }
+
+}
 
 /**
  * Manager :: 학생관리
@@ -17,140 +78,45 @@ let j = 0;
  * @constructor
  */
 export default function Students() {
-    let mockup = {
-        sort: null,
-        data: [
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.DESIGN,
-                std_id: i++,
-                name: "name",
-                status: true,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-            {
-                dept: conf.department.COMINFO,
-                std_id: i++,
-                name: "name",
-                status: false,
-                ph: "010-0000-0000",
-                e_mail: "nea4182@g.yju.ac.kr",
-                count: j++,
-                absent: 0,
-            },
-        ],
-    };
-    const [data, setData] = useState(mockup.data);
+
+    // api
+    const {loading, data: resData, error} = useAxios({url: "http://13.124.189.186:8888/api/admin/korean"});
+    // department information
+    const dept = useSelector(selectDept);
+    const data = useSelector(selectData);
+    const dispatch = useDispatch();
+    // const [dataSet, setDataSet] = useState();
+    // const [data, setData] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [isRestrict, setIsRestrict] = useState(false);
+    const {isOpen: isRestrict, handleOpen: hadleOpenForRestrict, handleClose: handleCloseForRestrict} = useModal();
     const {isOpen: isUnrestrict, handleOpen: handleOpenForUnrestrict, handleClose: handleCloseForUnrestrict} = useModal();
 
-    function handleOpen() {
-        setIsRestrict(true);
-    }
+    /**
+     * api response done
+     */
+    useEffect(() => {
+        if (resData) {
+            let dataArray = [];
+            resData.forEach(v => {
+                dataArray.push(new Student(v.std_kor_dept, v.std_kor_id, v.std_kor_name, v.std_kor_state_of_restriction, v.std_kor_phone, v.std_kor_mail, v.std_kor_num_of_attendance, v.std_kor_num_of_absent, dept))
+            })
+            console.log(dataArray);
+            dispatch(setData(new Data(dataArray)));
+        }
+        // setDataSet(new Data(dataArray));
+    }, [resData, dept])
 
-    function handleClose() {
-        setIsRestrict(false);
-    }
-
-    const ref = useClick(() => {
-        handleOpen();
-    });
-
+    const sort = (sortBy) => {
+        if (data.sort === sortBy) {
+            setData(new Data(data.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)), null));
+        } else {
+            setData(new Data(data.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)), sortBy));
+        }};
     useEffect(() => {
         window.easydropdown.all();
     }, []);
-    const sort = (sortBy) => {
-        if (mockup.sort === sortBy) {
-            setData(mockup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
-            mockup.sort = null;
-        } else {
-            setData(mockup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
-            mockup.sort = sortBy;
-        }
-    };
+
+
     return (
         <div className="content">
             <div className="sub_title">
@@ -256,9 +222,9 @@ export default function Students() {
                         </tr>
                         </thead>
                         <tbody>
-                        {data.map((v, index) => (
+                        {data && data.data.map((v, index) => (
                             <tr key={v.std_id} className={v.status ? "restriction_on" : ""}>
-                                <td>{v.dept}</td>
+                                <td>{typeof v.dept === "object" ? v.dept.dept_name[0] : ""}</td>
                                 <td>{v.std_id}</td>
                                 <td
                                     className="name"
@@ -272,45 +238,40 @@ export default function Students() {
                                     <div className="off" id={`hover_btn_${index}`}>
                                         <div className="area">
                                             <div className="navy">비밀번호 초기화</div>
-                                            <div className="mint">이용제한 해제</div>
+                                            {v.status ?
+                                                <>
+                                                    <div className="mint" onClick={
+                                                        handleOpenForUnrestrict
+                                                    }>이용제한 해제
+                                                    </div>
+                                                </>
+                                                :
+                                                <>
+                                                    <div className="mint" onClick={
+                                                        hadleOpenForRestrict
+                                                    }>이용제한
+                                                    </div>
+                                                </>
+                                            }
                                             <div className="lightGray">삭제</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     {v.status ? (
-                                        <div className="restriction"
-                                             onClick={
-                                                 handleOpenForUnrestrict
-                                             }>
+                                        <div className="restriction">
                                             <img
                                                 src="/global/img/restriction_on.png"
                                                 alt="이용제한"
                                             />
-                                            <Modal
-                                                isOpen={isUnrestrict}
-                                                onRequestClose={handleCloseForUnrestrict}
-                                            >
-                                                <ConfirmUnrestriction handleClose={handleCloseForUnrestrict}/>
-                                            </Modal>
                                         </div>
                                     ) : (
                                         <div
-                                            className="restriction"
-                                            onClick={() => {
-                                                setIsRestrict(true);
-                                            }}
-                                        >
+                                            className="restriction">
                                             <img
                                                 src="/global/img/restriction_off.png"
                                                 alt="이용제한 해제"
                                             />
-                                            <Modal
-                                                isOpen={isRestrict}
-                                                onRequestClose={handleClose}
-                                            >
-                                                <ConfirmRestriction handleClose={handleClose}/>
-                                            </Modal>
                                         </div>
                                     )}
                                 </td>
@@ -352,6 +313,18 @@ export default function Students() {
                         setIsOpen(false);
                     }}
                 />
+            </Modal>
+            <Modal
+                isOpen={isUnrestrict}
+                onRequestClose={handleCloseForUnrestrict}
+            >
+                <ConfirmUnrestriction handleClose={handleCloseForUnrestrict}/>
+            </Modal>
+            <Modal
+                isOpen={isRestrict}
+                onRequestClose={handleCloseForRestrict}
+            >
+                <ConfirmRestriction handleClose={handleCloseForRestrict}/>
             </Modal>
         </div>
     );

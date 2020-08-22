@@ -10,7 +10,7 @@ import {useDispatch} from "react-redux";
  * @returns {JSX.Element} App with GlobalStyles, Routes
  */
 const App = () => {
-    const {loading, error, data} = useAxios({url: "http://13.124.189.186:8888/api/department"});
+    const {loading, error, data} = useAxios({url: "http://13.124.189.186:8888/api/admin/department"});
     const dispatch = useDispatch();
     useEffect(()=>{
         if(data){

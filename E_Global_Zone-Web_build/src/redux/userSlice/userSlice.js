@@ -9,7 +9,7 @@ import conf from "conf/conf";
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		isLogin: true,
+		isLogin: false,
 		user: new User(1, conf.userClass.MANAGER),
 	},
 	reducers: {
