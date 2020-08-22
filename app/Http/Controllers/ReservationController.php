@@ -34,16 +34,14 @@ class ReservationController extends Controller
     private const _STD_KOR_RES_DELETE_SUCCESS = "예약한 스케줄이 삭제되었습니다.";
     private const _STD_KOR_RES_DELETE_FAILURE = "예약한 스케줄 삭제에 실패하였습니다.";
 
-    private const _STD_FOR_RES_SHOW_FAILURE = "스케줄 예약 학생 명단 조회를 실패하였습니다.";
-
     private const _STD_FOR_RES_UPDATE_SUCCESS = "스케줄 예약 학생 승인결과 업데이트를 성공하였습니다.";
     private const _STD_FOR_RES_UPDATE_FAILURE = "스케줄 예약 학생 승인결과 업데이트에 실패하였습니다.";
 
     private const _STD_FOR_RES_RESULT_FAILURE = "스케줄 출석 결과 입력에 실패하였습니다.";
     private const _STD_FOR_RES_RESULT_COMPLETED = "이미 결과 입력이 완료되어 수정 불가능합니다.";
 
-    private $schedule = null;
-    private $reservation = null;
+    private $schedule;
+    private $reservation;
 
     public function __construct()
     {
