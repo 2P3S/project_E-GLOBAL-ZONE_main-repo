@@ -156,16 +156,17 @@ Route::prefix('/foreigner')->group(function () {
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
+    // TODO 예약 관련? 외국인 학생 입장 스케줄 단위 관리 => 변경 필요
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
         Route::get('{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
 
         /** 해당 스케줄 신청 학생 명단 승인 */
-        Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
+        Route::patch('permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
 
         /** 해당 스케줄 출석 결과 입력 */
-        Route::post('/result', 'ReservationController@inputResult')->name('reservations.inputResult');
+        Route::post('result/{sch_id}', 'ReservationController@std_for_input_sch_result')->name('reservations.inputResult');
     });
 });
 
@@ -198,15 +199,15 @@ Route::prefix('/korean')->group(function () {
 });
 
 Route::prefix('login')->group(static function () {
-    Route::post('admin', 'LoginController@adminLogin')->name('auth.adminsLogin');
-    Route::post('foreigner', 'LoginController@foreignerLogin')->name('auth.foreignersLogin');
+    Route::post('admin', 'LoginController@login_admin')->name('auth.adminsLogin');
+    Route::post('foreigner', 'LoginController@login_std_for')->name('auth.foreignersLogin');
 });
 
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
 
     Route::prefix('request')->group(static function () {
-        Route::get('admin', 'LoginController@adminRequest')->name('auth.adminsRequest');
-        Route::get('foreigner', 'LoginController@foreignerRequest')->name('auth.foreignersRequest');
+        Route::get('admin', 'LoginController@request_user_data')->name('auth.adminsRequest');
+        Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
 });
