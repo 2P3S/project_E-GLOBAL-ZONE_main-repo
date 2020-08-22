@@ -2,49 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\Services\Preference;
+use App\Reservation;
 use App\Schedule;
 use App\Section;
-use App\Reservation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Library\Services\Preference;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
     /**
-     * 한국인학생 - 해당 일자 전체 스케줄 조회
+     * 한국인학생 - 현재 날짜 기준 스케줄 조회
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(Preference $preference_instance): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'sch_start_date' => 'required|date',
-            'sch_end_date' => 'required|date',
-        ]);
+        $setting_value = $preference_instance->getPreference();                                 /* 환경설정 변수 */
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
-        }
+        /* 시작 날짜 */
+        $sch_start_date = date("Y-m-d", strtotime("Now"));
+        /* 예약 신청 시작 기준 종료 날짜 */
+        $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
-        $allSchdules = Schedule::select('sch_id', 'sch_res_count', 'sch_start_date', 'sch_end_date', 'std_for_name', 'std_for_lang')
-            ->where('schedules.sch_start_date', '>=', $request->sch_start_date)
-            ->where('schedules.sch_start_date', '<=', $request->sch_end_date)
+        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
+            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
+            ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
+            ->orderBy('schedules.sch_start_date')
             ->get();
 
-        // 등록된 스케줄이 없을 경우
-        if ($allSchdules->count() === 0) {
-            return response()->json([
-                'message' => '등록된 스케줄이 없습니다.',
-            ], 404);
+        foreach ($allSchdules as $schedule) {
+            $res_count = $schedule->sch_res_count;
+            $max_std_once = $setting_value->max_std_once;
+            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
         }
 
         return response()->json([
-            'message' => '일정 조회를 성공하였습니다.',
+            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
             'result' => $allSchdules,
         ], 200);
     }
@@ -52,7 +48,7 @@ class ScheduleController extends Controller
     /**
      * 유학생 - 특정 날짜 개인 스케줄 조회
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($date)
@@ -69,9 +65,10 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 특정 날짜 유학생 전체 스케줄 조회
      *
-     * @param  string  $date
+     * @param string $date
      * @return \Illuminate\Http\Response
      */
+    // TODO 알고리즘 수정
     public function showForeignerSchedules($date)
     {
         $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
@@ -84,20 +81,12 @@ class ScheduleController extends Controller
             $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
             // 전체 예약 한국인 인원수
-<<<<<<< HEAD
-            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
-=======
             $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
->>>>>>> server-laravel
 
             // 예약 미승인 한국인 인원수
             $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
 
-<<<<<<< HEAD
-            $schedule['reservated_count'] = $reservated_count;
-=======
             $schedule['reserved_count'] = $reserved_count;
->>>>>>> server-laravel
             $schedule['un_permission_count'] = $un_permission_count;
         }
 
@@ -107,7 +96,7 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 스케줄 등록
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Preference $preference_instance)
@@ -224,8 +213,8 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 특정 스케줄 업데이트
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $sch_id
+     * @param \Illuminate\Http\Request $request
+     * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Schedule $sch_id)
@@ -257,7 +246,7 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 특정 스케줄 삭제
      *
-     * @param  int  $sch_id
+     * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Schedule $sch_id)
@@ -272,7 +261,7 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 해당 날짜 출석 결과 미입력건 조회
      *
-     * @param  string  $date
+     * @param string $date
      * @return \Illuminate\Http\Response
      */
     public function indexUninputedList($date)
@@ -284,7 +273,7 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($uninput_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
@@ -301,7 +290,7 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 해당 날짜 출석 결과 미승인건 조회
      *
-     * @param  string  $date
+     * @param string $date
      * @return \Illuminate\Http\Response
      */
     public function indexUnapprovedList($date)
@@ -315,7 +304,7 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($unapproved_list as $schedule) {
-            $kor_data =  Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
@@ -332,8 +321,8 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 출석 결과 미승인 건 승인
      *
-     * @param  int  $sch_id
-     * @param  \Illuminate\Http\Request  $request
+     * @param int $sch_id
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)

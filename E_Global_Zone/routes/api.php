@@ -156,16 +156,17 @@ Route::prefix('/foreigner')->group(function () {
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
+    // TODO 예약 관련? 외국인 학생 입장 스케줄 단위 관리 => 변경 필요
     /* 예약 관련 */
-    Route::prefix('/reservation')->group(function () {
+    Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
-        Route::get('{sch_id}', 'ReservationController@showReservation')->name('reservations.showReservation');
+        Route::get('{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
 
         /** 해당 스케줄 신청 학생 명단 승인 */
-        Route::patch('/approve', 'ReservationController@updateReservaion')->name('reservations.updateReservaion');
+        Route::patch('permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
 
         /** 해당 스케줄 출석 결과 입력 */
-        Route::post('/result', 'ReservationController@inputResult')->name('reservations.inputResult');
+        Route::post('result/{sch_id}', 'ReservationController@std_for_input_sch_result')->name('reservations.inputResult');
     });
 });
 
@@ -175,58 +176,38 @@ Route::prefix('/korean')->group(function () {
     /** 한국인 학생 계정 생성 (회원가입) */
     Route::post('account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
 
-    /* 한국인학생 - 해당 일자 전체 스케줄 조회 */
-    Route::post('schedule', 'ScheduleController@index')->name('schedules.index');
+    /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
+    Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
 
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
     /* 예약 관련 */
-    Route::prefix('/reservation')->group(function () {
-        /** 내 예약 일정 조회 */
-        Route::get('', 'ReservationController@show')->name('reservations.show');
+    Route::prefix('reservation')->group(function () {
+        /** 해당 일자에 대한 예약 조회 */
+        Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
 
         /** 예약 신청 */
-        Route::post('', 'ReservationController@store')->name('reservations.store');
+        Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');
 
         /** 내 예약 일정 삭제 */
-        Route::delete('{res_id}', 'ReservationController@destroy')->name('reservations.destroy');
+        Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
 
         /** 학기별 참석 결과 조회 */
         // Route::get('', 'ReservationController@showResult')->name('reservations.show');
     });
 });
 
-/* 로그인 라우터 */
-Route::prefix('/auth')->group(function () {
-    /* 학생 인증 관련 */
-    Route::prefix('/korean')->group(function () {
-        /** 로그인 */
-        /** 토큰 검사 */
-    });
-
-    /* 유학생 인증 관련 */
-    Route::prefix('/foreigner')->group(function () {
-        /** 로그인 */
-        /** 토큰 검사 */
-    });
-
-    /* 관리자 인증 관련 */
-    Route::prefix('/admin')->group(function () {
-        /** 로그인 */
-    });
-});
-
 Route::prefix('login')->group(static function () {
-    Route::post('admin', 'LoginController@adminLogin')->name('auth.adminsLogin');
-    Route::post('foreigner', 'LoginController@foreignerLogin')->name('auth.foreignersLogin');
+    Route::post('admin', 'LoginController@login_admin')->name('auth.adminsLogin');
+    Route::post('foreigner', 'LoginController@login_std_for')->name('auth.foreignersLogin');
 });
 
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
 
     Route::prefix('request')->group(static function () {
-        Route::get('admin', 'LoginController@adminRequest')->name('auth.adminsRequest');
-        Route::get('foreigner', 'LoginController@foreignerRequest')->name('auth.foreignersRequest');
+        Route::get('admin', 'LoginController@request_user_data')->name('auth.adminsRequest');
+        Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
 });

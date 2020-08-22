@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Model\Authenticator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
-    private const _LOGIN_ERROR = '아이디 또는 비밀번호를 다시 확인하세요.';
-    private const _LOGIN_SUCCESS = ' 님 로그인 되습니다. 어서오세요';
-    private const _LOGOUT_SUCCESS = '로그아웃되었습니다.';
-    private const _PASSWORD_CHANGE_REQUIRE = '초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.';
+    private const _LOGIN_FAILURE = "로그인에 실패하였습니다.";
+    private const _LOGIN_ERROR = "아이디 또는 비밀번호를 다시 확인하세요.";
+    private const _LOGIN_SUCCESS = " 님 로그인 되습니다. 어서오세요";
+    private const _LOGOUT_SUCCESS = "로그아웃되었습니다.";
+    private const _PASSWORD_CHANGE_REQUIRE = "초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.";
 
     private const _ADMIN_INIT_PASSWORD = "IAC@23yju5630-115";
     private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
@@ -21,39 +21,10 @@ class LoginController extends Controller
      * @var Authenticator
      */
     private $authenticator;
-    private $validator;
-    private $response_msg;
-
 
     public function __construct(Authenticator $authenticator)
     {
         $this->authenticator = $authenticator;
-        $this->response_msg = self::_PASSWORD_CHANGE_REQUIRE;
-    }
-
-    /**
-     * 로그인 시, 유효성 검사 실시
-     *
-     * @param Request $request
-     * @param array $rules
-     * @return bool
-     */
-    private function login_validator(
-        Request $request,
-        array $rules
-    ): bool
-    {
-        $this->validator = Validator::make($request->all(), [
-            $rules['key'] => 'required|string',
-            'password' => 'required|string|min:8',
-            'provider' => 'required|string|in:' . $rules['prov'],
-        ]);
-
-        if ($this->validator->fails()) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -82,7 +53,8 @@ class LoginController extends Controller
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
         ];
 
-        if ($initial_password[$credentials[2]] !== $credentials[1]) {
+        $is_login_init_password = $initial_password[$credentials[2]] !== $credentials[1];
+        if (!$is_login_init_password) {
             $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
         }
 
@@ -98,34 +70,48 @@ class LoginController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function adminLogin(Request $request): JsonResponse
+    public function login_admin(Request $request): JsonResponse
     {
         $rules = [
-            'key' => 'account',
-            'prov' => 'admins'
+            'account' => 'required|string',
+            'password' => 'required|string|min:8',
+            'provider' => 'required|string|in:admins'
         ];
 
-        if (!$this->login_validator($request, $rules)) {
-            return response()->json([
-                'message' => $this->validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request, $rules, self::_LOGIN_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        if (empty($admin = $this->login_authenticator($request, $rules['key']))) {
-            return response()->json([
-                'message' => self::_LOGIN_ERROR
-            ], 401);
+        // <<-- 로그인 실패 시
+        if (empty($admin = $this->login_authenticator($request, 'account'))) {
+            return
+                self::response_json(self::_LOGIN_ERROR, 401);
         }
+        // -->>
 
-        if (!empty($admin['token'])) {
-            $this->response_msg = $admin['result']['name'] . self::_LOGIN_SUCCESS;
+        $token = $admin['token'];
+
+        // <<-- 초기 비밀번호로 로그인 시
+        if (empty($token)) {
+            return
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
         }
+        // -->>
 
-        return response()->json([
-            'message' => $this->response_msg,
-            'name' => $admin['result']['name'],
-            'access_token' => $admin['token']
-        ], 200);
+        // <<-- 로그인 성공 시
+        $message_template = $admin['result']['name'] . self::_LOGIN_SUCCESS;
+        $response_data = (object)[
+            'admin' => $admin,
+            'access_token' => $token
+        ];
+
+        return
+            self::response_json($message_template, 200, $response_data);
+        // -->
     }
 
     /**
@@ -134,38 +120,48 @@ class LoginController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function foreignerLogin(Request $request): JsonResponse
+    public function login_std_for(Request $request): JsonResponse
     {
         $rules = [
-            'key' => 'std_for_id',
-            'prov' => 'foreigners'
+            'std_for_id' => 'required|string',
+            'password' => 'required|string|min:8',
+            'provider' => 'required|string|in:foreigners'
         ];
 
-        if (!$this->login_validator($request, $rules)) {
-            return response()->json([
-                'message' => $this->validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request, $rules, self::_LOGIN_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        if (empty($foreigner = $this->login_authenticator($request, $rules['key']))) {
-            return response()->json([
-                'message' => self::_LOGIN_ERROR
-            ], 401);
+        // <<-- 로그인 실패 시
+        if (empty($foreigner = $this->login_authenticator($request, 'std_for_id'))) {
+            return
+                self::response_json(self::_LOGIN_ERROR, 401);
         }
+        // -->>
 
-        if (!empty($admin['token'])) {
-            $this->response_msg = $foreigner['result']['std_for_name'] . self::_LOGIN_SUCCESS;
+        $token = $foreigner['token'];
+
+        // <<-- 초기 비밀번호로 로그인 시
+        if (empty($token)) {
+            return
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
         }
+        // -->>
 
-        return response()->json([
-            'message' => $this->response_msg,
-            'id' => $foreigner['result']['std_for_id'],
-            'name' => $foreigner['result']['std_for_name'],
-            'lang' => $foreigner['result']['std_for_lang'],
-            'country' => $foreigner['result']['std_for_country'],
-            'favorite' => $foreigner['result']['std_for_state_of_favorite'],
-            'access_token' => $foreigner['token']
-        ], 200);
+        // <<-- 로그인 성공 시
+        $message_template = $foreigner['result']['std_for_name'] . self::_LOGIN_SUCCESS;
+        $response_data = (object)[
+            'std_for' => $foreigner,
+            'access_token' => $token
+        ];
+
+        return
+            self::response_json($message_template, 200, $response_data);
+        // -->>
     }
 
     /**
@@ -176,32 +172,17 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user($request['guard'])->token()->revoke();
+        $request->user($request->input('guard'))->token()->revoke();
 
-        return response()->json([
-            'message' => self::_LOGOUT_SUCCESS
-        ], 200);
+        return
+            self::response_json(self::_LOGOUT_SUCCESS, 200);
     }
 
-    public function adminRequest(Request $request)
+    public function request_user_data(Request $request)
     {
-        $admin = $request->user($request['guard']);
+        $user_data = $request->user($request->input('guard'));
 
-        return response()->json([
-            'name' => $admin['name']
-        ], 200);
-    }
-
-    public function foreignerRequest(Request $request)
-    {
-        $foreigner = $request->user($request['guard']);
-
-        return response()->json([
-            'id' => $foreigner['std_for_id'],
-            'name' => $foreigner['std_for_name'],
-            'lang' => $foreigner['std_for_lang'],
-            'country' => $foreigner['std_for_country'],
-            'favorite' => $foreigner['std_for_state_of_favorite'],
-        ], 200);
+        return
+            self::response_json("", 200, $user_data);
     }
 }
