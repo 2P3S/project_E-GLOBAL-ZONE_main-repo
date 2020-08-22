@@ -2,15 +2,19 @@
 
 namespace App;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
 
 /**
+ * @method static find(int $res_id)
  * @method static select(array $lookup_columns)
+ * @method static create(array $array)
  * @method static whereIn(string $lookup_column, array $lookup_data)
  * @method static whereDate(string $lookup_column, string $operator, false|string $lookup_date)
  * @method static join(string $parent_table, string $parent_table_column, string $child_table_column)*@method static select(string$string, string$string1, string$string2, string$string3, string$string4, string$string5, string$string6, string$string7, string$string8)
+ * @method static where(string $string, $sch_id)
  */
 class Reservation extends Model
 {
@@ -29,8 +33,13 @@ class Reservation extends Model
      */
     protected $guarded = [];
 
-    // 한명 또는 여러명의 학생을 조회 가능
-    public function get_std_kor_res(
+    /**
+     * 오늘 기준 한국인 학생의 예약 목록을 조회
+     * (한명 / 여러명의 가능)
+     * @param array $std_kor_id
+     * @return object
+     */
+    public function get_std_kor_res_by_today(
         array $std_kor_id
     ): object
     {
@@ -46,10 +55,26 @@ class Reservation extends Model
     }
 
     /**
+     * 한국인 한생의 예약 신청을 저장
+     *
+     * @param array $res_data
+     * @return Reservation
+     */
+    public function store_std_kor_res(
+        array $res_data
+    ): Reservation
+    {
+        return self::create($res_data);
+    }
+
+    /**
+     * 특정 날짜 기준 한국인 학생의 예약 목록을 조회
+     *
      * @param int $std_kor_id
      * @param string $search_date
      * @return JsonResponse
      */
+    // TODO 한국인 학생 조회 기준 확인 필요
     public function get_std_kor_res_by_date(
         int $std_kor_id,
 //        string $std_kor_mail,
@@ -75,15 +100,37 @@ class Reservation extends Model
         $is_std_kor_res_no_date = $result->count();
 
         if (!$is_std_kor_res_no_date) {
-            return response()->json([
-                'message' => self::_STD_KOR_RES_INDEX_NO_DATE
-            ], 205);
+            return
+                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 205);
         }
 
         $message_template = self::_STD_KOR_RES_INDEX_SUCCESS;
-        return response()->json([
-            'message' => $message_template,
-            'data' => $result
-        ], 200);
+        return
+            Controller::response_json($message_template, 200, $result);
+    }
+
+    /**
+     * 스케줄에 대한 한국인 학생의 예약 승인, 출석 결과 업데이트
+     *
+     * @param Schedule $schedule
+     * @param array $update_std_kor_id_list
+     * @param string $update_column
+     * @param bool $update_state
+     */
+    public function update_std_kor_res(
+        Schedule $schedule,
+        array $update_std_kor_id_list,
+        string $update_column,
+        bool $update_state
+    ): void
+    {
+        $sch_id = $schedule['sch_id'];
+        $update_data = [
+            $update_column => $update_state
+        ];
+
+        self::where('res_sch', $sch_id)
+            ->whereIn('res_std_kor', $update_std_kor_id_list)
+            ->update($update_data);
     }
 }
