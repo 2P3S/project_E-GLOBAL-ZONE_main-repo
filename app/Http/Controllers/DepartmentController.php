@@ -6,7 +6,6 @@ use App\Department;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class DepartmentController extends Controller
 {
@@ -21,29 +20,6 @@ class DepartmentController extends Controller
 
     private const _DEPT_DELETE_SUCCESS = "(을)를 계열/학과 목록에서 제거하였습니다.";
 
-    private $validator;
-
-    /**
-     * 계열 / 학과에 대한 유효성 검사 실시
-     *
-     * @param Request $request
-     * @param array $rules
-     * @return bool
-     */
-    private function department_validator(
-        Request $request,
-        array $rules
-    ): bool
-    {
-        $this->validator = Validator::make($request->all(), $rules);
-
-        if ($this->validator->fails()) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * 등록된 계열 / 학과 목록 조회
      *
@@ -51,10 +27,9 @@ class DepartmentController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json([
-            'message' => self::_DEPT_INDEX_SUCCESS,
-            'result' => Department::all(),
-        ], 200);
+        $departments = Department::all();
+        return
+            self::response_json(self::_DEPT_INDEX_SUCCESS, 200, $departments);
     }
 
     /**
@@ -69,11 +44,12 @@ class DepartmentController extends Controller
             'dept_name' => 'required|string|unique:departments,dept_name'
         ];
 
-        if (!$this->department_validator($request, $rules)) {
-            return response()->json([
-                'message' => self::_DEPT_STORE_FAILURE,
-                'error' => $this->validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request, $rules, self::_DEPT_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
         $new_dept_name = $request->input('dept_name');
@@ -82,10 +58,9 @@ class DepartmentController extends Controller
             'dept_name' => $new_dept_name
         ]);
 
-        return response()->json([
-            'message' => $new_dept_name . self::_DEPT_STORE_SUCCESS,
-            'result' => $created_department,
-        ], 201);
+        $message_template = $new_dept_name . self::_DEPT_STORE_SUCCESS;
+        return
+            self::response_json($message_template, 201, $created_department);
     }
 
     /**
@@ -101,11 +76,12 @@ class DepartmentController extends Controller
             'dept_name' => 'required|string|unique:departments,dept_name',
         ];
 
-        if (!$this->department_validator($request, $rules)) {
-            return response()->json([
-                'message' => self::_DEPT_UPDATE_FAILURE,
-                'error' => $this->validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request, $rules, self::_DEPT_UPDATE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
         // <<-- 계열/학과 이름 변경 -> 메세지 저장
@@ -116,14 +92,8 @@ class DepartmentController extends Controller
             $new_dept_name . self::_DEPT_UPDATE_SUCCESS2;
         // -->>
 
-        $updated_department = $dept_id->update([
-            'dept_name' => $new_dept_name
-        ]);
-
-        return response()->json([
-            'message' => $message_template,
-            'result' => $updated_department,
-        ], 200);
+        return
+            self::response_json($message_template, 200);
     }
 
     /**
@@ -138,8 +108,8 @@ class DepartmentController extends Controller
         $deleted_dept_name = $dept_id['dept_name'];
         $dept_id->delete();
 
-        return response()->json([
-            'message' => $deleted_dept_name . self::_DEPT_DELETE_SUCCESS
-        ], 200);
+        $message_template = $deleted_dept_name . self::_DEPT_DELETE_SUCCESS;
+        return
+            self::response_json($message_template, 200);
     }
 }
