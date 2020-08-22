@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
@@ -54,24 +55,33 @@ class Schedule extends Model
         );
     }
 
-    // 각 스케줄 대하여 한국인 힉생 예약 명단 조회음
-    // (2중 검사를 위해 외국인 학생 학번도 함께 받)
+    /**
+     * 각 스케줄 대하여 한국인 힉생 예약 명단 조회
+     * (외국인 학생 기준 / 한국인 학생 기준)
+     *
+     * @param Schedule $schedule
+     * @param string $column_name
+     * @param int $std_for_id
+     * @param bool $flag_make_json
+     * @return JsonResponse|array
+     */
     public function get_sch_res_std_kor_list(
         Schedule $schedule,
-        int $std_for_id
-    ): JsonResponse
+        string $column_name,
+        int $std_for_id,
+        bool $flag_make_json
+    ): ?object
     {
         $result = $schedule
             ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
             ->join('student_koreans as kor', 'kor.std_kor_id', 'res.res_std_kor')
-            ->where('sch_std_for', $std_for_id);
+            ->where($column_name, $std_for_id);
 
         $is_exist_sch_res = $result->count();
-
         if (!$is_exist_sch_res) {
-            return response()->json([
-                'message' => self::_STD_FOR_RES_SHOW_NO_DATA,
-            ], 205);
+            return $flag_make_json ?
+                Controller::response_json(self::_STD_FOR_RES_SHOW_NO_DATA, 205) :
+                null;
         }
 
         $lookup_columns = [
@@ -83,9 +93,8 @@ class Schedule extends Model
 
         $response_data = $result->select($lookup_columns)->get();
 
-        return response()->json([
-            'message' => self::_STD_FOR_RES_SHOW_SUCCESS,
-            'data' => $response_data,
-        ], 200);
+        return $flag_make_json ?
+            Controller::response_json(self::_STD_FOR_RES_SHOW_SUCCESS, 200, $response_data) :
+            $response_data;
     }
 }
