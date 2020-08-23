@@ -24,6 +24,7 @@ class Setting extends Model
 
     public $timestamps = false;
 
+    //TODO 환경변수 서비스 프로바이더로 사용.
     public static function get_setting_value(): Setting
     {
         return
