@@ -6,92 +6,66 @@ use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
 use App\Section;
+use App\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
-    /**
-     * 한국인학생 - 현재 날짜 기준 스케줄 조회
-     *
-     * @return JsonResponse
-     */
-    public function index(Preference $preference_instance): JsonResponse
+
+    private $schedule;
+
+    public function __construct()
     {
-        $setting_value = $preference_instance->getPreference();                                 /* 환경설정 변수 */
-
-        /* 시작 날짜 */
-        $sch_start_date = date("Y-m-d", strtotime("Now"));
-        /* 예약 신청 시작 기준 종료 날짜 */
-        $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
-
-        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
-            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
-            ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
-            ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
-            ->orderBy('schedules.sch_start_date')
-            ->get();
-
-        foreach ($allSchdules as $schedule) {
-            $res_count = $schedule->sch_res_count;
-            $max_std_once = $setting_value->max_std_once;
-            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
-        }
-
-        return response()->json([
-            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
-            'result' => $allSchdules,
-        ], 200);
+        $this->schedule = new Schedule();
     }
 
+
     /**
-     * 유학생 - 특정 날짜 개인 스케줄 조회
+     * 유학생 - 특정 날짜에 대한 개인 스케줄 조회
+     * /api/foreigner/schedule/
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($date)
+
+    private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
+    private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
+    private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
+
+    public function std_for_show_sch_by_date(Request $request): JsonResponse
     {
-        //TODO 미들웨어를 통해 유학생 학번 가져오기.
-        $std_for_id = 1372367;
-        $result_foreigner_schedules = Schedule::where('sch_std_for', $std_for_id)
-            ->whereDate('sch_start_date', $date)
-            ->get();
+        $rules = [
+            'search_date' => 'required|date'
+        ];
 
-        return $result_foreigner_schedules;
-    }
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request, $rules, self::_STD_FOR_SHOW_SCH_FAILURE
+        );
 
-    /**
-     * 관리자 - 특정 날짜 유학생 전체 스케줄 조회
-     *
-     * @param string $date
-     * @return \Illuminate\Http\Response
-     */
-    // TODO 알고리즘 수정
-    public function showForeignerSchedules($date)
-    {
-        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
-            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
-            ->whereDate('sch_start_date', $date)
-            ->orderBy('std_for_lang')
-            ->get();
-
-        foreach ($result_foreigner_schedules as $schedule) {
-            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
-
-            // 전체 예약 한국인 인원수
-            $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
-
-            // 예약 미승인 한국인 인원수
-            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
-
-            $schedule['reserved_count'] = $reserved_count;
-            $schedule['un_permission_count'] = $un_permission_count;
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
+        // -->>
 
-        return $result_foreigner_schedules;
+        // TODO 토큰으로 유학생 정보 가져오기.
+        $search_date = $request->input('search_date');
+        $std_for_id = 1022670;
+//        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
+
+        // <<-- 날짜에 대한 스케줄 목록을 조회
+        $response_data = $this->schedule->get_sch_by_date($search_date, $std_for_id);
+        // -->>
+
+        $is_sch_no_data = $response_data->count();
+//        if ()
+//        dd($response_data->count());
+        return
+            self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $response_data);
     }
+
 
     /**
      * 관리자 - 스케줄 등록
@@ -347,4 +321,60 @@ class ScheduleController extends Controller
             'message' => '출석 결과 승인',
         ], 200);
     }
+
+
+    /*
+     * ========== TEST 완료 ==========
+     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
+     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
+     * 3. 유학생 - 특정 날짜에 대한 개인 스케줄 조회
+     */
+
+    /**
+     * 한국인학생 - 현재 날짜 기준 예약 가능 스케줄 조회
+     * /api/korean/schedule/
+     *
+     * @return JsonResponse
+     */
+    // TODO 가능 날짜 조회하는 것 수정 필요
+    public function index(Preference $preference_instance): JsonResponse
+    {
+        $setting_value = $preference_instance->getPreference();                                 /* 환경설정 변수 */
+
+        /* 시작 날짜 */
+        $sch_start_date = date("Y-m-d", strtotime("Now"));
+        /* 예약 신청 시작 기준 종료 날짜 */
+        $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
+
+        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
+            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
+            ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
+            ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
+            ->orderBy('schedules.sch_start_date')
+            ->get();
+
+        foreach ($allSchdules as $schedule) {
+            $res_count = $schedule->sch_res_count;
+            $max_std_once = $setting_value->max_std_once;
+            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
+        }
+
+        return response()->json([
+            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
+            'result' => $allSchdules,
+        ], 200);
+    }
+
+    /**
+     * 한국인 학생 - 특정 스케줄 조회
+     * /api/korean/schedule/{$sch_id}
+     *
+     * @param Schedule $sch_id
+     * @return JsonResponse
+     */
+    public function std_kor_show_sch(Schedule $sch_id): JsonResponse
+    {
+        return $this->schedule->get_sch_by_id($sch_id);
+    }
+
 }
