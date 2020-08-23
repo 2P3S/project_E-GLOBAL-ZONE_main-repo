@@ -11,7 +11,6 @@ import {selectSelectDate, selectToday} from "../../../../redux/confSlice/confSli
  * @todo 구현바람
  */
 export default function Schedules() {
-
     const makeWeek = (weekStartDate) => {
         let weeks = [];
         for (let i = 0; i < 7; i++) {
@@ -19,16 +18,12 @@ export default function Schedules() {
         }
         return weeks;
     }
-
     const today = useSelector(selectToday);
     const selectedDate = useSelector(selectSelectDate);
-    useEffect(() => {
-        window.easydropdown.all();
-
-    }, []);
     const [currentDate, setCurrentDate] = useState(moment(today));
     const [weekStartDate, setWeekStartDate] = useState();
     const [week, setWeek] = useState(makeWeek(weekStartDate));
+
     const getWeekStart = (currentDay) => {
         let startDate = currentDay;
         let i = 0;
@@ -40,6 +35,7 @@ export default function Schedules() {
         setWeekStartDate(moment(selectedDate).subtract(i, 'd').format("YYYY-MM-DD"));
     }
     useEffect(() => {
+        window.easydropdown.all();
         getWeekStart(moment(today));
     }, [])
     useEffect(() => {
@@ -63,6 +59,20 @@ export default function Schedules() {
             `week: ${week}`
         );
     })
+
+    const setSchedule = (schedules) => {
+        let schedule = [
+            new Array(9),
+            new Array(9),
+            new Array(9),
+            new Array(9),
+            new Array(9),
+            new Array(9),
+            new Array(9)
+        ];
+
+
+    }
 
     return (
         <div className="wrapper">
@@ -113,50 +123,57 @@ export default function Schedules() {
                         {
                             week ?
                                 <>
-                                <li>
-                                    일<span className={moment(selectedDate).diff(week[0],'days')===0?`today`:``}>{week[0].format("DD")}</span>
-                                </li>
-                                <li>
-                                    월<span className={moment(selectedDate).diff(week[1],'days')===0?`today`:``}>{week[1].format("DD")}</span>
-                                </li>
-                                <li>
-                                    화<span className={moment(selectedDate).diff(week[2],'days')===0?`today`:``}>{week[2].format("DD")}</span>
-                                </li>
-                                <li>
-                                    수<span className={moment(selectedDate).diff(week[3],'days')===0?`today`:``}>{week[3].format("DD")}</span>
-                                </li>
-                                <li>
-                                    목<span className={moment(selectedDate).diff(week[4],'days')===0?`today`:``}>{week[4].format("DD")}</span>
-                                </li>
-                                <li>
-                                    금<span className={moment(selectedDate).diff(week[5],'days')===0?`today`:``}>{week[5].format("DD")}</span>
-                                </li>
-                                <li>
-                                    토<span className={moment(selectedDate).diff(week[6],'days')===0?`today`:``}>{week[6].format("DD")}</span>
-                                </li>
-                            </> : <>
-                                <li>
-                                    일<span>12</span>
-                                </li>
-                                <li>
-                                    월<span className="today">13</span>
-                                </li>
-                                <li>
-                                    화<span>14</span>
-                                </li>
-                                <li>
-                                    수<span>15</span>
-                                </li>
-                                <li>
-                                    목<span>16</span>
-                                </li>
-                                <li>
-                                    금<span>17</span>
-                                </li>
-                                <li>
-                                    토<span>18</span>
-                                </li>
-                            </>
+                                    <li>
+                                        일<span
+                                        className={moment(selectedDate).diff(week[0], 'days') === 0 ? `today` : ``}>{week[0].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        월<span
+                                        className={moment(selectedDate).diff(week[1], 'days') === 0 ? `today` : ``}>{week[1].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        화<span
+                                        className={moment(selectedDate).diff(week[2], 'days') === 0 ? `today` : ``}>{week[2].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        수<span
+                                        className={moment(selectedDate).diff(week[3], 'days') === 0 ? `today` : ``}>{week[3].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        목<span
+                                        className={moment(selectedDate).diff(week[4], 'days') === 0 ? `today` : ``}>{week[4].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        금<span
+                                        className={moment(selectedDate).diff(week[5], 'days') === 0 ? `today` : ``}>{week[5].format("DD")}</span>
+                                    </li>
+                                    <li>
+                                        토<span
+                                        className={moment(selectedDate).diff(week[6], 'days') === 0 ? `today` : ``}>{week[6].format("DD")}</span>
+                                    </li>
+                                </> : <>
+                                    <li>
+                                        일<span>12</span>
+                                    </li>
+                                    <li>
+                                        월<span className="today">13</span>
+                                    </li>
+                                    <li>
+                                        화<span>14</span>
+                                    </li>
+                                    <li>
+                                        수<span>15</span>
+                                    </li>
+                                    <li>
+                                        목<span>16</span>
+                                    </li>
+                                    <li>
+                                        금<span>17</span>
+                                    </li>
+                                    <li>
+                                        토<span>18</span>
+                                    </li>
+                                </>
                         }
 
                     </ul>
@@ -178,7 +195,7 @@ export default function Schedules() {
                                 <col width="14.2%" span="7"/>
                             </colgroup>
                             <tbody>
-                            <tr>
+                            <tr id="not use">
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -187,163 +204,95 @@ export default function Schedules() {
                                 <td></td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="not use">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="blue">
-                                        <p>
-                                            신청한 학생 : 8명
-                                            <br/>
-                                            예약 미승인 : 6명
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="9">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="blue">
-                                        <p>
-                                            신청한 학생 : 8명
-                                            <br/>
-                                            예약 미승인 : 6명
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div className="yellow">
-                                        <p>
-                                            참가 학생 : 7명
-                                            <br/>
-                                            [결과 미입력]
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
+                            <tr id="10">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="blue">
-                                        <p>
-                                            신청한 학생 : 8명
-                                            <br/>
-                                            예약 미승인 : 6명
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div className="yellow">
-                                        <p>
-                                            참가 학생 : 7명
-                                            <br/>
-                                            [결과 미입력]
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
+                            <tr id="11">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="12">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="13">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="mint">
-                                        <p>8명 예약 완료</p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td>
-                                    <div className="gray">
-                                        <p>예약 없음</p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="14">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="mint">
-                                        <p>6명 예약 완료</p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td>
-                                    <div className="puple">
-                                        <p>결과 입력완료</p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="15">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <div className="blue">
-                                        <p>
-                                            신청한 학생 : 8명
-                                            <br/>
-                                            예약 미승인 : 6명
-                                        </p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td>
-                                    <div className="puple">
-                                        <p>결과 입력완료</p>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="16">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr id="17">
+                                <td id="0"></td>
+                                <td id="1"></td>
+                                <td id="2"></td>
+                                <td id="3"></td>
+                                <td id="4"></td>
+                                <td id="5"></td>
+                                <td id="6"></td>
                             </tr>
                             </tbody>
                         </table>

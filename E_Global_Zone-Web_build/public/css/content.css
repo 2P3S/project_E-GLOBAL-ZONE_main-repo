@@ -82,6 +82,7 @@ body {
 }
 
 .wrapper .content {
+    position: relative;
     display: inline-block;
     width: 1200px;
     min-height: 700px;
@@ -111,6 +112,7 @@ body {
 }
 
 .wrap {
+    clear: both;
     width: 100%;
     margin: 30px 0 45px 0;
 }
@@ -166,16 +168,6 @@ body {
 }
 
 .login_wrap .login_input input[type="text"] {
-    float: left;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 50px;
-    line-height: 50px;
-    width: 275px;
-    padding: 0 12px;
-    margin-top: 5px;
-}
-.login_wrap .login_input input[type="password"] {
     float: left;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -245,9 +237,29 @@ body {
     margin-top: 8px;
 }
 
-/* 스케줄 관리 */
+/* 스케줄 관리 _bak
+ul.sch_time {margin:0 0 20px 220px;overflow:hidden;}
+ul.sch_time li {float:left;font-family:'Lato', sans-serif; font-weight:600; font-size:12px;margin-left:75px;}
+ul.sch_time li:first-child {margin-left:0;}
+table.sch_table { width:100%; border-collapse:collapse; color:#373a44; font-size:12px; font-weight:500; text-align:center;}
+table.sch_table th,
+table.sch_table td {border:1px solid #d5d5db;}
+table.sch_table tbody th {background:#373a44; color:#fff;}
+table.sch_table tbody td {height:72px; letter-spacing:-0.05em;}
+table.sch_table tbody td .status {width:100%; min-height:42px; line-height:42px;}
+table.sch_table tbody td .status p {position:relative; margin-left:-1px; padding:7px 0; line-height:13px; font-size:10px; color:#fff; letter-spacing:0; font-weight:500;}
+table.sch_table tbody td .status p.blue {background:#2050e6; border:1px solid #2050e6;}
+table.sch_table tbody td .status p.mint {background:#34bcad; border:1px solid #34bcad;}
+table.sch_table tbody td .status p.yellow {background:#ffa400; border:1px solid #ffa400;}
+table.sch_table tbody td .status p.puple {background:#6e4bdd; border:1px solid #6e4bdd;}
+table.sch_table tbody td .status p.gray  {background:#e1e1ea; border:1px solid #e1e1ea; color:#373a44;}
+table.sch_table tbody td .status p.oneline {min-height:42px; line-height:42px; padding:0; border:none;}
+table.sch_table tbody tr:hover {background:#f7f7f7;}
+table.sch_table tbody tr:hover td:first-child {color:#2050e6; text-decoration:underline;} */
+
+/* 스케줄 관리  */
 ul.sch_time {
-    margin: 0 0 20px 220px;
+    margin: 0px 0 15px 189px;
     overflow: hidden;
 }
 
@@ -255,8 +267,8 @@ ul.sch_time li {
     float: left;
     font-family: 'Lato', sans-serif;
     font-weight: 600;
-    font-size: 12px;
-    margin-left: 75px;
+    font-size: 11px;
+    margin-left: 82px;
 }
 
 ul.sch_time li:first-child {
@@ -280,6 +292,7 @@ table.sch_table td {
 table.sch_table tbody th {
     background: #373a44;
     color: #fff;
+    font-size: 11px;
 }
 
 table.sch_table tbody td {
@@ -287,54 +300,74 @@ table.sch_table tbody td {
     letter-spacing: -0.05em;
 }
 
-table.sch_table tbody td .status {
-    width: 100%;
+.state_box {
+    float: left;
+    width: 50%;
     min-height: 42px;
     line-height: 42px;
-}
-
-table.sch_table tbody td .status p {
-    position: relative;
-    margin-left: -1px;
-    padding: 7px 0;
-    line-height: 13px;
-    font-size: 10px;
     color: #fff;
-    letter-spacing: 0;
-    font-weight: 500;
 }
 
-table.sch_table tbody td .status p.blue {
+.state_box p {
+    padding-left: 20px;
+    font-size: 10px;
+    display: inline-block;
+}
+
+/* state1 :: [예약현황] 미승인 / 총 신청 학생 */
+.state_box.state1 {
     background: #2050e6;
-    border: 1px solid #2050e6;
 }
 
-table.sch_table tbody td .status p.mint {
+.state_box.state1 p {
+    background: url(/global/img/state1_ico.gif) no-repeat left 50%;
+    padding-left: 18px;
+}
+
+.state_box.state1 p span {
+    color: #ffda10;
+}
+
+/* state2 :: [예약 승인 완료] */
+.state_box.state2 {
     background: #34bcad;
-    border: 1px solid #34bcad;
 }
 
-table.sch_table tbody td .status p.yellow {
+.state_box.state2 p {
+    background: url(/global/img/state2_ico.gif) no-repeat left 50%;
+}
+
+/* state3 :: [결과 미입력] 출석 학생 */
+.state_box.state3 {
+    background: #2050e6;
+}
+
+.state_box.state3 p {
+    background: url(/global/img/state3_ico.gif) no-repeat left 50%;
+}
+
+/* state4 :: [결과 입력 완료] */
+.state_box.state4 {
+    background: #6e4bdd url(/global/img/state4_ico.gif) no-repeat center 50%;
+}
+
+/* state5 :: [관리자 미승인] 출석 학생 */
+.state_box.state5 {
     background: #ffa400;
-    border: 1px solid #ffa400;
 }
 
-table.sch_table tbody td .status p.puple {
-    background: #6e4bdd;
-    border: 1px solid #6e4bdd;
+.state_box.state5 p {
+    background: url(/global/img/state5_ico.gif) no-repeat left 50%;
 }
 
-table.sch_table tbody td .status p.gray {
+/* state6 :: [관리자 승인 완료] */
+.state_box.state6 {
+    background: #43269e url(/global/img/state6_ico.gif) no-repeat center 50%;
+}
+
+/* state7 :: 예약없음 */
+.state_box.state7 {
     background: #e1e1ea;
-    border: 1px solid #e1e1ea;
-    color: #373a44;
-}
-
-table.sch_table tbody td .status p.oneline {
-    min-height: 42px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
 }
 
 table.sch_table tbody tr:hover {
@@ -345,6 +378,64 @@ table.sch_table tbody tr:hover td:first-child {
     color: #2050e6;
     text-decoration: underline;
 }
+
+.sch_info {
+    width: 100%;
+    display: inline-block;
+    text-align: right;
+    margin: 5px 0 10px 0;
+}
+
+.sch_info ul {
+    display: inline-block;
+    margin-left: 15px;
+    padding-left: 15px;
+    background: url(/global/img/sch_state_bar.gif) no-repeat left 50%;
+}
+
+.sch_info ul:first-child {
+    background: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.sch_info ul li {
+    float: left;
+    font-size: 11px;
+    color: #373a44;
+    font-weight: 600;
+    margin-left: 15px;
+    padding-left: 25px;
+}
+
+.sch_info ul li:first-child {
+    margin-left: 0;
+}
+
+.sch_info ul li.ico01 {
+    background: url(/global/img/sch_state_ico01.gif) no-repeat left 50%;
+}
+
+.sch_info ul li.ico02 {
+    background: url(/global/img/sch_state_ico02.gif) no-repeat left 50%;
+}
+
+.sch_info ul li.ico03 {
+    background: url(/global/img/sch_state_ico03.gif) no-repeat left 50%;
+}
+
+.sch_info ul li.ico04 {
+    background: url(/global/img/sch_state_ico04.gif) no-repeat left 50%;
+}
+
+.sch_info ul li.ico05 {
+    background: url(/global/img/sch_state_ico05.gif) no-repeat left 50%;
+}
+
+.sch_info ul li.ico06 {
+    background: url(/global/img/sch_state_ico06.gif) no-repeat left 50%;
+}
+
 
 /* 유학생 관리 */
 .top_semester .edd-root {
@@ -1420,7 +1511,8 @@ ul.tab li:hover {
     transition-duration: 0.3s;
     color: #fff;
 }
-ul.tab li a{
+
+ul.tab li a {
     padding: 0;
 }
 
