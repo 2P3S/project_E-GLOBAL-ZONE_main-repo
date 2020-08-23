@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Restricted_student_korean;
 use App\Student_korean;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -58,14 +59,12 @@ class KoreanController extends Controller
      */
     public function updateApproval(Request $request)
     {
-        // TODO validation 적용 -> 참고 : ForeignerController@show()
-        // TODO Student_Korean Model 활용 -> (Student_Korean $std_kor_id)
-        $data = json_decode($request->getContent(), true);
+        $approval_data = $request->input('approval');
 
         // 한국인 학생 계정 승인여부 반환
-        foreach ($data['approval'] as $approval) {
+        foreach ($approval_data as $approval) {
             $validator = Validator::make($approval, [
-                'std_kor_id' => 'required|integer',
+                'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
                 'std_kor_state_of_permission' => 'required|boolean',
             ]);
 
@@ -89,15 +88,23 @@ class KoreanController extends Controller
 
     /**
      * 전체 한국인 학생 정보 조회
-     *
+     * 페이지 url => api/admin/korean?page=1  ->  page = n 번호에 따라서 바뀜.
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //TODO 페이지네이션 기능 추가. + 이용제한 학생인경우 제한 사유 같이 보내기.
-        $allSchdules = Student_korean::all();
+        // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
+        $std_koreans= Student_korean::orderBy('std_kor_state_of_restriction', 'DESC')->paginate(15);
 
-        return $allSchdules;
+        // 이용제한 학생인경우 제한 사유 같이 보내기.
+        foreach($std_koreans as $korean) {
+            if($korean['std_kor_state_of_restriction'] == true) {
+                $result = Restricted_student_korean::where('restrict_std_kor', $korean['std_kor_id'])->get();
+                $korean['std_stricted_info'] = $result;
+            }
+        }
+
+        return $std_koreans;
     }
 
     /**
