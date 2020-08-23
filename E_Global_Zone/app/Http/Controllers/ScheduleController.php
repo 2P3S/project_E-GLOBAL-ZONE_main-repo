@@ -6,12 +6,18 @@ use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
 use App\Section;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
+    private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
+    private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
+
+    private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
+
     /**
      * 한국인학생 - 현재 날짜 기준 스케줄 조회
      *
@@ -68,33 +74,40 @@ class ScheduleController extends Controller
      * @param string $date
      * @return \Illuminate\Http\Response
      */
-    // TODO 알고리즘 수정
     public function showForeignerSchedules($date)
     {
-        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
-            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
-            ->whereDate('sch_start_date', $date)
-            ->orderBy('std_for_lang')
-            ->get();
+        try {
 
-        foreach ($result_foreigner_schedules as $schedule) {
-            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+            $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_state_of_result_input', 'sch_state_of_permission')
+                ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+                ->whereDate('sch_start_date', $date)
+                ->orderBy('std_for_lang')
+                ->get();
 
-            // 전체 예약 한국인 인원수
-            $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+            foreach ($result_foreigner_schedules as $schedule) {
+                $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
-            // 예약 미승인 한국인 인원수
-            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+                // 전체 예약 한국인 인원수
+                $reserved_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
 
-            $schedule['reserved_count'] = $reserved_count;
-            $schedule['un_permission_count'] = $un_permission_count;
+                // 예약 미승인 한국인 인원수
+                $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+                $schedule['reserved_count'] = $reserved_count;
+                $schedule['un_permission_count'] = $un_permission_count;
+            }
+
+            $msg = $date . self::_SCHEDULE_SEARCH_RES_SUCCESS;
+            return self::response_json($msg, 200, $result_foreigner_schedules);
+        } catch (Exception $e) {
+
+            $msg = $date . self::_SCHEDULE_SEARCH_RES_FAILURE;
+            return self::response_json($msg, 422);
         }
-
-        return $result_foreigner_schedules;
     }
 
     /**
-     * 관리자 - 스케줄 등록
+     * 관리자 - 해당 유학생 스케줄 등록
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
@@ -103,9 +116,10 @@ class ScheduleController extends Controller
     {
         $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
-        $data = json_decode($request->getContent(), true);
-        $ecept_date = $data['ecept_date'];                                              /* 제외날짜 */
-        $sect = Section::find($data['sect_id']);                                        /* 학기 데이터 */
+        $schedule_data = $request->input('schedule');                                   /* 스케줄 데이터 */
+        $ecept_date = $request->input('ecept_date');                                    /* 제외날짜 */
+        $sect = Section::find($request->input('sect_id'));                              /* 학기 데이터 */
+        $std_for_id = $request->input('std_for_id');                                    /* 외국인 유학생 학번 */
 
         $sect_start_date = strtotime($sect->sect_start_date);
         $sect_start_date = date("Y-m-d", $sect_start_date);
@@ -132,7 +146,7 @@ class ScheduleController extends Controller
 
         while ($isRepeatMode) {
             // 요일별 데이터 출력
-            foreach ($data['schedule'] as $day) {
+            foreach ($schedule_data as $day) {
                 // 제외 날짜인 경우 패스.
                 if (!empty($ecept_date[0]) && $sect_start_date == $ecept_date[0]) {
                     // 해당 날짜 배열에서 제거.
@@ -146,45 +160,42 @@ class ScheduleController extends Controller
                     continue;
                 }
 
-                // 요일별 학생 목록
-                foreach ($day as $student_id => $student) {
-                    // 시간 리스트 목록
-                    foreach ($student as $hour) {
-                        // 줌 비밀번호 생성
-                        $zoom_pw = mt_rand(1000, 9999);
+                // 시간 리스트 목록
+                foreach ($day as $hour) {
+                    //TODO 환경변수 설정 ( 1000 ~ 9999 )
+                    // 줌 비밀번호 생성
+                    $zoom_pw = mt_rand(1000, 9999);
 
-                        $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
-                        $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
-                        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
-                        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
+                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
+                    $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
+                    $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
 
-                        Schedule::create([
-                            'sch_sect' => $sect->sect_id,
-                            'sch_std_for' => $student_id,
-                            'sch_start_date' => $sch_start_date,
-                            'sch_end_date' => $sch_end_date,
-                            'sch_for_zoom_pw' => $zoom_pw,
-                        ]);
+                    Schedule::create([
+                        'sch_sect' => $sect->sect_id,
+                        'sch_std_for' => $std_for_id,
+                        'sch_start_date' => $sch_start_date,
+                        'sch_end_date' => $sch_end_date,
+                        'sch_for_zoom_pw' => $zoom_pw,
+                    ]);
 
-                        //TODO 환경변수 설정 ( 1000 ~ 9999 )
-                        // 줌 비밀번호 생성
-                        $zoom_pw = mt_rand(1000, 9999);
-                        $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
-                        $end_time = $start_time + $setting_value->once_meet_time;
-                        $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
-                        $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$end_time}:00");
+                    // 줌 비밀번호 생성
+                    $zoom_pw = mt_rand(1000, 9999);
+                    $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
+                    $end_time = $start_time + $setting_value->once_meet_time;
+                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
+                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$end_time}:00");
 
-                        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
-                        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+                    $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
+                    $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
 
-                        Schedule::create([
-                            'sch_sect' => $sect->sect_id,
-                            'sch_std_for' => $student_id,
-                            'sch_start_date' => $sch_start_date,
-                            'sch_end_date' => $sch_end_date,
-                            'sch_for_zoom_pw' => $zoom_pw,
-                        ]);
-                    }
+                    Schedule::create([
+                        'sch_sect' => $sect->sect_id,
+                        'sch_std_for' => $std_for_id,
+                        'sch_start_date' => $sch_start_date,
+                        'sch_end_date' => $sch_end_date,
+                        'sch_for_zoom_pw' => $zoom_pw,
+                    ]);
                 }
 
                 // 종료 날짜에 맞춰 반복문 종료.
@@ -205,9 +216,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return response()->json([
-            'message' => '스케줄 생성 완료',
-        ], 200);
+        return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
     }
 
     /**

@@ -3,25 +3,52 @@
 namespace App\Http\Controllers;
 
 use App\Section;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
-    // TODO : 학기 하나에 대해서만 정보를 가져올 필요가 있음
+    private const _SECTION_SEARCH_RES_SUCCESS = " 년도 등록된 학기 목록을 반환합니다.";
+    private const _SECTION_SEARCH_RES_FAILURE = "학기 조회에 실패하였습니다.";
+
+    private const _SECTION_STORE_RES_SUCCESS = "학기 등록에 성공하였습니다.";
+    private const _SECTION_STORE_RES_FAILURE = "학기 등록에 실패하였습니다.";
+
+    private const _SECTION_UPDATE_RES_SUCCESS = "학기 정보 변경에 성공하였습니다.";
+    private const _SECTION_UPDATE_RES_FAILURE = "학기 정보 변경에 실패하였습니다.";
+
+    private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
+    private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
 
     /**
-     * 등록된 전체 학기 목록 조회
+     * 년도별 등록된 전체 학기 목록 조회
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        // TODO : 수정필요 validation, 전체 조회X -> 년도기준 학기 조회
-        return response()->json([
-            'message' => '등록된 학기 목록 조회',
-            'result' => Section::all(),
-        ], 200);
+        $rules = [
+            'year' => 'required|integer|distinct|min:2019|max:2999',
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SECTION_SEARCH_RES_FAILURE
+        );
+
+        $year = $request->year;
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $section_data = Section::whereYear('sect_start_date', $year)->get();
+
+        return self::response_json($year . self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
     }
 
     /**
@@ -30,18 +57,22 @@ class SectionController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'sect_name' => 'required|string',
+        $rules = [
+            'sect_name' => 'required|string|unique:sections,sect_name',
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SECTION_STORE_RES_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
         $create_section = Section::create([
@@ -50,10 +81,7 @@ class SectionController extends Controller
             'sect_end_date' => $request->sect_end_date,
         ]);
 
-        return response()->json([
-            'message' => '학기 등록 완료',
-            'result' => $create_section,
-        ], 201);
+        return self::response_json(self::_SECTION_STORE_RES_SUCCESS, 201, $create_section);
     }
 
     /**
@@ -63,30 +91,31 @@ class SectionController extends Controller
      * @param int $sect_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Section $sect_id)
+    public function update(Request $request, Section $sect_id): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'sect_name' => 'required|string',
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SECTION_UPDATE_RES_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        $update_section = $sect_id->update([
+        $sect_id->update([
             'sect_name' => $request->sect_name,
             'sect_start_date' => $request->sect_start_date,
             'sect_end_date' => $request->sect_end_date,
         ]);
 
-        return response()->json([
-            'message' => '스케줄 업데이트 완료',
-            'result' => $update_section,
-        ], 200);
+        return self::response_json(self::_SECTION_UPDATE_RES_SUCCESS, 200);
     }
 
     /**
@@ -95,26 +124,24 @@ class SectionController extends Controller
      * @param int $sect_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Section $sect_id)
+    public function destroy(Section $sect_id): JsonResponse
     {
-        $sect_id->delete();
-
-        return response()->json([
-            'message' => '학기 삭제 완료',
-        ], 204);
+        try {
+            $sect_id->delete();
+            return self::response_json(self::_SECTION_DELETE_RES_SUCCESS, 200);
+        } catch (Exception $e) {
+            return self::response_json(self::_SECTION_DELETE_RES_FAILURE, 200);
+        }
     }
 
     public function validate_request_section(
         int $sect_id,
         string $sect_end_date
-    ): bool
-    {
-        return (
-        empty(Section::where('sect_id', $sect_id)
+    ): bool {
+        return (empty(Section::where('sect_id', $sect_id)
             ->where('sect_end_date', $sect_end_date)
             ->where('sect_end_date', '>=', now())
             ->where('sect_start_date', '<=', now())
-            ->first())
-        );
+            ->first()));
     }
 }
