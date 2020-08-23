@@ -86,22 +86,24 @@ class Reservation extends Model
             'sch_start_date', 'sch_end_date',
             'res_state_of_permission', 'res_state_of_attendance',
             'sch_state_of_result_input', 'sch_state_of_permission',
-            'sch_for_zoom_pw'
+            'std_for_id', 'sch_for_zoom_pw'
         ];
 
         $result =
             self::select($lookup_columns)
-                ->join('schedules as sch', 'sch.sch_id', '=', 'reservations.res_sch')
-                ->join('student_foreigners as for', 'for.std_for_id', '=', 'sch.sch_std_for')
+                ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
+                ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
                 ->where('reservations.res_std_kor', $std_kor_id)
                 ->whereDate('sch.sch_start_date', $search_date)
                 ->get();
+
+        $result->join('student_foreigners_contacts as for_cont', 'for_cont.std_for_id', 'std_for_id');
 
         $is_std_kor_res_no_date = $result->count();
 
         if (!$is_std_kor_res_no_date) {
             return
-                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 205);
+                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 202);
         }
 
         $message_template = self::_STD_KOR_RES_INDEX_SUCCESS;

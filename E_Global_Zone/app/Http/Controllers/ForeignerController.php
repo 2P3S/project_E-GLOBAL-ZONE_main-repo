@@ -84,7 +84,7 @@ class ForeignerController extends Controller
         if (count($work_std_for_list) === 0) {
             return response()->json([
                 'message' => self::_WORK_STD_FOR_INDEX_FAILURE
-            ], 205);
+            ], 202);
         }
 
         return response()->json([

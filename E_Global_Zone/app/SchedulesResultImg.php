@@ -41,7 +41,7 @@ class SchedulesResultImg extends Model
             switch ($queryException->getCode()) {
                 case 23000:
                     return
-                        Controller::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 205);
+                        Controller::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 202);
                 default:
                     return
                         Controller::response_json(self::_STD_FOR_RES_RESULT_FAILURE, 422);
