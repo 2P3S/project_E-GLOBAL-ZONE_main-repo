@@ -127,7 +127,7 @@ class ReservationController extends Controller
     public function std_kor_show_res_by_date(Request $request): JsonResponse
     {
         $rules = [
-            'search_date' => 'required|date|after or equal:' . date("Y-m-d")
+            'search_date' => 'required|date'
         ];
 
         // <<-- Request 유효성 검사
