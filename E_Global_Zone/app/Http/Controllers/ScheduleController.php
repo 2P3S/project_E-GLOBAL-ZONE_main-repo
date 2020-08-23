@@ -68,9 +68,9 @@ class ScheduleController extends Controller
         // -->>
 
         $is_sch_no_data = $response_data->count();
-        // TODO 데이터가 없을 경우 response 하는 것(여기)
-//        if ()
-//        dd($response_data->count());
+
+        if($is_sch_no_data) return self::response_json(self::_STD_FOR_SHOW_SCH_NO_DATA, 202);
+
         return
             self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $response_data);
     }
