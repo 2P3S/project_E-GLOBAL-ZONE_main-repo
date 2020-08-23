@@ -100,8 +100,8 @@ Route::prefix('/admin')->group(function () {
 
     /* 스케줄 관리 라우터 */
     Route::prefix('/schedule')->group(function () {
-        /* 해당 일자 스케줄 조회 */
-        Route::get('{date}', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
+        /* 특정 날짜 전체 유학생 스케줄 조회 */
+        Route::get('', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
 
         /* 스케줄 등록 */
         Route::post('', 'ScheduleController@store')->name('schedules.store');
