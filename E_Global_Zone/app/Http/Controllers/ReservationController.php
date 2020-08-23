@@ -20,8 +20,6 @@ class ReservationController extends Controller
      * == 누락 API ==
      * TODO 접근 가능 범위 수정
      * TODO 관리자가 예약 신청, 승인
-     * TODO 한국인 학생 학기별 미팅 목록 조회
-     * TODO 유학생 주단위 스케줄 조회
      */
     private const _STD_KOR_RES_STORE_OVER = "1일 최대 스케줄 예약 횟수를 초과하였습니다.";
     private const _STD_KOR_RES_STORE_DUPLICATE = "이미 예약한 스케줄입니다.";
@@ -34,12 +32,16 @@ class ReservationController extends Controller
     private const _STD_KOR_RES_DELETE_SUCCESS = "예약한 스케줄이 삭제되었습니다.";
     private const _STD_KOR_RES_DELETE_FAILURE = "예약한 스케줄 삭제에 실패하였습니다.";
 
+    private const _STD_KOR_RESULT_SUCCESS = " 학기별 미팅 목록 조회에 성공하였습니다.";
+    private const _STD_KOR_RESULT_FAILURE = " 학기별 미팅 목록 조회에 실패하였습니다.";
+
     private const _STD_FOR_RES_UPDATE_SUCCESS = "스케줄 예약 학생 승인결과 업데이트를 성공하였습니다.";
     private const _STD_FOR_RES_UPDATE_FAILURE = "스케줄 예약 학생 승인결과 업데이트에 실패하였습니다.";
 
     private const _STD_FOR_RES_INDEX_FAILURE = "스케줄에 대한 예약 목록이 없습니다.";
     private const _STD_FOR_RES_RESULT_FAILURE = "스케줄 출석 결과 입력에 실패하였습니다.";
     private const _STD_FOR_RES_RESULT_COMPLETED = "이미 결과 입력이 완료되어 수정 불가능합니다.";
+
 
     private $schedule;
     private $reservation;
@@ -77,10 +79,9 @@ class ReservationController extends Controller
      * @return JsonResponse
      */
     public function std_for_show_res_by_id(
-//        Request $request,
+        //        Request $request,
         Schedule $sch_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // TODO validation, 토큰 -> 유학생 검사 추가(중요)
         // $std_for_id = $request->user($request->input('guard'));
         $std_for_id = "1753176";
@@ -99,8 +100,7 @@ class ReservationController extends Controller
     public function std_for_update_res_permission(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $rules = [
             'permission_std_kor_id_list' => 'nullable|array',
             'permission_std_kor_id_list.*' => 'integer|distinct|min:1000000|max:9999999',
@@ -110,7 +110,9 @@ class ReservationController extends Controller
 
         // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_RES_UPDATE_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_RES_UPDATE_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -123,10 +125,16 @@ class ReservationController extends Controller
         $not_permission_std_kor_id_list = $request->input('not_permission_std_kor_id_list');
 
         $this->reservation->update_std_kor_res(
-            $sch_id, $permission_std_kor_id_list, 'res_state_of_permission', true
+            $sch_id,
+            $permission_std_kor_id_list,
+            'res_state_of_permission',
+            true
         );
         $this->reservation->update_std_kor_res(
-            $sch_id, $not_permission_std_kor_id_list, 'res_state_of_permission', false
+            $sch_id,
+            $not_permission_std_kor_id_list,
+            'res_state_of_permission',
+            false
         );
         // -->>
 
@@ -144,8 +152,7 @@ class ReservationController extends Controller
     public function std_for_input_sch_result(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // <<-- 기존 결과 입력 여부 확인
         $sch_state_of_result_input = $sch_id['sch_state_of_result_input'];
 
@@ -174,7 +181,9 @@ class ReservationController extends Controller
 
         // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_RES_RESULT_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_RES_RESULT_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -187,10 +196,16 @@ class ReservationController extends Controller
         $absent_std_kor_id_list = $request->input('absent_std_kor_id_list');
 
         $this->reservation->update_std_kor_res(
-            $sch_id, $attendance_std_kor_id_list, 'res_state_of_attendance', true
+            $sch_id,
+            $attendance_std_kor_id_list,
+            'res_state_of_attendance',
+            true
         );
         $this->reservation->update_std_kor_res(
-            $sch_id, $absent_std_kor_id_list, 'res_state_of_attendance', false
+            $sch_id,
+            $absent_std_kor_id_list,
+            'res_state_of_attendance',
+            false
         );
         // -->>
 
@@ -235,8 +250,7 @@ class ReservationController extends Controller
     public function std_kor_store_res(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
         $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
 
@@ -248,7 +262,7 @@ class ReservationController extends Controller
 
         // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
         // TODO 토큰으로 한국인 학생 정보 확인 추가 필요
-//        $std_kor_id = $request->user($request['guard'])['std_kor_id'];
+        //        $std_kor_id = $request->user($request['guard'])['std_kor_id'];
         $std_kor_id = 1321704;
 
         $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
@@ -296,7 +310,9 @@ class ReservationController extends Controller
 
         // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_KOR_RES_INDEX_FAILURE
+            $request,
+            $rules,
+            self::_STD_KOR_RES_INDEX_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -314,4 +330,41 @@ class ReservationController extends Controller
         // -->>
     }
 
+    /**
+     * 한국인학생 - 학기별 미팅 목록 결과 조회
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function std_kor_show_res_by_sect(Request $request): JsonResponse
+    {
+        //TODO std_kor_id 미들웨어로 처리하기
+        $rules = [
+            'sect_id' => 'required|integer|distinct|min:0|max:999',
+            'search_month' => 'required|integer|distinct|min:1|max:12',
+            'std_kor_id' => 'required|integer'
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RESULT_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $sect_by_reservations = Reservation::select('res_id', 'std_for_name', 'sch_start_date', 'sch_end_date')
+            ->join('schedules', 'res_sch', 'sch_id')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
+            ->where('schedules.sch_sect', $request->sect_id)
+            ->whereMonth('schedules.sch_start_date', $request->search_month)
+            ->where('res_state_of_attendance', true)
+            ->get();
+
+        return self::response_json(self::_STD_KOR_RESULT_SUCCESS, 200, $sect_by_reservations);
+    }
 }

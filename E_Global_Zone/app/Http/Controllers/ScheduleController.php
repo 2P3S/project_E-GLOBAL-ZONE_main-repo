@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
+    /*
+     * ========== TEST 완료 ==========
+     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
+     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
+     * 3. 유학생 - 특정 기간 전체 스케줄 조회
+     * 4. 관리자 - 특정 날짜 전체 유학생 스케줄 조회
+     */
+
     private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
     private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
 
@@ -417,14 +425,6 @@ class ScheduleController extends Controller
             'message' => '출석 결과 승인',
         ], 200);
     }
-
-
-    /*
-     * ========== TEST 완료 ==========
-     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
-     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
-     * 3. 유학생 - 특정 날짜에 대한 개인 스케줄 조회
-     */
 
     /**
      * 한국인학생 - 현재 날짜 기준 예약 가능 스케줄 조회
