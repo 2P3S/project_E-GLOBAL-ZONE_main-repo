@@ -51,107 +51,6 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 예약 신청
-     *
-     * @param Request $request
-     * @param Schedule $sch_id
-     * @return JsonResponse
-     */
-    public function std_kor_store_res(
-        Request $request,
-        Schedule $sch_id,
-        Preference $preference_instance
-    ): JsonResponse
-    {
-        // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
-        $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
-
-        if (!$is_res_possibility) {
-            return
-                self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 205);
-        }
-        // -->>
-
-        // <<-- Request 유효성 검사
-        $rules = [
-            'res_std_kor' => 'required|integer|min:1000000|max:9999999',
-        ];
-
-        $validated_result = self::request_validator(
-            $request, $rules, self::_STD_KOR_RES_STORE_FAILURE
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
-        }
-        // -->>
-
-        // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
-        $std_kor_id = $request->input('res_std_kor');
-
-        $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
-        $is_over_max_res_per_day = $std_kor_res_list->count() >= $preference_instance->getPreference()->max_res_per_day;
-
-        if ($is_over_max_res_per_day) {
-            return
-                self::response_json(self::_STD_KOR_RES_STORE_OVER, 205);
-        }
-        // -->>
-
-        // <<-- 예약 중복 여부 검사
-        $is_already_res = $std_kor_res_list->where('res_sch', $sch_id['sch_id'])->count();
-
-        if ($is_already_res) {
-            return
-                self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 205);
-        }
-        // -->>
-
-        // <<-- 예약 정보 저장
-        $res_data = [
-            'res_sch' => $sch_id['sch_id'],
-            'res_std_kor' => $std_kor_id
-        ];
-        $created_res = $this->reservation->store_std_kor_res($res_data);
-        // -->>
-
-        return
-            self::response_json(self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
-    }
-
-    /**
-     * 한국인학생 - 해당 일자에 대한 예약 조회
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function std_kor_show_res_by_date(Request $request): JsonResponse
-    {
-        $rules = [
-            'search_date' => 'required|date|after or equal:' . date("Y-m-d")
-        ];
-
-        // <<-- Request 유효성 검사
-        $validated_result = self::request_validator(
-            $request, $rules, self::_STD_KOR_RES_INDEX_FAILURE
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
-        }
-        // -->>
-
-        // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
-        // TODO (CASE 1) 토큰으로 한국인 학생 정보 확인 -> 학번 조회
-        // TODO (CASE 2) 구글 로그인 리다이렉션으로 한국인 학생 정보 확인 -> email 조회
-        // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
-        $std_kor_id = 1321704;
-        $search_date = $request->input('search_date');
-        return $this->reservation->get_std_kor_res_by_date($std_kor_id, $search_date);
-        // -->>
-    }
-
-    /**
      * 한국인학생 - 내 예약 일정 삭제
      *
      * @param Reservation $res_id
@@ -164,7 +63,7 @@ class ReservationController extends Controller
             $res_id->delete();
         } catch (Exception $e) {
             return
-                self::response_json(self::_STD_KOR_RES_DELETE_FAILURE, 205);
+                self::response_json(self::_STD_KOR_RES_DELETE_FAILURE, 202);
         }
 
         return
@@ -252,7 +151,7 @@ class ReservationController extends Controller
 
         if ($sch_state_of_result_input) {
             return
-                self::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 205);
+                self::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 202);
         }
         // -->>
 
@@ -260,7 +159,7 @@ class ReservationController extends Controller
         $is_sch_no_res = $this->schedule->get_sch_res_std_kor_list($sch_id) === null;
         if ($is_sch_no_res) {
             return
-                self::response_json(self::_STD_FOR_RES_INDEX_FAILURE, 205);
+                self::response_json(self::_STD_FOR_RES_INDEX_FAILURE, 202);
         }
         // -->>
 
@@ -318,4 +217,101 @@ class ReservationController extends Controller
         $img_url = 'http://' . request()->getHttpHost() . Storage::url('public/' . $img_name);       /* 이미지 URL */
         return $img_url;
     }
+
+    /*
+     * ========== TEST 완료 ==========
+     * 1. 한국인 학생 예약 신청
+     * 2. 해당 일자에 대한 예약 조회
+     */
+
+    /**
+     * 한국인학생 - 예약 신청
+     * /api/korean/reservation/{$sch_id}
+     *
+     * @param Request $request
+     * @param Schedule $sch_id
+     * @return JsonResponse
+     */
+    public function std_kor_store_res(
+        Request $request,
+        Schedule $sch_id
+    ): JsonResponse
+    {
+        // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
+        $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
+
+        if (!$is_res_possibility) {
+            return
+                self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
+        }
+        // -->>
+
+        // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
+        // TODO 토큰으로 한국인 학생 정보 확인 추가 필요
+//        $std_kor_id = $request->user($request['guard'])['std_kor_id'];
+        $std_kor_id = 1321704;
+
+        $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
+        $is_over_max_res_per_day = $std_kor_res_list->count() >= Setting::get_setting_value()['max_res_per_day'];
+
+        if ($is_over_max_res_per_day) {
+            return
+                self::response_json(self::_STD_KOR_RES_STORE_OVER, 202);
+        }
+        // -->>
+
+        // <<-- 예약 중복 여부 검사
+        $is_already_res = $std_kor_res_list->where('res_sch', $sch_id['sch_id'])->count();
+
+        if ($is_already_res) {
+            return
+                self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
+        }
+        // -->>
+
+        // <<-- 예약 정보 저장
+        $res_data = [
+            'res_sch' => $sch_id['sch_id'],
+            'res_std_kor' => $std_kor_id
+        ];
+        $created_res = $this->reservation->store_std_kor_res($res_data);
+        // -->>
+
+        return
+            self::response_json(self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+    }
+
+    /**
+     * 한국인학생 - 해당 일자에 대한 예약 조회
+     * api/korean/reservation
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function std_kor_show_res_by_date(Request $request): JsonResponse
+    {
+        $rules = [
+            'search_date' => 'required|date|after or equal:' . date("Y-m-d")
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request, $rules, self::_STD_KOR_RES_INDEX_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
+        // TODO (CASE 1) 토큰으로 한국인 학생 정보 확인 -> 학번 조회
+        // TODO (CASE 2) 구글 로그인 리다이렉션으로 한국인 학생 정보 확인 -> email 조회
+        // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
+        $std_kor_id = 1321704;
+        $search_date = $request->input('search_date');
+        return $this->reservation->get_std_kor_res_by_date($std_kor_id, $search_date);
+        // -->>
+    }
+
 }

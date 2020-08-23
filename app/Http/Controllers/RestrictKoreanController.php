@@ -43,7 +43,7 @@ class RestrictKoreanController extends Controller
         if (empty($restrict_data->first()) || $restrict_data->count() !== 1) {
             return response()->json([
                 "message" => self::_INDEX_ERROR
-            ], 205);
+            ], 202);
         }
 
         $restrict_std_kor_data = $restrict_data
@@ -89,7 +89,7 @@ class RestrictKoreanController extends Controller
         if ($student['std_kor_state_of_restriction'] === (int)true) {
             return response()->json([
                 'message' => self::_REGISTER_ERROR
-            ], 205);
+            ], 202);
         }
 
         $student->update([
@@ -142,7 +142,7 @@ class RestrictKoreanController extends Controller
         if (empty($restrict_data) || $student['std_kor_state_of_restriction'] === (int)false) {
             return response()->json([
                 "message" => self::_INDEX_ERROR
-            ], 205);
+            ], 202);
         }
 
         $student->update([

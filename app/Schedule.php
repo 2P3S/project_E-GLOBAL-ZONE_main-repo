@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
@@ -85,7 +86,7 @@ class Schedule extends Model
         $is_exist_sch_res = $result->count();
         if (!$is_exist_sch_res) {
             return $flag_make_json ?
-                Controller::response_json(self::_STD_FOR_RES_SHOW_NO_DATA, 205) :
+                Controller::response_json(self::_STD_FOR_RES_SHOW_NO_DATA, 202) :
                 null;
         }
 
@@ -101,5 +102,63 @@ class Schedule extends Model
         return $flag_make_json ?
             Controller::response_json(self::_STD_FOR_RES_SHOW_SUCCESS, 200, $response_data) :
             $response_data;
+    }
+
+    private const _STD_KOR_SCH_SHOW = "스케줄 목록 조회에 성공하였습니다.";
+
+    /**
+     * 스케줄 id 값으로 스케줄 정보 조회
+     *
+     * @param Schedule $sch_id
+     * @return JsonResponse
+     */
+    public function get_sch_by_id(
+        Schedule $sch_id
+    ): JsonResponse
+    {
+        $result = $sch_id
+            ->join('student_foreigners as for', 'for.std_for_id', 'schedules.sch_std_for')
+            ->where('sch_id', $sch_id['sch_id'])
+            ->first();
+
+        $sch_date = date('Y년 m월 d일', strtotime($result['sch_start_date']));
+        $sch_time =
+            date('A h시 i분 ~ ', strtotime($result['sch_start_date'])) .
+            date('A h시 i분', strtotime($result['sch_end_date']));
+
+        $sch_ava_count = Setting::get_setting_value()['max_std_once'];
+        $response_data = (object)[
+            'sch_res_count' => $result['sch_res_count'],
+            'sch_ava_count' => $sch_ava_count,
+            'std_for_name' => $result['std_for_name'],
+            'std_for_lang' => $result['std_for_lang'],
+            'sch_date' => $sch_date,
+            'sch_time' => $sch_time,
+        ];
+
+        return
+            Controller::response_json(self::_STD_KOR_SCH_SHOW, 200, $response_data);
+
+    }
+
+    /**
+     * 날짜 값으로 스케줄 정보 조회
+     * @param string $search_date
+     * @param int $std_for_id
+     */
+
+    public function get_sch_by_date(
+        string $search_date,
+        int $std_for_id = 0
+    ): Collection
+    {
+        $result = Schedule::whereDate('sch_start_date', $search_date);
+
+        $is_search_by_std_for_id = $std_for_id >= 1000000 && $std_for_id <= 9999999;
+        if ($is_search_by_std_for_id) {
+            $result = $result->where('sch_std_for', $std_for_id);
+        }
+
+        return $result->get();
     }
 }
