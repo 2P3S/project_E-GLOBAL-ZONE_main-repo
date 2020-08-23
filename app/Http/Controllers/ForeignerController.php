@@ -208,13 +208,12 @@ class ForeignerController extends Controller
      * @param int $work_list_id
      * @return Response
      */
-    // TODO 한명의 유학생만 추가하는 경우는???
     public function destroy(Work_student_foreigner $work_list_id)
     {
         $work_list_id->delete();
 
         return response()->json([
-            'message' => '해당 학기에 대한 유학생 정보 삭제 완료',
+            'message' => self::_SECT_STD_FOR_EACH_DELETE_SUCCESS,
         ], 204);
     }
 
@@ -226,9 +225,8 @@ class ForeignerController extends Controller
      */
     public function registerAccount(Request $request)
     {
-        // TODO unique 추가
         $validator = Validator::make($request->all(), [
-            'std_for_id' => 'required|integer|min:7',
+            'std_for_id' =>'required|integer|unique:student_foreigners,std_for_id|distinct|min:1000000|max:9999999',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2',
