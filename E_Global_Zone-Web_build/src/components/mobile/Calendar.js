@@ -1,26 +1,210 @@
 import React from "react";
+import moment from 'moment';
+import ReactCalendar from "react-calendar"
+import {useSelector, useDispatch} from "react-redux";
+import {selectSelectDate, setSelectDate} from "../../redux/confSlice/confSlice";
+import parseDate from "../../modules/parseDate";
 
-/**
- * Calendar <<추가예정>>
- * @returns {JSX.Element}
- * @constructor
- * @todo make Calendar
- */
-export default function Calendar() {
-	return (
-		<div className="calandar">
-			<a href="/reservation/1">
-				<div
-					style={{
-						width: "100px",
-						height: "100px",
-						backgroundColor: "#000000",
-						color: "#ffffff",
-					}}
-				>
-					달력 컴포넌트
-				</div>
-			</a>
-		</div>
-	);
+
+class Calendar extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            month: moment(),
+            selected: moment().startOf('day')
+        };
+
+        this.previous = this.previous.bind(this);
+        this.next = this.next.bind(this);
+    }
+
+    previous() {
+        const {
+            month,
+        } = this.state;
+
+        this.setState({
+            month: month.subtract(1, 'month'),
+        });
+    }
+
+    next() {
+        const {
+            month,
+        } = this.state;
+
+        this.setState({
+            month: month.add(1, 'month'),
+        });
+    }
+
+    select(day) {
+        this.setState({
+            selected: day.date,
+            month: day.date.clone(),
+        });
+    }
+
+    renderWeeks() {
+        let weeks = [];
+        let done = false;
+        let date = this.state.month.clone().startOf("month").add("w" - 1).day("Sunday");
+        let count = 0;
+        let monthIndex = date.month();
+
+        const {
+            selected,
+            month,
+        } = this.state;
+
+        while (!done) {
+            weeks.push(
+                <Week key={date}
+                      date={date.clone()}
+                      month={month}
+                      select={(day) => this.select(day)}
+                      selected={selected}/>
+            );
+
+            date.add(1, "w");
+            done = count++ > 2 && monthIndex !== date.month();
+            monthIndex = date.month();
+        }
+
+        return weeks;
+    };
+
+    renderMonthLabel() {
+        const {
+            month,
+        } = this.state;
+
+        return <span className="month-label">{month.format("YYYY")}년 {month.format("M")}월</span>;
+    }
+
+    render() {
+        return (
+            <section className="calendar">
+                <header className="header">
+                    <div className="month-display row">
+                        <span onClick={this.previous} style={{cursor:"pointer",fontSize:"5px", marginLeft:"10px"}}>지난 달</span>
+                        {this.renderMonthLabel()}
+                        <span onClick={this.next} style={{cursor:"pointer",fontSize:"5px", marginRight:"10px"}}>다음 달</span>
+                    </div>
+                    <DayNames/>
+                </header>
+                {this.renderWeeks()}
+            </section>
+        );
+    }
 }
+
+class DayNames extends React.Component {
+    render() {
+        return (
+            <div className="row day-names">
+                <span className="day" style={{color:"red"}}>일</span>
+                <span className="day">월</span>
+                <span className="day">화</span>
+                <span className="day">수</span>
+                <span className="day">목</span>
+                <span className="day">금</span>
+                <span className="day">토</span>
+            </div>
+        );
+    }
+}
+
+const Week = (props) => {
+    const dispatch = useDispatch();
+    let days = [];
+    let {
+        date,
+    } = props;
+
+    const {
+        month,
+        selected,
+        select,
+    } = props;
+
+    for (var i = 0; i < 7; i++) {
+        let day = {
+            name: date.format("dd").substring(0, 1),
+            number: date.date(),
+            isCurrentMonth: date.month() === month.month(),
+            isToday: date.isSame(new Date(), "day"),
+            date: date
+        };
+        days.push(
+            <Day day={day}
+                 selected={selected}
+                 select={() => {
+                     select(day)
+                     console.log(day.date._d)
+                     dispatch(setSelectDate(parseDate(day.date._d)));
+                 }}
+
+            />
+        );
+
+        date = date.clone();
+        date.add(1, "day");
+    }
+
+    return (
+        <div className="row week" key={days[0]}>
+            {days}
+        </div>
+    );
+
+
+}
+
+class Day extends React.Component {
+    render() {
+        const {
+            day,
+            day: {
+                date,
+                isCurrentMonth,
+                isToday,
+                number
+            },
+            select,
+            selected
+        } = this.props;
+
+        return (
+            <span
+                key={date.toString()}
+                className={"day" + (isToday ? " today" : "") + (isCurrentMonth ? "" : " different-month") + (date.isSame(selected) ? " selected" : "")}
+                onClick={() => select(day)}>{number}</span>
+        );
+    }
+}
+
+// /**
+//  * Calendar <<추가예정>>
+//  * @returns {JSX.Element}
+//  * @constructor
+//  * @todo make Calendar
+//  */
+// export default function Calendar() {
+// 	const selectDate = useSelector(selectSelectDate);
+// 	return (
+// 		<div className="calendar">
+// 			{/*<a href="/reservation/1">*/}
+// 				<div>
+// 					<ReactCalendar
+// 					onChange={date => console.log(date)}
+// 					value={selectDate}
+// 					/>
+// 				</div>
+// 			{/*</a>*/}
+// 		</div>
+// 	);
+// }
+
+export default Calendar;
