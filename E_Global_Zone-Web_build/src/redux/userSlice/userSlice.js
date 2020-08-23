@@ -9,8 +9,8 @@ import conf from "conf/conf";
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		isLogin: false,
-		user: new User(1, conf.userClass.MANAGER),
+		isLogin: true,
+		user: {id:1, userClass: conf.userClass.FOREIGNER, name: '로그인 사람 이름'},
 	},
 	reducers: {
 		logIn: (state) => {
@@ -20,8 +20,7 @@ export const userSlice = createSlice({
 			state.isLogin = false;
 		},
 		setClass: (state, action) => {
-			const { id } = state.user;
-			state.user = new User(id, action.payload);
+			state.user = {id:action.payload[0], userClass:action.payload[1]};
 			// state.user.userClass = action.payload;
 		},
 	},

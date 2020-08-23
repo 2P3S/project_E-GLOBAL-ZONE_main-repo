@@ -65,6 +65,7 @@ const conf = {
 		JAPANESE,
 		CHINESE,
 	},
+	url: "http://175.127.252.107"
 };
 
 export default conf;

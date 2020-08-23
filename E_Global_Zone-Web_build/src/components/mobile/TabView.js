@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import List from "./List";
 import useClick from "modules/hooks/useClick";
 import mockup from "../../test/mockup";
@@ -8,8 +8,8 @@ import mockup from "../../test/mockup";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function TabView() {
-	const [data, setData] = useState(mockup); // 스케줄 데이터 배열로 초기화
+export default function TabView({list}) {
+	const [data, setData] = useState(list); // 스케줄 데이터 배열로 초기화
 	const setClass = (e) => {
 		for (const key in tabs) {
 			if (tabs.hasOwnProperty(key)) {
@@ -21,24 +21,12 @@ export default function TabView() {
 				const element = tabs[key];
 				if (element.current === e.target) {
 					element.current.className = "on";
-					setData([
-						{
-							language: "Chinese",
-							name: "이재원",
-							time: ["시작시간", "종료시간"],
-							status: "reserved",
-						},
-						{
-							language: "Japanese",
-							name: "이재원",
-							time: ["시작시간", "종료시간"],
-							status: "done",
-						},
-					]); // 클릭 된 탭에 따라서 스케줄 셋
+					setData(); // 클릭 된 탭에 따라서 스케줄 셋
 				}
 			}
 		}
 	};
+	useEffect(()=>{console.log(list)});
 	const tabView = useClick(setClass);
 	const tabs = {
 		all: useRef(),
@@ -70,7 +58,7 @@ export default function TabView() {
 					</div>
 				</li>
 			</ul>
-			<List tabView data={data}></List>
+			<List tabView data={list}></List>
 		</>
 	);
 }

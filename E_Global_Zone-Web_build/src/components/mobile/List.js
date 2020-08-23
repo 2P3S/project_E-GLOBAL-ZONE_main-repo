@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Item from "./Item";
 /**
  *  Item's props
@@ -16,30 +16,63 @@ import Item from "./Item";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function List({ tabView, data = [] }) {
-	return tabView ? (
-		<div className="reservation_boxs tab_wrap">
-			{data.map((item) => (
-				<>
-					<Item
-						language={item.language}
-						name={item.name}
-						time={item.time}
-						status={item.status}
-					/>
-				</>
-			))}
-		</div>
-	) : (
-		<div className="reservation_boxs">
-			{data.map((item) => (
-				<Item
-					language={item.language}
-					name={item.name}
-					time={item.time}
-					status={item.status}
-				/>
-			))}
-		</div>
-	);
+export default function List({tabView, data}) {
+    useEffect(() => {
+        console.log(data);
+    })
+    return tabView ? (
+        <div className="reservation_boxs tab_wrap">
+            {typeof data === "object" && data.map((item) => {
+                return (
+                    <>
+                        <Item
+                            id={item.sch_id}
+                            language={item.std_for_lang}
+                            name={item.std_for_name}
+                            time={[item.sch_start_date.substr(10, 9), item.sch_end_date.substr(10, 9)]}
+                            status={item.sch_res_available}
+                        />
+                    </>
+                )
+            })}
+        </div>
+    ) : (
+        <div className="reservation_boxs">
+            {data.map((item) => {
+                let status;
+                if (new Date(item.sch_end_date) > Date.now()) {
+                    console.log("시작안됨")
+                    if (item.res_state_of_permission) {
+                        status = "reserved";
+                    } else {
+                        status = "pending";
+                    }
+                } else {
+                    console.log('완료됨');
+                    if(item.sch_state_of_result_input){
+                        if(item.res_state_of_attendance){
+                            status = "confirm";
+                        }else{
+                            status = "absent";
+                        }
+                    } else {
+                        status = "done"
+                    }
+                }
+
+                console.log(status);
+                return (
+                    <Item
+                        id={item.sch_id}
+                        language={item.std_for_lang}
+                        name={item.std_for_name}
+                        time={[item.sch_start_date.substr(10, 9), item.sch_end_date.substr(10, 9)]}
+                        status={status}
+                        zoomPw = {item.sch_for_zoom_pw}
+                        zoomId = {item.sch_for_zoom_id}
+                    />
+                )
+            })}
+        </div>
+    );
 }

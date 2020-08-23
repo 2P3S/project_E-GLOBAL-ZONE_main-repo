@@ -17,18 +17,16 @@ import { logOut, setClass } from "redux/userSlice/userSlice";
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const User = useSelector(selectUser);
-
-	// const dispatch = useDispatch();
 	return (
 		<Router>
 			<Test />
 			{isLogin ? (
-				User.getUserClass() === conf.userClass.KOREAN ? (
+			User.userClass === conf.userClass.KOREAN ? (
 					//mobile
 					<>
 						<MobileRouter />
 					</>
-				) : User.getUserClass() === conf.userClass.FOREIGNER ? (
+				) : User.userClass === conf.userClass.FOREIGNER ? (
 					// web
 					<ForeignerRouter />
 				) : (
@@ -46,16 +44,17 @@ function Routes() {
 const Test = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const user = useSelector(selectUser);
 	const student = () => {
-		dispatch(setClass(conf.userClass.KOREAN));
+		dispatch(setClass([user.id,conf.userClass.KOREAN]));
 		history.push("/");
 	};
 	const foreigner = () => {
-		dispatch(setClass(conf.userClass.FOREIGNER));
+		dispatch(setClass([user.id,conf.userClass.FOREIGNER]));
 		history.push("/");
 	};
 	const manager = () => {
-		dispatch(setClass(conf.userClass.MANAGER));
+		dispatch(setClass([user.id,conf.userClass.MANAGER]));
 		history.push("/");
 	};
 	return (
