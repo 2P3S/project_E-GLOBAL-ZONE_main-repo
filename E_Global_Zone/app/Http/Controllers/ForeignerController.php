@@ -63,6 +63,9 @@ class ForeignerController extends Controller
     private const _STD_FOR_DELETE_SUCCESS = " 유학생이 삭제되었습니다.";
     private const _STD_FOR_DELETE_FAILURE = " 유학생 삭제에 실패하였습니다.";
 
+    // 000 학번의 학생의 데이터가 중복입니다.
+    private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
+
 
     /**
      * 학기별 전체 유학생 정보 조회
@@ -75,11 +78,15 @@ class ForeignerController extends Controller
         $sect_name = $sect_id['sect_name'];
         $work_std_for_list =
             Work_student_foreigner::select(
-                'work_list_id', 'std_for_id', 'std_for_dept',
-                'std_for_name', 'std_for_lang', 'std_for_country'
+                'work_list_id',
+                'std_for_id',
+                'std_for_dept',
+                'std_for_name',
+                'std_for_lang',
+                'std_for_country'
             )
-                ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
-                ->where('work_sect', $sect_id['sect_id'])->get();
+            ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
+            ->where('work_sect', $sect_id['sect_id'])->get();
 
         if (count($work_std_for_list) === 0) {
             return response()->json([
@@ -123,11 +130,14 @@ class ForeignerController extends Controller
             // 학번 기준 검색
             $search_result =
                 Student_foreigner::select(
-                    'student_foreigners.std_for_id', 'student_foreigners.std_for_name',
-                    'contact.std_for_phone', 'contact.std_for_mail', 'contact.std_for_zoom_id'
+                    'student_foreigners.std_for_id',
+                    'student_foreigners.std_for_name',
+                    'contact.std_for_phone',
+                    'contact.std_for_mail',
+                    'contact.std_for_zoom_id'
                 )
-                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-                    ->where('student_foreigners.std_for_id', $std_for_id)->get();
+                ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+                ->where('student_foreigners.std_for_id', $std_for_id)->get();
 
             // 검색 결과 저장
             if ($search_result) {
@@ -145,52 +155,50 @@ class ForeignerController extends Controller
      * 학기별 유학생 등록
      *
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request) : JsonResponse
     {
-        // TODO show 참고 validator 수정
-        // TODO Section $sect_id 활용
-        $data = json_decode($request->getContent(), true);
+        $validator = Validator::make($request->all(), [
+            'foreigners' => 'required|array',
+            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'sect_id' => 'required|integer|distinct|min:0|max:100'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => self::_STD_FOR_SHOW_FAILURE,
+                'error' => $validator->errors()
+            ], 422);
+        }
+
+        $req_std_for_id = $request->input('foreigners');
+        $req_sect_id = $request->sect_id;
 
         // 학생 정보 저장
-        foreach ($data['foreigners'] as $foreigner_id) {
-            // 숫자 Validation 검사
-            if (is_numeric($foreigner_id)) {
-                // 존재하는 유학생인지 검사
-                // TODO 존재하지 않는 유학생 선택 시 수정
-                if (!Student_foreigner::find($foreigner_id)) {
-                    return response()->json([
-                        'message' => "{$foreigner_id} 학번은 존재하지 않는 학번입니다.",
-                    ], 422);
-                }
+        foreach ($req_std_for_id as $foreigner_id) {
+            // 존재하는 유학생인지 검사
+            if (!Student_foreigner::find($foreigner_id)) continue;
 
-                // 이미 해당 학기에 등록한 학생인 경우
-                $isDuplicatedStudent = Work_student_foreigner::where('work_std_for', $foreigner_id)
-                    ->where('work_sect', $data['sect_id'])
-                    ->count();
+            // 이미 해당 학기에 등록한 학생인 경우
+            $isDuplicatedStudent = Work_student_foreigner::where('work_std_for', $foreigner_id)
+                ->where('work_sect', $req_sect_id)
+                ->count();
 
-                // TODO validator 에 추가 -> unique : student_foreigners,std_for_id
-                if ($isDuplicatedStudent) {
-                    return response()->json([
-                        'message' => "{$foreigner_id} 학번의 학생의 데이터가 중복입니다.",
-                    ], 422);
-                }
-
-                Work_student_foreigner::create([
-                    'work_std_for' => $foreigner_id,
-                    'work_sect' => $data['sect_id']
-                ]);
-            } // foreigner_id가 숫자가 아닌 경우
-            else {
+            if ($isDuplicatedStudent) {
                 return response()->json([
-                    'message' => '학번은 숫자만 가능합니다.',
+                    'message' => $foreigner_id.self::_STD_FOR_DUPLICATED_DATA,
                 ], 422);
             }
+
+            Work_student_foreigner::create([
+                'work_std_for' => $foreigner_id,
+                'work_sect' => $req_sect_id
+            ]);
         }
 
         return response()->json([
-            'message' => ' 학기별 유학생 등록 완료',
+            'message' => self::_SECT_STD_FOR_EACH_STORE_SUCCESS,
         ], 201);
     }
 
