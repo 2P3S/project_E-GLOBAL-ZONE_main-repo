@@ -100,7 +100,7 @@ class LoginController extends Controller
         // <<-- 초기 비밀번호로 로그인 시
         if (empty($token)) {
             return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
         }
         // -->>
 
@@ -146,7 +146,7 @@ class LoginController extends Controller
         // <<-- 초기 비밀번호로 로그인 시
         if (empty($token)) {
             return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
         }
         // -->>
 

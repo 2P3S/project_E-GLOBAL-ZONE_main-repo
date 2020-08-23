@@ -54,12 +54,6 @@ class Reservation extends Model
                 ->orderBy('res_std_kor')->get();
     }
 
-    /**
-     * 한국인 한생의 예약 신청을 저장
-     *
-     * @param array $res_data
-     * @return Reservation
-     */
     public function store_std_kor_res(
         array $res_data
     ): Reservation
@@ -68,7 +62,7 @@ class Reservation extends Model
     }
 
     /**
-     * 특정 날짜 기준 한국인 학생의 예약 목록을 조회
+     * 한국인 학생 - 특정 날짜 기준 한국인 학생의 예약 목록을 조회
      *
      * @param int $std_kor_id
      * @param string $search_date
@@ -81,27 +75,30 @@ class Reservation extends Model
         string $search_date
     ): JsonResponse
     {
+        // TODO (여기) 줌 id 붙여줘야 함
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date',
             'res_state_of_permission', 'res_state_of_attendance',
             'sch_state_of_result_input', 'sch_state_of_permission',
-            'sch_for_zoom_pw'
+            'std_for_id', 'sch_for_zoom_pw'
         ];
 
         $result =
             self::select($lookup_columns)
-                ->join('schedules as sch', 'sch.sch_id', '=', 'reservations.res_sch')
-                ->join('student_foreigners as for', 'for.std_for_id', '=', 'sch.sch_std_for')
+                ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
+                ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
                 ->where('reservations.res_std_kor', $std_kor_id)
                 ->whereDate('sch.sch_start_date', $search_date)
                 ->get();
+
+        $result->join('student_foreigners_contacts as for_cont', 'for_cont.std_for_id', 'std_for_id');
 
         $is_std_kor_res_no_date = $result->count();
 
         if (!$is_std_kor_res_no_date) {
             return
-                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 205);
+                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 202);
         }
 
         $message_template = self::_STD_KOR_RES_INDEX_SUCCESS;
