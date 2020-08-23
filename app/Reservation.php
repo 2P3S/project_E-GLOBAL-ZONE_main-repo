@@ -54,12 +54,6 @@ class Reservation extends Model
                 ->orderBy('res_std_kor')->get();
     }
 
-    /**
-     * 한국인 한생의 예약 신청을 저장
-     *
-     * @param array $res_data
-     * @return Reservation
-     */
     public function store_std_kor_res(
         array $res_data
     ): Reservation
@@ -68,7 +62,7 @@ class Reservation extends Model
     }
 
     /**
-     * 특정 날짜 기준 한국인 학생의 예약 목록을 조회
+     * 한국인 학생 - 특정 날짜 기준 한국인 학생의 예약 목록을 조회
      *
      * @param int $std_kor_id
      * @param string $search_date
@@ -81,6 +75,7 @@ class Reservation extends Model
         string $search_date
     ): JsonResponse
     {
+        // TODO (여기) 줌 id 붙여줘야 함
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date',

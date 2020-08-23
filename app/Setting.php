@@ -40,7 +40,7 @@ class Setting extends Model
 
         // TODO TEST 후 수정필요
 //        $today = date("Y-m-d", strtotime("-4 days"));
-         $today = date("Y-m-d");
+        $today = date("Y-m-d");
 
         return [
             "from" => date("Y-m-d", strtotime("{$today} +{$res_end_period} days")),
