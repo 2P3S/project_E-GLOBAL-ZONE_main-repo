@@ -24,14 +24,6 @@ class ScheduleController extends Controller
         $this->schedule = new Schedule();
     }
 
-    /**
-     * 유학생 - 특정 날짜에 대한 개인 스케줄 조회
-     * /api/foreigner/schedule/
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
@@ -64,6 +56,57 @@ class ScheduleController extends Controller
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
             ->whereDate('sch_start_date', '=', $request->search_date)
             ->orderBy('std_for_lang')
+            ->get();
+
+        foreach ($result_foreigner_schedules as $schedule) {
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+            // 전체 예약 한국인 인원수
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+            // 예약 미승인 한국인 인원수
+            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+            $schedule['reservated_count'] = $reservated_count;
+            $schedule['un_permission_count'] = $un_permission_count;
+        }
+
+        return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
+    }
+
+    /**
+     *  유학생 - 특정 기간 전체 스케줄 조회
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function std_for_show_sch_by_date(Request $request): JsonResponse
+    {
+        // TODO std_for_id 미들웨어로 부터 받아오기.
+        $rules = [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'std_for_id' => 'required|integer'
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+            ->where('std_for_id', $request->std_for_id)
+            ->whereDate('sch_start_date', '>=', $request->start_date)
+            ->whereDate('sch_start_date', '<=', $request->end_date)
+            ->orderBy('sch_start_date')
             ->get();
 
         foreach ($result_foreigner_schedules as $schedule) {
