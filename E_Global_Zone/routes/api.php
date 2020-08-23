@@ -150,7 +150,7 @@ Route::prefix('/admin')->group(function () {
 
 /* 유학생 라우터 */
 Route::prefix('foreigner')->group(function () {
-    /* 유학생 - 특정 날짜 개인 스케줄 조회 */
+    /* 유학생 - 특정 기간 개인 스케줄 조회 */
     Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
 
     /** 등록된 계열 & 학과 목록 조회 */
