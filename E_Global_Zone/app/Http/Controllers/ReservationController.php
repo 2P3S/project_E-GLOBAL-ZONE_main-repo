@@ -59,7 +59,8 @@ class ReservationController extends Controller
      */
     public function std_kor_store_res(
         Request $request,
-        Schedule $sch_id
+        Schedule $sch_id,
+        Preference $preference_instance
     ): JsonResponse
     {
         // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
@@ -89,7 +90,7 @@ class ReservationController extends Controller
         $std_kor_id = $request->input('res_std_kor');
 
         $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
-        $is_over_max_res_per_day = $std_kor_res_list->count() >= Setting::get_setting_value()['max_res_per_day'];
+        $is_over_max_res_per_day = $std_kor_res_list->count() >= $preference_instance->getPreference()->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
             return

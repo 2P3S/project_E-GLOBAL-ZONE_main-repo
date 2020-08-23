@@ -85,7 +85,7 @@ Route::prefix('/admin')->group(function () {
 
     /* 학기 관리 라우터 */
     Route::prefix('/section')->group(function () {
-        /** 등록된 전체 학기 목록 조회 */
+        /** 년도별 등록된 전체 학기 목록 조회 */
         Route::get('', 'SectionController@index')->name('sections.index');
 
         /** 학기 등록 */
