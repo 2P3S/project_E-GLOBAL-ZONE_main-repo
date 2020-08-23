@@ -21,7 +21,6 @@ class ScheduleController extends Controller
         $this->schedule = new Schedule();
     }
 
-
     /**
      * 유학생 - 특정 날짜에 대한 개인 스케줄 조회
      * /api/foreigner/schedule/
@@ -60,6 +59,7 @@ class ScheduleController extends Controller
         // -->>
 
         $is_sch_no_data = $response_data->count();
+        // TODO 데이터가 없을 경우 response 하는 것(여기)
 //        if ()
 //        dd($response_data->count());
         return
