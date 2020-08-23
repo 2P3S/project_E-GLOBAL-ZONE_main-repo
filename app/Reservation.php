@@ -68,31 +68,27 @@ class Reservation extends Model
      * @param string $search_date
      * @return JsonResponse
      */
-    // TODO 한국인 학생 조회 기준 확인 필요
     public function get_std_kor_res_by_date(
         int $std_kor_id,
-//        string $std_kor_mail,
         string $search_date
     ): JsonResponse
     {
-        // TODO (여기) 줌 id 붙여줘야 함
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date',
             'res_state_of_permission', 'res_state_of_attendance',
             'sch_state_of_result_input', 'sch_state_of_permission',
-            'std_for_id', 'sch_for_zoom_pw'
+            'for.std_for_id', 'std_for_zoom_id', 'sch_for_zoom_pw'
         ];
 
         $result =
             self::select($lookup_columns)
                 ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
                 ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
+                ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
                 ->where('reservations.res_std_kor', $std_kor_id)
                 ->whereDate('sch.sch_start_date', $search_date)
                 ->get();
-
-        $result->join('student_foreigners_contacts as for_cont', 'for_cont.std_for_id', 'std_for_id');
 
         $is_std_kor_res_no_date = $result->count();
 
