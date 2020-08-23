@@ -196,8 +196,8 @@ Route::prefix('/korean')->group(function () {
         /** 내 예약 일정 삭제 */
         Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
 
-        /** 학기별 참석 결과 조회 */
-        // Route::get('', 'ReservationController@showResult')->name('reservations.show');
+        /** 학기별 미팅 목록 결과 조회 */
+        Route::get('/result', 'ReservationController@std_kor_show_res_by_sect')->name('reservations.show');
     });
 });
 
