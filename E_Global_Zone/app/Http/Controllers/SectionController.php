@@ -73,9 +73,9 @@ class SectionController extends Controller
             ->groupBy('sect_id')
             ->get();
 
-        $is_non_attendanced_data = $attendanced_section_data->count();
+        $is_non_attendanced_data = $attendanced_section_data->count() == 0;
 
-        if (!$is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);
+        if ($is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);
 
         return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS1, 200, $attendanced_section_data);
     }
