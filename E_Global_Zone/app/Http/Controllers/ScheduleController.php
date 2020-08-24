@@ -12,6 +12,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
+    /*
+     * ========== TEST 완료 ==========
+     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
+     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
+     * 3. 유학생 - 특정 기간 전체 스케줄 조회
+     * 4. 관리자 - 특정 날짜 전체 유학생 스케줄 조회
+     */
+
     private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
     private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
 
@@ -24,25 +32,17 @@ class ScheduleController extends Controller
         $this->schedule = new Schedule();
     }
 
-    /**
-     * 유학생 - 특정 날짜에 대한 개인 스케줄 조회
-     * /api/foreigner/schedule/
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
 
     /**
-     * 관리자 - 특정 날짜 유학생 전체 스케줄 조회
+     *  관리자 - 특정 날짜 전체 유학생 스케줄 조회
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function std_for_show_sch_by_date(Request $request): JsonResponse
+    public function showForeignerSchedules(Request $request): JsonResponse
     {
         $rules = [
             'search_date' => 'required|date'
@@ -50,7 +50,9 @@ class ScheduleController extends Controller
 
         // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_SHOW_SCH_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -58,22 +60,118 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        // TODO 토큰으로 유학생 정보 가져오기.
-        $search_date = $request->input('search_date');
-        $std_for_id = 1022670;
-//        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+            ->whereDate('sch_start_date', '=', $request->search_date)
+            ->orderBy('std_for_lang')
+            ->get();
 
-        // <<-- 날짜에 대한 스케줄 목록을 조회
-        $response_data = $this->schedule->get_sch_by_date($search_date, $std_for_id);
+        foreach ($result_foreigner_schedules as $schedule) {
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+            // 전체 예약 한국인 인원수
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+            // 예약 미승인 한국인 인원수
+            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+            $schedule['reservated_count'] = $reservated_count;
+            $schedule['un_permission_count'] = $un_permission_count;
+        }
+
+        return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
+    }
+
+    /**
+     *  유학생 - 특정 기간 전체 스케줄 조회
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function std_for_show_sch_by_date(Request $request): JsonResponse
+    {
+        // TODO std_for_id 미들웨어로 부터 받아오기.
+        $rules = [
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'std_for_id' => 'required|integer'
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
         // -->>
 
-        $is_sch_no_data = $response_data->count();
-        // TODO 데이터가 없을 경우 response 하는 것(여기)
-//        if ()
-//        dd($response_data->count());
-        return
-            self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $response_data);
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+            ->where('std_for_id', $request->std_for_id)
+            ->whereDate('sch_start_date', '>=', $request->start_date)
+            ->whereDate('sch_start_date', '<=', $request->end_date)
+            ->orderBy('sch_start_date')
+            ->get();
+
+        foreach ($result_foreigner_schedules as $schedule) {
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+            // 전체 예약 한국인 인원수
+            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+            // 예약 미승인 한국인 인원수
+            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+            $schedule['reservated_count'] = $reservated_count;
+            $schedule['un_permission_count'] = $un_permission_count;
+        }
+
+        return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
     }
+
+    /**
+     * 관리자 - 특정 날짜 전체 유학생 스케줄 조회
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    // public function std_for_show_sch_by_date(Request $request): JsonResponse
+    // {
+    //     $rules = [
+    //         'search_date' => 'required|date'
+    //     ];
+
+    //     // <<-- Request 유효성 검사
+    //     $validated_result = self::request_validator(
+    //         $request,
+    //         $rules,
+    //         self::_STD_FOR_SHOW_SCH_FAILURE
+    //     );
+
+    //     if (is_object($validated_result)) {
+    //         return $validated_result;
+    //     }
+    //     // -->>
+
+    //     $search_date = $request->input('search_date');
+    //     $std_for_id = 1022670;
+    //     //        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
+
+    //     // <<-- 날짜에 대한 스케줄 목록을 조회
+    //     $response_data = $this->schedule->get_sch_by_date($search_date, $std_for_id);
+    //     // -->>
+
+    //     $is_sch_no_data = $response_data->count();
+
+    //     if ($is_sch_no_data) return self::response_json(self::_STD_FOR_SHOW_SCH_NO_DATA, 202);
+
+    //     return
+    //         self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $response_data);
+    // }
 
 
     /**
@@ -103,18 +201,12 @@ class ScheduleController extends Controller
 
         // 학기 시작 날짜에 맞춰 시작 날짜 재설정
         if ($sect_start_yoil == "토") {
-            $sect_start_date = strtotime("
-{
-$sect_start_date
-}
-
- +2 day");
+            $sect_start_date = strtotime("{$sect_start_date} +2 day");
             /* 날짜 String 변경 */
 
             $sect_start_date = date("Y-m-d", $sect_start_date);
         } else if ($sect_start_yoil == "일") {
-            $sect_start_date = strtotime("{
-    $sect_start_date} +1 day");
+            $sect_start_date = strtotime("{$sect_start_date} +1 day");
             /* 날짜 String 변경 */
             $sect_start_date = date("Y-m-d", $sect_start_date);
         }
@@ -130,10 +222,8 @@ $sect_start_date
                     array_shift($ecept_date);
                     // 날짜 변경
                     $sect_start_date = $yoil[date('w', strtotime($sect_start_date))] == '금' ?
-                        strtotime("{
-    $sect_start_date} +3 day") :
-                        strtotime("{
-    $sect_start_date} +1 day");
+                        strtotime("{$sect_start_date} +3 day") :
+                        strtotime("{$sect_start_date} +1 day");
                     /* 날짜 String 변경 */
                     $sect_start_date = date("Y-m-d", $sect_start_date);
                     continue;
@@ -146,8 +236,7 @@ $sect_start_date
                     $zoom_pw = mt_rand(1000, 9999);
 
                     $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
-                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{
-    $setting_value->once_meet_time}:00");
+                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
                     $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
                     $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
 
@@ -163,10 +252,8 @@ $sect_start_date
                     $zoom_pw = mt_rand(1000, 9999);
                     $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
                     $end_time = $start_time + $setting_value->once_meet_time;
-                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{
-    $start_time}:00");
-                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{
-    $end_time}:00");
+                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
+                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$end_time}:00");
 
                     $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
                     $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
@@ -191,10 +278,8 @@ $sect_start_date
                     금      => +3day
                 */
                 $sect_start_date = $yoil[date('w', strtotime($sect_start_date))] == '금' ?
-                    strtotime("{
-    $sect_start_date} +3 day") :
-                    strtotime("{
-    $sect_start_date} +1 day");
+                    strtotime("{$sect_start_date} +3 day") :
+                    strtotime("{$sect_start_date} +1 day");
                 /* 날짜 String 변경 */
                 $sect_start_date = date("Y-m-d", $sect_start_date);
             }
@@ -341,14 +426,6 @@ $sect_start_date
         ], 200);
     }
 
-
-    /*
-     * ========== TEST 완료 ==========
-     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
-     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
-     * 3. 유학생 - 특정 날짜에 대한 개인 스케줄 조회
-     */
-
     /**
      * 한국인학생 - 현재 날짜 기준 예약 가능 스케줄 조회
      * /api/korean/schedule/
@@ -397,5 +474,4 @@ $sect_start_date
     {
         return $this->schedule->get_sch_by_id($sch_id);
     }
-
 }
