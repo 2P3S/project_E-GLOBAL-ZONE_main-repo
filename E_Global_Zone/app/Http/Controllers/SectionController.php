@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Reservation;
 use App\Section;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -21,6 +22,9 @@ class SectionController extends Controller
 
     private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
     private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
+
+    private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS1 = "현재까지 참석한 학기 정보를 반환합니다.";
+    private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS2 = "참석한 미팅이 없습니다.";
 
     /**
      * 년도별 등록된 전체 학기 목록 조회
@@ -49,6 +53,31 @@ class SectionController extends Controller
         $section_data = Section::whereYear('sect_start_date', $year)->get();
 
         return self::response_json($year . self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
+    }
+
+    /**
+     * 한국인학생 - 참석한 학기 목록 조회
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function std_kor_attendanced_index(): JsonResponse
+    {
+        //TODO std_kor_id 제거
+        $std_kor_id = 1321704;
+
+        $attendanced_section_data = Reservation::select('sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
+            ->join('schedules as sch', 'sch_id', 'res_sch')
+            ->join('sections', 'sect_id', 'sch_sect')
+            ->where('res_std_kor', $std_kor_id)
+            ->where('res_state_of_attendance', true)
+            ->groupBy('sect_id')
+            ->get();
+
+        $is_non_attendanced_data = $attendanced_section_data->count() == 0;
+
+        if ($is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);
+
+        return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS1, 200, $attendanced_section_data);
     }
 
     /**

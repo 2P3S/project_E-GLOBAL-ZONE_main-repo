@@ -25,16 +25,23 @@ class ScheduleController extends Controller
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
 
+    private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 등록을 완료하였습니다.";
+    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경을 완료하였습니다.";
+
+    private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
+    private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
+    private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
+
+    private const _ZOOM_RAN_NUM_START   = 1000;
+    private const _ZOOM_RAN_NUM_END     = 9999;
+
+
     private $schedule;
 
     public function __construct()
     {
         $this->schedule = new Schedule();
     }
-
-    private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
-    private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
-    private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
 
     /**
      *  관리자 - 특정 날짜 전체 유학생 스케줄 조회
@@ -180,14 +187,40 @@ class ScheduleController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Preference $preference_instance)
+    public function store(Request $request, Preference $preference_instance): JsonResponse
     {
+        $rules = [
+            'sect_id' => 'required|integer|distinct|min:0|max:999',
+            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'schedule.*' => 'required|array',
+            'schedule.*.*' => 'required|integer',
+            'ecept_date' => 'required|array',
+            'ecept_date.*' => 'date',
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
         $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
         $schedule_data = $request->input('schedule');                                   /* 스케줄 데이터 */
         $ecept_date = $request->input('ecept_date');                                    /* 제외날짜 */
-        $sect = Section::find($request->input('sect_id'));                              /* 학기 데이터 */
-        $std_for_id = $request->input('std_for_id');                                    /* 외국인 유학생 학번 */
+        $sect = Section::find($request->sect_id);                                       /* 학기 데이터 */
+        $std_for_id = $request->std_for_id;                                             /* 외국인 유학생 학번 */
+
+        // 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
+        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->sect_id, $std_for_id);
+
+        $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
+        if($is_already_inserted_schedule) $get_sect_by_schedule->delete();
 
         $sect_start_date = strtotime($sect->sect_start_date);
         $sect_start_date = date("Y-m-d", $sect_start_date);
@@ -231,9 +264,8 @@ class ScheduleController extends Controller
 
                 // 시간 리스트 목록
                 foreach ($day as $hour) {
-                    //TODO 환경변수 설정 ( 1000 ~ 9999 )
                     // 줌 비밀번호 생성
-                    $zoom_pw = mt_rand(1000, 9999);
+                    $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
 
                     $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
                     $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
@@ -249,7 +281,7 @@ class ScheduleController extends Controller
                     ]);
 
                     // 줌 비밀번호 생성
-                    $zoom_pw = mt_rand(1000, 9999);
+                    $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
                     $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
                     $end_time = $start_time + $setting_value->once_meet_time;
                     $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
@@ -295,30 +327,31 @@ class ScheduleController extends Controller
      * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Schedule $sch_id)
+    public function update(Request $request, Schedule $sch_id): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'sch_sect' => 'required|integer',
+        $rules = [
             'sch_std_for' => 'required|integer',
             'sch_start_date' => 'required|date',
             'sch_end_date' => 'required|date',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        $update_schedule = $sch_id->update([
+        $sch_id->update([
             'sch_start_date' => $request->sch_start_date,
             'sch_end_date' => $request->sch_end_date,
         ]);
 
-        return response()->json([
-            'message' => '스케줄 업데이트 완료',
-            'result' => $update_schedule,
-        ], 200);
+        return self::response_json(self::_SCHEDULE_RES_UPDATE_SUCCESS, 200);
     }
 
     /**
@@ -327,13 +360,12 @@ class ScheduleController extends Controller
      * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Schedule $sch_id)
+    public function destroy(Schedule $sch_id): JsonResponse
     {
+        //TODO 한국인 학생 예약 -> 자동 취소 후 스케줄 삭제.
         $sch_id->delete();
 
-        return response()->json([
-            'message' => '스케줄 삭제 완료',
-        ], 204);
+        return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
     }
 
     /**
@@ -440,8 +472,7 @@ class ScheduleController extends Controller
         /* 시작 날짜 */
         $sch_start_date = date("Y-m-d", strtotime("Now"));
         /* 예약 신청 시작 기준 종료 날짜 */
-        $sch_end_date = date("Y-m-d", strtotime("+{
-    $setting_value->res_start_period} days"));
+        $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
         $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
             ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)

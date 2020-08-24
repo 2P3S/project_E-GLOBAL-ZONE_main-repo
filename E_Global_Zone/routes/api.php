@@ -107,7 +107,7 @@ Route::prefix('/admin')->group(function () {
         Route::post('', 'ScheduleController@store')->name('schedules.store');
 
         /* 특정 스케줄 업데이트 */
-        Route::put('{sch_id}', 'ScheduleController@update')->name('schedules.update');
+        Route::patch('{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
         /* 특정 스케줄 삭제 */
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
@@ -184,6 +184,9 @@ Route::prefix('/korean')->group(function () {
 
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
+
+    /** 참석한 학기 목록 조회 */
+    Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
 
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {

@@ -43,21 +43,18 @@ class Schedule extends Model
     // 오늘 기준 예약 신청 가능 여부를 검사
     public function check_res_possibility(
         Schedule $schedule
-    ): bool
-    {
+    ): bool {
         $date_sch = date("Y-m-d", strtotime($schedule['sch_start_date']));
 
         $settings = new Setting();
         $date_sch_res_possible = $settings->get_res_possible_date();
 
-        return (
-            $date_sch_res_possible['from'] <= $date_sch &&
-            $date_sch < $date_sch_res_possible['to']
-        );
+        return ($date_sch_res_possible['from'] <= $date_sch &&
+            $date_sch < $date_sch_res_possible['to']);
     }
-
+    //TODO 결과관리 - 한번이라도 참석한적있으면 sect_id 보내주기 !!!!
     /**
-     * 각 스케줄 대하여 한국인 힉생 예약 명단 조회
+     * 각 스케줄 대하여 한국인 학생 예약 명단 조회
      * (외국인 학생 기준 / 한국인 학생 기준)
      *
      * @param Schedule $schedule
@@ -71,17 +68,16 @@ class Schedule extends Model
         string $column_name = "",
         int $std_id = 0,
         bool $flag_make_json = false
-    ): ?object
-    {
+    ): ?object {
         $result = $schedule
             ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
             ->join('student_koreans as kor', 'kor.std_kor_id', 'res.res_std_kor')
-            ->where('sch_id', $schedule['sch_id']);
+            ->where('schedules.sch_id', $schedule['sch_id']);
 
         $result =
             $column_name === "" ?
-                $result :
-                $result->where($column_name, $std_id);
+            $result :
+            $result->where($column_name, $std_id);
 
         $is_exist_sch_res = $result->count();
         if (!$is_exist_sch_res) {
@@ -114,8 +110,7 @@ class Schedule extends Model
      */
     public function get_sch_by_id(
         Schedule $sch_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $result = $sch_id
             ->join('student_foreigners as for', 'for.std_for_id', 'schedules.sch_std_for')
             ->where('sch_id', $sch_id['sch_id'])
@@ -138,7 +133,6 @@ class Schedule extends Model
 
         return
             Controller::response_json(self::_STD_KOR_SCH_SHOW, 200, $response_data);
-
     }
 
     /**
@@ -150,8 +144,7 @@ class Schedule extends Model
     public function get_sch_by_date(
         string $search_date,
         int $std_for_id = 0
-    ): Collection
-    {
+    ): Collection {
         $result = Schedule::whereDate('sch_start_date', $search_date);
 
         $is_search_by_std_for_id = $std_for_id >= 1000000 && $std_for_id <= 9999999;
@@ -160,5 +153,18 @@ class Schedule extends Model
         }
 
         return $result->get();
+    }
+
+    /**
+     * 학기 기준 스케줄 정보 조회
+     *
+     * @param int $sect_id
+     * @param int $std_for_id
+     */
+    public function get_sch_by_sect(
+        int $sect_id,
+        int $std_for_id = 0
+    ): ?object {
+        return $result = Schedule::where('sch_sect', $sect_id)->where('sch_std_for', $std_for_id);
     }
 }
