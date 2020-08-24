@@ -25,6 +25,9 @@ class ScheduleController extends Controller
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
 
+    private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 등록을 완료하였습니다.";
+    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경을 완료하였습니다.";
+
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
@@ -184,7 +187,7 @@ class ScheduleController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Preference $preference_instance)
+    public function store(Request $request, Preference $preference_instance): JsonResponse
     {
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
@@ -324,30 +327,31 @@ class ScheduleController extends Controller
      * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Schedule $sch_id)
+    public function update(Request $request, Schedule $sch_id): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'sch_sect' => 'required|integer',
+        $rules = [
             'sch_std_for' => 'required|integer',
             'sch_start_date' => 'required|date',
             'sch_end_date' => 'required|date',
-        ]);
+        ];
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors(),
-            ], 422);
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        $update_schedule = $sch_id->update([
+        $sch_id->update([
             'sch_start_date' => $request->sch_start_date,
             'sch_end_date' => $request->sch_end_date,
         ]);
 
-        return response()->json([
-            'message' => '스케줄 업데이트 완료',
-            'result' => $update_schedule,
-        ], 200);
+        return self::response_json(self::_SCHEDULE_RES_UPDATE_SUCCESS, 200);
     }
 
     /**
@@ -356,13 +360,12 @@ class ScheduleController extends Controller
      * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Schedule $sch_id)
+    public function destroy(Schedule $sch_id): JsonResponse
     {
+        //TODO 한국인 학생 예약 -> 자동 취소 후 스케줄 삭제.
         $sch_id->delete();
 
-        return response()->json([
-            'message' => '스케줄 삭제 완료',
-        ], 204);
+        return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
     }
 
     /**

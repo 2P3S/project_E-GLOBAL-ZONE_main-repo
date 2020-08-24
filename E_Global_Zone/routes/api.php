@@ -107,7 +107,7 @@ Route::prefix('/admin')->group(function () {
         Route::post('', 'ScheduleController@store')->name('schedules.store');
 
         /* 특정 스케줄 업데이트 */
-        Route::put('{sch_id}', 'ScheduleController@update')->name('schedules.update');
+        Route::patch('{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
         /* 특정 스케줄 삭제 */
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
