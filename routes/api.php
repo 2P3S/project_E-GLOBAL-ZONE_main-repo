@@ -185,6 +185,9 @@ Route::prefix('/korean')->group(function () {
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
+    /** 참석한 학기 목록 조회 */
+    Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
+
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
         /** 해당 일자에 대한 예약 조회 */

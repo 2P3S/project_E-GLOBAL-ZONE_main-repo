@@ -79,12 +79,12 @@ class ReservationController extends Controller
      * @return JsonResponse
      */
     public function std_for_show_res_by_id(
-        //        Request $request,
+        Request $request,
         Schedule $sch_id
     ): JsonResponse {
         // TODO validation, 토큰 -> 유학생 검사 추가(중요)
         // $std_for_id = $request->user($request->input('guard'));
-        $std_for_id = "1753176";
+        $std_for_id = $request->std_for_id;
 
         // <<-- 스케줄에 대한 예약 학생 명단 조회
         return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', $std_for_id, true);
@@ -138,8 +138,7 @@ class ReservationController extends Controller
         );
         // -->>
 
-        return
-            self::response_json(self::_STD_FOR_RES_UPDATE_SUCCESS, 200);
+        return self::response_json(self::_STD_FOR_RES_UPDATE_SUCCESS, 200);
     }
 
     /**
@@ -170,9 +169,11 @@ class ReservationController extends Controller
         }
         // -->>
 
+        // dismensions 속성 잠시 제거..
+        // dimensions:min_width=900,min_height=900|max:2000
         $rules = [
-            'result_start_img' => 'required|image|dimensions:min_width=900,min_height=900|max:2000',
-            'result_end_img' => 'required|image|dimensions:min_width=900,min_height=900|max:2000',
+            'result_start_img' => 'required|image',
+            'result_end_img' => 'required|image',
             'attendance_std_kor_id_list' => 'nullable|array',
             'attendance_std_kor_id_list.*' => 'integer|distinct|min:1000000|max:9999999',
             'absent_std_kor_id_list' => 'nullable|array',
@@ -259,6 +260,8 @@ class ReservationController extends Controller
                 self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
         }
         // -->>
+
+        // TODO 중복으로 예약신청하는거 막기!!!!
 
         // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
         // TODO 토큰으로 한국인 학생 정보 확인 추가 필요
