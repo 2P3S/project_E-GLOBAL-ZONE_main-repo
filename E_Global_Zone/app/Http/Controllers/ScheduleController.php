@@ -440,8 +440,7 @@ class ScheduleController extends Controller
         /* 시작 날짜 */
         $sch_start_date = date("Y-m-d", strtotime("Now"));
         /* 예약 신청 시작 기준 종료 날짜 */
-        $sch_end_date = date("Y-m-d", strtotime("+{
-    $setting_value->res_start_period} days"));
+        $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
         $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
             ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)

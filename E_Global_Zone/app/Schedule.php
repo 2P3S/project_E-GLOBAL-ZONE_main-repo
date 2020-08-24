@@ -55,9 +55,9 @@ class Schedule extends Model
             $date_sch < $date_sch_res_possible['to']
         );
     }
-
+    //TODO 결과관리 - 한번이라도 참석한적있으면 sect_id 보내주기 !!!!
     /**
-     * 각 스케줄 대하여 한국인 힉생 예약 명단 조회
+     * 각 스케줄 대하여 한국인 학생 예약 명단 조회
      * (외국인 학생 기준 / 한국인 학생 기준)
      *
      * @param Schedule $schedule
@@ -76,7 +76,7 @@ class Schedule extends Model
         $result = $schedule
             ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
             ->join('student_koreans as kor', 'kor.std_kor_id', 'res.res_std_kor')
-            ->where('sch_id', $schedule['sch_id']);
+            ->where('schedules.sch_id', $schedule['sch_id']);
 
         $result =
             $column_name === "" ?
