@@ -65,7 +65,7 @@ const conf = {
 		JAPANESE,
 		CHINESE,
 	},
-	url: "http://175.127.252.107"
+	url: "http://hyun9803.iptime.org:8888/"
 };
 
 export default conf;

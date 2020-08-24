@@ -1,8 +1,161 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import Calendar from "../../../../components/mobile/Calendar";
 import moment from "moment";
 import {useSelector} from "react-redux";
 import {selectSelectDate, selectToday} from "../../../../redux/confSlice/confSlice";
+import {getForeignerSchedule} from "../../../../modules/hooks/useAxios";
+import {selectUser} from "../../../../redux/userSlice/userSlice";
+import Modal from "../../../../components/common/modal/Modal";
+import useModal from "../../../../modules/hooks/useModal";
+import ShowList from "../../../../components/common/modal/ShowList";
+import InsertResult from "../../../../components/common/modal/InsertResult";
+import FormData from "form-data";
+
+const STATE_PENDING = "pending";
+const STATE_RESERVED = "reserved";
+const STATE_DONE = "done";
+const STATE_CONFIRM = "confirm";
+const STATE_NOTHING = "nothing";
+
+class ScheduleData {
+    countOfWeek = 0;
+    countOfPending = 0;
+    countOfReserved = 0;
+    countOfDone = 0;
+    countOfConfirm = 0;
+}
+
+class WeekData extends ScheduleData {
+    monday;
+    tuesday;
+    wednesday;
+    thursday;
+    friday;
+
+    constructor(arrayOfSchedule) {
+        super();
+        this.monday = [];
+        this.tuesday = [];
+        this.wednesday = [];
+        this.thursday = [];
+        this.friday = [];
+        arrayOfSchedule.forEach(schedule => {
+            let oneSchedule = new Schedule(schedule);
+            this.countOfWeek++;
+            switch ((parseInt(oneSchedule.day))) {
+                case 1:
+                    this.monday.push(oneSchedule);
+                    break;
+                case 2:
+                    this.tuesday.push(oneSchedule);
+                    break;
+                case 3:
+                    this.wednesday.push(oneSchedule);
+                    break;
+                case 4:
+                    this.thursday.push(oneSchedule);
+                    break;
+                case 5:
+                    this.friday.push(oneSchedule);
+                    break;
+            }
+            console.log(oneSchedule.state);
+            switch (oneSchedule.state) {
+                case STATE_PENDING:
+                    this.countOfPending++;
+                    break;
+                case STATE_CONFIRM:
+                    this.countOfConfirm++;
+                    break;
+                case STATE_DONE:
+                    this.countOfDone++;
+                    break;
+                case STATE_RESERVED:
+                    this.countOfReserved++;
+                    break;
+            }
+        })
+    }
+}
+
+class Schedule {
+    sch_id;
+    day;
+    index;
+    state;
+    reservated_count;
+    un_permission_count;
+
+    constructor(schObj) {
+        this.sch_id = schObj.sch_id;
+        this.setIndex(schObj.sch_start_date);
+        this.setState(schObj.sch_end_date, schObj.un_permission_count, schObj.sch_state_of_result_input, schObj.reservated_count);
+        this.reservated_count = schObj.reservated_count;
+        this.un_permission_count = schObj.un_permission_count;
+        this.setDate(schObj.sch_start_date);
+    }
+
+    setDate(sch_start_date) {
+        let date = sch_start_date;
+        this.day = moment(sch_start_date).format("d");
+    }
+
+    setIndex(sch_start_date) {
+        let time = sch_start_date.substr(11, 2);
+        let minute = sch_start_date.substr(14, 2);
+        switch (time) {
+            case "09":
+                this.index = [0, minute === "00" ? 0 : 1];
+                break;
+            case "10":
+                this.index = [1, minute === "00" ? 0 : 1];
+                break;
+            case "11":
+                this.index = [2, minute === "00" ? 0 : 1];
+                break;
+            case "12":
+                this.index = [3, minute === "00" ? 0 : 1];
+                break;
+            case "13":
+                this.index = [4, minute === "00" ? 0 : 1];
+                break;
+            case "14":
+                this.index = [5, minute === "00" ? 0 : 1];
+                break;
+            case "15":
+                this.index = [6, minute === "00" ? 0 : 1];
+                break;
+            case "16":
+                this.index = [7, minute === "00" ? 0 : 1];
+                break;
+            case "17":
+                this.index = [8, minute === "00" ? 0 : 1];
+                break;
+            default:
+                this.index = [false, 0];
+        }
+    }
+
+    setState(sch_end_date, un_permission_count, sch_state_of_result_input, reservated_count) {
+        if (new Date(sch_end_date) > Date.now()) {
+            // 스케줄 시작 전
+            if ( reservated_count > 0 && un_permission_count === 0) {
+                this.state = STATE_RESERVED;
+            } else if(reservated_count > 0) {
+                this.state = STATE_PENDING;
+            } else {
+                this.state = STATE_NOTHING;
+            }
+        } else {
+            // 스케줄 완료 후
+            if (sch_state_of_result_input) {
+                this.state = STATE_CONFIRM;
+            } else {
+                this.state = STATE_DONE;
+            }
+        }
+    }
+}
 
 /**
  * Foreigner :: 스케줄 관리
@@ -19,10 +172,16 @@ export default function Schedules() {
         return weeks;
     }
     const today = useSelector(selectToday);
+    const user = useSelector(selectUser);
     const selectedDate = useSelector(selectSelectDate);
     const [currentDate, setCurrentDate] = useState(moment(today));
     const [weekStartDate, setWeekStartDate] = useState();
+    const [weekEndDate, setWeekEndDate] = useState();
     const [week, setWeek] = useState(makeWeek(weekStartDate));
+    const [data, setData] = useState();
+    const [scheduleData, setScheduleData] = useState();
+    const {isOpen, handleClose, handleOpen} = useModal();
+    const [modal, setModal] = useState(<></>);
 
     const getWeekStart = (currentDay) => {
         let startDate = currentDay;
@@ -30,10 +189,174 @@ export default function Schedules() {
         while (startDate.format('dddd') !== "Sunday") {
             startDate = startDate.subtract(1, 'd');
             i++;
-            setWeekStartDate(startDate);
+            // setWeekStartDate(startDate);
         }
         setWeekStartDate(moment(selectedDate).subtract(i, 'd').format("YYYY-MM-DD"));
+        setWeekEndDate(startDate.add(6, 'd').format("YYYY-MM-DD"));
     }
+    const buildDiv = (td, state, value, sch_id) => {
+        let div = document.createElement('div');
+        switch (state) {
+            case STATE_PENDING:
+                div.className = "state_box state1";
+                div.addEventListener("click", () => {
+                    setModal(<ShowList handleClose={handleClose} sch_id={sch_id}/>);
+                    handleOpen()
+                });
+                div.style.cursor = 'pointer'
+                break;
+            case STATE_RESERVED:
+                div.className = "state_box state2";
+                break;
+            case STATE_DONE:
+                div.className = "state_box state5";
+                div.addEventListener("click", () => {
+                    setModal(<InsertResult handleClose={handleClose} sch_id={sch_id}/>);
+                    handleOpen()
+                });
+                div.style.cursor = 'pointer'
+                break;
+            case STATE_CONFIRM:
+                div.className = "state_box state6";
+                break;
+            case STATE_NOTHING:
+                div.className = "state_box state7";
+                break;
+        }
+        if (typeof value === "object") {
+            let p = document.createElement("p");
+            p.innerText = `${parseInt(value[0])-parseInt(value[1])} / ${value[0]}`;
+            div.appendChild(p);
+        } else {
+            let p = document.createElement("p");
+            p.innerText = `${value}`;
+            div.appendChild(p);
+        }
+        td.appendChild(div);
+    }
+    const buildTable = (scheduleData) => {
+        const {monday, tuesday, wednesday, thursday, friday} = scheduleData;
+        const tbody = document.getElementById("tbody");
+        tbody.innerText = "";
+        for(let i =0;i<2;i++){
+            let tr = document.createElement("tr");
+            for(let j=0;j<7;j++){
+                tr.appendChild(document.createElement("td"));
+            }
+            tbody.appendChild(tr);
+        }
+        for (let i = 0; i < 9; i++) {
+            let tr = document.createElement("tr");
+            for (let j = 0; j < 7; j++) {
+                let td = document.createElement("td");
+                switch (j) {
+                    case 1:
+                        td.id = `monday${i}`;
+                        monday.forEach(v => {
+                            if (v.index[0] === i) {
+                                if (v.index[1] === 1) {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                } else {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                    case 2:
+                        td.id = `tuesday${i}`;
+                        tuesday.forEach(v => {
+                            if (v.index[0] === i) {
+                                if (v.index[1] === 1) {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                } else {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                    case 3:
+                        td.id = `wednesday${i}`;
+                        wednesday.forEach(v => {
+                            if (v.index[0] === i) {
+                                if (v.index[1] === 1) {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                } else {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                    case 4:
+                        td.id = `thursday${i}`;
+                        thursday.forEach(v => {
+                            if (v.index[0] === i) {
+                                if (v.index[1] === 1) {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                } else {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                    case 5:
+                        td.id = `friday${i}`;
+                        friday.forEach(v => {
+                            if (v.index[0] === i) {
+                                if (v.index[1] === 1) {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                } else {
+                                    if (v.state === STATE_PENDING) {
+                                        buildDiv(td, v.state, [v.reservated_count.toString(), v.un_permission_count.toString()], v.sch_id);
+                                    } else {
+                                        buildDiv(td, v.state, v.reservated_count.toString(), v.sch_id);
+                                    }
+                                }
+                            }
+                        })
+                        break;
+                }
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+    }
+
     useEffect(() => {
         window.easydropdown.all();
         getWeekStart(moment(today));
@@ -42,37 +365,31 @@ export default function Schedules() {
         getWeekStart(moment(selectedDate));
     }, [selectedDate]);
     useEffect(() => {
-            console.log(weekStartDate);
             setWeek(makeWeek(weekStartDate));
+            console.log(
+                `weekStartDate: ${weekStartDate}`
+            );
+            if (weekStartDate !== undefined) {
+                getForeignerSchedule(user.id, weekEndDate, weekStartDate, setData);
+            }
+            if (scheduleData) {
+                console.log(scheduleData);
+
+            }
         }
         ,
         [weekStartDate]
     );
+
     useEffect(() => {
-        console.log(
-            `currentDate: ${currentDate}`
-        );
-        console.log(
-            `weekStartDate: ${weekStartDate}`
-        );
-        console.log(
-            `week: ${week}`
-        );
-    })
-
-    const setSchedule = (schedules) => {
-        let schedule = [
-            new Array(9),
-            new Array(9),
-            new Array(9),
-            new Array(9),
-            new Array(9),
-            new Array(9),
-            new Array(9)
-        ];
-
-
-    }
+        if (data) {
+            console.log(data);
+            setScheduleData(new WeekData(data.data));
+        }
+    }, [data]);
+    useEffect(() => {
+        if (scheduleData) buildTable(scheduleData);
+    }, [scheduleData])
 
     return (
         <div className="wrapper">
@@ -88,31 +405,31 @@ export default function Schedules() {
                         <div className="gray">
                             이번주 스케줄
                             <p>
-                                <span>11</span>건
+                                <span>{scheduleData ? scheduleData.countOfWeek : 0}</span>건
                             </p>
                         </div>
                         <div className="blue">
                             예약 승인 대기
                             <p>
-                                <span>4</span>건
+                                <span>{scheduleData ? scheduleData.countOfPending : 0}</span>건
                             </p>
                         </div>
                         <div className="mint">
                             예약 승인 완료
                             <p>
-                                <span>2</span>건
+                                <span>{scheduleData ? scheduleData.countOfReserved : 0}</span>건
                             </p>
                         </div>
                         <div className="yellow">
                             출석 결과 미입력
                             <p>
-                                <span>2</span>건
+                                <span>{scheduleData ? scheduleData.countOfDone : 0}</span>건
                             </p>
                         </div>
                         <div className="puple">
                             출석 결과 입력완료
                             <p>
-                                <span>2</span>건
+                                <span>{scheduleData ? scheduleData.countOfConfirm : 0}</span>건
                             </p>
                         </div>
                     </div>
@@ -129,7 +446,7 @@ export default function Schedules() {
                                     </li>
                                     <li>
                                         월<span
-                                        className={moment(selectedDate).diff(week[1], 'days') === 0 ? `today` : ``}>{week[1].format("DD")}</span>
+                                        className={moment(selectedDate).diff(week[1], 'days') === 0 ? "today" : ``}>{week[1].format("DD")}</span>
                                     </li>
                                     <li>
                                         화<span
@@ -178,127 +495,33 @@ export default function Schedules() {
 
                     </ul>
                     <div className="week_table">
-                        <ul>
-                            <li>9AM</li>
-                            <li>10AM</li>
-                            <li>11AM</li>
-                            <li>12PM</li>
-                            <li>1PM</li>
-                            <li>2PM</li>
-                            <li>3PM</li>
-                            <li>4PM</li>
-                            <li>5PM</li>
-                            <li>6PM</li>
-                        </ul>
-                        <table>
-                            <colgroup>
-                                <col width="14.2%" span="7"/>
-                            </colgroup>
-                            <tbody>
-                            <tr id="not use">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr id="not use">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="9">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="10">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="11">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="12">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="13">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="14">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="15">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="16">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            <tr id="17">
-                                <td id="0"></td>
-                                <td id="1"></td>
-                                <td id="2"></td>
-                                <td id="3"></td>
-                                <td id="4"></td>
-                                <td id="5"></td>
-                                <td id="6"></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div className="scroll_area">
+                            <ul>
+                                <li>9AM</li>
+                                <li>10AM</li>
+                                <li>11AM</li>
+                                <li>12PM</li>
+                                <li>1PM</li>
+                                <li>2PM</li>
+                                <li>3PM</li>
+                                <li>4PM</li>
+                                <li>5PM</li>
+                                <li>6PM</li>
+                            </ul>
+                            <table>
+                                <colgroup>
+                                    <col width="14.2%" span="7"/>
+                                </colgroup>
+                                <tbody id="tbody">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isOpen} handleClose={handleOpen}>
+                {modal}
+            </Modal>
         </div>
     );
 }

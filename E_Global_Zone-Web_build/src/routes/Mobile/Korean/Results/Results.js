@@ -1,11 +1,17 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {getKoreanReservationResult} from "../../../../modules/hooks/useAxios";
 
 /**
  * Korean :: 결과 조회
  * @returns {JSX.Element}
  * @constructor
+ * @todo 섹션 아이디 받아와야함
  */
 export default function Results() {
+	const [data, setData] = useState();
+	useEffect(()=>{
+		getKoreanReservationResult(5,8,1321704, setData);
+	},[]);
 	return (
 		<div>
 			<div className="wrap mobile_result">

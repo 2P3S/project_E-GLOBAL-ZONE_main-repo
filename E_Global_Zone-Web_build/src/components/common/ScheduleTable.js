@@ -45,20 +45,28 @@ const Schedule = (props) => {
  * @constructor
  */
 export default function ScheduleTable({scheduleList}) {
+    // state1 :: [예약현황] 미승인 / 총 신청 학생
+    // state2 :: [예약 승인 완료]
+    // state3 :: [결과 미입력] 출석 학생
+    // state4 :: [결과 입력 완료]
+    // state5 :: [관리자 미승인] 출석 학생
+    // state6 :: [관리자 승인 완료]
+    // state7 :: 예약없음
+    useEffect(()=>{console.log(scheduleList)},[]);
     const printSchedule = (v) => {
         if (v) {
             switch (v.status) {
                 case ScheduleConf.STATUS.RESERVATION_NOTHING:
-                    return <Schedule status="gray oneline" scheduleId={v.scheduleId}>예약 없음</Schedule>;
+                    return <Schedule status="state_box state7" scheduleId={v.scheduleId}>예약 없음</Schedule>;
                 case ScheduleConf.STATUS.RESERVATION_DONE:
-                    return <Schedule status="mint oneline" scheduleId={v.scheduleId}>{v.value}명 예약 완료</Schedule>;
+                    return <Schedule status="state_box state2" scheduleId={v.scheduleId}></Schedule>;
                 case ScheduleConf.STATUS.RESERVATION_IN_PROGRESS:
                     if (typeof v.value === "object") {
                         return (
-                            <Schedule status="blue" scheduleId={v.scheduleId}>
-                                {`신청한 학생:${v.value[0]}`}
-                                <br/>
-                                {`예약 미승인:${v.value[1]}`}
+                            <Schedule status="state_box state1" scheduleId={v.scheduleId}>
+                                <p>
+                                    {v.value[0]} / <span>{v.value[1]}</span>
+                                </p>
                             </Schedule>
                         );
                     } else {

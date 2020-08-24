@@ -64,6 +64,8 @@ export default function Schedules() {
         setScheduleList(array);
     };
 
+
+
     return (
         <div className="content">
             <div className="sub_title">

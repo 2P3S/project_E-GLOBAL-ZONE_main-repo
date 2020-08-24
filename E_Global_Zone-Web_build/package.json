@@ -8,6 +8,7 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"dotenv": "^8.2.0",
+		"form-data": "^3.0.0",
 		"moment": "^2.27.0",
 		"react": "^16.13.1",
 		"react-calendar": "^3.1.0",
@@ -17,7 +18,8 @@
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "3.4.1",
 		"styled-components": "^5.1.1",
-		"styled-reset": "^4.2.1"
+		"styled-reset": "^4.2.1",
+		"axios": "^0.19.2"
 	},
 	"scripts": {
 		"start": "NODE_PATH=src react-scripts  start",

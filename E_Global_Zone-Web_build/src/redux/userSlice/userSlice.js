@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 import User from "conf/class/User";
 import conf from "conf/conf";
 
@@ -7,26 +7,26 @@ import conf from "conf/conf";
  * @type {Slice<{isLogin: boolean, user}, {setClass: reducers.setClass, logIn: reducers.logIn, logOut: reducers.logOut}, string>}
  */
 export const userSlice = createSlice({
-	name: "user",
-	initialState: {
-		isLogin: true,
-		user: {id:1, userClass: conf.userClass.FOREIGNER, name: '로그인 사람 이름'},
-	},
-	reducers: {
-		logIn: (state) => {
-			state.isLogin = true;
-		},
-		logOut: (state) => {
-			state.isLogin = false;
-		},
-		setClass: (state, action) => {
-			state.user = {id:action.payload[0], userClass:action.payload[1]};
-			// state.user.userClass = action.payload;
-		},
-	},
+    name: "user",
+    initialState: {
+        isLogin: true,
+        user: {id: 1418547, userClass: conf.userClass.FOREIGNER, name: '사람이름'},
+    },
+    reducers: {
+        logIn: (state) => {
+            state.isLogin = true;
+        },
+        logOut: (state) => {
+            state.isLogin = false;
+        },
+        setClass: (state, action) => {
+            state.user = {id: action.payload[0], userClass: action.payload[1]};
+            // state.user.userClass = action.payload;
+        },
+    },
 });
 
-export const { logIn, logOut, setClass } = userSlice.actions;
+export const {logIn, logOut, setClass} = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
