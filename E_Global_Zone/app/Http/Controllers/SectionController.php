@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Reservation;
 use App\Section;
+use App\Work_student_foreigner;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
@@ -52,6 +54,11 @@ class SectionController extends Controller
 
         $section_data = Section::whereYear('sect_start_date', $year)->get();
 
+        // 학기별 등록 유학생 학생 인원수 추가.
+        foreach ($section_data as $section) {
+            $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
+        }
+
         return self::response_json($year . self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
     }
 
@@ -60,18 +67,21 @@ class SectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function std_kor_attendanced_index(): JsonResponse
+    public function std_kor_attendanced_index(Request $request): JsonResponse
     {
         //TODO std_kor_id 제거
-        $std_kor_id = 1321704;
+        $std_kor_id = $request->std_kor_id;
 
-        $attendanced_section_data = Reservation::select('sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
+        $attendanced_section_data = Reservation::select(DB::raw('count(*) as res_count'),'sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
             ->join('schedules as sch', 'sch_id', 'res_sch')
             ->join('sections', 'sect_id', 'sch_sect')
             ->where('res_std_kor', $std_kor_id)
             ->where('res_state_of_attendance', true)
             ->groupBy('sect_id')
+            ->orderBy('sect_start_date', 'DESC')
             ->get();
+
+        //TODO 상위 % 인지 계산 후 반영.
 
         $is_non_attendanced_data = $attendanced_section_data->count() == 0;
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
+use App\SchedulesResultImg;
 use App\Section;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class ScheduleController extends Controller
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
 
     private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 등록을 완료하였습니다.";
-    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경을 완료하였습니다.";
+    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 삭제를 완료하였습니다.";
 
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
@@ -41,6 +42,7 @@ class ScheduleController extends Controller
     public function __construct()
     {
         $this->schedule = new Schedule();
+        $this->resultImage = new SchedulesResultImg();
     }
 
     /**
@@ -220,7 +222,7 @@ class ScheduleController extends Controller
         $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->sect_id, $std_for_id);
 
         $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
-        if($is_already_inserted_schedule) $get_sect_by_schedule->delete();
+        if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
 
         $sect_start_date = strtotime($sect->sect_start_date);
         $sect_start_date = date("Y-m-d", $sect_start_date);
@@ -418,8 +420,15 @@ class ScheduleController extends Controller
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
+
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
+
+            // 이미지 주소 매핑
+            $schedule['start_img_url'] =
+                $this->resultImage->get_img($schedule['start_img_url']);
+            $schedule['end_img_url'] =
+                $this->resultImage->get_img($schedule['end_img_url']);
         }
 
         return response()->json([
