@@ -8,6 +8,7 @@ import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
 import { LoginRouter } from "app/Routers/Router.Login";
 import conf from "../conf/conf";
 import { logOut, setClass } from "redux/userSlice/userSlice";
+import {setTodayFuture, setTodayToday} from "../redux/confSlice/confSlice";
 
 /**
  * Routes for Routers
@@ -17,18 +18,16 @@ import { logOut, setClass } from "redux/userSlice/userSlice";
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const User = useSelector(selectUser);
-
-	// const dispatch = useDispatch();
 	return (
 		<Router>
 			<Test />
 			{isLogin ? (
-				User.getUserClass() === conf.userClass.KOREAN ? (
+			User.userClass === conf.userClass.KOREAN ? (
 					//mobile
 					<>
 						<MobileRouter />
 					</>
-				) : User.getUserClass() === conf.userClass.FOREIGNER ? (
+				) : User.userClass === conf.userClass.FOREIGNER ? (
 					// web
 					<ForeignerRouter />
 				) : (
@@ -44,25 +43,37 @@ function Routes() {
 }
 
 const Test = () => {
+
+	const nakamura = 1231234
+	const korean = 1321704
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const user = useSelector(selectUser);
 	const student = () => {
-		dispatch(setClass(conf.userClass.KOREAN));
+		dispatch(setClass([korean,conf.userClass.KOREAN]));
 		history.push("/");
 	};
 	const foreigner = () => {
-		dispatch(setClass(conf.userClass.FOREIGNER));
+		dispatch(setClass([nakamura,conf.userClass.FOREIGNER]));
 		history.push("/");
 	};
 	const manager = () => {
-		dispatch(setClass(conf.userClass.MANAGER));
+		dispatch(setClass([user.id,conf.userClass.MANAGER]));
 		history.push("/");
 	};
+	const future = () => {
+		dispatch(setTodayFuture());
+	}
+	const today = () => {
+		dispatch(setTodayToday());
+	}
 	return (
 		<div>
 			<button onClick={student}>학생</button>
 			<button onClick={foreigner}>유학생</button>
 			<button onClick={manager}>관리자</button>
+			<button onClick={future}>미래</button>
+			<button onClick={today}>현재</button>
 		</div>
 	);
 };

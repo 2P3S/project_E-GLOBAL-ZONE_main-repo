@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import parseDate from "../../modules/parseDate";
 
 /**
  * ReduxSlice - conf
@@ -7,23 +8,39 @@ import {createSlice} from "@reduxjs/toolkit";
 export const confSlice = createSlice({
     name: "conf",
     initialState: {
-        dept: {}
+        dept: {},
+        today: parseDate(new Date(Date.now())),
+        selectDate: parseDate(new Date(Date.now())),
     },
     reducers: {
         setDept: (state, action) => {
-            let data = {...action.payload};
+            let data = action.payload.data;
             if (typeof data === "object") {
                 for (let index in data) {
                     data[index].dept_name = data[index].dept_name.split("_");
                 }
             }
             state.dept = data;
-        }
+        },
+        /**
+         * setSelectDate
+         * @param {Date} action.payload
+         */
+        setSelectDate: (state, action) => {
+            state.selectDate = action.payload;
+        },
+
+
+        setTodayToday: (state) => {
+            state.today = parseDate(new Date(Date.now()));
+        },
+        setTodayFuture: (state) => {
+            state.today = parseDate(new Date('2020-12-1'));
+        },
     },
 });
 
-export const {setDept} = confSlice.actions;
-console.log(confSlice);
+export const {setDept, setSelectDate, setTodayFuture, setTodayToday} = confSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -39,6 +56,8 @@ console.log(confSlice);
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectDept = (state) => state.dept;
+export const selectDept = (state) => state.conf.dept;
+export const selectToday = (state) => state.conf.today;
+export const selectSelectDate = (state) => state.conf.selectDate;
 
 export default confSlice.reducer;

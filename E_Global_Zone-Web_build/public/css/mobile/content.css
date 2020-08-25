@@ -358,7 +358,7 @@ body {
 .history_wrap .month_move .arrow {
 	float: right;
 }
-.history_wrap .month_move .arrow a {
+.history_wrap .month_move .arrow div {
 	display: inline-block;
 	width: 20px;
 	padding: 10px 0;
@@ -369,8 +369,8 @@ body {
 	color: #373a44;
 	font-size: 12px;
 	border: 1px solid #bcbfc7;
-	border-top: none;
-	border-radius: 0 0 5px 5px;
+border-top: none;
+border-radius: 0 0 5px 5px;
 }
 .history_wrap table th,
 .history_wrap table td {
@@ -396,7 +396,7 @@ body {
 	width: 100%;
 }
 .tab {
-	overflow: hidden;
+	/*overflow: hidden;*/
 	clear: both;
 	width: 100%;
 }
@@ -465,7 +465,7 @@ select::-ms-expand {
 	text-align: center;
 	margin-top: 40px;
 }
-.btn_wrap a {
+.btn_wrap div {
 	display: inline-block;
 	width: 200px;
 	height: 60px;

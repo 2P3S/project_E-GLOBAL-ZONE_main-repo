@@ -3,6 +3,7 @@ import Routes from "./Routes";
 import useAxios from "../modules/hooks/useAxios";
 import { setDept} from "../redux/confSlice/confSlice";
 import {useDispatch} from "react-redux";
+import conf from "../conf/conf";
 
 /**
  * React App
@@ -10,12 +11,16 @@ import {useDispatch} from "react-redux";
  * @returns {JSX.Element} App with GlobalStyles, Routes
  */
 const App = () => {
-    const {loading, error, data} = useAxios({url: "http://13.124.189.186:8888/api/department"});
+    const {loading, error, data} = useAxios({url: conf.url+"/api/admin/department"});
     const dispatch = useDispatch();
-    useEffect(()=>{
-        if(data){
-            dispatch(setDept(data.result));
+    async function setDepartment(argLoading){
+        let loading = await argLoading;
+        if(!loading){
+            dispatch(setDept(data));
         }
+    }
+    useEffect(()=>{
+        setDepartment(loading);
     },[data])
     return (<>
         <Routes/>

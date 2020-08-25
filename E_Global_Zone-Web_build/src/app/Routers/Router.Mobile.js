@@ -18,7 +18,7 @@ export default () => {
 
 				{/* 예약 조회 페이지 */}
 				<Route exact path="/reservation" component={Reservation} />
-				<Route path="/reservation/:id" component={ApplicationForm} />
+				<Route path="/schedule/:id" component={ApplicationForm} />
 				{/* 예약 폼 */}
 
 				{/* 스케쥴 페이지 */}

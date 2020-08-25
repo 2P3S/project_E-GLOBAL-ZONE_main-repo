@@ -64,6 +64,8 @@ export default function Schedules() {
         setScheduleList(array);
     };
 
+
+
     return (
         <div className="content">
             <div className="sub_title">
@@ -76,6 +78,20 @@ export default function Schedules() {
                     handleAll={handleAll}
                     handleCheck={handleCheck}
                 />
+            </div>
+            <div className="sch_info">
+                <ul>
+                    <li className="ico01">[예약현황] 미승인 / 총 신청 학생</li>
+                    <li className="ico02">[예약 승인 완료]</li>
+                </ul>
+                <ul>
+                    <li className="ico03">[결과 미입력] 출석 학생</li>
+                    <li className="ico04">[결과 입력 완료]</li>
+                </ul>
+                <ul>
+                    <li className="ico05">[관리자 미승인] 출석 학생</li>
+                    <li className="ico06">[관리자 승인 완료]</li>
+                </ul>
             </div>
             <div className="wrap">
                 {scheduleList ? <ScheduleTable
