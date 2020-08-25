@@ -224,17 +224,6 @@ class ReservationController extends Controller
     }
 
     /*
-     * TODO api 주소 할당? 결과 목록 조회할 때 함께?
-     *
-     * 결과 조회 시, 스케줄 아이디로 이미지 url 조회
-     */
-    public function get_img($img_name)
-    {
-        $img_url = 'http://' . request()->getHttpHost() . Storage::url('public/' . $img_name);       /* 이미지 URL */
-        return $img_url;
-    }
-
-    /*
      * ========== TEST 완료 ==========
      * 1. 한국인 학생 예약 신청
      * 2. 해당 일자에 대한 예약 조회

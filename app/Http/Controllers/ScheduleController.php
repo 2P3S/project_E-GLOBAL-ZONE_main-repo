@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
+use App\SchedulesResultImg;
 use App\Section;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,7 @@ class ScheduleController extends Controller
     public function __construct()
     {
         $this->schedule = new Schedule();
+        $this->resultImage = new SchedulesResultImg();
     }
 
     /**
@@ -420,6 +422,12 @@ class ScheduleController extends Controller
                 ->get();
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
+
+            // 이미지 주소 매핑
+            $schedule['start_img_url'] =
+                $this->resultImage->get_img($schedule['start_img_url']);
+            $schedule['end_img_url'] =
+                $this->resultImage->get_img($schedule['end_img_url']);
         }
 
         return response()->json([
