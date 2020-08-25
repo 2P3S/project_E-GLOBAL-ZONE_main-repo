@@ -9,6 +9,7 @@ import useAxios from "../../../../modules/hooks/useAxios";
 import {selectDept} from "../../../../redux/confSlice/confSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {selectData, setData} from "../../../../redux/managerSlice/managerSlice";
+import conf from "../../../../conf/conf";
 
 
 class Student {
@@ -80,7 +81,7 @@ class Data {
 export default function Students() {
 
     // api
-    const {loading, data: resData, error} = useAxios({url: "http://13.124.189.186:8888/api/admin/korean"});
+    const {loading, data: resData, error} = useAxios({url: conf.url+"/api/admin/korean"});
     // department information
     const dept = useSelector(selectDept);
     const data = useSelector(selectData);
