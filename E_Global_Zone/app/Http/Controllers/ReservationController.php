@@ -253,12 +253,12 @@ class ReservationController extends Controller
         Schedule $sch_id
     ): JsonResponse {
         // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
-        $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
+        // $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
 
-        if (!$is_res_possibility) {
-            return
-                self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
-        }
+        // if (!$is_res_possibility) {
+        //     return
+        //         self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
+        // }
         // -->>
 
         // TODO 중복으로 예약신청하는거 막기!!!!

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Reservation;
 use App\Section;
+use App\Work_student_foreigner;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -51,6 +52,11 @@ class SectionController extends Controller
         }
 
         $section_data = Section::whereYear('sect_start_date', $year)->get();
+
+        // 학기별 등록 유학생 학생 인원수 추가.
+        foreach($section_data as $section) {
+            $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
+        }
 
         return self::response_json($year . self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
     }
