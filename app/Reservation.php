@@ -112,7 +112,7 @@ class Reservation extends Model
      */
     public function update_std_kor_res(
         Schedule $schedule,
-        array $update_std_kor_id_list,
+        $update_std_kor_id_list,
         string $update_column,
         bool $update_state
     ): void
