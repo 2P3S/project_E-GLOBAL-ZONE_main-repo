@@ -194,21 +194,23 @@ class ReservationController extends Controller
         // -->>
 
         // <<-- 출석, 결석 학생 업데이트
-        $attendance_std_kor_id_list = $request->input('attendance_std_kor_id_list');
-        $absent_std_kor_id_list = $request->input('absent_std_kor_id_list');
+        if (!empty($attendance_std_kor_id_list = $request->input('attendance_std_kor_id_list'))) {
+            $this->reservation->update_std_kor_res(
+                $sch_id,
+                $attendance_std_kor_id_list,
+                'res_state_of_attendance',
+                true
+            );
+        }
 
-        $this->reservation->update_std_kor_res(
-            $sch_id,
-            $attendance_std_kor_id_list,
-            'res_state_of_attendance',
-            true
-        );
-        $this->reservation->update_std_kor_res(
-            $sch_id,
-            $absent_std_kor_id_list,
-            'res_state_of_attendance',
-            false
-        );
+        if (!empty($absent_std_kor_id_list = $request->input('absent_std_kor_id_list'))) {
+            $this->reservation->update_std_kor_res(
+                $sch_id,
+                $absent_std_kor_id_list,
+                'res_state_of_attendance',
+                false
+            );
+        }
         // -->>
 
         // <<-- 스케줄 결과 입력 결과 업데이트
