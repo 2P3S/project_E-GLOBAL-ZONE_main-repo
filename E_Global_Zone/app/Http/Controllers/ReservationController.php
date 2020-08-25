@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
 use App\Setting;
@@ -239,26 +240,27 @@ class ReservationController extends Controller
      */
     public function std_kor_store_res(
         Request $request,
-        Schedule $sch_id
+        Schedule $sch_id,
+        Preference $preference_instance
     ): JsonResponse {
-        // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
-        // $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
+        $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
-        // if (!$is_res_possibility) {
-        //     return
-        //         self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
-        // }
+        // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
+        $is_res_possibility = $this->schedule->check_res_possibility($sch_id);
+
+        if (!$is_res_possibility) {
+            return
+                self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
+        }
         // -->>
 
-        // TODO 중복으로 예약신청하는거 막기!!!!
+        // TODO std_kor_id 미들웨어로 부터 받아오기
+        // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
+        $std_kor_id = $request->std_kor_id;
 
         // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
-        // TODO 토큰으로 한국인 학생 정보 확인 추가 필요
-        //        $std_kor_id = $request->user($request['guard'])['std_kor_id'];
-        $std_kor_id = 1321704;
-
         $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
-        $is_over_max_res_per_day = $std_kor_res_list->count() >= Setting::get_setting_value()['max_res_per_day'];
+        $is_over_max_res_per_day = $std_kor_res_list->count() >= $setting_value->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
             return
@@ -269,10 +271,7 @@ class ReservationController extends Controller
         // <<-- 예약 중복 여부 검사
         $is_already_res = $std_kor_res_list->where('res_sch', $sch_id['sch_id'])->count();
 
-        if ($is_already_res) {
-            return
-                self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
-        }
+        if ($is_already_res) return self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
         // -->>
 
         // <<-- 예약 정보 저장
@@ -283,8 +282,7 @@ class ReservationController extends Controller
         $created_res = $this->reservation->store_std_kor_res($res_data);
         // -->>
 
-        return
-            self::response_json(self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+        return self::response_json(self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
     }
 
     /**
@@ -312,12 +310,13 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
-        // TODO (CASE 1) 토큰으로 한국인 학생 정보 확인 -> 학번 조회
-        // TODO (CASE 2) 구글 로그인 리다이렉션으로 한국인 학생 정보 확인 -> email 조회
+        // TODO (CASE 1) 토큰으로 한국인 학생 정보 확인 -> 학번 조회 (CASE 2) 구글 로그인 리다이렉션으로 한국인 학생 정보 확인 -> email 조회
         // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
-        $std_kor_id = 1321704;
+
+        // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
+        $std_kor_id = $request->std_kor_id;
         $search_date = $request->input('search_date');
+
         return $this->reservation->get_std_kor_res_by_date($std_kor_id, $search_date);
         // -->>
     }
@@ -353,6 +352,7 @@ class ReservationController extends Controller
             ->join('schedules', 'res_sch', 'sch_id')
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->where('schedules.sch_sect', $request->sect_id)
+            ->where('res_std_kor', $request->std_kor_id)
             ->whereMonth('schedules.sch_start_date', $request->search_month)
             ->where('res_state_of_attendance', true)
             ->get();

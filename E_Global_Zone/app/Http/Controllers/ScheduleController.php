@@ -420,6 +420,7 @@ class ScheduleController extends Controller
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
+
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
 
