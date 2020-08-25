@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectSelectDate} from "../../../../redux/confSlice/confSlice";
 import useAxios, {getKoreanReservation} from "../../../../modules/hooks/useAxios";
 import conf from "../../../../conf/conf";
+import {selectUser} from "../../../../redux/userSlice/userSlice";
 
 /**
  * Korean :: 예약 조회
@@ -15,9 +16,10 @@ import conf from "../../../../conf/conf";
 export default function Reservation() {
 	const dispatch = useDispatch();
 	const selectDate = useSelector(selectSelectDate);
+	const user = useSelector(selectUser);
 
 	const [data, setData] = useState();
-	let {loading, error, data:resData}  = useAxios({url:conf.url+`/api/korean/reservation`, params:{search_date:selectDate}});
+	let {loading, error, data:resData}  = useAxios({url:conf.url+`/api/korean/reservation`, params:{search_date:selectDate, std_kor_id:user.id}});
 	const axios = useAxios;
 	function getResData(loading, error, data){
 		if(!loading){
@@ -34,7 +36,7 @@ export default function Reservation() {
 		}
 	}
 	useEffect(()=>{
-		getKoreanReservation(selectDate, setData);
+		getKoreanReservation(selectDate, user.id, setData);
 	},[selectDate]);
 
 	return (

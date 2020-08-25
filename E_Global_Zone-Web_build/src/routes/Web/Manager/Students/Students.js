@@ -96,8 +96,9 @@ export default function Students() {
      */
     useEffect(() => {
         if (resData) {
+            console.log(resData);
             let dataArray = [];
-            resData.forEach(v => {
+            if(resData.data)resData.data.forEach(v => {
                 dataArray.push(new Student(v.std_kor_dept, v.std_kor_id, v.std_kor_name, v.std_kor_state_of_restriction, v.std_kor_phone, v.std_kor_mail, v.std_kor_num_of_attendance, v.std_kor_num_of_absent, dept))
             })
             console.log(dataArray);

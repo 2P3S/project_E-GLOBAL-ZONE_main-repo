@@ -85,7 +85,9 @@ export default function ApplicationForm() {
                 <div className="btn_wrap" onClick={async ()=>{
                     let agreement = document.getElementById("a1").checked;
                     if(agreement){
-                        postAxios({url:conf.url+`/api/korean/reservation/${schId}`, method:"post"},history);
+                        postAxios({url:conf.url+`/api/korean/reservation/${schId}`, method:"post", data:{
+                            std_kor_id: user.id
+                            }},history);
                     }else{
                         alert("e-글로벌 존 예약 방침에 동의하셔야 신청 할 수 있습니다.");
                     }

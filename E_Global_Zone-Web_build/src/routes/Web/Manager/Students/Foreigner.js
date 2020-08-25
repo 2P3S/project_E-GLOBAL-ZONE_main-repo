@@ -4,6 +4,10 @@ import useClick from "modules/hooks/useClick";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
+import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+import {getAdminForeignerWork} from "../../../../modules/hooks/useAxios";
+import {useSelector} from "react-redux";
+import {selectDept} from "../../../../redux/confSlice/confSlice";
 
 let i = 1601214;
 let j = 0;
@@ -18,7 +22,7 @@ export default function Foreigner() {
         sort: null,
         data: [
             {
-                language: conf.language.ENGLISH,
+                std_for_lang: conf.language.ENGLISH,
                 country: "미국",
                 favorite: false,
                 std_id: i++,
@@ -31,123 +35,13 @@ export default function Foreigner() {
                 delay: 0,
                 check: false,
             },
-            {
-                language: conf.language.ENGLISH,
-                country: "미국",
-                favorite: true,
-                std_id: i++,
-                name: "Scarlett Johansson",
-                dept: conf.shortDepartment[14],
-                curruntMonth: 150,
-                lastMonth: 160,
-                thePastMonth: 560,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.ENGLISH,
-                country: "영국",
-                favorite: true,
-                std_id: i++,
-                name: "Emma Watson",
-                dept: conf.shortDepartment[1],
-                curruntMonth: 120,
-                lastMonth: 150,
-                thePastMonth: 560,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.JAPANESE,
-                country: "일본",
-                favorite: false,
-                std_id: i++,
-                name: "이시하라 사토미",
-                dept: conf.shortDepartment[3],
-                curruntMonth: 120,
-                lastMonth: 330,
-                thePastMonth: 560,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.JAPANESE,
-                country: "일본",
-                favorite: false,
-                std_id: i++,
-                name: "마야자키 아오이",
-                dept: conf.shortDepartment[2],
-                curruntMonth: 120,
-                lastMonth: 330,
-                thePastMonth: 50,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.JAPANESE,
-                country: "일본",
-                favorite: false,
-                std_id: i++,
-                name: "이케우치 히로유키",
-                dept: conf.shortDepartment[2],
-                curruntMonth: 120,
-                lastMonth: 310,
-                thePastMonth: 50,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.CHINESE,
-                country: "중국",
-                favorite: false,
-                std_id: i++,
-                name: "판빙빙",
-                dept: conf.shortDepartment[1],
-                curruntMonth: 130,
-                lastMonth: 310,
-                thePastMonth: 510,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.CHINESE,
-                country: "중국",
-                favorite: true,
-                std_id: i++,
-                name: "장쯔이",
-                dept: conf.shortDepartment[6],
-                curruntMonth: 130,
-                lastMonth: 350,
-                thePastMonth: 510,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
-            {
-                language: conf.language.CHINESE,
-                country: "중국",
-                favorite: false,
-                std_id: i++,
-                name: "탕웨이",
-                dept: conf.shortDepartment[14],
-                curruntMonth: 130,
-                lastMonth: 30,
-                thePastMonth: 510,
-                count: j++,
-                delay: 0,
-                check: false,
-            },
         ],
     };
+    const [dataSet, setDataSet] = useState();
     const [data, setData] = useState(mockup.data);
-    const {isOpen:contactIsOpen, handleOpen: handleOpenForContact, handleClose: handleCloseForContact} = useModal();
-    const {isOpen:addIsOpen, handleOpen: handleOpenForAdd, handleClose: handleCloseForAdd} = useModal();
+    const {isOpen: contactIsOpen, handleOpen: handleOpenForContact, handleClose: handleCloseForContact} = useModal();
+    const {isOpen: addIsOpen, handleOpen: handleOpenForAdd, handleClose: handleCloseForAdd} = useModal();
+    const deptList = useSelector(selectDept)
 
     function handleCheckAll() {
         let flag = true;
@@ -160,10 +54,33 @@ export default function Foreigner() {
             console.log(data);
         }
     }
+
     useEffect(() => {
         window.easydropdown.all();
+        getAdminForeignerWork(setDataSet);
     }, []);
+    useEffect(() => {
+        // console.log(dataSet.data);
+        if (dataSet&& dataSet.hasOwnProperty("data")) {
 
+            setData(dataSet)
+        }
+
+    }, [dataSet])
+
+    useEffect(() => {
+        console.log(data);
+    }, [data])
+
+    const returnDept = (deptId, deptList) => {
+        let returnValue = "";
+        deptList.forEach(v=>{
+            if(v.dept_id === deptId){
+                returnValue = v.dept_name[0]
+            }
+        })
+        return returnValue;
+    }
 
     const sort = (sortBy) => {
         setData([]); // reset
@@ -327,23 +244,23 @@ export default function Foreigner() {
                             </tr>
                             </thead>
                             <tbody>
-                            {data.map((value, index) => {
+                            {dataSet && dataSet.data.map((value, index) => {
                                 return (
                                     <tr
                                         className={
-                                            value.language === conf.language.ENGLISH
+                                            value.std_for_lang === conf.language.ENGLISH
                                                 ? "eng"
-                                                : value.language === conf.language.JAPANESE
+                                                : value.std_for_lang === conf.language.JAPANESE
                                                 ? "jp"
                                                 : "ch"
                                         }
-                                        key={value.std_id}
+                                        key={value.std_for_id}
                                     >
                                         <td>
                                             <div className="table_check">
                                                 <input
                                                     type="checkbox"
-                                                    id={value.std_id}
+                                                    id={value.std_for_id}
                                                     name=""
                                                     ref={value.ref}
                                                     onClick={() => {
@@ -355,11 +272,11 @@ export default function Foreigner() {
                                                     }}
 
                                                 />
-                                                <label htmlFor={value.std_id}></label>
+                                                <label htmlFor={value.std_for_id}></label>
                                             </div>
                                         </td>
-                                        <td>{value.language}</td>
-                                        <td>{value.country}</td>
+                                        <td>{value.std_for_lang}</td>
+                                        <td>{value.std_for_country}</td>
                                         <td>
                                             {value.favorite ? (
                                                 <div className="favor">
@@ -377,14 +294,14 @@ export default function Foreigner() {
                                                 </div>
                                             )}
                                         </td>
-                                        <td>{value.std_id}</td>
+                                        <td>{value.std_for_id}</td>
                                         <td onMouseOver={() => {
                                             document.getElementById(`hover_btn_${index}`).className = "hover_btn";
                                         }}
                                             onMouseOut={() => {
                                                 document.getElementById(`hover_btn_${index}`).className = "off";
                                             }}
-                                        >{value.name}
+                                        >{value.std_for_name}
                                             <div id={`hover_btn_${index}`} className="hover_btn off">
                                                 <div className="area">
                                                     <div className="navy">비밀번호 초기화</div>
@@ -392,35 +309,35 @@ export default function Foreigner() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{value.dept}</td>
-                                        <td>
-                                            {(
-                                                (value.curruntMonth +
-                                                    value.lastMonth +
-                                                    value.thePastMonth) /
-                                                60
-                                            ).toFixed(0)}
-                                            시간{" "}
-                                            {(value.curruntMonth +
-                                                value.lastMonth +
-                                                value.thePastMonth) %
-                                            60}
-                                            분
-                                        </td>
-                                        <td>
-                                            {(value.thePastMonth / 60).toFixed(0)}시간{" "}
-                                            {value.thePastMonth % 60}분
-                                        </td>
-                                        <td>
-                                            {(value.lastMonth / 60).toFixed(0)}시간{" "}
-                                            {value.lastMonth % 60}분
-                                        </td>
-                                        <td>
-                                            {(value.curruntMonth / 60).toFixed(0)}시간{" "}
-                                            {value.curruntMonth % 60}분
-                                        </td>
-                                        <td>{value.count}회</td>
-                                        <td>{value.delay === 0 ? "-" : value.delay}</td>
+                                        <td>{returnDept(value.std_for_dept, deptList)}</td>
+                                        {/*<td>*/}
+                                        {/*    {(*/}
+                                        {/*        (value.curruntMonth +*/}
+                                        {/*            value.lastMonth +*/}
+                                        {/*            value.thePastMonth) /*/}
+                                        {/*        60*/}
+                                        {/*    ).toFixed(0)}*/}
+                                        {/*    시간{" "}*/}
+                                        {/*    {(value.curruntMonth +*/}
+                                        {/*        value.lastMonth +*/}
+                                        {/*        value.thePastMonth) %*/}
+                                        {/*    60}*/}
+                                        {/*    분*/}
+                                        {/*</td>*/}
+                                        {/*<td>*/}
+                                        {/*    {(value.thePastMonth / 60).toFixed(0)}시간{" "}*/}
+                                        {/*    {value.thePastMonth % 60}분*/}
+                                        {/*</td>*/}
+                                        {/*<td>*/}
+                                        {/*    {(value.lastMonth / 60).toFixed(0)}시간{" "}*/}
+                                        {/*    {value.lastMonth % 60}분*/}
+                                        {/*</td>*/}
+                                        {/*<td>*/}
+                                        {/*    {(value.curruntMonth / 60).toFixed(0)}시간{" "}*/}
+                                        {/*    {value.curruntMonth % 60}분*/}
+                                        {/*</td>*/}
+                                        {/*<td>{value.count}회</td>*/}
+                                        {/*<td>{value.delay === 0 ? "-" : value.delay}</td>*/}
                                     </tr>
                                 );
                             })}
@@ -430,12 +347,15 @@ export default function Foreigner() {
 
                     <div className="table_btn">
                         <div onClick={handleOpenForContact}>연락처 정보</div>
-                        <Modal isOpen={contactIsOpen} onRequestClose={handleCloseForContact}>
+                        <Modal isOpen={contactIsOpen} handleClose={handleCloseForContact}>
                             <ForeignerContact list={{}} handleClose={handleCloseForContact}/>
                         </Modal>
-                        <div>등록</div>
+                        <div onClick={handleOpenForAdd}>등록</div>
                         {/*<div>CSV 다운</div>*/}
                     </div>
+                    <Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
+                        <InsertForeignerStudent handleClose={handleCloseForAdd}/>
+                    </Modal>
                 </div>
             </div>
         </div>

@@ -358,7 +358,7 @@ body {
 .history_wrap .month_move .arrow {
 	float: right;
 }
-.history_wrap .month_move .arrow a {
+.history_wrap .month_move .arrow div {
 	display: inline-block;
 	width: 20px;
 	padding: 10px 0;

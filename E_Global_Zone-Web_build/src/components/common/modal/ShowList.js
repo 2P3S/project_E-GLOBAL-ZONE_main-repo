@@ -112,13 +112,13 @@ export default function ShowList({handleClose, sch_id}) {
                         let permission_std_kor_id_list = [];
                         let not_permission_std_kor_id_list = [];
                         data.data.map(v => {
-                            console.log(typeof document.getElementById(`${v.std_kor_id}`).value)
-                            if (document.getElementById(`${v.std_kor_id}`).value === "true") {
-                                permission_std_kor_id_list.push((v.std_kor_id));
-                            } else {
-                                not_permission_std_kor_id_list.push((v.std_kor_id));
-                            }
-                        })
+                        console.log(typeof document.getElementById(`${v.std_kor_id}`).value)
+                        if (document.getElementById(`${v.std_kor_id}`).value === "true") {
+                        permission_std_kor_id_list.push((v.std_kor_id));
+                    } else {
+                        not_permission_std_kor_id_list.push((v.std_kor_id));
+                    }
+                    })
                         patchForeignerReservationPermission(sch_id, permission_std_kor_id_list, not_permission_std_kor_id_list);
                         history.push('/');
                     }}>저장

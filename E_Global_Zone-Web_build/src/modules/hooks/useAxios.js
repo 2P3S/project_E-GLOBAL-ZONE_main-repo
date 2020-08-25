@@ -47,8 +47,8 @@ export const postAxios = (opts, history, axiosInstance = defaultAxios) => {
     })
 }
 
-export const getKoreanReservation = (date, setData) => {
-    defaultAxios({url: conf.url + `/api/korean/reservation`, params: {search_date: date}}).then(data => {
+export const getKoreanReservation = (date, std_kor_id, setData) => {
+    defaultAxios({url: conf.url + `/api/korean/reservation`, params: {search_date: date, std_kor_id}}).then(data => {
         setData(data.data);
     })
 }
@@ -100,41 +100,123 @@ export const postForeignerReservationResult = (sch_id, data) => {
     // data.append("result_start_img", result_end_img);
     // data.append("result_end_img", result_end_img);
     // console.log(result_start_img, result_end_img);
-    defaultAxios({
-        method: 'post',
-        url: `${conf.url}/api/foreigner/reservation/result/${sch_id}`, data: {
-            // result_start_img,
-            // result_end_img,
-            data,
-            // attendance_std_kor_id_list : [1321704, 132123],
-            // absent_std_kor_id_list: []
-        },
-        headers: {
-            'Content-Type': 'multipart/form-data'
+    // defaultAxios({
+    //     method: 'post',
+    //     url: `${conf.url}/api/foreigner/reservation/result/${sch_id}`, data: {
+    //         // result_start_img,
+    //         // result_end_img,
+    //         data,
+    //         // attendance_std_kor_id_list : [1321704, 132123],
+    //         // absent_std_kor_id_list: []
+    //     },
+    //     headers: {
+    //         'Content-Type': 'multipart/form-data'
+    //     }
+    // }).then(res => {
+    //     console.log(res);
+    // })
+    // defaultAxios.post(conf.url+`/api/foreigner/reservation/result/${sch_id}`,
+    //             data
+    // , {
+    //     headers:{
+    //         'content-type':"multipart/form-data"
+    //     }
+    // }).then(res=>{
+    //     console.log(res)
+    // }).catch(e=>console.log(e));
+    let ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = () => {
+        if (ajax.readyState === 0) {
+            ajax.setRequestHeader('content-type', 'multipart/form-data');
         }
-    }).then(res => {
-        console.log(res);
-    })
+        if (ajax.readyState === 4) {
+            console.log(ajax.response);
+        }
+    }
+
+    ajax.open("post", conf.url + `/api/foreigner/reservation/result/${sch_id}`, true);
+    ajax.send(data);
 }
 
 export const getForeignerReservation = (sch_id, std_for_id, setData) => {
-    defaultAxios({url:conf.url+`/api/foreigner/reservation/${sch_id}`, params:{
-        std_for_id
-        }}).then(res=>{
-            console.log(res);
-            setData(res.data);
+    defaultAxios({
+        url: conf.url + `/api/foreigner/reservation/${sch_id}`, params: {
+            std_for_id
+        }
+    }).then(res => {
+        console.log(res);
+        setData(res.data);
     })
+
 }
 
 export const patchForeignerReservationPermission = (sch_id, permission_std_kor_id_list, not_permission_std_kor_id_list) => {
 
-    defaultAxios({url:conf.url +`/api/foreigner/reservation/permission/${sch_id}`, method:"patch", data:{permission_std_kor_id_list, not_permission_std_kor_id_list}, headers:{
-            'Context-Type':"application/json"
-        }}).then(
-        res=>{
+    defaultAxios({
+        url: conf.url + `/api/foreigner/reservation/permission/${sch_id}`,
+        method: "patch",
+        data: {permission_std_kor_id_list, not_permission_std_kor_id_list},
+        headers: {
+            'Context-Type': "application/json"
+        }
+    }).then(
+        res => {
 
         }
-    ).catch(e=>{
+    ).catch(e => {
         console.log(e)
+    })
+
+}
+
+export const postAdminForeignerAccount = (std_for_id, std_for_dept, std_for_name, std_for_lang, std_for_country, std_for_phone, std_for_mail, std_for_zoom_id, setState) => {
+    defaultAxios({
+        method: 'post',
+        url: conf.url + `/api/admin/foreigner/account`,
+        data: {
+            std_for_id,
+            std_for_dept,
+            std_for_name,
+            std_for_lang,
+            std_for_country,
+            std_for_phone,
+            std_for_mail,
+            std_for_zoom_id
+        }
+    }).then(res => {
+        console.log(res)
+        setState(true)
+    }).catch(e => console.log(e));
+}
+
+
+export const getAdminForeignerWork = (setDataSet, sect_id = 5) => {
+
+    defaultAxios({
+        url: conf.url + `/api/admin/foreigner/work/${sect_id}`
+    }).then(res => {
+        console.log(res);
+        setDataSet(res.data);
+    })
+
+}
+
+export const getAdminSection = (year) => {
+    defaultAxios({
+        url: conf.url + `/api/admin/section`,
+        params: {
+            year
+        }
+    })
+
+}
+
+export const getKoreanSection = (std_kor_id, setState) => {
+    defaultAxios({
+        url: conf.url + `/api/korean/section`, params: {
+            std_kor_id
+        }
+    }).then(res => {
+        setState(res.data.data)
     })
 }

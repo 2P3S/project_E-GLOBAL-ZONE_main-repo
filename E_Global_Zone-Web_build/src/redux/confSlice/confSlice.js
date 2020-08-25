@@ -10,7 +10,7 @@ export const confSlice = createSlice({
     initialState: {
         dept: {},
         today: parseDate(new Date(Date.now())),
-        selectDate: parseDate(new Date(Date.now()))
+        selectDate: parseDate(new Date(Date.now())),
     },
     reducers: {
         setDept: (state, action) => {
@@ -28,11 +28,19 @@ export const confSlice = createSlice({
          */
         setSelectDate: (state, action) => {
             state.selectDate = action.payload;
-        }
+        },
+
+
+        setTodayToday: (state) => {
+            state.today = parseDate(new Date(Date.now()));
+        },
+        setTodayFuture: (state) => {
+            state.today = parseDate(new Date('2020-12-1'));
+        },
     },
 });
 
-export const {setDept, setSelectDate} = confSlice.actions;
+export const {setDept, setSelectDate, setTodayFuture, setTodayToday} = confSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

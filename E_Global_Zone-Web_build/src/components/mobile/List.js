@@ -1,5 +1,7 @@
 import React, {useEffect} from "react";
 import Item from "./Item";
+import {useSelector} from "react-redux";
+import {selectToday} from "../../redux/confSlice/confSlice";
 /**
  *  Item's props
  * language
@@ -17,6 +19,7 @@ import Item from "./Item";
  * @constructor
  */
 export default function List({tabView, data}) {
+    const toDay = useSelector(selectToday);
     useEffect(() => {
         console.log(data);
     })
@@ -40,7 +43,7 @@ export default function List({tabView, data}) {
         <div className="reservation_boxs">
             {data.map((item) => {
                 let status;
-                if (new Date(item.sch_end_date) > Date.now()) {
+                if (new Date(item.sch_end_date) > new Date(toDay)) {
                     console.log("시작안됨")
                     if (item.res_state_of_permission) {
                         status = "reserved";
@@ -69,7 +72,7 @@ export default function List({tabView, data}) {
                         time={[item.sch_start_date.substr(10, 9), item.sch_end_date.substr(10, 9)]}
                         status={status}
                         zoomPw = {item.sch_for_zoom_pw}
-                        zoomId = {item.sch_for_zoom_id}
+                        zoomId = {item.std_for_zoom_id}
                     />
                 )
             })}

@@ -32,7 +32,7 @@ class WeekData extends ScheduleData {
     thursday;
     friday;
 
-    constructor(arrayOfSchedule) {
+    constructor(arrayOfSchedule, today) {
         super();
         this.monday = [];
         this.tuesday = [];
@@ -40,7 +40,7 @@ class WeekData extends ScheduleData {
         this.thursday = [];
         this.friday = [];
         arrayOfSchedule.forEach(schedule => {
-            let oneSchedule = new Schedule(schedule);
+            let oneSchedule = new Schedule(schedule, today);
             this.countOfWeek++;
             switch ((parseInt(oneSchedule.day))) {
                 case 1:
@@ -86,10 +86,10 @@ class Schedule {
     reservated_count;
     un_permission_count;
 
-    constructor(schObj) {
+    constructor(schObj, today) {
         this.sch_id = schObj.sch_id;
         this.setIndex(schObj.sch_start_date);
-        this.setState(schObj.sch_end_date, schObj.un_permission_count, schObj.sch_state_of_result_input, schObj.reservated_count);
+        this.setState(schObj.sch_end_date, schObj.un_permission_count, schObj.sch_state_of_result_input, schObj.reservated_count, today);
         this.reservated_count = schObj.reservated_count;
         this.un_permission_count = schObj.un_permission_count;
         this.setDate(schObj.sch_start_date);
@@ -136,22 +136,24 @@ class Schedule {
         }
     }
 
-    setState(sch_end_date, un_permission_count, sch_state_of_result_input, reservated_count) {
-        if (new Date(sch_end_date) > Date.now()) {
-            // 스케줄 시작 전
-            if ( reservated_count > 0 && un_permission_count === 0) {
-                this.state = STATE_RESERVED;
-            } else if(reservated_count > 0) {
-                this.state = STATE_PENDING;
+    setState(sch_end_date, un_permission_count, sch_state_of_result_input, reservated_count, today) {
+        if(un_permission_count === 0 && reservated_count === 0){
+            this.state = STATE_NOTHING;
+        }else{
+            if (new Date(sch_end_date) > new Date(today)) {
+                // 스케줄 시작 전
+                if (reservated_count > 0 && un_permission_count === 0) {
+                    this.state = STATE_RESERVED;
+                } else if (reservated_count > 0) {
+                    this.state = STATE_PENDING;
+                }
             } else {
-                this.state = STATE_NOTHING;
-            }
-        } else {
-            // 스케줄 완료 후
-            if (sch_state_of_result_input) {
-                this.state = STATE_CONFIRM;
-            } else {
-                this.state = STATE_DONE;
+                // 스케줄 완료 후
+                if (sch_state_of_result_input) {
+                    this.state = STATE_CONFIRM;
+                } else {
+                    this.state = STATE_DONE;
+                }
             }
         }
     }
@@ -198,7 +200,7 @@ export default function Schedules() {
         let div = document.createElement('div');
         switch (state) {
             case STATE_PENDING:
-                div.className = "state_box state1";
+                div.className = "blue";
                 div.addEventListener("click", () => {
                     setModal(<ShowList handleClose={handleClose} sch_id={sch_id}/>);
                     handleOpen()
@@ -206,10 +208,10 @@ export default function Schedules() {
                 div.style.cursor = 'pointer'
                 break;
             case STATE_RESERVED:
-                div.className = "state_box state2";
+                div.className = "mint";
                 break;
             case STATE_DONE:
-                div.className = "state_box state5";
+                div.className = "yellow";
                 div.addEventListener("click", () => {
                     setModal(<InsertResult handleClose={handleClose} sch_id={sch_id}/>);
                     handleOpen()
@@ -217,7 +219,7 @@ export default function Schedules() {
                 div.style.cursor = 'pointer'
                 break;
             case STATE_CONFIRM:
-                div.className = "state_box state6";
+                div.className = "puple";
                 break;
             case STATE_NOTHING:
                 div.className = "state_box state7";
@@ -225,11 +227,30 @@ export default function Schedules() {
         }
         if (typeof value === "object") {
             let p = document.createElement("p");
-            p.innerText = `${parseInt(value[0])-parseInt(value[1])} / ${value[0]}`;
+            p.innerText = `
+            신청한 학생 : ${value[0]}명
+            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명
+            `;
             div.appendChild(p);
         } else {
             let p = document.createElement("p");
-            p.innerText = `${value}`;
+            switch (state) {
+                case STATE_RESERVED:
+                    p.innerText = `${value}명 예약 완료`;
+                    break;
+                case STATE_DONE:
+                    p.innerText = `
+                    참가 학생 : ${value}명
+                    [결과 미입력]
+                    `;
+                    break;
+                case STATE_CONFIRM:
+                    p.innerText = `결과 입력 완료`;
+                    break;
+                case STATE_NOTHING:
+                    p.innerText = `예약 없음`;
+                    break;
+            }
             div.appendChild(p);
         }
         td.appendChild(div);
@@ -238,9 +259,9 @@ export default function Schedules() {
         const {monday, tuesday, wednesday, thursday, friday} = scheduleData;
         const tbody = document.getElementById("tbody");
         tbody.innerText = "";
-        for(let i =0;i<2;i++){
+        for (let i = 0; i < 2; i++) {
             let tr = document.createElement("tr");
-            for(let j=0;j<7;j++){
+            for (let j = 0; j < 7; j++) {
                 tr.appendChild(document.createElement("td"));
             }
             tbody.appendChild(tr);
@@ -384,7 +405,7 @@ export default function Schedules() {
     useEffect(() => {
         if (data) {
             console.log(data);
-            setScheduleData(new WeekData(data.data));
+            setScheduleData(new WeekData(data.data, today));
         }
     }, [data]);
     useEffect(() => {

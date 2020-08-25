@@ -85,7 +85,7 @@ export default function Item({id ,language, name, time, status, zoomPw, zoomId})
                 {
                     status === "reserved"? <ul>
                         <li>
-                            {zoomId}
+                            {/*줌 아이디 : {zoomId}*/}
                         </li>
                     </ul>:
                         <></>
@@ -102,7 +102,7 @@ export default function Item({id ,language, name, time, status, zoomPw, zoomId})
                 })(status)}
                 {((status) => {
                     if (typeof status !== "boolean") {
-                        return <span>{status==="reserved"? `${zoomPw}` :`${scheduleInfo.status}`}</span>
+                        return <span>{status==="reserved"? `${scheduleInfo.status}` :`${scheduleInfo.status}`}</span>
                     } else {
                         return status ? <span ref={application}>예약</span> : <span>예약 불가능</span>;
                     }
