@@ -64,6 +64,7 @@ class ForeignerController extends Controller
     private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
 
 
+    //TODO (중요) 활동시간 + 예약 미승인 횟수 + 결과 지연 입력 횟수 조회 후 반환.
     /**
      * 학기별 전체 유학생 정보 조회
      *
@@ -257,6 +258,12 @@ class ForeignerController extends Controller
             'std_for_phone' => $request->std_for_phone,
             'std_for_mail' => $request->std_for_mail,
             'std_for_zoom_id' => $request->std_for_zoom_id,
+        ]);
+
+        // TODO 임시 등록
+        Work_student_foreigner::create([
+            'work_std_for' => $request->std_for_id,
+            'work_sect' => 5
         ]);
 
         return self::response_json(self::_STD_FOR_STORE_SUCCESS, 201);

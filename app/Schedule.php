@@ -52,7 +52,7 @@ class Schedule extends Model
         return ($date_sch_res_possible['from'] <= $date_sch &&
             $date_sch < $date_sch_res_possible['to']);
     }
-    //TODO 결과관리 - 한번이라도 참석한적있으면 sect_id 보내주기 !!!!
+
     /**
      * 각 스케줄 대하여 한국인 학생 예약 명단 조회
      * (외국인 학생 기준 / 한국인 학생 기준)

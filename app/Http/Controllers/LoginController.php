@@ -47,7 +47,7 @@ class LoginController extends Controller
         }
 
         $token = '';
-        //TODO 비밀번호 환경변수 설정 ( 최종루트는 env )
+
         $initial_password = [
             'admins' => self::_ADMIN_INIT_PASSWORD,
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
