@@ -102,7 +102,6 @@ class ForeignerController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    // TODO POST -> GET 수정 필요(상의)
     public function show(Request $request): JsonResponse
     {
         $rules = [
