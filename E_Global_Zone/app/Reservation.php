@@ -41,23 +41,21 @@ class Reservation extends Model
      */
     public function get_std_kor_res_by_today(
         array $std_kor_id
-    ): object
-    {
+    ): object {
         $settings = new Setting();
         $date_sch_res_possible = $settings->get_res_possible_date();
 
         return
             self::join('schedules', 'reservations.res_sch', 'schedules.sch_id')
-                ->whereDate('sch_start_date', '>=', $date_sch_res_possible['from'])
-                ->whereDate("sch_start_date", "<", $date_sch_res_possible['to'])
-                ->whereIn('res_std_kor', $std_kor_id)
-                ->orderBy('res_std_kor')->get();
+            ->whereDate('sch_start_date', '>=', $date_sch_res_possible['from'])
+            ->whereDate("sch_start_date", "<", $date_sch_res_possible['to'])
+            ->whereIn('res_std_kor', $std_kor_id)
+            ->orderBy('res_std_kor')->get();
     }
 
     public function store_std_kor_res(
         array $res_data
-    ): Reservation
-    {
+    ): Reservation {
         return self::create($res_data);
     }
 
@@ -71,8 +69,7 @@ class Reservation extends Model
     public function get_std_kor_res_by_date(
         int $std_kor_id,
         string $search_date
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date',
@@ -83,12 +80,12 @@ class Reservation extends Model
 
         $result =
             self::select($lookup_columns)
-                ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
-                ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
-                ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
-                ->where('reservations.res_std_kor', $std_kor_id)
-                ->whereDate('sch.sch_start_date', $search_date)
-                ->get();
+            ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
+            ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
+            ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
+            ->where('reservations.res_std_kor', $std_kor_id)
+            ->whereDate('sch.sch_start_date', $search_date)
+            ->get();
 
         $is_std_kor_res_no_date = $result->count();
 
@@ -115,8 +112,7 @@ class Reservation extends Model
         $update_std_kor_id_list,
         string $update_column,
         bool $update_state
-    ): void
-    {
+    ): void {
         $sch_id = $schedule['sch_id'];
         $update_data = [
             $update_column => $update_state
@@ -125,5 +121,18 @@ class Reservation extends Model
         self::where('res_sch', $sch_id)
             ->whereIn('res_std_kor', $update_std_kor_id_list)
             ->update($update_data);
+    }
+
+    /**
+     * 스케줄에 대한 한국인 학생의 중복 예약 검색
+     *
+     * @param string $update_column
+     * @param bool $update_state
+     */
+    public function check_already_res(
+        int $schedule_id,
+        int $std_kor_id
+    ): bool {
+        return self::where('res_sch', $schedule_id)->where('res_std_kor', $std_kor_id)->count() != 0;
     }
 }

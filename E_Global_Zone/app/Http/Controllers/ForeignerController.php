@@ -81,10 +81,15 @@ class ForeignerController extends Controller
                 'std_for_dept',
                 'std_for_name',
                 'std_for_lang',
-                'std_for_country'
+                'std_for_country',
+                'std_for_state_of_favorite',
+                'std_for_num_of_delay_input'
             )
             ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
-            ->where('work_sect', $sect_id['sect_id'])->get();
+            ->where('work_sect', $sect_id['sect_id'])
+            ->orderBy('std_for_state_of_favorite')
+            ->orderBy('std_for_lang')
+            ->get();
 
         if (count($work_std_for_list) === 0) {
             return self::response_json(self::_WORK_STD_FOR_INDEX_FAILURE, 202);

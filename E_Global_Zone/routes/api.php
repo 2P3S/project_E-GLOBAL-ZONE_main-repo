@@ -54,6 +54,9 @@ Route::prefix('/admin')->group(function () {
         /** 전체 한국인 학생 정보 조회 */
         Route::get('', 'KoreanController@index')->name('koreans.index');
 
+        /** 특정 한국인 학생 정보 조회 */
+        Route::post('', 'KoreanController@search_std_kor_data_res')->name('koreans.search_std_kor_data_res');
+
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
 
@@ -111,6 +114,9 @@ Route::prefix('/admin')->group(function () {
 
         /* 특정 스케줄 삭제 */
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
+
+        /* 해당 스케줄 학생 추가 */
+        Route::post('add/{sch_id}', 'ReservationController@add_kor_schedule_by_admin')->name('reservations.add_kor_schedule_by_admin');
 
         /* 스케줄 관련 미입력 관리 라우터 */
         /** 해당 날짜 출석 결과 미입력건 조회 */
@@ -170,7 +176,6 @@ Route::prefix('foreigner')->group(function () {
     });
 });
 
-// TODO 한국인 학생의 이용제한 확인??
 /* 한국인학생 라우터 */
 Route::prefix('/korean')->group(function () {
     /** 한국인 학생 계정 생성 (회원가입) */

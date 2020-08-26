@@ -226,12 +226,6 @@ class ReservationController extends Controller
             );
     }
 
-    /*
-     * ========== TEST 완료 ==========
-     * 1. 한국인 학생 예약 신청
-     * 2. 해당 일자에 대한 예약 조회
-     */
-
     /**
      * 한국인학생 - 예약 신청
      * /api/korean/reservation/{$sch_id}
@@ -271,7 +265,10 @@ class ReservationController extends Controller
         // -->>
 
         // <<-- 예약 중복 여부 검사
-        $is_already_res = $std_kor_res_list->where('res_sch', $sch_id['sch_id'])->count();
+        $is_already_res = $this->reservation->check_already_res(
+            $sch_id['sch_id'],
+            $std_kor_id
+        );
 
         if ($is_already_res) return self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
         // -->>
@@ -284,7 +281,10 @@ class ReservationController extends Controller
         $created_res = $this->reservation->store_std_kor_res($res_data);
         // -->>
 
-        return self::response_json(self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+        $schedule_date = strtotime($sch_id['sch_start_date']);
+        $schedule_date = date("Y-m-d", $schedule_date);
+
+        return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
     }
 
     /**
@@ -360,5 +360,58 @@ class ReservationController extends Controller
             ->get();
 
         return self::response_json(self::_STD_KOR_RESULT_SUCCESS, 200, $sect_by_reservations);
+    }
+
+    /**
+     * 관리자 - 해당 스케줄 학생 추가.
+     *
+     * @param Schedule $sch_id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function add_kor_schedule_by_admin(
+        Request $request,
+        Schedule $sch_id
+    ): JsonResponse {
+        $rules = [
+            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RES_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $std_kor_id = $request->std_kor_id;
+        $schedule_id = $sch_id['sch_id'];
+
+        // <<-- 예약 중복 여부 검사
+        $is_already_res = $this->reservation->check_already_res(
+            $schedule_id,
+            $std_kor_id
+        );
+
+        if ($is_already_res) return self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
+        // -->>
+
+        // 예약 정보 저장
+        $res_data = [
+            'res_sch' => $schedule_id,
+            'res_std_kor' => $std_kor_id,
+            'res_state_of_permission' => true
+        ];
+
+        $created_res = $this->reservation->store_std_kor_res($res_data);
+
+        $schedule_date = strtotime($sch_id['sch_start_date']);
+        $schedule_date = date("Y-m-d", $schedule_date);
+
+        return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
     }
 }

@@ -23,6 +23,7 @@ class RestrictKoreanController extends Controller
 
     private const _UPDATE_SUCCESS = " 학생의 이용 제한 해제가 완료되었습니다.";
 
+    // 한국인학생 이용제한 사유 조회
     public function index(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -60,6 +61,7 @@ class RestrictKoreanController extends Controller
         ], 200);
     }
 
+    // 한국인학생 이용제한 등록
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
