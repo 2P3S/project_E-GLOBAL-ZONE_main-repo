@@ -52,8 +52,7 @@ var conf = {
     JAPANESE: JAPANESE,
     CHINESE: CHINESE
   },
-  // url: "http://13.124.189.186:8888/"
-  url: "localhost:8888"
+  url: "http://13.124.189.186:8888/"
 };
 var _default = conf;
 exports.default = _default;
