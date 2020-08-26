@@ -65,6 +65,9 @@ class ForeignerController extends Controller
     // 000 학번의 학생의 데이터가 중복입니다.
     private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
 
+    // 해당 학기 미등록 유학생 정보 조회
+    private const _STD_FOR_NON_DATA_BY_SECT_SUCCESS = " 학기 미등록 유학생 정보 조회 결과를 반환합니다.";
+
 
     //TODO (중요) 활동시간 + 예약 미승인 횟수 + 결과 지연 입력 횟수 조회 후 반환.
     /**
@@ -105,25 +108,63 @@ class ForeignerController extends Controller
         // dd($sect_end_month);
 
         // 활동 시간 조회
-        foreach($work_std_for_list as $work_std_for_id) {
+        foreach ($work_std_for_list as $work_std_for_id) {
             $isSearchMode = true;
             $sect_temp_month = $sect_start_month;
+            $work_time = [];
 
-            while($isSearchMode) {
-                $work_std_for_id[$sect_temp_month."월"] = Schedule::where('sch_std_for', $work_std_for_id['std_for_id'])
-                ->where('sch_sect', $work_std_for_id['sch_sect'])
-                ->whereMonth('sch_start_date', $sect_temp_month)
-                ->count() / 2;
+            while ($isSearchMode) {
+                $work_time[$sect_temp_month . "월"] = Schedule::where('sch_std_for', $work_std_for_id['std_for_id'])
+                    ->where('sch_sect', $work_std_for_id['sch_sect'])
+                    ->whereMonth('sch_start_date', $sect_temp_month)
+                    ->count() / 2;
 
                 $sect_temp_month++;
-                if($sect_temp_month > $sect_end_month) $isSearchMode = false;
+                if ($sect_temp_month > $sect_end_month) $isSearchMode = false;
             }
+            $work_std_for_id['work_time'] = $work_time;
         }
 
         return response()->json([
             'message' => $sect_name . self::_WORK_STD_FOR_INDEX_SUCCESS,
             'data' => $work_std_for_list,
         ], 200);
+    }
+
+    /**
+     * 해당 학기 미등록 유학생 정보 조회
+     *
+     * @param Section $sect_id
+     * @return JsonResponse
+     */
+    public function std_for_index_no_data_by_sect(Section $sect_id): JsonResponse
+    {
+        $work_list_data = Work_student_foreigner::where('work_sect', $sect_id['sect_id'])->get();
+
+        $work_list_arr = [];
+
+        foreach ($work_list_data as $data) {
+            array_push($work_list_arr, $data['work_std_for']);
+        };
+
+        $select_column_list = [
+            'student_foreigners.std_for_lang',
+            'student_foreigners.std_for_country',
+            'student_foreigners.std_for_id',
+            'student_foreigners.std_for_name',
+            'student_foreigners.std_for_dept',
+            'contact.std_for_phone',
+            'contact.std_for_mail',
+            'contact.std_for_zoom_id'
+        ];
+
+        $search_data = Student_foreigner::select($select_column_list)
+            ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+            ->whereNotIn('student_foreigners.std_for_id', $work_list_arr)
+            ->orderBy('student_foreigners.std_for_lang')
+            ->get();
+
+        return self::response_json($sect_id['sect_name'] . self::_STD_FOR_NON_DATA_BY_SECT_SUCCESS, 200, $search_data);
     }
 
     /**
@@ -151,19 +192,21 @@ class ForeignerController extends Controller
 
         $req_std_for_id = $request->input('foreigners');
 
+        $select_column_list = [
+            'student_foreigners.std_for_id',
+            'student_foreigners.std_for_name',
+            'contact.std_for_phone',
+            'contact.std_for_mail',
+            'contact.std_for_zoom_id'
+        ];
+
         $data_std_for = [];
 
         // 학생 정보 저장
         foreach ($req_std_for_id as $std_for_id) {
             // 학번 기준 검색
             $search_result =
-                Student_foreigner::select(
-                    'student_foreigners.std_for_id',
-                    'student_foreigners.std_for_name',
-                    'contact.std_for_phone',
-                    'contact.std_for_mail',
-                    'contact.std_for_zoom_id'
-                )
+                Student_foreigner::select($select_column_list)
                 ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
                 ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
 
@@ -262,7 +305,8 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request,            $rules,
+            $request,
+            $rules,
             self::_STD_FOR_STORE_FAILURE
         );
 
