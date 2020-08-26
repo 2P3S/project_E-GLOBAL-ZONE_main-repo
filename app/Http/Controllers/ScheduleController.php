@@ -194,8 +194,8 @@ class ScheduleController extends Controller
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
-            'schedule.*' => 'required|array',
-            'schedule.*.*' => 'required|integer',
+            'schedule.*' => 'array',
+            'schedule.*.*' => 'integer',
             'ecept_date' => 'required|array',
             'ecept_date.*' => 'date',
         ];
