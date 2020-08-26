@@ -33,6 +33,9 @@ class ScheduleController extends Controller
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
 
+    private const _SCHDEULE_RES_APPROVE_SUCCESS = "출석 결과 승인이 완료되었습니다.";
+    private const _SCHDEULE_RES_APPROVE_FAILURE = "출석 결과 승인에 실패하였습니다.";
+
     private const _ZOOM_RAN_NUM_START   = 1000;
     private const _ZOOM_RAN_NUM_END     = 9999;
 
@@ -446,25 +449,35 @@ class ScheduleController extends Controller
      */
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
-        // 학생 출석 결과 변경 요청 -> 해당 학생 출석결과 변경 진행.
-        if (!empty($request->reservation)) {
-            $reservation = $request->reservation;
+        $rules = [
+            'reservation' => 'required|array',
+            'reservation.*' => 'required|integer'
+        ];
 
-            foreach ($reservation as $data) {
-                Reservation::find($data['res_id'])->update([
-                    'res_state_of_attendance' => $data['res_state_of_attendance']
-                ]);
-            }
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SCHDEULE_RES_APPROVE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        // 출석결과 승인
+        $update_res_id_list = $request->input('reservation');
+
+        // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
         $sch_id->update([
             'sch_state_of_permission' => true
         ]);
 
-        return response()->json([
-            'message' => '출석 결과 승인',
-        ], 200);
+        // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
+        Reservation::whereIn('res_id', $update_res_id_list)
+        ->update([
+            'res_state_of_attendance' => true
+        ]);
+
+        return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
 
     /**
