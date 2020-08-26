@@ -115,6 +115,9 @@ Route::prefix('/admin')->group(function () {
         /* 특정 스케줄 삭제 */
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
 
+        /* 해당 스케줄 학생 추가 */
+        Route::post('add/{sch_id}', 'ReservationController@add_kor_schedule_by_admin')->name('reservations.add_kor_schedule_by_admin');
+
         /* 스케줄 관련 미입력 관리 라우터 */
         /** 해당 날짜 출석 결과 미입력건 조회 */
         Route::get('uninputed/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
