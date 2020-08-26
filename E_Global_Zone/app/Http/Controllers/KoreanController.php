@@ -72,29 +72,29 @@ class KoreanController extends Controller
      */
     public function updateApproval(Request $request): JsonResponse
     {
-        $approval_data = $request->input('approval');
+        $rules = [
+            'approval' => 'required|array',
+            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999'
+        ];
 
-        // 한국인 학생 계정 승인여부 반환
-        foreach ($approval_data as $approval) {
-            $validator = Validator::make($approval, [
-                'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
-                'std_kor_state_of_permission' => 'required|boolean',
-            ]);
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_APR_UPDATE_FAILURE
+        );
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => $validator->errors(),
-                ], 422);
-            }
-
-            $korean = Student_korean::find($approval['std_kor_id']);
-
-            $korean->std_kor_state_of_permission = $approval['std_kor_state_of_permission'];
-
-            $korean->save();
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        return self::response_json(count($approval_data) . self::_STD_KOR_APR_UPDATE_SUCCESS, 200);
+        $update_std_kor_id_list = $request->input('approval');
+
+        Student_korean::whereIn('std_kor_id', $update_std_kor_id_list)
+            ->update([
+                'std_kor_state_of_permission' => (int)true
+            ]);
+
+        return self::response_json(count($update_std_kor_id_list) . self::_STD_KOR_APR_UPDATE_SUCCESS, 200);
     }
 
     /**
@@ -128,7 +128,7 @@ class KoreanController extends Controller
         $is_non_kor_data = $std_kor_info->count() === 0;
 
         // 검색 후 조회된 데이터가 없을 경우
-        if($is_non_kor_data) return self::response_json(self::_STD_KOR_INDEX_NONDATA, 202);
+        if ($is_non_kor_data) return self::response_json(self::_STD_KOR_INDEX_NONDATA, 202);
 
         return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_kor_info);
     }
