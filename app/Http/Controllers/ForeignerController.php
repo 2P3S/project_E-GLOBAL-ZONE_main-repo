@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Schedule;
 use App\Section;
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -83,7 +85,7 @@ class ForeignerController extends Controller
                 'std_for_lang',
                 'std_for_country',
                 'std_for_state_of_favorite',
-                'std_for_num_of_delay_input'
+                'std_for_num_of_delay_input',
             )
             ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
             ->where('work_sect', $sect_id['sect_id'])
@@ -91,8 +93,31 @@ class ForeignerController extends Controller
             ->orderBy('std_for_lang')
             ->get();
 
+        //TODO 예약 미승인 횟수 추가하기.
         if (count($work_std_for_list) === 0) {
             return self::response_json(self::_WORK_STD_FOR_INDEX_FAILURE, 202);
+        }
+
+        // 활동 00월 계산
+        $sect_start_month = (int)date("m", strtotime($sect_id['sect_start_date']));
+        $sect_end_month = (int)date("m", strtotime($sect_id['sect_end_date']));
+
+        // dd($sect_end_month);
+
+        // 활동 시간 조회
+        foreach($work_std_for_list as $work_std_for_id) {
+            $isSearchMode = true;
+            $sect_temp_month = $sect_start_month;
+
+            while($isSearchMode) {
+                $work_std_for_id[$sect_temp_month."월"] = Schedule::where('sch_std_for', $work_std_for_id['std_for_id'])
+                ->where('sch_sect', $work_std_for_id['sch_sect'])
+                ->whereMonth('sch_start_date', $sect_temp_month)
+                ->count() / 2;
+
+                $sect_temp_month++;
+                if($sect_temp_month > $sect_end_month) $isSearchMode = false;
+            }
         }
 
         return response()->json([
@@ -231,14 +256,13 @@ class ForeignerController extends Controller
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2',
             'std_for_country' => 'required|string|min:2',
-            'std_for_phone' => 'required|string',                             /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
-            'std_for_mail' => 'required|email',
-            'std_for_zoom_id' => 'required|string',
+            'std_for_phone' => 'required|string|unique:student_foreigners_contacts,std_for_phone',                  /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
+            'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
+            'std_for_zoom_id' => 'required|string|unique:student_foreigners_contacts,std_for_zoom_id',
         ];
 
         $validated_result = self::request_validator(
-            $request,
-            $rules,
+            $request,            $rules,
             self::_STD_FOR_STORE_FAILURE
         );
 
@@ -262,12 +286,6 @@ class ForeignerController extends Controller
             'std_for_phone' => $request->std_for_phone,
             'std_for_mail' => $request->std_for_mail,
             'std_for_zoom_id' => $request->std_for_zoom_id,
-        ]);
-
-        // TODO 임시 등록
-        Work_student_foreigner::create([
-            'work_std_for' => $request->std_for_id,
-            'work_sect' => 5
         ]);
 
         return self::response_json(self::_STD_FOR_STORE_SUCCESS, 201);

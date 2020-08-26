@@ -22,6 +22,10 @@ class Setting extends Model
      */
     protected $guarded = [];
 
+    protected $hidden = [
+        'setting_date', 'default_admin_pw', 'default_std_for_pw'
+    ];
+
     public $timestamps = false;
 
     //TODO 환경변수 서비스 프로바이더로 사용.
