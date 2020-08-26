@@ -28,6 +28,12 @@ const useAxios = (opts, axiosInstance = defaultAxios) => {
 	return state;
 };
 
+export const getAdminDeptList = (setState) => {
+	defaultAxios({ url: conf.url + "/api/admin/department" }).then((res) => {
+		setState(res.data);
+	});
+};
+
 /**
  * @param {AxiosStatic, function} axiosInstance
  * @param {object} opts url,
