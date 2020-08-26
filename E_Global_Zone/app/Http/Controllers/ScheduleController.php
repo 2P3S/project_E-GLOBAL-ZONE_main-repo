@@ -473,6 +473,7 @@ class ScheduleController extends Controller
 
         // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
         Reservation::whereIn('res_id', $update_res_id_list)
+        ->where('res_sch', $sch_id['sch_id'])
         ->update([
             'res_state_of_attendance' => true
         ]);
