@@ -252,7 +252,7 @@ export const postAdminSetting = (settings) => {
 		console.log(res.data);
 	});
 };
-// http://hyun9803.iptime.org:8888/api/admin/section?name=2020학년도 1학기
+
 export const getAdminSection = (params, setState) => {
 	defaultAxios({
 		url: conf.url + `/api/admin/section`,

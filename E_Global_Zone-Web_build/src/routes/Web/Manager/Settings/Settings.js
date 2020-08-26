@@ -4,6 +4,7 @@ import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import moment from "moment";
 import CreateSection from "../../../../components/common/modal/CreateSection";
+import GetSections from "../../../../components/common/modal/GetSections";
 
 /**
  * Manager :: 시스템 환경설정
@@ -18,6 +19,11 @@ export default function Settings() {
 		isOpen: creatSectIsOpen,
 		handleClose: handleCloseForCreatSectIsOpen,
 		handleOpen: handleOpenForCreatSectIsOpen,
+	} = useModal();
+	const {
+		isOpen: getSectIsOpen,
+		handleClose: handleCloseForGetSectIsOpen,
+		handleOpen: handleOpenForGetSectIsOpen,
 	} = useModal();
 
 	const handleChange = (key, value) => {
@@ -377,7 +383,9 @@ export default function Settings() {
 						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
 							학기 기간 설정
 						</div>
-						<div className="bbtn darkGray">학기 기간 조회</div>
+						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
+							학기 기간 조회
+						</div>
 						<div
 							className="bbtn darkGray"
 							onClick={() => {
@@ -391,6 +399,9 @@ export default function Settings() {
 			</div>
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
+			</Modal>
+			<Modal isOpen={getSectIsOpen} handleClose={handleCloseForGetSectIsOpen}>
+				<GetSections handleClose={handleCloseForGetSectIsOpen} />
 			</Modal>
 		</div>
 	) : (

@@ -9,7 +9,11 @@ import {
 	postAdminSection,
 } from "../../../modules/hooks/useAxios";
 
-export default function CreateSection({ isSetSectMode, handleClose: thisHandleClose }) {
+export default function CreateSection({
+	isSetSectMode,
+	handleClose: thisHandleClose,
+	selectSect: defaultSect,
+}) {
 	const [isLoading, setIsLoading] = useState(true);
 	const [mode, setMode] = useState(isSetSectMode);
 	const [currentSect, setCurrentSect] = useState({
@@ -29,7 +33,14 @@ export default function CreateSection({ isSetSectMode, handleClose: thisHandleCl
 	});
 
 	useEffect(() => {
-		getAdminSection({ name: `${moment(Date.now()).format("YYYY학년도")} 1학기` }, setResData);
+		if (defaultSect) {
+			getAdminSection({ name: defaultSect }, setResData);
+		} else {
+			getAdminSection(
+				{ name: `${moment(Date.now()).format("YYYY학년도")} 1학기` },
+				setResData
+			);
+		}
 	}, []);
 
 	useEffect(() => {
@@ -83,66 +94,68 @@ export default function CreateSection({ isSetSectMode, handleClose: thisHandleCl
 	return isLoading ? (
 		<></>
 	) : (
-		<div class="popup semester">
-			<p class="tit">학기 기간 설정</p>
+		<div className="popup semester">
 			{isSetSectMode ? (
-				<div class="top_select">
-					<select
-						name="catgo1"
-						class="dropdown"
-						onChange={(e) => {
-							setSelectSect({ ...selectSect, year: e.target.value });
-						}}
-					>
-						<option>{moment(Date.now()).format("YYYY")}</option>
-						<option>{moment(Date.now()).add(1, "year").format("YYYY")}</option>
-					</select>
-					<span>학년도</span>
-					<select
-						name="catgo1"
-						class="dropdown"
-						onChange={(e) => {
-							setSelectSect({ ...selectSect, sect: e.target.value });
-						}}
-					>
-						<option>1</option>
-						<option>여름</option>
-						<option>2</option>
-						<option>겨울</option>
-					</select>
-					<span>학기</span>
-				</div>
+				<>
+					<p className="tit">학기 기간 설정</p>
+					<div className="top_select">
+						<select
+							name="catgo1"
+							className="dropdown"
+							onChange={(e) => {
+								setSelectSect({ ...selectSect, year: e.target.value });
+							}}
+						>
+							<option>{moment(Date.now()).format("YYYY")}</option>
+							<option>{moment(Date.now()).add(1, "year").format("YYYY")}</option>
+						</select>
+						<span>학년도</span>
+						<select
+							name="catgo1"
+							className="dropdown"
+							onChange={(e) => {
+								setSelectSect({ ...selectSect, sect: e.target.value });
+							}}
+						>
+							<option>1</option>
+							<option>여름</option>
+							<option>2</option>
+							<option>겨울</option>
+						</select>
+						<span>학기</span>
+					</div>
+				</>
 			) : (
-				<>학기 불러와서 - 셀렉트박스 만들기!</>
+				<p className="tit"> {defaultSect} 기간 설정</p>
 			)}
 
-			<div class="date_select">
+			<div className="date_select">
 				<div
-					class="start_date"
+					className="start_date"
 					onClick={(e) => {
 						handleOpen();
 						handleSetTarget("sect_start_date");
 					}}
 				>
-					<p class="tit">학기 시작일</p>
-					<div class="date">{startDate}</div>
+					<p className="tit">학기 시작일</p>
+					<div className="date">{startDate}</div>
 				</div>
 				<span>-</span>
 				<div
-					class="start_date"
+					className="start_date"
 					onClick={(e) => {
 						handleOpen();
 						handleSetTarget("sect_end_date");
 					}}
 				>
-					<p class="tit">학기 종료 일</p>
-					<div class="date">{endDate}</div>
+					<p className="tit">학기 종료 일</p>
+					<div className="date">{endDate}</div>
 				</div>
 			</div>
 
-			<div class="btn_area right">
+			<div className="btn_area right">
 				<div
-					class="bbtn darkGray"
+					className="bbtn darkGray"
 					onClick={
 						mode
 							? () => {
