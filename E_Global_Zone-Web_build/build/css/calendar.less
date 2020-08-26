@@ -1,0 +1,132 @@
+//variables & mixins
+@white: #FFFFFF;
+@ltGrey: #EFEFEF;
+@mdGrey: #C0C0C0;
+@dkGrey: #CCCCCC;
+@secondary: #2875C7;
+@dkSecondary: darken(@secondary, 10%);
+@ltSecondary: lighten(@secondary, 45%);
+@borderColor: @white;
+@background: @white;
+
+.vertical-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// meat of the matter
+html {
+  font-size: 62.5%;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.calendar {
+  display: block;
+  background: @white;
+  width: 300px;
+  border: solid 1px @borderColor;
+  margin: 10px auto;
+  box-shadow: 0 0 15px 0 @mdGrey;
+  font-size: 1.3rem;
+  text-align: center;
+
+  header {
+    .vertical-center;
+    color: @white;
+    cursor: default;
+    font-size: 1.4rem;
+    display: block;
+    font-weight: bold;
+    text-transform: uppercase;
+    user-select: none;
+
+    .month-display {
+      align-items: center;
+      height: 40px;
+      background: @secondary;
+    }
+
+    .month-label {
+      flex: 1;
+    }
+
+    .arrow {
+      text-align: center;
+      flex-basis: 15%;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        background: @dkSecondary;
+      }
+    }
+  }
+
+  .calendar .foreigner {
+    width: 280px;
+  }
+
+  .week {
+    border-top: solid 1px @borderColor;
+
+    &:first-child {
+      border-top: none;
+    }
+  }
+
+  .day-names {
+    color: @secondary;
+    font-weight: bold;
+    cursor: default;
+    font-size: 1.2rem;
+
+    .day {
+      cursor: default;
+
+      &:hover {
+        background: inherit;
+
+      }
+    }
+  }
+
+  .day {
+    .vertical-center;
+    flex: 1;
+    height: 35px;
+    border-left: solid 1px @borderColor;
+    cursor: pointer;
+    transition: all .2s;
+
+    &:hover {
+      background: @ltGrey;
+    }
+
+    &:first-child {
+      border-left: none;
+    }
+
+    &.today {
+      background: @ltSecondary;
+    }
+
+    &.different-month {
+      color: @mdGrey;
+    }
+
+    &.selected {
+      background: @secondary;
+      color: @white;
+    }
+  }
+}
