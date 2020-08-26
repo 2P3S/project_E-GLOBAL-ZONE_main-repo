@@ -34,10 +34,10 @@ class SettingController extends Controller
         $validator = Validator::make($request->all(), [
             'max_res_per_day' => 'integer',
             'max_std_once' => 'integer',
-            'res_start_period' => 'required_if:res_end_period|integer|min:1|max:7|gte:res_end_period',
-            'res_end_period' => 'required_if:res_start_period|integer|min:1|max:7',
-            'once_meet_time' => 'required_if:once_rest_time|integer|min:15|max:50|gte:once_rest_time',
-            'once_rest_time' => 'required_if:once_meet_time|integer|min:10|max:30',
+            // 'res_start_period' => 'required_if:res_end_period|integer|min:1|max:7|gte:res_end_period',
+            // 'res_end_period' => 'required_if:res_start_period|integer|min:1|max:7',
+            // 'once_meet_time' => 'required_if:once_rest_time|integer|min:15|max:50|gte:once_rest_time',
+            // 'once_rest_time' => 'required_if:once_meet_time|integer|min:10|max:30',
             'min_absent' => 'integer',
             'max_absent' => 'integer',
             'once_limit_period' => 'integer',
@@ -49,14 +49,8 @@ class SettingController extends Controller
                 'message' => $validator->errors(),
             ], 422);
         }
-        $query = "";
 
-        //TODO raw query로 밀어넣어야 함!!
-        foreach ($request->all() as $key => $value) {
-            $query = $query . "'{$key}' => {$value},";
-        };
-
-        $create_setting = Setting::create([$query]);
+        $create_setting = Setting::create($request->all());
 
         return response()->json([
             'message' => 'Setting Value 등록 완료',

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Restricted_student_korean;
 use App\Student_korean;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,23 +34,34 @@ class KoreanController extends Controller
     private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
     private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
 
+    private const _STD_KOR_INDEX_SUCCESS = "한국인 학생 정보 조회에 성공하였습니다.";
+    private const _STD_KOR_INDEX_NONDATA = "해당 학생의 정보가 없습니다.";
+    private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
+
 
     /**
      * 계정 등록 - 대기 명단 조회
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexApproval()
+    public function indexApproval(): JsonResponse
     {
         $approval_result = Student_korean::select('std_kor_id', 'std_kor_dept', 'std_kor_name', 'std_kor_phone', 'std_kor_mail')
             ->where('std_kor_state_of_permission', 0)
             ->get();
 
-        // TODO 학생 수 카운트 -> 승인 대기 중인 한국인 학생이 없을 경우
-        return response()->json([
-            'message' => '회원가입 승인 대기중인 한국인 리스트 반환.',
-            'data' => $approval_result
-        ], 200);
+        // 가입 승인 대기중인 한국인 학생 인원수 계산.
+        $approval_count = $approval_result->count();
+
+        // 대기중인 학생이 없을 경우
+        if ($approval_count == 0) {
+            return self::response_json(self::_STD_KOR_APR_INDEX_FAILURE, 200);
+        }
+        // 대기중인 학생이 있을 경우
+        else {
+            $msg = self::_STD_KOR_APR_INDEX_SUCCESS1 . $approval_count . self::_STD_KOR_APR_INDEX_SUCCESS2;
+            return self::response_json($msg, 200, $approval_result);
+        }
     }
 
     /**
@@ -56,48 +70,91 @@ class KoreanController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function updateApproval(Request $request)
+    public function updateApproval(Request $request): JsonResponse
     {
-        // TODO validation 적용 -> 참고 : ForeignerController@show()
-        // TODO Student_Korean Model 활용 -> (Student_Korean $std_kor_id)
-        $data = json_decode($request->getContent(), true);
+        $rules = [
+            'approval' => 'required|array',
+            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999'
+        ];
 
-        // 한국인 학생 계정 승인여부 반환
-        foreach ($data['approval'] as $approval) {
-            $validator = Validator::make($approval, [
-                'std_kor_id' => 'required|integer',
-                'std_kor_state_of_permission' => 'required|boolean',
-            ]);
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_APR_UPDATE_FAILURE
+        );
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => $validator->errors(),
-                ], 422);
-            }
-
-            $korean = Student_korean::find($approval['std_kor_id']);
-
-            $korean->std_kor_state_of_permission = $approval['std_kor_state_of_permission'];
-
-            $korean->save();
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        return response()->json([
-            'message' => '계정 승인 완료.',
-        ], 200);
+        $update_std_kor_id_list = $request->input('approval');
+
+        Student_korean::whereIn('std_kor_id', $update_std_kor_id_list)
+            ->update([
+                'std_kor_state_of_permission' => (int)true
+            ]);
+
+        return self::response_json(count($update_std_kor_id_list) . self::_STD_KOR_APR_UPDATE_SUCCESS, 200);
+    }
+
+    /**
+     *  특정 한국인 학생 정보 조회
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search_std_kor_data_res(Request $request): JsonResponse
+    {
+        $rules = [
+            'column' => 'required|in:std_kor_id,std_kor_name,std_kor_phone,std_kor_mail',
+            'cloumn_data' => 'required'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_INDEX_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $column = $request->column;
+        $cloumn_data = $request->cloumn_data;
+
+        $std_kor_info = Student_korean::where($column, $cloumn_data)->get();
+
+        $is_non_kor_data = $std_kor_info->count() === 0;
+
+        // 검색 후 조회된 데이터가 없을 경우
+        if ($is_non_kor_data) return self::response_json(self::_STD_KOR_INDEX_NONDATA, 202);
+
+        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_kor_info);
     }
 
     /**
      * 전체 한국인 학생 정보 조회
-     *
+     * 페이지 url => api/admin/korean?page=1  ->  page = n 번호에 따라서 바뀜.
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //TODO 페이지네이션 기능 추가. + 이용제한 학생인경우 제한 사유 같이 보내기.
-        $allSchdules = Student_korean::all();
+        try {
+            // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
+            $std_koreans = Student_korean::orderBy('std_kor_state_of_restriction', 'DESC')->paginate(15);
 
-        return $allSchdules;
+            // 이용제한 학생인경우 제한 사유 같이 보내기.
+            foreach ($std_koreans as $korean) {
+                if ($korean['std_kor_state_of_restriction'] == true) {
+                    $result = Restricted_student_korean::where('restrict_std_kor', $korean['std_kor_id'])->get();
+                    $korean['std_stricted_info'] = $result;
+                }
+            }
+            return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
+        } catch (Exception $e) {
+            return self::response_json(self::_STD_KOR_INDEX_FAILURE, 422);
+        }
     }
 
     /**
@@ -106,7 +163,7 @@ class KoreanController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function registerAccount(Request $request)
+    public function registerAccount(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|integer|min:7',
@@ -134,9 +191,7 @@ class KoreanController extends Controller
             'std_kor_mail' => $request->std_kor_mail,
         ]);
 
-        return response()->json([
-            'message' => '한국인 학생 계정 생성 완료',
-        ], 201);
+        return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
     }
 
     /**
@@ -145,13 +200,11 @@ class KoreanController extends Controller
      * @param int $std_kor_id
      * @return \Illuminate\Http\Response
      */
-    public function destroyAccount(Student_korean $std_kor_id)
+    public function destroyAccount(Student_korean $std_kor_id): JsonResponse
     {
         $std_kor_id->delete();
 
-        return response()->json([
-            'message' => '계정 삭제 완료',
-        ], 204);
+        return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);
     }
 
     /**

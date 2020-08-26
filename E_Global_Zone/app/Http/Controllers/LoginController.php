@@ -47,19 +47,21 @@ class LoginController extends Controller
         }
 
         $token = '';
-        //TODO 비밀번호 환경변수 설정 ( 최종루트는 env )
+
         $initial_password = [
             'admins' => self::_ADMIN_INIT_PASSWORD,
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
         ];
 
+        // <<-- 초기 비밀번호로 로그인 시
         $is_login_init_password = $initial_password[$credentials[2]] !== $credentials[1];
-        if (!$is_login_init_password) {
+        if ($is_login_init_password) {
             $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
         }
+        // -->>
 
         return [
-            'result' => $user,
+            'info' => $user,
             'token' => $token
         ];
     }
@@ -98,19 +100,15 @@ class LoginController extends Controller
         // <<-- 초기 비밀번호로 로그인 시
         if (empty($token)) {
             return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
         }
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $admin['result']['name'] . self::_LOGIN_SUCCESS;
-        $response_data = (object)[
-            'admin' => $admin,
-            'access_token' => $token
-        ];
+        $message_template = $admin['info']['name'] . self::_LOGIN_SUCCESS;
 
         return
-            self::response_json($message_template, 200, $response_data);
+            self::response_json($message_template, 200, (object)$admin);
         // -->
     }
 
@@ -148,19 +146,15 @@ class LoginController extends Controller
         // <<-- 초기 비밀번호로 로그인 시
         if (empty($token)) {
             return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 205);
+                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
         }
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $foreigner['result']['std_for_name'] . self::_LOGIN_SUCCESS;
-        $response_data = (object)[
-            'std_for' => $foreigner,
-            'access_token' => $token
-        ];
+        $message_template = $foreigner['info']['std_for_name'] . self::_LOGIN_SUCCESS;
 
         return
-            self::response_json($message_template, 200, $response_data);
+            self::response_json($message_template, 200, (object)$foreigner);
         // -->>
     }
 

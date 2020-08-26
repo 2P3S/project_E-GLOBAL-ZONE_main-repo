@@ -20,7 +20,6 @@ class Controller extends BaseController
     )
     {
         $is_no_data = !(bool)$data;
-        $data = new self();
 
         if ($is_no_data) {
             return response()->json([

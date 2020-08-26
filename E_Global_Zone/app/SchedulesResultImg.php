@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @method static create(array $array)
@@ -41,7 +42,7 @@ class SchedulesResultImg extends Model
             switch ($queryException->getCode()) {
                 case 23000:
                     return
-                        Controller::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 205);
+                        Controller::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 202);
                 default:
                     return
                         Controller::response_json(self::_STD_FOR_RES_RESULT_FAILURE, 422);
@@ -50,5 +51,14 @@ class SchedulesResultImg extends Model
 
         return
             Controller::response_json(self::_STD_FOR_RES_RESULT_SUCCESS, 201);
+    }
+
+    /*
+     * 결과 조회 시, 스케줄 아이디로 이미지 url 조회
+     */
+    public function get_img($img_name)
+    {
+        $img_url = 'http://' . request()->getHttpHost() . Storage::url('public/' . $img_name);       /* 이미지 URL */
+        return $img_url;
     }
 }

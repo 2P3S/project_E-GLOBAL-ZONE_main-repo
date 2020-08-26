@@ -17,7 +17,6 @@ class SchedulesResultImgController extends Controller
         $extension = $upload_img_file->extension();                                        /* 확장자 얻기 */
         $storage_path = "{$img_file_name}.{$extension}";
 
-        // TODO 디렉터리 생성, 파일 경로 수정
         Storage::putFileAs('public', $upload_img_file, $storage_path);                     /* 파일 저장 후 경로 반환 */
 
         return $storage_path;

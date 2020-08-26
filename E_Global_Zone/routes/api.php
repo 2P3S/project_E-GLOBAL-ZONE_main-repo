@@ -54,6 +54,9 @@ Route::prefix('/admin')->group(function () {
         /** 전체 한국인 학생 정보 조회 */
         Route::get('', 'KoreanController@index')->name('koreans.index');
 
+        /** 특정 한국인 학생 정보 조회 */
+        Route::post('', 'KoreanController@search_std_kor_data_res')->name('koreans.search_std_kor_data_res');
+
         /** 학년도별 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'KoreanController@csv')->name('koreans.csv');
 
@@ -85,7 +88,7 @@ Route::prefix('/admin')->group(function () {
 
     /* 학기 관리 라우터 */
     Route::prefix('/section')->group(function () {
-        /** 등록된 전체 학기 목록 조회 */
+        /** 년도별 등록된 전체 학기 목록 조회 */
         Route::get('', 'SectionController@index')->name('sections.index');
 
         /** 학기 등록 */
@@ -100,17 +103,20 @@ Route::prefix('/admin')->group(function () {
 
     /* 스케줄 관리 라우터 */
     Route::prefix('/schedule')->group(function () {
-        /* 해당 일자 스케줄 조회 */
-        Route::get('{date}', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
+        /* 특정 날짜 전체 유학생 스케줄 조회 */
+        Route::get('', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
 
         /* 스케줄 등록 */
         Route::post('', 'ScheduleController@store')->name('schedules.store');
 
         /* 특정 스케줄 업데이트 */
-        Route::put('{sch_id}', 'ScheduleController@update')->name('schedules.update');
+        Route::patch('{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
         /* 특정 스케줄 삭제 */
         Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
+
+        /* 해당 스케줄 학생 추가 */
+        Route::post('add/{sch_id}', 'ReservationController@add_kor_schedule_by_admin')->name('reservations.add_kor_schedule_by_admin');
 
         /* 스케줄 관련 미입력 관리 라우터 */
         /** 해당 날짜 출석 결과 미입력건 조회 */
@@ -149,9 +155,9 @@ Route::prefix('/admin')->group(function () {
 });
 
 /* 유학생 라우터 */
-Route::prefix('/foreigner')->group(function () {
-    /* 유학생 - 특정 날짜 개인 스케줄 조회 */
-    Route::get('schedule/{date}', 'ScheduleController@show')->name('schedules.show');
+Route::prefix('foreigner')->group(function () {
+    /* 유학생 - 특정 기간 개인 스케줄 조회 */
+    Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
 
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
@@ -170,7 +176,6 @@ Route::prefix('/foreigner')->group(function () {
     });
 });
 
-// TODO 한국인 학생의 이용제한 확인??
 /* 한국인학생 라우터 */
 Route::prefix('/korean')->group(function () {
     /** 한국인 학생 계정 생성 (회원가입) */
@@ -179,8 +184,14 @@ Route::prefix('/korean')->group(function () {
     /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
     Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
 
+    // ID 값으로 스케줄 정보 조회
+    Route::get('schedule/{sch_id}', 'ScheduleController@std_kor_show_sch')->name('schedules.show_schedule_by_id');
+
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
+
+    /** 참석한 학기 목록 조회 */
+    Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
 
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
@@ -193,8 +204,8 @@ Route::prefix('/korean')->group(function () {
         /** 내 예약 일정 삭제 */
         Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
 
-        /** 학기별 참석 결과 조회 */
-        // Route::get('', 'ReservationController@showResult')->name('reservations.show');
+        /** 학기별 미팅 목록 결과 조회 */
+        Route::get('/result', 'ReservationController@std_kor_show_res_by_sect')->name('reservations.show');
     });
 });
 
