@@ -21,6 +21,9 @@ Route::prefix('/admin')->group(function () {
         /** 특정 유학생 정보 조회 */
         Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
+        /** 해당 학기 미등록 유학생 정보 조회 */
+        Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
+
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
 
