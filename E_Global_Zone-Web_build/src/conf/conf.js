@@ -66,7 +66,8 @@ const conf = {
 		CHINESE,
 	},
 	// url: "http://13.124.189.186:8888/"
-	url: "http://hyun9803.iptime.org:8888/"
+	// url: "http://13.124.189.186" 사용할 주소
+	url: "http://hyun9803.iptime.org:8888/",
 };
 
 export default conf;

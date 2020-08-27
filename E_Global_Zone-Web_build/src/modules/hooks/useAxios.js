@@ -295,3 +295,43 @@ export const postAdminSection = (data, setIsDone) => {
 			setIsDone(false);
 		});
 };
+
+export const getAdminForeignerNoWork = (sect_id, setState) => {
+	defaultAxios({
+		url: conf.url + `/api/admin/foreigner/no_work/${sect_id}`,
+	}).then((res) => {
+		// console.log(res);
+		setState(res.data.data);
+	});
+};
+
+// /api/admin/foreigner/work
+export const postAdminForeignerWork = (data, setState) => {
+	defaultAxios({
+		method: "post",
+		url: conf.url + `/api/admin/foreigner/work`,
+		data,
+	})
+		.then((res) => {
+			setState(true);
+		})
+		.catch((e) => {
+			setState(false);
+		});
+};
+
+// api/admin/foreigner/account/1133445?favorite_bool=0
+
+/**
+ * getAdminForeignerAccountFavorite
+ * @param {int} std_id
+ * @param {int} isFavorite 0 or 1
+ */
+export const getAdminForeignerAccountFavorite = (std_id, isFavorite) => {
+	defaultAxios({
+		url: conf.url + `api/admin/foreigner/account/${std_id}`,
+		params: {
+			favorite_bool: isFavorite,
+		},
+	});
+};
