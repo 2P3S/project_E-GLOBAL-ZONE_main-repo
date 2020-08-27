@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 var MANAGER = "MANAGER";
 var FOREIGNER = "FOREIGNER";
 var KOREAN = "KOREAN";
@@ -52,7 +52,7 @@ var conf = {
     JAPANESE: JAPANESE,
     CHINESE: CHINESE
   },
-  url: "http://13.124.189.186:8888/"
+  url: "http://13.124.189.186"
 };
 var _default = conf;
-exports.default = _default;
+exports["default"] = _default;
