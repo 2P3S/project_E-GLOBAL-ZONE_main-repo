@@ -370,8 +370,23 @@ export const deleteAdminSchedule = (data, isDone) => {
 export const getAdminForeignerInfo = (data, setData) => {
 	defaultAxios({
 		method: "get",
-		url: conf.url + `/api/admin/foreigner`,
+		url: conf.url + `api/admin/foreigner`,
 		params: data,
+	})
+		.then((res) => {
+			console.log(res);
+			setData(res.data);
+		})
+		.catch(() => {
+			setData(false);
+		});
+};
+
+export const getAdminSchedule = (search_date, setData) => {
+	defaultAxios({
+		method: "get",
+		url: conf.url + `api/admin/schedule`,
+		params: search_date,
 	})
 		.then((res) => {
 			console.log(res);

@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import parseDate from "../../modules/parseDate";
 
 /**
@@ -6,41 +6,40 @@ import parseDate from "../../modules/parseDate";
  * @type {Slice<{dept: {}}, {setDept: reducers.setDept}, string>}
  */
 export const confSlice = createSlice({
-    name: "conf",
-    initialState: {
-        dept: {},
-        today: parseDate(new Date(Date.now())),
-        selectDate: parseDate(new Date(Date.now())),
-    },
-    reducers: {
-        setDept: (state, action) => {
-            let data = action.payload.data;
-            if (typeof data === "object") {
-                for (let index in data) {
-                    data[index].dept_name = data[index].dept_name.split("_");
-                }
-            }
-            state.dept = data;
-        },
-        /**
-         * setSelectDate
-         * @param {Date} action.payload
-         */
-        setSelectDate: (state, action) => {
-            state.selectDate = action.payload;
-        },
+	name: "conf",
+	initialState: {
+		dept: {},
+		today: parseDate(new Date("2020-08-31")),
+		selectDate: parseDate(new Date("2020-09-01")),
+	},
+	reducers: {
+		setDept: (state, action) => {
+			let data = action.payload.data;
+			if (typeof data === "object") {
+				for (let index in data) {
+					data[index].dept_name = data[index].dept_name.split("_");
+				}
+			}
+			state.dept = data;
+		},
+		/**
+		 * setSelectDate
+		 * @param {Date} action.payload
+		 */
+		setSelectDate: (state, action) => {
+			state.selectDate = action.payload;
+		},
 
-
-        setTodayToday: (state) => {
-            state.today = parseDate(new Date(Date.now()));
-        },
-        setTodayFuture: (state) => {
-            state.today = parseDate(new Date('2020-12-1'));
-        },
-    },
+		setTodayToday: (state) => {
+			state.today = parseDate(new Date(Date.now()));
+		},
+		setTodayFuture: (state) => {
+			state.today = parseDate(new Date("2020-12-1"));
+		},
+	},
 });
 
-export const {setDept, setSelectDate, setTodayFuture, setTodayToday} = confSlice.actions;
+export const { setDept, setSelectDate, setTodayFuture, setTodayToday } = confSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -51,7 +50,6 @@ export const {setDept, setSelectDate, setTodayFuture, setTodayToday} = confSlice
 //     dispatch(incrementByAmount(amount));
 //   }, 1000);
 // };
-
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
