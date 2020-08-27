@@ -20,6 +20,7 @@ class CreateStudentForeignersTable extends Migration
             $table->string('std_for_name');
             $table->string('std_for_lang');
             $table->string('std_for_country');
+            $table->unsignedBigInteger('std_for_num_of_delay_permission')->default(0);
             $table->unsignedBigInteger('std_for_num_of_delay_input')->default(0);
             $table->unsignedTinyInteger('std_for_state_of_favorite')->default(0);
             $table->rememberToken();

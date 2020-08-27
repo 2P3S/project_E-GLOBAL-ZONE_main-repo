@@ -57,6 +57,9 @@ class ForeignerController extends Controller
     private const _STD_FOR_RESET_SUCCESS = " 비밀번호 초기화가 성공하였습니다.";
     private const _STD_FOR_RESET_FAILURE = " 비밀번호 초기화에 실패하였습니다.";
 
+    private const _STD_FOR_FAVORITE_SUCCESS = "유학생 즐겨찾기 변경에 성공하였습니다.";
+    private const _STD_FOR_FAVORITE_FAILURE = "유학생 즐겨찾기 변경에 실패하였습니다.";
+
     // 000 유학생이 삭제되었습니다.
     // 000 유학생 삭제에 실패하였습니다.
     private const _STD_FOR_DELETE_SUCCESS = " 유학생이 삭제되었습니다.";
@@ -68,6 +71,12 @@ class ForeignerController extends Controller
     // 해당 학기 미등록 유학생 정보 조회
     private const _STD_FOR_NON_DATA_BY_SECT_SUCCESS = " 학기 미등록 유학생 정보 조회 결과를 반환합니다.";
 
+    private $schedule;
+
+    public function __construct()
+    {
+        $this->schedule = new Schedule();
+    }
 
     //TODO (중요) 활동시간 + 예약 미승인 횟수 + 결과 지연 입력 횟수 조회 후 반환.
     /**
@@ -96,16 +105,20 @@ class ForeignerController extends Controller
             ->orderBy('std_for_lang')
             ->get();
 
+        $time['sect_start_date'] = $sect_id['sect_start_date'];
+        $time['sect_end_date'] = $sect_id['sect_end_date'];
+
         //TODO 예약 미승인 횟수 추가하기.
         if (count($work_std_for_list) === 0) {
-            return self::response_json(self::_WORK_STD_FOR_INDEX_FAILURE, 202);
+            return response()->json([
+                'message' => self::_WORK_STD_FOR_INDEX_FAILURE,
+                'time' => $time
+            ], 202);
         }
 
         // 활동 00월 계산
         $sect_start_month = (int)date("m", strtotime($sect_id['sect_start_date']));
         $sect_end_month = (int)date("m", strtotime($sect_id['sect_end_date']));
-
-        // dd($sect_end_month);
 
         // 활동 시간 조회
         foreach ($work_std_for_list as $work_std_for_id) {
@@ -115,19 +128,32 @@ class ForeignerController extends Controller
 
             while ($isSearchMode) {
                 $work_time[$sect_temp_month . "월"] = Schedule::where('sch_std_for', $work_std_for_id['std_for_id'])
-                    ->where('sch_sect', $work_std_for_id['sch_sect'])
+                    ->where('sch_sect', $sect_id['sect_id'])
+                    ->where('sch_state_of_permission', true)
                     ->whereMonth('sch_start_date', $sect_temp_month)
                     ->count() / 2;
 
                 $sect_temp_month++;
-                if ($sect_temp_month > $sect_end_month) $isSearchMode = false;
+
+                // 학기 년도가 변경되는 경우
+                if ($sect_temp_month == 13 && $sect_end_month != 12) {
+                    $sect_temp_month = 1;
+                } else if ($sect_temp_month > $sect_end_month) {
+                    $isSearchMode = false;
+                }
             }
             $work_std_for_id['work_time'] = $work_time;
+
+            // 해당학기 스케줄 등록여부 반환
+            $get_sect_by_sch_count = $this->schedule->get_sch_by_sect((int)$sect_id['sect_id'], (int)$work_std_for_id['std_for_id'])->count();
+            // dd($get_sect_by_sch_count);
+            $work_std_for_id['is_schedules_inputed'] = $get_sect_by_sch_count > 0;
         }
 
         return response()->json([
             'message' => $sect_name . self::_WORK_STD_FOR_INDEX_SUCCESS,
             'data' => $work_std_for_list,
+            'time' => $time
         ], 200);
     }
 
@@ -390,5 +416,33 @@ class ForeignerController extends Controller
         $std_for_id->delete();
 
         return self::response_json(self::_STD_FOR_DELETE_SUCCESS, 200);
+    }
+
+    /**
+     * 유학생 즐겨찾기 등록 / 해제
+     *
+     * @param int $std_for_id
+     * @param Request $request
+     * @return Response
+     */
+    public function set_std_for_favorite(Student_foreigner $std_for_id, Request $request): JsonResponse
+    {
+        $rules = [
+            'favorite_bool' => 'required|bool',
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_FAVORITE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // dd((int)$request->favorite_bool);
+        $std_for_id->update(['std_for_state_of_favorite' => (int) $request->favorite_bool]);
+
+        return self::response_json(self::_STD_FOR_FAVORITE_SUCCESS, 200);
     }
 }

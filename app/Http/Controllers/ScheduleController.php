@@ -518,8 +518,7 @@ class ScheduleController extends Controller
 
     /**
      * 한국인 학생 - 특정 스케줄 조회
-     * /api/korean/schedule/{
-     * $sch_id}
+     * /api/korean/schedule/{$sch_id}
      *
      * @param Schedule $sch_id
      * @return JsonResponse

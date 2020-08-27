@@ -49,6 +49,9 @@ Route::prefix('/admin')->group(function () {
 
             /** 유학생 계정 삭제 */
             Route::delete('{std_for_id}', 'ForeignerController@destroyAccount')->name('foreigners.destroyAccount');
+
+            /** 유학생 즐겨찾기 등록 & 해제 */
+            Route::get('{std_for_id}', 'ForeignerController@set_std_for_favorite')->name('foreigners.set_std_for_favorite');
         });
     });
 

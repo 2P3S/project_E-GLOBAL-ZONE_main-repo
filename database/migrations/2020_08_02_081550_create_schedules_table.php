@@ -19,7 +19,6 @@ class CreateSchedulesTable extends Migration
             $table->unsignedBigInteger('sch_std_for');
             $table->dateTime('sch_start_date');
             $table->dateTime('sch_end_date');
-            $table->unsignedBigInteger('sch_res_count')->default(0);
             $table->tinyInteger('sch_state_of_result_input')->default(false);
             $table->tinyInteger('sch_state_of_permission')->default(false);
             $table->string('sch_for_zoom_pw');
