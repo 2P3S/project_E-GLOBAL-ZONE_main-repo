@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
             $start_date  = date("Y-m-d", strtotime("-{$res_start_period_day} days"));
             $end_date    = date("Y-m-d", strtotime("-{$res_end_period_day} days"));
 
-            $student_foreigners = Schedule::select('sch_id', 'std_for_id')
+            $student_foreigners = ScheduleList::select('sch_id', 'std_for_id')
                 ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
                 ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
                 ->where('res_state_of_permission', 0)
