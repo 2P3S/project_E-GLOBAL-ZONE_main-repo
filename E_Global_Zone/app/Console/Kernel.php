@@ -18,12 +18,6 @@ class Kernel extends ConsoleKernel
         //
     ];
 
-    /*
-     * 작성일 : 2020.08.16
-     * 작성자 : 정재순
-     * 작성내용
-     *  - 스케줄러 등록
-     */
     /**
      * Define the application's command schedule.
      *
@@ -33,6 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
+            // <<-- 결과 지연 입력 횟수 카운팅
             $start_date = date("Y-m-d", strtotime("-1 days"));
             $end_date = date("Y-m-d");
 
@@ -51,6 +46,7 @@ class Kernel extends ConsoleKernel
                     'std_for_num_of_delay_input' => $tmp_student_foreigner['std_for_num_of_delay_input'] + 1
                 ]);
             }
+            // -->>
 
         })->dailyAt('00:00');
     }

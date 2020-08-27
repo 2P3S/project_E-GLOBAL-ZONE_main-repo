@@ -30,7 +30,9 @@ class Student_foreigner extends Authenticatable
         'std_for_name',
         'std_for_lang',
         'std_for_country',
-        'std_for_num_of_delay_input'
+        'std_for_num_of_delay_permission',
+        'std_for_num_of_delay_input',
+        'std_for_state_of_favorite'
     ];
 
     /**

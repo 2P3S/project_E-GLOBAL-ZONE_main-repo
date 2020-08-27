@@ -38,7 +38,8 @@ class SectionController extends Controller
     {
         $rules = [
             'year' => 'integer|distinct|min:2019|max:2999',
-            'name' => 'string'
+            'name' => 'string',
+            'sect_id' => 'integer'
         ];
 
         $validated_result = self::request_validator(
@@ -57,6 +58,8 @@ class SectionController extends Controller
 
         if (!empty($request->name)) {
             $section_data =  Section::where('sect_name', $request->name)->get()->first();
+        } else if (!empty($request->sect_id)) {
+            $section_data =  Section::find($request->sect_id);
         } else {
             $section_data =  Section::whereYear('sect_start_date', $year)->get();
             // 학기별 등록 유학생 학생 인원수 추가.

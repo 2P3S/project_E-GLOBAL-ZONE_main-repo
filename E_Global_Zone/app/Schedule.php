@@ -32,7 +32,6 @@ class Schedule extends Model
         'sch_std_for',
         'sch_start_date',
         'sch_end_date',
-        'sch_res_count',
         'sch_state_of_result_input',
         'sch_state_of_permission',
         'sch_for_zoom_pw'
@@ -122,8 +121,10 @@ class Schedule extends Model
             date('A h시 i분', strtotime($result['sch_end_date']));
 
         $sch_ava_count = Setting::get_setting_value()['max_std_once'];
+        $sch_res_count = Reservation::where('res_sch', $sch_id['sch_id']);
+
         $response_data = (object)[
-            'sch_res_count' => $result['sch_res_count'],
+            'sch_res_count' => $sch_res_count,
             'sch_ava_count' => $sch_ava_count,
             'std_for_name' => $result['std_for_name'],
             'std_for_lang' => $result['std_for_lang'],
