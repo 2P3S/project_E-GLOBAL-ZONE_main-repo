@@ -65,7 +65,7 @@ const conf = {
     JAPANESE,
     CHINESE,
   },
-  url: "http://13.124.189.186:8888/"
+  url: "http://13.124.189.186"
 };
 
 export default conf;
