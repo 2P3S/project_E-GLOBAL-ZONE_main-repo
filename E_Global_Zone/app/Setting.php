@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Library\Services\Preference;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
@@ -28,23 +29,17 @@ class Setting extends Model
 
     public $timestamps = false;
 
-    //TODO 환경변수 서비스 프로바이더로 사용.
-    public static function get_setting_value(): Setting
-    {
-        return
-            self::orderBy('setting_date', 'DESC')
-                ->limit(1)->first();
-    }
-
     // 오늘 기준 예약 신청 가능한 날짜 범위 계산
     public function get_res_possible_date(): array
     {
-        $settings = self::get_setting_value();
-        $res_start_period = $settings['res_start_period'] + 1;
-        $res_end_period = $settings['res_end_period'];
+        // 환경변수
+        $setting_obj = new Preference();
+        $setting_values = $setting_obj->getPreference();
+
+        $res_start_period = $setting_values['res_start_period'] + 1;
+        $res_end_period = $setting_values['res_end_period'];
 
         // TODO TEST 후 수정필요
-//        $today = date("Y-m-d", strtotime("-4 days"));
         $today = date("Y-m-d");
 
         return [

@@ -78,7 +78,6 @@ class ForeignerController extends Controller
         $this->schedule = new Schedule();
     }
 
-    //TODO (중요) 활동시간 + 예약 미승인 횟수 + 결과 지연 입력 횟수 조회 후 반환.
     /**
      * 학기별 전체 유학생 정보 조회
      *
@@ -146,7 +145,7 @@ class ForeignerController extends Controller
 
             // 해당학기 스케줄 등록여부 반환
             $get_sect_by_sch_count = $this->schedule->get_sch_by_sect((int)$sect_id['sect_id'], (int)$work_std_for_id['std_for_id'])->count();
-            // dd($get_sect_by_sch_count);
+
             $work_std_for_id['is_schedules_inputed'] = $get_sect_by_sch_count > 0;
         }
 

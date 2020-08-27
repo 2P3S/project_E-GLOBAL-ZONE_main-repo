@@ -84,7 +84,7 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
-        // TODO validation, 토큰 -> 유학생 검사 추가(중요)
+        // TODO std_for_id 미들웨어로 부터 받아오기
         // $std_for_id = $request->user($request->input('guard'));
         $std_for_id = $request->std_for_id;
 
