@@ -282,7 +282,7 @@ export const patchAdminSection = (sect_id, data, setIsDone) => {
 		});
 };
 
-export const postAdminSection = (data, setIsDone) => {
+export const postAdminSection = (data, setIsDone = function () {}) => {
 	defaultAxios({
 		method: "post",
 		url: conf.url + `/api/admin/section`,
@@ -334,4 +334,65 @@ export const getAdminForeignerAccountFavorite = (std_id, isFavorite) => {
 			favorite_bool: isFavorite,
 		},
 	});
+};
+
+export const postAdminSchedule = (data, isDone) => {
+	defaultAxios({
+		method: "POST",
+		url: conf.url + `api/admin/schedule`,
+		data,
+	})
+		.then((res) => {
+			console.log("done");
+			isDone(true);
+		})
+		.catch(() => {
+			isDone(false);
+		});
+};
+// api/admin/schedule?sect_id=1&std_for_id=1234567
+export const deleteAdminSchedule = (data, isDone) => {
+	defaultAxios({
+		method: "delete",
+		url: conf.url + `api/admin/schedule`,
+		params: data,
+	})
+		.then((res) => {
+			console.log("done");
+			isDone(true);
+		})
+		.catch(() => {
+			isDone(false);
+		});
+};
+
+// /api/admin/foreigner?foreigners[0]=1234567
+export const getAdminForeignerInfo = (data, setData) => {
+	defaultAxios({
+		method: "get",
+		url: conf.url + `api/admin/foreigner`,
+		params: data,
+	})
+		.then((res) => {
+			console.log(res);
+			setData(res.data);
+		})
+		.catch(() => {
+			setData(false);
+		});
+};
+
+export const getAdminSchedule = (search_date, setData) => {
+	defaultAxios({
+		method: "get",
+		url: conf.url + `api/admin/schedule`,
+		params: search_date,
+	})
+		.then((res) => {
+			console.log(res);
+			setData(res.data);
+		})
+		.catch(() => {
+			setData(false);
+		});
 };

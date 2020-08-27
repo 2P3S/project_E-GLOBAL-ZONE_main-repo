@@ -23,6 +23,7 @@ let j = 0;
  * Manager :: 유학생 관리
  * @returns {JSX.Element}
  * @constructor
+ * @todo sorting
  */
 export default function Foreigner() {
 	let mockup = {
@@ -364,9 +365,7 @@ export default function Foreigner() {
 																onClick={(e) => {
 																	getAdminForeignerAccountFavorite(
 																		value.std_for_id,
-																		value.std_for_state_of_favorite
-																			? 0
-																			: 1
+																		toggle ? 0 : 1
 																	);
 																	toggle = !toggle;
 																	let parent = document.getElementById(
@@ -494,7 +493,20 @@ export default function Foreigner() {
 							<ForeignerContact list={{}} handleClose={handleCloseForContact} />
 						</Modal>
 						<div onClick={handleOpenForAdd}>등록</div>
-						{/*<div>CSV 다운</div>*/}
+						<div
+							onClick={() => {
+								if (dataSet.data && dataSet.data.length > 0) {
+									history.push(
+										`/section/${selectSect}/${dataSet.data[0].std_for_id}`,
+										{ ...setData }
+									);
+								} else {
+									alert("해당 학기에 등록 된 학생이 없습니다.");
+								}
+							}}
+						>
+							학기 스케줄 등록
+						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}

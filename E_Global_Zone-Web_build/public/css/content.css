@@ -987,7 +987,7 @@ table.student_manage_table td:first-child {
 }
 .search_student table td .time_area .time_del {
 	cursor: pointer;
-	margin-top: 12px;
+	/* margin-top: 12px; */
 	float: right;
 	padding-right: 13px;
 }

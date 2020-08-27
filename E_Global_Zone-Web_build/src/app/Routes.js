@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
 import { selectIsLogin, selectUser } from "redux/userSlice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -8,7 +8,7 @@ import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
 import { LoginRouter } from "app/Routers/Router.Login";
 import conf from "../conf/conf";
 import { logOut, setClass } from "redux/userSlice/userSlice";
-import {setTodayFuture, setTodayToday} from "../redux/confSlice/confSlice";
+import { setTodayFuture, setTodayToday } from "../redux/confSlice/confSlice";
 
 /**
  * Routes for Routers
@@ -22,7 +22,7 @@ function Routes() {
 		<Router>
 			<Test />
 			{isLogin ? (
-			User.userClass === conf.userClass.KOREAN ? (
+				User.userClass === conf.userClass.KOREAN ? (
 					//mobile
 					<>
 						<MobileRouter />
@@ -38,35 +38,43 @@ function Routes() {
 				//notlogin
 				<LoginRouter />
 			)}
+			<Route exact path="/reload" component={Fake} />
 		</Router>
 	);
 }
 
-const Test = () => {
+const Fake = () => {
+	const history = useHistory();
+	useEffect(() => {
+		history.goBack();
+	}, []);
+	return <></>;
+};
 
-	const nakamura = 1231234
-	const korean = 1321704
+const Test = () => {
+	const nakamura = 1231234;
+	const korean = 1321704;
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const user = useSelector(selectUser);
 	const student = () => {
-		dispatch(setClass([korean,conf.userClass.KOREAN]));
+		dispatch(setClass([korean, conf.userClass.KOREAN]));
 		history.push("/");
 	};
 	const foreigner = () => {
-		dispatch(setClass([nakamura,conf.userClass.FOREIGNER]));
+		dispatch(setClass([nakamura, conf.userClass.FOREIGNER]));
 		history.push("/");
 	};
 	const manager = () => {
-		dispatch(setClass([user.id,conf.userClass.MANAGER]));
+		dispatch(setClass([user.id, conf.userClass.MANAGER]));
 		history.push("/");
 	};
 	const future = () => {
 		dispatch(setTodayFuture());
-	}
+	};
 	const today = () => {
 		dispatch(setTodayToday());
-	}
+	};
 	return (
 		<div>
 			<button onClick={student}>학생</button>

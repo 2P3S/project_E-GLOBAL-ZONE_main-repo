@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from "react";
-import useAxios, {postAxios} from "../../../../modules/hooks/useAxios";
-import {useParams, useHistory} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import useAxios, { postAxios } from "../../../../modules/hooks/useAxios";
+import { useParams, useHistory } from "react-router-dom";
 import conf from "../../../../conf/conf";
-import {useSelector} from "react-redux";
-import {selectUser} from "../../../../redux/userSlice/userSlice";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../../redux/userSlice/userSlice";
 import useClick from "../../../../modules/hooks/useClick";
-
 
 /**
  * Korean :: 신청 양식
@@ -14,87 +13,103 @@ import useClick from "../../../../modules/hooks/useClick";
  * @todo setup
  */
 export default function ApplicationForm() {
-    const {id: schId} = useParams();
-    const [data, setData] = useState();
-    const {loading, error, data: resData} = useAxios({url: conf.url + `/api/korean/schedule/${schId}`});
-    const user = useSelector(selectUser);
-    const history = useHistory();
+	const { id: schId } = useParams();
+	const [data, setData] = useState();
+	const { loading, error, data: resData } = useAxios({
+		url: conf.url + `api/korean/schedule/${schId}`,
+	});
+	const user = useSelector(selectUser);
+	const history = useHistory();
 
-    async function getResData(loading, error, data) {
-        if (!loading) {
-            setData(data.data);
-        }
-    }
+	async function getResData(loading, error, data) {
+		if (!loading) {
+			setData(data.data);
+		}
+	}
 
+	useEffect(() => {
+		getResData(loading, error, resData);
+	});
 
-    useEffect(() => {
-        getResData(loading, error, resData);
-    });
+	return data ? (
+		<div className="wrap">
+			<div className="apply_tit">
+				<h3 className="tit">예약신청</h3>
+				<p>
+					신청인원 :<span> {data.sch_res_count} </span>/ {data.sch_ava_count}
+				</p>
+			</div>
 
-    return (
-        data ?
-            <div className="wrap">
-                <div className="apply_tit">
-                    <h3 className="tit">예약신청</h3>
-                    <p>
-                        신청인원 :<span> {data.sch_res_count} </span>/ {data.sch_ava_count}
-                    </p>
-                </div>
+			<div className="reservation_boxs mb30">
+				<div className="box blue">
+					<ul>
+						<li>{`[${data.std_for_lang}] ${data.std_for_name}`}</li>
+						<li className="eng">{data.sch_time}</li>
+					</ul>
+				</div>
+			</div>
 
-                <div className="reservation_boxs mb30">
-                    <div className="box blue">
-                        <ul>
-                            <li>{`[${data.std_for_lang}] ${data.std_for_name}`}</li>
-                            <li className="eng">{data.sch_time}</li>
-                        </ul>
-                    </div>
-                </div>
+			<div className="input_box">
+				<p>신청 날짜</p>
+				<input type="text" value={data.sch_date} readOnly />
+			</div>
+			<div className="input_box">
+				<p>신청 시간</p>
+				<input type="text" value={data.sch_time} readOnly />
+			</div>
+			<div className="input_box">
+				<p>유학생</p>
+				<input type="text" value={data.std_for_name} readOnly />
+			</div>
+			<div className="input_box">
+				<p>신청 학생</p>
+				<input type="text" value={user.name} readOnly />
+			</div>
+			<div className="input_box">
+				<p>e-글로벌 존 예약 방침</p>
+				<textarea
+					readOnly
+					defaultValue={
+						"[ 무단 예약 부도에 대한 동의 ] 예약 신청 후, 예약 취소 또는 관리자의 확인 없이\n" +
+						"예약 부도(일명 No Show)시, 관련 규정에 따라, 불이익이 주어짐에 동의합니다."
+					}
+				></textarea>
+			</div>
 
-                <div className="input_box">
-                    <p>신청 날짜</p>
-                    <input type="text" value={data.sch_date} readOnly/>
-                </div>
-                <div className="input_box">
-                    <p>신청 시간</p>
-                    <input type="text" value={data.sch_time} readOnly/>
-                </div>
-                <div className="input_box">
-                    <p>유학생</p>
-                    <input type="text" value={data.std_for_name} readOnly/>
-                </div>
-                <div className="input_box">
-                    <p>신청 학생</p>
-                    <input type="text" value={user.name} readOnly/>
-                </div>
-                <div className="input_box">
-                    <p>e-글로벌 존 예약 방침</p>
-                    <textarea readOnly defaultValue={"[ 무단 예약 부도에 대한 동의 ] 예약 신청 후, 예약 취소 또는 관리자의 확인 없이\n" +
-                    "예약 부도(일명 No Show)시, 관련 규정에 따라, 불이익이 주어짐에 동의합니다."}>
-				</textarea>
-                </div>
+			<div className="agree">
+				<div className="all_agree">
+					<input type="checkbox" id="a1" name="전체동의" />
+					<label htmlFor="a1">
+						<span>e - 글로벌 존 예약 방침에 동의합니다.</span>
+					</label>
+				</div>
+			</div>
 
-                <div className="agree">
-                    <div className="all_agree">
-                        <input type="checkbox" id="a1" name="전체동의"/>
-                        <label htmlFor="a1">
-                            <span>e - 글로벌 존 예약 방침에 동의합니다.</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div className="btn_wrap" onClick={async ()=>{
-                    let agreement = document.getElementById("a1").checked;
-                    if(agreement){
-                        postAxios({url:conf.url+`/api/korean/reservation/${schId}`, method:"post", data:{
-                            std_kor_id: user.id
-                            }},history);
-                    }else{
-                        alert("e-글로벌 존 예약 방침에 동의하셔야 신청 할 수 있습니다.");
-                    }
-                }} style={{cursor:"pointer"}}>
-                    <div>신청하기</div>
-                </div>
-            </div> : <>Loading</>
-    )
-        ;
+			<div
+				className="btn_wrap"
+				onClick={async () => {
+					let agreement = document.getElementById("a1").checked;
+					if (agreement) {
+						postAxios(
+							{
+								url: conf.url + `/api/korean/reservation/${schId}`,
+								method: "post",
+								data: {
+									std_kor_id: user.id,
+								},
+							},
+							history
+						);
+					} else {
+						alert("e-글로벌 존 예약 방침에 동의하셔야 신청 할 수 있습니다.");
+					}
+				}}
+				style={{ cursor: "pointer" }}
+			>
+				<div>신청하기</div>
+			</div>
+		</div>
+	) : (
+		<>Loading</>
+	);
 }

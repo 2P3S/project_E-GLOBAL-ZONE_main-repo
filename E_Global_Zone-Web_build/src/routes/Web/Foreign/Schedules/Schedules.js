@@ -59,7 +59,7 @@ class WeekData extends ScheduleData {
                     this.friday.push(oneSchedule);
                     break;
             }
-            console.log(oneSchedule.state);
+
             switch (oneSchedule.state) {
                 case STATE_PENDING:
                     this.countOfPending++;
