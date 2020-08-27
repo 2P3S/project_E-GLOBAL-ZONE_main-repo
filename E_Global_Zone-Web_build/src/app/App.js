@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import Routes from "./Routes";
-import useAxios from "../modules/hooks/useAxios";
-import { setDept} from "../redux/confSlice/confSlice";
-import {useDispatch} from "react-redux";
+import { getAdminDeptList } from "../modules/hooks/useAxios";
+import { setDept, selectDept } from "../redux/confSlice/confSlice";
+import { useDispatch, useSelector } from "react-redux";
 import conf from "../conf/conf";
 
 /**
@@ -11,20 +11,20 @@ import conf from "../conf/conf";
  * @returns {JSX.Element} App with GlobalStyles, Routes
  */
 const App = () => {
-    const {loading, error, data} = useAxios({url: conf.url+"/api/admin/department"});
-    const dispatch = useDispatch();
-    async function setDepartment(argLoading){
-        let loading = await argLoading;
-        if(!loading){
-            dispatch(setDept(data));
-        }
-    }
-    useEffect(()=>{
-        setDepartment(loading);
-    },[data])
-    return (<>
-        <Routes/>
-    </>)
-}
+	const [data, setData] = useState();
+	const dispatch = useDispatch();
+	const dept = useSelector(selectDept);
+	useEffect(() => {
+		console.log("test");
+		getAdminDeptList(setData);
+	}, []);
+	useEffect(() => {
+		console.log(data);
+		if (data && data.data) {
+			dispatch(setDept(data));
+		}
+	}, [data]);
+	return <>{dept && <Routes />}</>;
+};
 
 export default App;

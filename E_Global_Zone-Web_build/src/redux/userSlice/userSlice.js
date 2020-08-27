@@ -13,7 +13,7 @@ export const userSlice = createSlice({
     name: "user",
     initialState: {
         isLogin: true,
-        user: {id: korean, userClass: conf.userClass.FOREIGNER, name: '사람이름'},
+        user: {id: korean, userClass: conf.userClass.Manager, name: '사람이름'},
     },
     reducers: {
         logIn: (state) => {
