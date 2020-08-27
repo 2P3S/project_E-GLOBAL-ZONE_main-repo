@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RestrictKoreanController extends Controller
 {
-    // TODO request  값 사용 로직 변경하기
-
     private const _INDEX_SUCCESS = " 학생의 이용 제한을 해제하시겠습니까?";
     private const _INDEX_ERROR = "이용 제한 정보 조회에 실패하였습니다.";
     // -> 발생 시, DB 점검 필요
