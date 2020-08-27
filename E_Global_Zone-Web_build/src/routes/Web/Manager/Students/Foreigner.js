@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import conf from "conf/conf";
 
 import useModal from "../../../../modules/hooks/useModal";
-import Modal from "components/common/modal/Modal";
+import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import {

@@ -178,7 +178,6 @@ export default function Settings() {
 										handleChange(`res_start_period`, e.target.value);
 									}}
 								>
-									>
 									{array.map((v) => {
 										return (
 											<option

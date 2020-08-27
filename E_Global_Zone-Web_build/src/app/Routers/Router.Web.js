@@ -3,10 +3,10 @@ import { Switch, Redirect, Route } from "react-router-dom";
 
 import { Schedules, Students, Settings, Section } from "routes/Web/Manager";
 
-import Header from "components/common/Header";
-import Footer from "components/common/Footer";
-import Foreigner from "routes/Web/Manager/Students/Foreigner";
-import ForeignerSchedules from "routes/Web/Foreign/Schedules/Schedules";
+import Header from "../../components/common/Header";
+import Footer from "../../components/common/Footer";
+import Foreigner from "../../routes/Web/Manager/Students/Foreigner";
+import ForeignerSchedules from "../../routes/Web/Foreign/Schedules/Schedules";
 
 /**
  * ManagerRouter - Router for Manager

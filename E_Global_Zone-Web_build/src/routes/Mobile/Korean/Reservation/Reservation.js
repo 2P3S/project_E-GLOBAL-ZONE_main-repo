@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "components/mobile/Calendar";
-import List from "components/mobile/List";
-import mockup from "test/mockup";
+import Calendar from "../../../../components/mobile/Calendar";
+import List from "../../../../components/mobile/List";
+
 import { useDispatch, useSelector } from "react-redux";
 import { selectSelectDate } from "../../../../redux/confSlice/confSlice";
 import useAxios, { getKoreanReservation } from "../../../../modules/hooks/useAxios";

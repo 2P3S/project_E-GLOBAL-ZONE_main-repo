@@ -6,7 +6,7 @@ import deepmearge from "deepmerge";
 import * as _ from "lodash";
 
 import useModal from "../../../../modules/hooks/useModal";
-import Modal from "components/common/modal/Modal";
+import Modal from "../../../../components/common/modal/Modal";
 
 import { getAdminSchedule } from "../../../../modules/hooks/useAxios";
 

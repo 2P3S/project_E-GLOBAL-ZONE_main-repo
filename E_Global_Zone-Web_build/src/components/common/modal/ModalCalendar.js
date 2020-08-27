@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import moment from "moment";
-import ReactCalendar from "react-calendar";
+
 import { useSelector, useDispatch } from "react-redux";
-import { selectSelectDate, setSelectDate } from "redux/confSlice/confSlice";
-import parseDate from "modules/parseDate";
+import { selectSelectDate, setSelectDate } from "../../../redux/confSlice/confSlice";
+import parseDate from "../../../modules/parseDate";
 
 class Calendar extends React.Component {
 	constructor(props) {

@@ -1,14 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import List from "./List";
-import useClick from "modules/hooks/useClick";
-import mockup from "../../test/mockup";
+import useClick from "../../modules/hooks/useClick";
 
 /**
  * TabView for Mobile
  * @returns {JSX.Element}
  * @constructor
  */
-export default function TabView({list}) {
+export default function TabView({ list }) {
 	const [data, setData] = useState(list); // 스케줄 데이터 배열로 초기화
 	const setClass = (e) => {
 		for (const key in tabs) {
@@ -26,7 +25,9 @@ export default function TabView({list}) {
 			}
 		}
 	};
-	useEffect(()=>{console.log(list)});
+	useEffect(() => {
+		console.log(list);
+	});
 	const tabView = useClick(setClass);
 	const tabs = {
 		all: useRef(),

@@ -1,9 +1,14 @@
 import React from "react";
 import { Switch, Redirect, Route, Link } from "react-router-dom";
-import MobileHeader from "components/mobile/Header";
-import { Reservation, Schedules as Schedule, Results, ApplicationForm } from "routes/Mobile/Korean";
-import MobileLogin from "components/mobile/Login";
-import Footer from "components/mobile/Footer";
+import MobileHeader from "../../components/mobile/Header";
+import {
+	Reservation,
+	Schedules as Schedule,
+	Results,
+	ApplicationForm,
+} from "../../routes/Mobile/Korean";
+import MobileLogin from "../../components/mobile/Login";
+import Footer from "../../components/mobile/Footer";
 
 /**
  * MobileRouter - Router for Mobile(Korean students)
