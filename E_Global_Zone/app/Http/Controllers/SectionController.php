@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
-    private const _SECTION_SEARCH_RES_SUCCESS = " 년도 등록된 학기 목록을 반환합니다.";
+    private const _SECTION_SEARCH_RES_SUCCESS = "등록된 학기 목록을 반환합니다.";
     private const _SECTION_SEARCH_RES_FAILURE = "학기 조회에 실패하였습니다.";
 
     private const _SECTION_STORE_RES_SUCCESS = "학기 등록에 성공하였습니다.";
@@ -37,7 +37,9 @@ class SectionController extends Controller
     public function index(Request $request): JsonResponse
     {
         $rules = [
-            'year' => 'required|integer|distinct|min:2019|max:2999',
+            'year' => 'integer|distinct|min:2019|max:2999',
+            'name' => 'string',
+            'sect_id' => 'integer'
         ];
 
         $validated_result = self::request_validator(
@@ -54,12 +56,19 @@ class SectionController extends Controller
 
         $section_data = Section::whereYear('sect_start_date', $year)->get();
 
-        // 학기별 등록 유학생 학생 인원수 추가.
-        foreach ($section_data as $section) {
-            $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
+        if (!empty($request->name)) {
+            $section_data =  Section::where('sect_name', $request->name)->get()->first();
+        } else if (!empty($request->sect_id)) {
+            $section_data =  Section::find($request->sect_id);
+        } else {
+            $section_data =  Section::whereYear('sect_start_date', $year)->get();
+            // 학기별 등록 유학생 학생 인원수 추가.
+            foreach ($section_data as $section) {
+                $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
+            }
         }
 
-        return self::response_json($year . self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
+        return self::response_json(self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
     }
 
     /**
@@ -72,7 +81,7 @@ class SectionController extends Controller
         //TODO std_kor_id 제거
         $std_kor_id = $request->std_kor_id;
 
-        $attendanced_section_data = Reservation::select(DB::raw('count(*) as res_count'),'sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
+        $attendanced_section_data = Reservation::select(DB::raw('count(*) as res_count'), 'sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
             ->join('schedules as sch', 'sch_id', 'res_sch')
             ->join('sections', 'sect_id', 'sch_sect')
             ->where('res_std_kor', $std_kor_id)
@@ -133,7 +142,6 @@ class SectionController extends Controller
     public function update(Request $request, Section $sect_id): JsonResponse
     {
         $rules = [
-            'sect_name' => 'required|string',
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date',
         ];
@@ -149,7 +157,6 @@ class SectionController extends Controller
         }
 
         $sect_id->update([
-            'sect_name' => $request->sect_name,
             'sect_start_date' => $request->sect_start_date,
             'sect_end_date' => $request->sect_end_date,
         ]);

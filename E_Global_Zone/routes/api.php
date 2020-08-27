@@ -21,6 +21,9 @@ Route::prefix('/admin')->group(function () {
         /** 특정 유학생 정보 조회 */
         Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
+        /** 해당 학기 미등록 유학생 정보 조회 */
+        Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
+
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
 
@@ -46,6 +49,9 @@ Route::prefix('/admin')->group(function () {
 
             /** 유학생 계정 삭제 */
             Route::delete('{std_for_id}', 'ForeignerController@destroyAccount')->name('foreigners.destroyAccount');
+
+            /** 유학생 즐겨찾기 등록 & 해제 */
+            Route::get('{std_for_id}', 'ForeignerController@set_std_for_favorite')->name('foreigners.set_std_for_favorite');
         });
     });
 
@@ -109,11 +115,14 @@ Route::prefix('/admin')->group(function () {
         /* 스케줄 등록 */
         Route::post('', 'ScheduleController@store')->name('schedules.store');
 
+        /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
+        Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
+
         /* 특정 스케줄 업데이트 */
-        Route::patch('{sch_id}', 'ScheduleController@update')->name('schedules.update');
+        Route::patch('some/{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
         /* 특정 스케줄 삭제 */
-        Route::delete('{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
+        Route::delete('some/{sch_id}', 'ScheduleController@destroy')->name('schedules.destroy');
 
         /* 해당 스케줄 학생 추가 */
         Route::post('add/{sch_id}', 'ReservationController@add_kor_schedule_by_admin')->name('reservations.add_kor_schedule_by_admin');
@@ -162,7 +171,6 @@ Route::prefix('foreigner')->group(function () {
     /** 등록된 계열 & 학과 목록 조회 */
     Route::get('department', 'DepartmentController@index')->name('departments.index');
 
-    // TODO 예약 관련? 외국인 학생 입장 스케줄 단위 관리 => 변경 필요
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */

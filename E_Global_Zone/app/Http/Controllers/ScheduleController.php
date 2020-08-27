@@ -26,8 +26,9 @@ class ScheduleController extends Controller
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
 
-    private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 등록을 완료하였습니다.";
-    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 삭제를 완료하였습니다.";
+    private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
+    private const _SCHEDULE_RES_DELETE_FAILURE = "해당 학기에 등록된 스케줄이 없습니다.";
+    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경를 완료하였습니다.";
 
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
@@ -199,7 +200,7 @@ class ScheduleController extends Controller
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
             'schedule.*' => 'array',
             'schedule.*.*' => 'integer',
-            'ecept_date' => 'required|array',
+            'ecept_date' => 'array',
             'ecept_date.*' => 'date',
         ];
 
@@ -237,23 +238,33 @@ class ScheduleController extends Controller
         $sect_start_yoil = $yoil[date('w', strtotime($sect_start_date))];               /* 시작날짜 요일 */
         // echo ($yoil[date('w', strtotime($sect_end_date))]);                          /* 종료날짜 요일 */
 
+        $isFirstLoop = true;
+
         // 학기 시작 날짜에 맞춰 시작 날짜 재설정
         if ($sect_start_yoil == "토") {
             $sect_start_date = strtotime("{$sect_start_date} +2 day");
             /* 날짜 String 변경 */
-
             $sect_start_date = date("Y-m-d", $sect_start_date);
+            $isFirstLoop = false;
         } else if ($sect_start_yoil == "일") {
             $sect_start_date = strtotime("{$sect_start_date} +1 day");
             /* 날짜 String 변경 */
             $sect_start_date = date("Y-m-d", $sect_start_date);
+            $isFirstLoop = false;
         }
 
         $isRepeatMode = true;                                                           /* 반복모드 설정 */
 
         while ($isRepeatMode) {
             // 요일별 데이터 출력
-            foreach ($schedule_data as $day) {
+            foreach ($schedule_data as $key => $day) {
+                // 처음 순회하는 루프인 경우 요일 맞추기
+                if($isFirstLoop && $sect_start_yoil != "월") {
+                    // Ex 학기 시작 날짜는 수요일인 경우 => 월, 화 는 뛰어 넘어야 함.
+                    if($sect_start_yoil != $key) continue;
+                    else $isFirstLoop = false;
+                }
+
                 // 제외 날짜인 경우 패스.
                 if (!empty($ecept_date[0]) && $sect_start_date == $ecept_date[0]) {
                     // 해당 날짜 배열에서 제거.
@@ -320,6 +331,8 @@ class ScheduleController extends Controller
                 /* 날짜 String 변경 */
                 $sect_start_date = date("Y-m-d", $sect_start_date);
             }
+
+            $isFirstLoop = false;
         }
 
         return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
@@ -359,6 +372,43 @@ class ScheduleController extends Controller
         return self::response_json(self::_SCHEDULE_RES_UPDATE_SUCCESS, 200);
     }
 
+
+    /**
+     * 관리자 - 해당 학기 해당 유학생 전체 스케줄 삭제
+     *
+     * @param int $sch_id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy_all_schedule(Request $request): JsonResponse
+    {
+        $rules = [
+            'sect_id' => 'required|integer|distinct|min:0|max:999',
+            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_SHOW_SCH_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        // 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
+        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->sect_id, $request->std_for_id);
+
+        $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
+        if ($is_already_inserted_schedule) {
+            $get_sect_by_schedule->delete();
+            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
+        } else {
+            return self::response_json(self::_SCHEDULE_RES_DELETE_FAILURE, 200);
+        }
+    }
+
     /**
      * 관리자 - 특정 스케줄 삭제
      *
@@ -367,7 +417,7 @@ class ScheduleController extends Controller
      */
     public function destroy(Schedule $sch_id): JsonResponse
     {
-        //TODO 한국인 학생 예약 -> 자동 취소 후 스케줄 삭제.
+        Reservation::where('res_sch', $sch_id['sch_id'])->delete();
         $sch_id->delete();
 
         return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
@@ -473,9 +523,10 @@ class ScheduleController extends Controller
 
         // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
         Reservation::whereIn('res_id', $update_res_id_list)
-        ->update([
-            'res_state_of_attendance' => true
-        ]);
+            ->where('res_sch', $sch_id['sch_id'])
+            ->update([
+                'res_state_of_attendance' => true
+            ]);
 
         return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
@@ -517,8 +568,7 @@ class ScheduleController extends Controller
 
     /**
      * 한국인 학생 - 특정 스케줄 조회
-     * /api/korean/schedule/{
-     * $sch_id}
+     * /api/korean/schedule/{$sch_id}
      *
      * @param Schedule $sch_id
      * @return JsonResponse

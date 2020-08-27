@@ -23,6 +23,7 @@ class ReservationController extends Controller
      * TODO 관리자가 예약 신청, 승인
      */
     private const _STD_KOR_RES_STORE_OVER = "1일 최대 스케줄 예약 횟수를 초과하였습니다.";
+    private const _STD_KOR_RES_STORE_OVER_PEOPLE = "해당 스케줄은 정원 초과로 예약에 실패하였습니다.";
     private const _STD_KOR_RES_STORE_DUPLICATE = "이미 예약한 스케줄입니다.";
     private const _STD_KOR_RES_STORE_IMPOSSIBILITY = "예약 불가능한 스케줄입니다.";
     private const _STD_KOR_RES_STORE_SUCCESS = "일 스케줄 예약이 성공하였습니다.";
@@ -83,7 +84,7 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
-        // TODO validation, 토큰 -> 유학생 검사 추가(중요)
+        // TODO std_for_id 미들웨어로 부터 받아오기
         // $std_for_id = $request->user($request->input('guard'));
         $std_for_id = $request->std_for_id;
 
@@ -254,9 +255,19 @@ class ReservationController extends Controller
         // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
         $std_kor_id = $request->std_kor_id;
 
+        // <<-- 해당 스케줄 정원 최대 예약 가능 횟수 비교
+        $std_kor_res_count = Reservation::where('res_sch', $sch_id['sch_id'])->count();
+        $is_over_max_std_once = $std_kor_res_count >= $setting_value->max_std_once;
+
+        if ($is_over_max_std_once) {
+            return
+                self::response_json(self::_STD_KOR_RES_STORE_OVER_PEOPLE, 202);
+        }
+        // -->>
+
         // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
-        $std_kor_res_list = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
-        $is_over_max_res_per_day = $std_kor_res_list->count() >= $setting_value->max_res_per_day;
+        $std_kor_res_count = $this->reservation->get_std_kor_res_by_today([$std_kor_id])->count();
+        $is_over_max_res_per_day = $std_kor_res_count >= $setting_value->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
             return
