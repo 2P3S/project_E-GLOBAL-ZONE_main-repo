@@ -26,7 +26,7 @@ export function ManagerRouter() {
 
 					<Route exact path="/" component={Schedules} />
 
-					<Route exact path="/schedules/:term" component={Schedules} />
+					<Route exact path="/schedules/:date" component={Schedules} />
 					{/* term => 학기 */}
 
 					<Route exact path="/students/:term/korean" component={Students} />
