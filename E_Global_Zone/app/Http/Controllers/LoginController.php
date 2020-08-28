@@ -14,7 +14,7 @@ class LoginController extends Controller
     private const _LOGOUT_SUCCESS = "로그아웃되었습니다.";
     private const _PASSWORD_CHANGE_REQUIRE = "초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.";
 
-    private const _ADMIN_INIT_PASSWORD = "oic.yju";
+    private const _ADMIN_INIT_PASSWORD = "oicyju5630!";
     private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
 
     /**

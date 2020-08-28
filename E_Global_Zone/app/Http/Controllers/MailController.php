@@ -13,9 +13,10 @@ class MailController extends Controller
 {
     private const _MAIL_SEND_SUCCESS = "비밀번호 초기화 메일을 전송하였습니다.";
     private const _MAIL_SEND_FAILURE = "비밀번호 초기화 메일 전송을 실패하였습니다.";
-    private const _EFFECTIVE_TIME = 3;
+    private const _EFFECTIVE_TIME = 1;
+    private const _DATETIME_FORMAT = "Y-m-d H:i:s";
+    private const _ADMIN_INIT_PASSWORD = "oicyju5630!";
 
-    private const _ADMIN_NAME = "E Global Zone 관리자";
 
     /**
      * @return JsonResponse
@@ -25,9 +26,10 @@ class MailController extends Controller
         $effective_time = self::_EFFECTIVE_TIME;
         $admin = Admin::where('id', 1);
         $data = [
-            "reset_request_time" => date("Y-m-d H:i:s"),
-            "reset_expire_time" => date("Y-m-d H:i:s", strtotime("+{$effective_time} minutes")),
-            "effective_time" => $effective_time
+            "reset_request_time" => date(self::_DATETIME_FORMAT),
+            "reset_expire_time" => date(self::_DATETIME_FORMAT, strtotime("+{$effective_time} minutes")),
+            "effective_time" => $effective_time,
+            "request_url" => \request()->url()
         ];
 
         $admin->update([
@@ -50,5 +52,25 @@ class MailController extends Controller
         }
 
         return self::response_json(self::_MAIL_SEND_SUCCESS, 200);
+    }
+
+    public function run_reset()
+    {
+        $admin = Admin::where('id', 1);
+
+        $reset_expire_time = $admin->first()['reset_expire_time'];
+        $current_time = date(self::_DATETIME_FORMAT);
+
+        $is_reset_availability = $reset_expire_time >= $current_time;
+        if ($is_reset_availability) {
+            $admin->update([
+                "password" => Hash::make(self::_ADMIN_INIT_PASSWORD)
+            ]);
+        }
+
+        return view(
+            'emails.reset_process',
+            ['is_reset_availability' => $is_reset_availability]
+        );
     }
 }
