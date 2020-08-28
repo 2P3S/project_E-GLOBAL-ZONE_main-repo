@@ -31,11 +31,13 @@
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/laminas/laminas-zendframework-bridge" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/laravel/framework" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/laravel/passport" />
+      <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/laravel/socialite" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/laravel/tinker" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/lcobucci/jwt" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/league/commonmark" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/league/event" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/league/flysystem" />
+      <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/league/oauth1-client" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/league/oauth2-server" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/mockery/mockery" />
       <excludeFolder url="file://$MODULE_DIR$/E_Global_Zone/vendor/monolog/monolog" />
