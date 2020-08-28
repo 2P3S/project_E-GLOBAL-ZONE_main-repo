@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
+	deleteAdminScheduleAdd,
 } from "../../../modules/hooks/useAxios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
@@ -10,6 +11,7 @@ import conf from "../../../conf/conf";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 import AddScheduleStudent from "./AddScheduleStudent";
+import DeleteModal from "./DeleteModal";
 
 /**
  * Modal - 신청 학생 명단보기
@@ -17,13 +19,27 @@ import AddScheduleStudent from "./AddScheduleStudent";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name }) {
+export default function ShowList({
+	handleClose,
+	sch_id,
+	std_for_id,
+	std_for_name,
+	sch_start_date,
+	sch_end_date,
+	reRender: thisReRender = () => {},
+}) {
 	const [data, setData] = useState();
+	const [selectedResId, setSelectedResId] = useState();
 	const [studentList, setStudentList] = useState();
 	const [permission, setPermission] = useState([]);
 	const user = useSelector(selectUser);
 	const history = useHistory();
 	const { isOpen, handleOpen, handleClose: thisHandleClose } = useModal();
+	const {
+		isOpen: isOpenForDelete,
+		handleOpen: handleOpenForDelete,
+		handleClose: handleCloseForDelete,
+	} = useModal();
 
 	useEffect(() => {
 		window.easydropdown.all();
@@ -32,6 +48,7 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
 			setData
 		);
+		return thisReRender;
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
@@ -41,17 +58,30 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 				array.push(v.std_kor_id);
 			});
 			setStudentList(array);
+			console.log(data);
 		}
 		window.easydropdown.all();
 	}, [data]);
+
+	const handleDelete = () => {
+		deleteAdminScheduleAdd(selectedResId, handleCloseForDelete);
+	};
+
+	const reRender = () => {
+		getForeignerReservation(
+			sch_id,
+			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
+			setData
+		);
+	};
+
 	return (
 		<div className="popup list">
 			<div className="top_tit">
 				<div className="left">
 					<p className="tit">신청 학생 명단보기</p>
-					<p className="txt">
-						{data && data.data ? data.data[0].sch_end_date : "nodata"}
-					</p>
+					<p className="txt">{sch_start_date}</p>
+					<p className="txt">{sch_end_date}</p>
 				</div>
 				<p className="name">
 					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
@@ -67,6 +97,18 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 								return (
 									<li key={v.std_kor_id + "index"}>
 										<div className="student">
+											<div
+												class="del_btn"
+												onClick={() => {
+													handleOpenForDelete();
+													setSelectedResId(v.res_id);
+												}}
+											>
+												<img
+													src="/global/img/enrol_del_btn.gif"
+													alt="신청 학생 삭제"
+												/>
+											</div>
 											<p className="name">{v.std_kor_name}</p>
 											<select
 												name={"catgo"}
@@ -86,11 +128,27 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 								);
 							})}
 							<li>
-								<button onClick={handleOpen}>학생 추가 버튼 자리</button>
+								<div onClick={handleOpen} class="add_student">
+									학생 추가{" "}
+									<img
+										src="/global/img/add_student_ico.gif"
+										alt="학생 추가 아이콘"
+									/>
+								</div>
 							</li>
 						</>
 					) : (
-						<>Loading</>
+						<>
+							<li>
+								<div onClick={handleOpen} class="add_student">
+									학생 추가{" "}
+									<img
+										src="/global/img/add_student_ico.gif"
+										alt="학생 추가 아이콘"
+									/>
+								</div>
+							</li>
+						</>
 					)}
 				</ul>
 			</div>
@@ -129,7 +187,19 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 				</div>
 			</div>
 			<Modal isOpen={isOpen} handleClose={thisHandleClose}>
-				<AddScheduleStudent handleClose={thisHandleClose} />
+				<AddScheduleStudent
+					handleClose={thisHandleClose}
+					sch_id={sch_id}
+					std_for_id={user.userClass === conf.userClass.MANAGER ? std_for_id : user.id}
+					_setData={setData}
+				/>
+			</Modal>
+			<Modal isOpen={isOpenForDelete} handleClose={handleCloseForDelete}>
+				<DeleteModal
+					onSubmit={handleDelete}
+					onCancel={handleCloseForDelete}
+					handleReRender={reRender}
+				/>
 			</Modal>
 		</div>
 	);

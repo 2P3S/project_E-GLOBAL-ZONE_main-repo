@@ -33,7 +33,7 @@ export default function Schedules() {
 	} = useModal();
 	const [selectedSchedule, setSelectedSchedule] = useState({});
 	const [pending, setPending] = useState(false);
-	const [schedules, setSchedulse] = useState();
+	const [schedules, setSchedules] = useState();
 	const [countOfEng, setCountOfEng] = useState();
 	const [countOfJp, setCountOfJp] = useState();
 	const [countOfCh, setCountOfCh] = useState();
@@ -43,11 +43,11 @@ export default function Schedules() {
 	};
 	useEffect(() => {});
 	useEffect(() => {
-		getAdminSchedule({ search_date: selectDate }, setSchedulse);
+		getAdminSchedule({ search_date: selectDate }, setSchedules);
 		setPending(true);
 	}, []);
 	useEffect(() => {
-		getAdminSchedule({ search_date: _selectDate }, setSchedulse);
+		getAdminSchedule({ search_date: _selectDate }, setSchedules);
 		setPending(true);
 	}, [selectDate]);
 	useEffect(() => {
@@ -64,7 +64,10 @@ export default function Schedules() {
 	useState(() => {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
-
+	const reRender = () => {
+		getAdminSchedule({ search_date: selectDate }, setSchedules);
+		setPending(true);
+	};
 	useEffect(() => {
 		if (!pending && schedules && schedules.data) {
 			for (const key in schedules.data) {
@@ -135,6 +138,8 @@ export default function Schedules() {
 										component: "ShowList",
 										std_for_id: v.std_for_id,
 										std_for_name: v.std_for_name,
+										sch_end_date: schedule.sch_end_date,
+										sch_start_date: schedule.sch_start_date,
 									});
 								} else if (
 									div.className === "state_box state3" ||
@@ -151,7 +156,7 @@ export default function Schedules() {
 								} else {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
-										component: "Delete",
+										component: "ShowList",
 										std_for_id: v.std_for_id,
 										std_for_name: v.std_for_name,
 										sch_end_date: schedule.sch_end_date,
@@ -373,6 +378,9 @@ export default function Schedules() {
 						handleClose={scheduleClose}
 						std_for_id={selectedSchedule && selectedSchedule.std_for_id}
 						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
+						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
+						reRender={reRender}
 					/>
 				) : selectedSchedule.component === "InsertResult" ? (
 					<InsertResult
@@ -382,6 +390,7 @@ export default function Schedules() {
 						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
 						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
 						handleClose={scheduleClose}
+						reRender={reRender}
 					/>
 				) : (
 					<>

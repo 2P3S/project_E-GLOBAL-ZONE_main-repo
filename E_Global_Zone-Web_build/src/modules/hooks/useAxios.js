@@ -26,7 +26,7 @@ const useAxios = (opts, axiosInstance = defaultAxios) => {
 	}, []);
 	return state;
 };
-
+//
 export const getAdminDeptList = (setState) => {
 	defaultAxios({ url: conf.url + "/api/department" }).then((res) => {
 		setState(res.data);
@@ -355,5 +355,58 @@ export const getAdminSchedule = (search_date, setData) => {
 		})
 		.catch(() => {
 			setData(false);
+		});
+};
+
+// http://hyun9803.iptime.org/api/admin/korean
+
+export const postAdminKorean = (data, setState) => {
+	defaultAxios({
+		method: "post",
+		url: conf.url + `api/admin/korean`,
+		data: data,
+	})
+		.then((res) => {
+			if (res.status === 200) {
+				setState(res.data);
+			} else {
+				setState([]);
+			}
+		})
+		.catch((e) => {
+			setState(e);
+			console.log(e);
+		});
+};
+
+export const postAdminScheduleAdd = (sch_id, data, setState) => {
+	defaultAxios({
+		method: "post",
+		url: conf.url + `api/admin/schedule/add/${sch_id}`,
+		data: data,
+	})
+		.then((res) => {
+			if (res.status === 201) {
+				setState("success");
+			} else {
+				setState("fail");
+			}
+		})
+		.catch((e) => {
+			setState("fail");
+			console.log(e);
+		});
+};
+
+export const deleteAdminScheduleAdd = (sch_id, handleClose) => {
+	defaultAxios({
+		method: "delete",
+		url: conf.url + `api/admin/schedule/add/${sch_id}`,
+	})
+		.then((res) => {
+			handleClose();
+		})
+		.catch((e) => {
+			console.log(e);
 		});
 };

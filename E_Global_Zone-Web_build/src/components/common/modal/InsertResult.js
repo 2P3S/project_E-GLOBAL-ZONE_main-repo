@@ -16,6 +16,7 @@ const InsertResult = ({
 	sch_start_date,
 	sch_end_date,
 	std_for_id,
+	reRender,
 }) => {
 	const user = useSelector(selectUser);
 	const [imgStart, setImgStart] = useState();
@@ -60,6 +61,7 @@ const InsertResult = ({
 			setStdData
 		);
 		window.easydropdown.all();
+		return reRender;
 	}, []);
 	useEffect(() => {
 		window.easydropdown.all();
