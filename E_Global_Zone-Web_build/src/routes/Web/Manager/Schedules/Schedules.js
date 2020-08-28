@@ -3,7 +3,6 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
 import deepmerge from "deepmerge";
-import * as _ from "lodash";
 
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
@@ -12,6 +11,7 @@ import { getAdminSchedule } from "../../../../modules/hooks/useAxios";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 import conf from "../../../../conf/conf";
+import ShowList from "../../../../components/common/modal/ShowList";
 
 /**
  * Manager :: 스케줄 조회
@@ -22,6 +22,12 @@ export default function Schedules() {
 	const today = useSelector(selectToday);
 	const selectDate = useSelector(selectSelectDate);
 	const [calIsOpen, setCalIsOpen] = useState(false);
+	const {
+		isOpen: scheduleIsOpen,
+		handleClose: scheduleClose,
+		handleOpen: scheduleOpen,
+	} = useModal();
+	const [selectedSchedule, setSelectedSchedule] = useState();
 	const [pending, setPending] = useState(false);
 	const [schedules, setSchedulse] = useState();
 	const [countOfEng, setCountOfEng] = useState();
@@ -54,32 +60,9 @@ export default function Schedules() {
 		console.log(countOfEng, countOfJp, countOfCh);
 	}, [schedules]);
 
-	// if(un_permission_count === 0 && reservated_count === 0){
-	//     this.state = STATE_NOTHING;
-	// }else{
-	//     if (new Date(sch_end_date) > new Date(today)) {
-	//         // 스케줄 시작 전
-	//         if (reservated_count > 0 && un_permission_count === 0) {
-	//             this.state = STATE_RESERVED;
-	//         } else if (reservated_count > 0) {
-	//             this.state = STATE_PENDING;
-	//         }
-	//     } else {
-	//         // 스케줄 완료 후
-	//         if (sch_state_of_result_input) {
-	//             this.state = STATE_CONFIRM;
-	//         } else {
-	//             this.state = STATE_DONE;
-	//         }
-	//     }
-	// }
-	// state1 :: [예약현황] 미승인 / 총 신청 학생
-	// state2 :: [예약 승인 완료]
-	// state3 :: [결과 미입력] 출석 학생
-	// state4 :: [결과 입력 완료]
-	// state5 :: [관리자 미승인] 출석 학생
-	// state6 :: [관리자 승인 완료]
-	// state7 :: 예약없음
+	useState(() => {
+		// if (typeof selectedSchedule === "object") scheduleOpen();
+	}, [selectedSchedule]);
 
 	useEffect(() => {
 		if (!pending && schedules && schedules.data) {
@@ -136,13 +119,18 @@ export default function Schedules() {
 								}
 							}
 							div.addEventListener("click", () => {
-								console.log(
-									schedule.sch_id,
-									schedule.un_permission_count,
-									schedule.reservated_count,
-									schedule.sch_state_of_result_input,
-									schedule.sch_state_of_permission
-								);
+								if (
+									div.className === "state_box state2" ||
+									div.className === "state_box state1"
+								) {
+									setSelectedSchedule({
+										sch_id: schedule.sch_id,
+										component: "stdList",
+										std_for_id: v.std_for_id,
+										std_for_name: v.std_for_name,
+									});
+									scheduleOpen();
+								}
 							});
 							td.appendChild(div);
 							console.log(moment(schedule.sch_start_date).format("h"));
@@ -339,45 +327,6 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								{/* <tr>
-									<td>쉬라이 알리오트 시나</td>
-									<td>
-										<div className="state_box state1">
-											<p>
-												8 / <span>3</span>
-											</p>
-										</div>
-										<div className="state_box state1">
-											<p>
-												7 / <span>2</span>
-											</p>
-										</div>
-									</td>
-									<td></td>
-									<td>
-										<div className="state_box state2">
-											<p>2</p>
-										</div>
-										<div className="state_box state7"></div>
-									</td>
-									<td></td>
-									<td>
-										<div className="state_box state3">
-											<p>2</p>
-										</div>
-										<div className="state_box state5">
-											<p>2</p>
-										</div>
-									</td>
-									<td></td>
-									<td>
-										<div className="state_box state4"></div>
-									</td>
-									<td>
-										<div className="state_box state6"></div>
-									</td>
-									<td></td>
-								</tr> */}
 							</tbody>
 						</table>
 					) : (
@@ -390,6 +339,14 @@ export default function Schedules() {
 					<div>CSV 입력</div>
 				</div>
 			</div>
+			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
+				<ShowList
+					sch_id={selectedSchedule && selectedSchedule.sch_id}
+					handleClose={scheduleClose}
+					std_for_id={selectedSchedule && selectedSchedule.std_for_id}
+					std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+				/>
+			</Modal>
 		</div>
 	);
 }

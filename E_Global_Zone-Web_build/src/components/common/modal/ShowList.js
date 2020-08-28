@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ShowList({ handleClose, sch_id }) {
+export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name }) {
 	const [data, setData] = useState();
 	const [studentList, setStudentList] = useState();
 	const [permission, setPermission] = useState([]);
@@ -22,11 +22,12 @@ export default function ShowList({ handleClose, sch_id }) {
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getForeignerReservation(sch_id, user.id, setData);
+		getForeignerReservation(sch_id, std_for_id && user.id, setData);
 		console.log(sch_id);
+		console.log(window.);
 	}, []);
 	useEffect(() => {
-		if (data) {
+		if (data && data.data) {
 			console.log(data.data);
 			let array = [];
 			data.data.forEach((v) => {
@@ -36,6 +37,9 @@ export default function ShowList({ handleClose, sch_id }) {
 		}
 		window.easydropdown.all();
 	}, [data]);
+	useEffect(() => {
+		console.log(std_for_id, std_for_name);
+	});
 	return (
 		<div className="popup list">
 			<div className="top_tit">
@@ -45,7 +49,7 @@ export default function ShowList({ handleClose, sch_id }) {
 						{data && data.data ? data.data[0].sch_end_date : "nodata"}
 					</p>
 				</div>
-				<p className="name">바라트벡 울잔</p>
+				<p className="name">{std_for_name ? std_for_name : user.name}</p>
 			</div>
 
 			<div className="student_list">
@@ -77,51 +81,6 @@ export default function ShowList({ handleClose, sch_id }) {
 					) : (
 						<>Loading</>
 					)}
-					{/*<li>*/}
-					{/*	<div className="student">*/}
-					{/*		<p className="name">이구슬</p>*/}
-					{/*		<select name="catgo" className="dropdown">*/}
-					{/*			<option value="attendance">승인</option>*/}
-					{/*			<option value="absent">미승인</option>*/}
-					{/*		</select>*/}
-					{/*	</div>*/}
-					{/*</li>*/}
-					{/*<li>*/}
-					{/*	<div className="student">*/}
-					{/*		<p className="name">이구슬</p>*/}
-					{/*		<select name="catgo" className="dropdown">*/}
-					{/*			<option value="attendance">승인</option>*/}
-					{/*			<option value="absent">미승인</option>*/}
-					{/*		</select>*/}
-					{/*	</div>*/}
-					{/*</li>*/}
-					{/*<li>*/}
-					{/*	<div className="student">*/}
-					{/*		<p className="name">이구슬</p>*/}
-					{/*		<select name="catgo" className="dropdown">*/}
-					{/*			<option value="attendance">승인</option>*/}
-					{/*			<option value="absent">미승인</option>*/}
-					{/*		</select>*/}
-					{/*	</div>*/}
-					{/*</li>*/}
-					{/*<li>*/}
-					{/*	<div className="student">*/}
-					{/*		<p className="name">이구슬</p>*/}
-					{/*		<select name="catgo" className="dropdown">*/}
-					{/*			<option value="attendance">승인</option>*/}
-					{/*			<option value="absent">미승인</option>*/}
-					{/*		</select>*/}
-					{/*	</div>*/}
-					{/*</li>*/}
-					{/*<li>*/}
-					{/*	<div className="student">*/}
-					{/*		<p className="name">이구슬</p>*/}
-					{/*		<select name="catgo" className="dropdown">*/}
-					{/*			<option value="attendance">승인</option>*/}
-					{/*			<option value="absent">미승인</option>*/}
-					{/*		</select>*/}
-					{/*	</div>*/}
-					{/*</li>*/}
 				</ul>
 			</div>
 

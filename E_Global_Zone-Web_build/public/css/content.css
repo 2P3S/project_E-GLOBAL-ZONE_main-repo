@@ -929,7 +929,7 @@ table.student_manage_table td:first-child {
 }
 
 .set_wrap .input .select_input input[type="number"] {
-	width:45px;
+	width: 45px;
 }
 
 .set_wrap .input .select_input span {
@@ -1013,7 +1013,7 @@ table.student_manage_table td:first-child {
 	color: #fff;
 	font-weight: 600;
 	background: #373a44;
-	margin-left:5px;
+	margin-left: 5px;
 }
 
 .input .select_tit span.bold {
