@@ -8,6 +8,8 @@ import { selectUser } from "../../../redux/userSlice/userSlice";
 import { useHistory } from "react-router-dom";
 import conf from "../../../conf/conf";
 import Modal from "./Modal";
+import useModal from "../../../modules/hooks/useModal";
+import AddScheduleStudent from "./AddScheduleStudent";
 
 /**
  * Modal - 신청 학생 명단보기
@@ -21,6 +23,7 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 	const [permission, setPermission] = useState([]);
 	const user = useSelector(selectUser);
 	const history = useHistory();
+	const { isOpen, handleOpen, handleClose: thisHandleClose } = useModal();
 
 	useEffect(() => {
 		window.easydropdown.all();
@@ -83,7 +86,7 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 								);
 							})}
 							<li>
-								<button>학생 추가 버튼 자리</button>
+								<button onClick={handleOpen}>학생 추가 버튼 자리</button>
 							</li>
 						</>
 					) : (
@@ -125,7 +128,9 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 					</div>
 				</div>
 			</div>
-			<Modal></Modal>
+			<Modal isOpen={isOpen} handleClose={thisHandleClose}>
+				<AddScheduleStudent handleClose={thisHandleClose} />
+			</Modal>
 		</div>
 	);
 }
