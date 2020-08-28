@@ -24,7 +24,6 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 		window.easydropdown.all();
 		getForeignerReservation(sch_id, std_for_id && user.id, setData);
 		console.log(sch_id);
-		console.log(window.);
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
