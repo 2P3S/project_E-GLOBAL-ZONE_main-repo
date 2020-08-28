@@ -6,6 +6,8 @@ import {
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import { useHistory } from "react-router-dom";
+import conf from "../../../conf/conf";
+import Modal from "./Modal";
 
 /**
  * Modal - 신청 학생 명단보기
@@ -22,8 +24,11 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getForeignerReservation(sch_id, std_for_id && user.id, setData);
-		console.log(sch_id);
+		getForeignerReservation(
+			sch_id,
+			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
+			setData
+		);
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
@@ -36,9 +41,6 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 		}
 		window.easydropdown.all();
 	}, [data]);
-	useEffect(() => {
-		console.log(std_for_id, std_for_name);
-	});
 	return (
 		<div className="popup list">
 			<div className="top_tit">
@@ -48,35 +50,42 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 						{data && data.data ? data.data[0].sch_end_date : "nodata"}
 					</p>
 				</div>
-				<p className="name">{std_for_name ? std_for_name : user.name}</p>
+				<p className="name">
+					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
+				</p>
 			</div>
 
 			<div className="student_list">
 				<ul>
 					{data && data.data ? (
-						data.data.map((v, index) => {
-							let permission = v.res_state_of_permission;
-							return (
-								<li key={v.std_kor_id + "index"}>
-									<div className="student">
-										<p className="name">{v.std_kor_name}</p>
-										<select
-											name={"catgo"}
-											className={"dropdown"}
-											id={v.std_kor_id}
-											key={`${v.std_kor_id}`}
-										>
-											<option value={true} selected={permission}>
-												승인
-											</option>
-											<option value={false} selected={!permission}>
-												미승인
-											</option>
-										</select>
-									</div>
-								</li>
-							);
-						})
+						<>
+							{data.data.map((v, index) => {
+								let permission = v.res_state_of_permission;
+								return (
+									<li key={v.std_kor_id + "index"}>
+										<div className="student">
+											<p className="name">{v.std_kor_name}</p>
+											<select
+												name={"catgo"}
+												className={"dropdown"}
+												id={v.std_kor_id}
+												key={`${v.std_kor_id}`}
+											>
+												<option value={true} selected={permission}>
+													승인
+												</option>
+												<option value={false} selected={!permission}>
+													미승인
+												</option>
+											</select>
+										</div>
+									</li>
+								);
+							})}
+							<li>
+								<button>학생 추가 버튼 자리</button>
+							</li>
+						</>
 					) : (
 						<>Loading</>
 					)}
@@ -106,7 +115,7 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 								permission_std_kor_id_list,
 								not_permission_std_kor_id_list
 							);
-							history.push("/");
+							handleClose();
 						}}
 					>
 						저장
@@ -116,6 +125,7 @@ export default function ShowList({ handleClose, sch_id, std_for_id, std_for_name
 					</div>
 				</div>
 			</div>
+			<Modal></Modal>
 		</div>
 	);
 }

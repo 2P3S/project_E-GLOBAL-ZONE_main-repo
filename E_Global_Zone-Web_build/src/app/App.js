@@ -4,6 +4,7 @@ import { getAdminDeptList } from "../modules/hooks/useAxios";
 import { setDept, selectDept } from "../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import conf from "../conf/conf";
+import { useHistory } from "react-router-dom";
 
 /**
  * React App
@@ -15,11 +16,9 @@ const App = () => {
 	const dispatch = useDispatch();
 	const dept = useSelector(selectDept);
 	useEffect(() => {
-		console.log("test");
 		getAdminDeptList(setData);
 	}, []);
 	useEffect(() => {
-		console.log(data);
 		if (data && data.data) {
 			dispatch(setDept(data));
 		}

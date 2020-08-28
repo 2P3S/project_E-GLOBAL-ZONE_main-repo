@@ -22,14 +22,13 @@ const useAxios = (opts, axiosInstance = defaultAxios) => {
 				loading: false,
 				data: data.data,
 			});
-			console.log(data);
 		});
 	}, []);
 	return state;
 };
 
 export const getAdminDeptList = (setState) => {
-	defaultAxios({ url: conf.url + "/api/admin/department" }).then((res) => {
+	defaultAxios({ url: conf.url + "/api/department" }).then((res) => {
 		setState(res.data);
 	});
 };
@@ -41,7 +40,6 @@ export const getAdminDeptList = (setState) => {
 export const postAxios = (opts, history, axiosInstance = defaultAxios) => {
 	let result = false;
 	axiosInstance(opts).then((data) => {
-		console.log(data);
 		if (data.status === 202) {
 			alert(data.data.message);
 			history.push("/schedule");
@@ -79,7 +77,6 @@ export const getKoreanReservationResult = (sect_id, search_month, std_kor_id, se
 			std_kor_id,
 		},
 	}).then((data) => {
-		console.log(data);
 		setData(data.data);
 	});
 };
@@ -94,7 +91,6 @@ export const getForeignerSchedule = (std_for_id, end_date, start_date, setData) 
 			std_for_id,
 		},
 	}).then((data) => {
-		console.log(data);
 		setData(data.data);
 	});
 };
@@ -107,41 +103,13 @@ export const getForeignerSchedule = (std_for_id, end_date, start_date, setData) 
  * @todo => 이미지 데이터를 보내야 되는데 가질 못해!
  */
 export const postForeignerReservationResult = (sch_id, data) => {
-	// let data = new FormData()
-	// data.append("result_start_img", result_end_img);
-	// data.append("result_end_img", result_end_img);
-	// console.log(result_start_img, result_end_img);
-	// defaultAxios({
-	//     method: 'post',
-	//     url: `${conf.url}/api/foreigner/reservation/result/${sch_id}`, data: {
-	//         // result_start_img,
-	//         // result_end_img,
-	//         data,
-	//         // attendance_std_kor_id_list : [1321704, 132123],
-	//         // absent_std_kor_id_list: []
-	//     },
-	//     headers: {
-	//         'Content-Type': 'multipart/form-data'
-	//     }
-	// }).then(res => {
-	//     console.log(res);
-	// })
-	// defaultAxios.post(conf.url+`/api/foreigner/reservation/result/${sch_id}`,
-	//             data
-	// , {
-	//     headers:{
-	//         'content-type':"multipart/form-data"
-	//     }
-	// }).then(res=>{
-	//     console.log(res)
-	// }).catch(e=>console.log(e));
 	let ajax = new XMLHttpRequest();
 	ajax.onreadystatechange = () => {
 		if (ajax.readyState === 0) {
 			ajax.setRequestHeader("content-type", "multipart/form-data");
 		}
 		if (ajax.readyState === 4) {
-			console.log(ajax.response);
+			// console.log(ajax.response);
 		}
 	};
 
@@ -156,7 +124,6 @@ export const getForeignerReservation = (sch_id, std_for_id, setData) => {
 			std_for_id,
 		},
 	}).then((res) => {
-		console.log(res);
 		setData(res.data);
 	});
 };
@@ -206,7 +173,6 @@ export const postAdminForeignerAccount = (
 		},
 	})
 		.then((res) => {
-			console.log(res);
 			setState(true);
 		})
 		.catch((e) => console.log(e));
@@ -216,7 +182,6 @@ export const getAdminForeignerWork = (setDataSet, sect_id = 5) => {
 	defaultAxios({
 		url: conf.url + `/api/admin/foreigner/work/${sect_id}`,
 	}).then((res) => {
-		console.log(res);
 		setDataSet(res.data);
 	});
 };
@@ -255,7 +220,7 @@ export const postAdminSetting = (settings) => {
 		url: conf.url + `/api/admin/setting`,
 		data: settings,
 	}).then((res) => {
-		console.log(res.data);
+		// console.log(res.data);
 	});
 };
 
@@ -300,7 +265,6 @@ export const getAdminForeignerNoWork = (sect_id, setState) => {
 	defaultAxios({
 		url: conf.url + `/api/admin/foreigner/no_work/${sect_id}`,
 	}).then((res) => {
-		// console.log(res);
 		setState(res.data.data);
 	});
 };
@@ -343,7 +307,6 @@ export const postAdminSchedule = (data, isDone) => {
 		data,
 	})
 		.then((res) => {
-			console.log("done");
 			isDone(true);
 		})
 		.catch(() => {
@@ -374,7 +337,6 @@ export const getAdminForeignerInfo = (data, setData) => {
 		params: data,
 	})
 		.then((res) => {
-			console.log(res);
 			setData(res.data);
 		})
 		.catch(() => {
@@ -389,7 +351,6 @@ export const getAdminSchedule = (search_date, setData) => {
 		params: search_date,
 	})
 		.then((res) => {
-			console.log(res);
 			setData(res.data);
 		})
 		.catch(() => {

@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Route,
+	useHistory,
+	useParams,
+	useLocation,
+} from "react-router-dom";
 import { selectIsLogin, selectUser } from "../redux/userSlice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -45,7 +51,10 @@ function Routes() {
 
 const Fake = () => {
 	const history = useHistory();
+	const params = useParams();
+	const location = useLocation();
 	useEffect(() => {
+		console.log(history, location);
 		history.goBack();
 	}, []);
 	return <></>;
@@ -66,7 +75,7 @@ const Test = () => {
 		history.push("/");
 	};
 	const manager = () => {
-		dispatch(setClass([user.id, conf.userClass.MANAGER]));
+		dispatch(setClass(["관리자", conf.userClass.MANAGER]));
 		history.push("/");
 	};
 	const future = () => {

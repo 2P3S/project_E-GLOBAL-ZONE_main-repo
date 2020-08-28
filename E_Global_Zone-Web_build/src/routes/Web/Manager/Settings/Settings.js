@@ -222,6 +222,11 @@ export default function Settings() {
 										type="number"
 										defaultValue={settings.result.once_meet_time}
 										onChange={(e) => {
+											if (e.target.value < 0) {
+												alert("양의 정수 값을 입력해주세요.");
+												e.target.value = 0;
+												return;
+											}
 											handleChange(`once_meet_time`, e.target.value);
 										}}
 										id="time_input1"
@@ -238,6 +243,11 @@ export default function Settings() {
 										type="number"
 										defaultValue={settings.result.once_rest_time}
 										onChange={(e) => {
+											if (e.target.value < 0) {
+												alert("양의 정수 값을 입력해주세요.");
+												e.target.value = 0;
+												return;
+											}
 											handleChange(`once_rest_time`, e.target.value);
 										}}
 										id="time_input2"
