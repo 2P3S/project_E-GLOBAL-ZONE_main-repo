@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Http\Controllers\Controller;
+use App\Library\Services\Preference;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -110,6 +111,10 @@ class Schedule extends Model
     public function get_sch_by_id(
         Schedule $sch_id
     ): JsonResponse {
+        // 환경변수
+        $setting_obj = new Preference();
+        $setting_values = $setting_obj->getPreference();
+
         $result = $sch_id
             ->join('student_foreigners as for', 'for.std_for_id', 'schedules.sch_std_for')
             ->where('sch_id', $sch_id['sch_id'])
@@ -120,8 +125,8 @@ class Schedule extends Model
             date('A h시 i분 ~ ', strtotime($result['sch_start_date'])) .
             date('A h시 i분', strtotime($result['sch_end_date']));
 
-        $sch_ava_count = Setting::get_setting_value()['max_std_once'];
-        $sch_res_count = Reservation::where('res_sch', $sch_id['sch_id']);
+        $sch_ava_count = $setting_values['max_std_once'];
+        $sch_res_count = Reservation::where('res_sch', $sch_id['sch_id'])->count();
 
         $response_data = (object)[
             'sch_res_count' => $sch_res_count,

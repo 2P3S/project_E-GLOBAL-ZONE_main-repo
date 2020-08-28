@@ -230,3 +230,12 @@ Route::middleware('auth.multi')->group(static function () {
         Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
 });
+
+Route::middleware('auth.korean')->group(function () {
+    // Route::get('/test', 'ReservationController@test')->name('reservations.test');
+});
+
+Route::prefix('reset')->group(function () {
+    Route::post('/', 'MailController@request_reset');
+    Route::get('/', 'MailController@run_reset');
+});

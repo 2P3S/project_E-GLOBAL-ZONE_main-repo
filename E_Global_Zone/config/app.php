@@ -177,7 +177,7 @@ return [
         SMartins\PassportMultiauth\Providers\MultiauthServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         App\Providers\PreferenceProvider::class,                                    /* 환경변수 서비스 프로바이더 등록 */
-
+        Laravel\Socialite\SocialiteServiceProvider::class,                          /* 구글 로그인 OAuth 프로바이더 등록 */
     ],
 
     /*
@@ -228,7 +228,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

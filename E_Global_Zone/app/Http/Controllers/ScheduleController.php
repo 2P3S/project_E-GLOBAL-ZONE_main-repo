@@ -73,26 +73,65 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        $result_foreigner_schedules = Schedule::select('std_for_id', 'std_for_name', 'std_for_lang', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
-            ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
-            ->whereDate('sch_start_date', '=', $request->search_date)
-            ->orderBy('std_for_lang')
-            ->get();
+        $search_date = $request->search_date;
 
-        foreach ($result_foreigner_schedules as $schedule) {
-            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+        function std_for_search_by_lang($date, $std_for_lang)
+        {
+            return
+                Schedule::select('std_for_id', 'std_for_name', 'std_for_lang')
+                ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+                ->whereDate('sch_start_date', '=', $date)
+                ->where('std_for_lang', $std_for_lang)
+                ->groupBy('for.std_for_id')
+                ->get();
+        };
 
-            // 전체 예약 한국인 인원수
-            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+        function std_for_add_schedule_data($response_data, $date) {
+            foreach ($response_data as $student) {
+                $student['schedules'] = Schedule::select('sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+                    ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
+                    ->whereDate('sch_start_date', '=', $date)
+                    ->where('std_for_id', $student->std_for_id)
+                    ->get();
 
-            // 예약 미승인 한국인 인원수
-            $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+                foreach ($student['schedules'] as $schedule) {
+                    $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
-            $schedule['reservated_count'] = $reservated_count;
-            $schedule['un_permission_count'] = $un_permission_count;
+                    // 전체 예약 한국인 인원수
+                    $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+                    // 예약 미승인 한국인 인원수
+                    $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+
+                    $schedule['reservated_count'] = $reservated_count;
+                    $schedule['un_permission_count'] = $un_permission_count;
+                }
+            }
+
+            return $response_data;
         }
 
-        return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
+        $response_data = [];
+
+        // 언어별 유학생 분류.
+        $response_data['English'] = std_for_search_by_lang($search_date, '영어');
+        $response_data['Japanese'] = std_for_search_by_lang($search_date, '일본어');
+        $response_data['Chinese'] = std_for_search_by_lang($search_date, '중국어');
+
+        // return response()->json([
+        //     'message' => self::_STD_FOR_SHOW_SCH_SUCCESS,
+        //     'result' => $response_data,
+        // ], 200);
+
+        // 해당 유학생에 대한 스케줄 정보 추가.
+        $response_data['English'] = std_for_add_schedule_data($response_data['English'], $search_date);
+        $response_data['Japanese'] = std_for_add_schedule_data($response_data['Japanese'], $search_date);
+        $response_data['Chinese'] = std_for_add_schedule_data($response_data['Chinese'], $search_date);
+
+        return response()->json([
+            'message' => self::_STD_FOR_SHOW_SCH_SUCCESS,
+            'data' => $response_data,
+        ], 200);
     }
 
     /**
@@ -145,47 +184,6 @@ class ScheduleController extends Controller
 
         return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
     }
-
-    /**
-     * 관리자 - 특정 날짜 전체 유학생 스케줄 조회
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    // public function std_for_show_sch_by_date(Request $request): JsonResponse
-    // {
-    //     $rules = [
-    //         'search_date' => 'required|date'
-    //     ];
-
-    //     // <<-- Request 유효성 검사
-    //     $validated_result = self::request_validator(
-    //         $request,
-    //         $rules,
-    //         self::_STD_FOR_SHOW_SCH_FAILURE
-    //     );
-
-    //     if (is_object($validated_result)) {
-    //         return $validated_result;
-    //     }
-    //     // -->>
-
-    //     $search_date = $request->input('search_date');
-    //     $std_for_id = 1022670;
-    //     //        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
-
-    //     // <<-- 날짜에 대한 스케줄 목록을 조회
-    //     $response_data = $this->schedule->get_sch_by_date($search_date, $std_for_id);
-    //     // -->>
-
-    //     $is_sch_no_data = $response_data->count();
-
-    //     if ($is_sch_no_data) return self::response_json(self::_STD_FOR_SHOW_SCH_NO_DATA, 202);
-
-    //     return
-    //         self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $response_data);
-    // }
-
 
     /**
      * 관리자 - 해당 유학생 스케줄 등록
@@ -259,9 +257,9 @@ class ScheduleController extends Controller
             // 요일별 데이터 출력
             foreach ($schedule_data as $key => $day) {
                 // 처음 순회하는 루프인 경우 요일 맞추기
-                if($isFirstLoop && $sect_start_yoil != "월") {
+                if ($isFirstLoop && $sect_start_yoil != "월") {
                     // Ex 학기 시작 날짜는 수요일인 경우 => 월, 화 는 뛰어 넘어야 함.
-                    if($sect_start_yoil != $key) continue;
+                    if ($sect_start_yoil != $key) continue;
                     else $isFirstLoop = false;
                 }
 
@@ -537,17 +535,17 @@ class ScheduleController extends Controller
      *
      * @return JsonResponse
      */
-    // TODO 가능 날짜 조회하는 것 수정 필요
     public function index(Preference $preference_instance): JsonResponse
     {
         $setting_value = $preference_instance->getPreference();                                 /* 환경설정 변수 */
+        $max_std_once = $setting_value->max_std_once;
 
         /* 시작 날짜 */
         $sch_start_date = date("Y-m-d", strtotime("Now"));
         /* 예약 신청 시작 기준 종료 날짜 */
         $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
-        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_res_count', 'sch_start_date', 'sch_end_date')
+        $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_start_date', 'sch_end_date')
             ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
             ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
@@ -555,9 +553,8 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($allSchdules as $schedule) {
-            $res_count = $schedule->sch_res_count;
-            $max_std_once = $setting_value->max_std_once;
-            $schedule['sch_res_available'] = ($res_count <= $max_std_once) ? true : false;
+            $schedule['std_res_count'] = Reservation::where('res_sch', $schedule['sch_id'])->count();
+            $schedule['sch_res_available'] = ($schedule['std_res_count'] <= $max_std_once) ? true : false;
         }
 
         return response()->json([

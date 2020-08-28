@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
-use App\Setting;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -308,7 +307,7 @@ class ReservationController extends Controller
     public function std_kor_show_res_by_date(Request $request): JsonResponse
     {
         $rules = [
-            'search_date' => 'required|date|after or equal:' . date("Y-m-d")
+            'search_date' => 'required|date'
         ];
 
         // <<-- Request 유효성 검사

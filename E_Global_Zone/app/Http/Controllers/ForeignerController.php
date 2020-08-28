@@ -96,7 +96,8 @@ class ForeignerController extends Controller
                 'std_for_lang',
                 'std_for_country',
                 'std_for_state_of_favorite',
-                'std_for_num_of_delay_input',
+                'std_for_num_of_delay_permission',
+                'std_for_num_of_delay_input'
             )
             ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
             ->where('work_sect', $sect_id['sect_id'])
@@ -107,7 +108,6 @@ class ForeignerController extends Controller
         $time['sect_start_date'] = $sect_id['sect_start_date'];
         $time['sect_end_date'] = $sect_id['sect_end_date'];
 
-        //TODO 예약 미승인 횟수 추가하기.
         if (count($work_std_for_list) === 0) {
             return response()->json([
                 'message' => self::_WORK_STD_FOR_INDEX_FAILURE,
