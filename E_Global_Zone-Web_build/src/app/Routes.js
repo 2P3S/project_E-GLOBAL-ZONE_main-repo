@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
-import { selectIsLogin, selectUser } from "redux/userSlice/userSlice";
+import { selectIsLogin, selectUser } from "../redux/userSlice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-import MobileRouter from "app/Routers/Router.Mobile";
-import { ManagerRouter, ForeignerRouter } from "app/Routers/Router.Web";
-import { LoginRouter } from "app/Routers/Router.Login";
+import MobileRouter from "../app/Routers/Router.Mobile";
+import { ManagerRouter, ForeignerRouter } from "../app/Routers/Router.Web";
+import { LoginRouter } from "../app/Routers/Router.Login";
 import conf from "../conf/conf";
-import { logOut, setClass } from "redux/userSlice/userSlice";
+import { logOut, setClass } from "../redux/userSlice/userSlice";
 import { setTodayFuture, setTodayToday } from "../redux/confSlice/confSlice";
 
 /**

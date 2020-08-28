@@ -1,38 +1,38 @@
-import {createSlice} from "@reduxjs/toolkit";
-import User from "conf/class/User";
-import conf from "conf/conf";
+import { createSlice } from "@reduxjs/toolkit";
+import User from "../../conf/class/User";
+import conf from "../../conf/conf";
 
-const nakamura = 1231234
-const korean = 1321704
+const nakamura = 1231234;
+const korean = 1321704;
 
 /**
  * ReduxSlice - user
  * @type {Slice<{isLogin: boolean, user}, {setClass: reducers.setClass, logIn: reducers.logIn, logOut: reducers.logOut}, string>}
  */
 export const userSlice = createSlice({
-    name: "user",
-    initialState: {
-        isLogin: true,
-        user: {id: korean, userClass: conf.userClass.Manager, name: '사람이름'},
-    },
-    reducers: {
-        logIn: (state) => {
-            state.isLogin = true;
-        },
-        logOut: (state) => {
-            state.isLogin = false;
-        },
-        setClass: (state, action) => {
-            state.user = {id: action.payload[0], userClass: action.payload[1]};
-            // state.user.userClass = action.payload;
-        },
-    },
+	name: "user",
+	initialState: {
+		isLogin: true,
+		user: { id: korean, userClass: conf.userClass.Manager, name: "사람이름" },
+	},
+	reducers: {
+		logIn: (state) => {
+			state.isLogin = true;
+		},
+		logOut: (state) => {
+			state.isLogin = false;
+		},
+		setClass: (state, action) => {
+			state.user = { id: action.payload[0], userClass: action.payload[1] };
+			// state.user.userClass = action.payload;
+		},
+	},
 });
 
 //1231234 나카무라상
 //1321704 한국인 테스트 계정
 
-export const {logIn, logOut, setClass} = userSlice.actions;
+export const { logIn, logOut, setClass } = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

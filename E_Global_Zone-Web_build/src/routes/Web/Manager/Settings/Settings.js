@@ -31,7 +31,6 @@ export default function Settings() {
 	};
 
 	useEffect(() => {
-		window.easydropdown.all();
 		getAdminSetting(setSettings);
 	}, []);
 	useEffect(() => {
@@ -47,6 +46,10 @@ export default function Settings() {
 			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 });
 		}
 	}, [postSettings]);
+	useEffect(() => {
+		window.easydropdown.all();
+	});
+
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	return settings && postSettings ? (
 		<div className="content">
@@ -175,7 +178,6 @@ export default function Settings() {
 										handleChange(`res_start_period`, e.target.value);
 									}}
 								>
-									>
 									{array.map((v) => {
 										return (
 											<option
