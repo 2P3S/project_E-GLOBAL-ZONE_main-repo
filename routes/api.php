@@ -230,3 +230,5 @@ Route::middleware('auth.multi')->group(static function () {
         Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
 });
+
+Route::get("mail", "MailController@send");
