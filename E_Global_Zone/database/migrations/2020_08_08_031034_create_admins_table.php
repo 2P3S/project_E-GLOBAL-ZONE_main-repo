@@ -18,6 +18,7 @@ class CreateAdminsTable extends Migration
             $table->string('account')->unique();
             $table->string('password');
             $table->string('name');
+            $table->dateTime('reset_expire_time')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
