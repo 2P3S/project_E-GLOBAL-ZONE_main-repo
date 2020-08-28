@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
-import deepmearge from "deepmerge";
+import deepmerge from "deepmerge";
 import * as _ from "lodash";
 
 import useModal from "../../../../modules/hooks/useModal";

@@ -229,6 +229,7 @@ body {
 	border: 1px solid #bcbfc7;
 	font-weight: 600;
 	border-radius: 5px;
+	box-sizing:border-box;
 }
 .input_box input {
 	height: 50px;
@@ -370,7 +371,7 @@ body {
 .history_wrap .month_move .arrow div {
 	display: inline-block;
 	width: 20px;
-	padding: 10px 0;
+	/* padding: 10px 0; */
 	text-align: center;
 }
 .history_wrap table {
@@ -519,4 +520,10 @@ select::-ms-expand {
 	font-size: 14px;
 	font-weight: 600;
 	color: #6a6a6a;
+}
+
+/********************모바일********************/
+@media (max-width: 400px) {
+	.mfooter p {color:#525252; word-break:keep-all;}
+	.mfooter p span {display:inline; color:#aaa;}
 }

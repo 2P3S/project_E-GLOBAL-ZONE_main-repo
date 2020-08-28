@@ -9,11 +9,12 @@ const korean = 1321704;
  * ReduxSlice - user
  * @type {Slice<{isLogin: boolean, user}, {setClass: reducers.setClass, logIn: reducers.logIn, logOut: reducers.logOut}, string>}
  */
+ /* Korean/ Foreigner / Manager */
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
 		isLogin: true,
-		user: { id: korean, userClass: conf.userClass.Manager, name: "사람이름" },
+		user: { id: korean, userClass: conf.userClass.Korean, name: "사람이름" },
 	},
 	reducers: {
 		logIn: (state) => {
