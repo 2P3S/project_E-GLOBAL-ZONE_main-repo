@@ -80,28 +80,28 @@ class Calendar extends React.Component {
 
 		return (
 			<span className="month-label">
-				{month.format("YYYY")}년 {month.format("M")}월
+				<span className="num">{month.format("YYYY")}</span>년 <span className="num">{month.format("M")}</span>월
 			</span>
 		);
 	}
 
 	render() {
 		return (
-			<section className="calendar">
+			<section className="calendar modal">
 				<header className="header">
 					<div className="month-display row">
 						<span
 							onClick={this.previous}
-							style={{ cursor: "pointer", fontSize: "5px", marginLeft: "10px" }}
+							className="arrows prev"
 						>
-							지난 달
+							<img src="/global/img/calender_arrow_prev.gif" alt="지난 달" />
 						</span>
 						{this.renderMonthLabel()}
 						<span
 							onClick={this.next}
-							style={{ cursor: "pointer", fontSize: "5px", marginRight: "10px" }}
+							className="arrows next"
 						>
-							다음 달
+							<img src="/global/img/calender_arrow_next.gif" alt="다음 달" />
 						</span>
 					</div>
 					<DayNames />

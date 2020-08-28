@@ -65,6 +65,7 @@ const conf = {
 		JAPANESE,
 		CHINESE,
 	},
+
 	url: "http://test.94soon.net/api/",
 };
 // url: "http://hyun9803.iptime.org:8888/",

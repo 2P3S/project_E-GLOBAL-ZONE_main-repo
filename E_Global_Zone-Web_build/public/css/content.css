@@ -919,7 +919,6 @@ table.student_manage_table td:first-child {
 	font-size: 13px;
 	width: 75px;
 	height: 38px;
-	line-height: 38px;
 	padding: 0 8px 0 20px;
 	color: #373a44;
 	border-radius: 5px;
@@ -927,6 +926,10 @@ table.student_manage_table td:first-child {
 	border: 1px solid #ccc;
 	font-weight: 600;
 	color: #000;
+}
+
+.set_wrap .input .select_input input[type="number"] {
+	width:45px;
 }
 
 .set_wrap .input .select_input span {
@@ -1010,6 +1013,7 @@ table.student_manage_table td:first-child {
 	color: #fff;
 	font-weight: 600;
 	background: #373a44;
+	margin-left:5px;
 }
 
 .input .select_tit span.bold {
