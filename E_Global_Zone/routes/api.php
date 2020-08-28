@@ -230,3 +230,7 @@ Route::middleware('auth.multi')->group(static function () {
         Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
 });
+
+Route::middleware('auth.korean')->group(function () {
+    // Route::get('/test', 'ReservationController@test')->name('reservations.test');
+});

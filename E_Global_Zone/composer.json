@@ -12,7 +12,7 @@
         "ext-json": "*",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
-        "laravel/socialite": "2.0.*",
+        "laravel/socialite": "^4.4",
         "laravel/tinker": "^2.0",
         "smartins/passport-multiauth": "^7.0"
     },

@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'oauth.providers' => \SMartins\PassportMultiauth\Http\Middleware\AddCustomProvider::class,
         'auth.multi' => \App\Http\Middleware\AuthenticateMulti::class,
+        'auth.korean' => \App\Http\Middleware\GoogleAuth::class,
     ];
 
     /**
