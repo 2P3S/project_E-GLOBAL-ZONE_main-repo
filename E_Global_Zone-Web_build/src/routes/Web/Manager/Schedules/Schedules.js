@@ -254,7 +254,7 @@ export default function Schedules() {
 					<li>5PM</li>
 					<li>6PM</li>
 				</ul>
-				<div className="scroll_area">
+				<div className="scroll_area pt40">
 					{!pending ? (
 						<table className="sch_table">
 							<colgroup>
@@ -272,6 +272,13 @@ export default function Schedules() {
                                 state6 :: [관리자 승인 완료]
                                 state7 :: 예약없음 
                             --> */}
+							
+								{/*  ********[마우스 오버 삭제 버튼 예시]********		
+								<div class="hover_btn sch">
+									<div class="area">
+										<div class="lightGray">삭제</div>
+									</div>
+								</div> */}
 
 								<th scope="row" rowSpan={countOfEng + 1}>
 									{/* rowSpan = 해당 언어 학생 수 */}

@@ -28,12 +28,20 @@ export default function GetSections() {
 
 			<div className="scroll_area mt20">
 				<table className="pop_table">
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+						<col width="12%" />
+					</colgroup>
 					<thead>
 						<tr>
 							<th scope="col">구분</th>
 							<th scope="col">시작일</th>
 							<th scope="col">종료일</th>
 							<th scope="col">근무 학생 수</th>
+							<th scope="col">수정</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -46,8 +54,8 @@ export default function GetSections() {
 										</td>
 										<td>{moment(v.sect_start_date).format("YYYY-MM-DD")}</td>
 										<td>{moment(v.sect_end_date).format("YYYY-MM-DD")}</td>
+										<td>{v.std_for_count}명{" "}</td>
 										<td>
-											{v.std_for_count}명{" "}
 											<img
 												onClick={() => {
 													setSelectSect(v.sect_name);

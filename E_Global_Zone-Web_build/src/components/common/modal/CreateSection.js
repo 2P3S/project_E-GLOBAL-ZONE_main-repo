@@ -123,6 +123,28 @@ export default function CreateSection({
 							<option>겨울</option>
 						</select>
 						<span>학기</span>
+
+						<div
+							className="btn"
+							onClick={
+								mode
+									? () => {
+											postAdminSection(
+												{
+													sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
+													sect_start_date: startDate,
+													sect_end_date: endDate,
+												},
+												setIsDone
+											);
+									}
+									: () => {
+											patchAdminSection(currentSect.sect_id, currentSect, setIsDone);
+									}
+							}
+						>
+							{mode ? "저장" : "수정"}
+						</div>
 					</div>
 				</>
 			) : (
@@ -153,7 +175,7 @@ export default function CreateSection({
 				</div>
 			</div>
 
-			<div className="btn_area right">
+			{/* <div className="btn_area right"> << 위치 이동 >>
 				<div
 					className="bbtn darkGray"
 					onClick={
@@ -175,7 +197,7 @@ export default function CreateSection({
 				>
 					{mode ? "저장" : "수정"}
 				</div>
-			</div>
+			</div> */}
 			<Modal isOpen={isOpen} handleClose={handleClose}>
 				<ModalCalendar
 					handleClose={handleClose}
