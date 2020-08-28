@@ -11,10 +11,6 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
- Route::get('/', function () {
-     return view('emails.reset');
- });
+Route::get('/', function () {
+    return view('welcome');
+});

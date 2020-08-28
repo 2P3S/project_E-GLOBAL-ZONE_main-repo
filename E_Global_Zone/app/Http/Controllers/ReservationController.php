@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
-use App\Setting;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
