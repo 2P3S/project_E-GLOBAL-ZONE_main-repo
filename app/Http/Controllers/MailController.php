@@ -29,7 +29,7 @@ class MailController extends Controller
             "reset_request_time" => date(self::_DATETIME_FORMAT),
             "reset_expire_time" => date(self::_DATETIME_FORMAT, strtotime("+{$effective_time} minutes")),
             "effective_time" => $effective_time,
-            "request_url" => \request()->url()
+            "request_url" => $_SERVER['HTTP_X_FORWARDED_FOR']
         ];
 
         $admin->update([
