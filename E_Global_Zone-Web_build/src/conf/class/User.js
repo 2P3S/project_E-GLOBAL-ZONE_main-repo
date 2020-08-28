@@ -27,6 +27,7 @@ class Korean extends User {
 	gmail;
 	attendance;
 	absent;
+
 	premission;
 	restriction;
 
