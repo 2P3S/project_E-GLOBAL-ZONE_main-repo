@@ -1,132 +1,187 @@
 //variables & mixins
-@white: #FFFFFF;
-@ltGrey: #EFEFEF;
-@mdGrey: #C0C0C0;
-@dkGrey: #CCCCCC;
-@secondary: #2875C7;
+@white: #ffffff;
+@ltGrey: #efefef;
+@mdGrey: #c0c0c0;
+@dkGrey: #cccccc;
+@secondary: #2875c7;
 @dkSecondary: darken(@secondary, 10%);
 @ltSecondary: lighten(@secondary, 45%);
 @borderColor: @white;
 @background: @white;
 
 .vertical-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 // meat of the matter
 html {
-  font-size: 62.5%;
+	font-size: 62.5%;
 }
 
 .row {
-  display: flex;
-  width: 100%;
+	display: flex;
+	width: 100%;
 }
 
 .calendar {
-  display: block;
-  background: @white;
-  width: 300px;
-  border: solid 1px @borderColor;
-  margin: 10px auto;
-  box-shadow: 0 0 15px 0 @mdGrey;
-  font-size: 1.3rem;
-  text-align: center;
+	display: block;
+	background: @white;
+	border: solid 1px @borderColor;
+	margin: 10px auto;
+	font-size: 1.3rem;
+	text-align: center;
+	margin: 40px 0;
 
-  header {
-    .vertical-center;
-    color: @white;
-    cursor: default;
-    font-size: 1.4rem;
-    display: block;
-    font-weight: bold;
-    text-transform: uppercase;
-    user-select: none;
+	header {
+		.vertical-center;
+		color: @white;
+		cursor: default;
+		font-size: 1.4rem;
+		display: block;
+		font-weight: bold;
+		text-transform: uppercase;
+		user-select: none;
 
-    .month-display {
-      align-items: center;
-      height: 40px;
-      background: @secondary;
-    }
+		.month-display {
+			position: relative;
+			height: 40px;
+			color: #373a44;
+			font-size: 16px;
+		}
 
-    .month-label {
-      flex: 1;
-    }
+		.month-display .arrows {
+			position: absolute;
+			top: 3px;
+			cursor: pointer;
+		}
 
-    .arrow {
-      text-align: center;
-      flex-basis: 15%;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background .2s;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+		.month-display .arrows.prev {
+			right: 45px;
+		}
 
-      &:hover {
-        background: @dkSecondary;
-      }
-    }
-  }
+		.month-display .arrows.next {
+			right: 15px;
+		}
 
-  .calendar .foreigner {
-    width: 280px;
-  }
+		.month-label {
+			font-family: "Noto Sans KR", sans-serif;
+			font-weight: 500;
+			text-align: left;
+			padding-left: 10px;
+		}
 
-  .week {
-    border-top: solid 1px @borderColor;
+		.month-label .num {
+			font-family: "Lato", sans-serif;
+			font-weight: 700;
+			font-size: 21px;
+		}
 
-    &:first-child {
-      border-top: none;
-    }
-  }
+		.arrow {
+			text-align: center;
+			flex-basis: 15%;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background 0.2s;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 
-  .day-names {
-    color: @secondary;
-    font-weight: bold;
-    cursor: default;
-    font-size: 1.2rem;
+			&:hover {
+				background: @dkSecondary;
+			}
+		}
+	}
 
-    .day {
-      cursor: default;
+	.calendar .foreigner {
+		width: 280px;
+	}
 
-      &:hover {
-        background: inherit;
+	.week {
+		border-top: solid 1px @borderColor;
 
-      }
-    }
-  }
+		&:first-child {
+			border-top: none;
+		}
+	}
 
-  .day {
-    .vertical-center;
-    flex: 1;
-    height: 35px;
-    border-left: solid 1px @borderColor;
-    cursor: pointer;
-    transition: all .2s;
+	.day-names {
+		color: @secondary;
+		font-weight: bold;
+		cursor: default;
+		font-size: 1.2rem;
 
-    &:hover {
-      background: @ltGrey;
-    }
+		.day {
+			cursor: default;
 
-    &:first-child {
-      border-left: none;
-    }
+			&:hover {
+				background: inherit;
+			}
+		}
+	}
+	.day-names .day {
+		font-family: "Noto Sans KR", sans-serif;
+	}
+	.day {
+		.vertical-center;
+		flex: 1;
+		height: 39px;
+		border-left: solid 1px @borderColor;
+		cursor: pointer;
+		transition: all 0.2s;
+		font-family: "Lato", sans-serif;
+		font-weight: 600;
+		color: #373a44;
+		border-radius: 100%;
+		position: relative;
 
-    &.today {
-      background: @ltSecondary;
-    }
+		&:hover {
+			background: @ltGrey;
+		}
 
-    &.different-month {
-      color: @mdGrey;
-    }
+		&:first-child {
+			border-left: none;
+		}
 
-    &.selected {
-      background: @secondary;
-      color: @white;
-    }
-  }
+		&.today {
+			background: #dbe3ff;
+		}
+
+		&.different-month {
+			color: @mdGrey;
+		}
+
+		&.selected {
+			background: #2050e6;
+			color: @white;
+		}
+	}
+
+	.cir {
+		position: absolute;
+		bottom: 0px;
+	}
+}
+
+/********************모바일********************/
+@media (max-width: 700px) {
+	.calendar .day {
+		height: 63px;
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 470px) {
+	.calendar .day {
+		height: 49px;
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 365px) {
+	.calendar .day {
+		height: 41px;
+	}
 }
