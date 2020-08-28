@@ -16,6 +16,7 @@ class MailController extends Controller
     private const _EFFECTIVE_TIME = 1;
     private const _DATETIME_FORMAT = "Y-m-d H:i:s";
     private const _ADMIN_INIT_PASSWORD = "oicyju5630!";
+    private const _REQUEST_URL = "http://www.94soon.net/api/reset";
 
 
     /**
@@ -29,7 +30,7 @@ class MailController extends Controller
             "reset_request_time" => date(self::_DATETIME_FORMAT),
             "reset_expire_time" => date(self::_DATETIME_FORMAT, strtotime("+{$effective_time} minutes")),
             "effective_time" => $effective_time,
-            "request_url" => $_SERVER['HTTP_X_FORWARDED_FOR']
+            "request_url" => self::_REQUEST_URL
         ];
 
         $admin->update([
