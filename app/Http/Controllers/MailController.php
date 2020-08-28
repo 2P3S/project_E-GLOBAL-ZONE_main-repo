@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 
 class MailController extends Controller
 {
@@ -20,6 +23,8 @@ class MailController extends Controller
 
 
     /**
+     * 관리자 비밀번호 이메일 초기화 요청
+     *
      * @return JsonResponse
      */
     public function request_reset(): JsonResponse
@@ -55,6 +60,11 @@ class MailController extends Controller
         return self::response_json(self::_MAIL_SEND_SUCCESS, 200);
     }
 
+    /**
+     * * 관리자 비밀번호 이메일 초기화 실행
+     *
+     * @return Application|Factory|View
+     */
     public function run_reset()
     {
         $admin = Admin::where('id', 1);
