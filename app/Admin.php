@@ -14,7 +14,7 @@ class Admin extends Authenticatable
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'account', 'name'
+        'id', 'account', 'name', 'reset_expire_time'
     ];
 
     protected $hidden = [
