@@ -193,7 +193,6 @@ export default function Foreigner() {
 										<col width="7%" />
 										<col width="13%" />
 										<col width="7%" />
-										<col width="7%" span="6" />
 									</colgroup>
 									<thead>
 										<tr>

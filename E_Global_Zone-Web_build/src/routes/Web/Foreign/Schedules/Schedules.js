@@ -222,7 +222,7 @@ export default function Schedules() {
                 div.className = "puple";
                 break;
             case STATE_NOTHING:
-                div.className = "state_box state7";
+                div.className = "gray";
                 break;
         }
         if (typeof value === "object") {

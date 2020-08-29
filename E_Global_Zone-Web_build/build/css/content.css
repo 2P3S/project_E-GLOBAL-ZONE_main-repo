@@ -371,6 +371,7 @@ table.sch_table tbody td {
 /* state7 :: 예약없음 */
 .state_box.state7 {
 	background: #e1e1ea;
+	color: #373a44;
 }
 
 table.sch_table tbody tr:hover {
@@ -566,6 +567,14 @@ table.sch_table tbody tr:hover td:first-child {
 	color: #fff;
 }
 
+/* 스케줄관리 hover button [2020-08-29 추가] */
+.hover_btn.sch {
+	width: 53px;
+}
+.hover_btn.sch .area {
+	background-position: 50% bottom;
+}
+
 /* 유학생 관리, 한국인 학생 관리 공용 테이블 */
 table.student_manage_table {
 	width: 100%;
@@ -709,7 +718,9 @@ table.student_manage_table td:first-child {
 	position: absolute;
 	top: 30px;
 	left: 57px;
-	width: 792px;
+	width: 793px;
+	background: #fff;
+	z-index: 1;
 }
 
 .week_wrap .day_week li {
@@ -919,7 +930,6 @@ table.student_manage_table td:first-child {
 	font-size: 13px;
 	width: 75px;
 	height: 38px;
-	line-height: 38px;
 	padding: 0 8px 0 20px;
 	color: #373a44;
 	border-radius: 5px;
@@ -927,6 +937,10 @@ table.student_manage_table td:first-child {
 	border: 1px solid #ccc;
 	font-weight: 600;
 	color: #000;
+}
+
+.set_wrap .input .select_input input[type="number"] {
+	width: 45px;
 }
 
 .set_wrap .input .select_input span {
@@ -1010,6 +1024,7 @@ table.student_manage_table td:first-child {
 	color: #fff;
 	font-weight: 600;
 	background: #373a44;
+	margin-left: 5px;
 }
 
 .input .select_tit span.bold {
@@ -1834,75 +1849,60 @@ ul.img_file li p.file_name:hover {
 /* 유학생 등록 */
 .popup.regist {
 	width: 925px;
+	position: relative;
 }
-
 .popup.regist table {
 	font-size: 12px;
 }
-
 .popup.regist .scroll_area {
-	height: 175px;
+	height: 300px;
 }
-
 .regist_input {
 	width: 100%;
 	display: inline-block;
 	margin-top: 15px;
 }
-
 .regist_input li {
 	float: left;
 	margin-left: 5px;
 }
-
 .regist_input li:first-child {
 	margin-left: 0px;
 }
-
 .regist_input li input {
 	border: 1px solid #bcbfc7;
 	height: 36px;
 	line-height: 36px;
 	padding: 0 0 0 10px;
 }
-
 .regist_input li input::placeholder {
 	color: #9b9ea7;
 	font-size: 12px;
 }
-
 .regist_input li:nth-child(1) input {
 	width: 75px;
 }
-
 .regist_input li:nth-child(2) input {
 	width: 75px;
 }
-
 .regist_input li:nth-child(3) input {
 	width: 85px;
 }
-
 .regist_input li:nth-child(4) input {
 	width: 155px;
 }
-
 .regist_input li:nth-child(5) input {
 	width: 85px;
 }
-
 .regist_input li:nth-child(6) input {
 	width: 135px;
 }
-
 .regist_input li:nth-child(7) input {
 	width: 155px;
 }
-
 .regist_input li:nth-child(8) input {
 	width: 125px;
 }
-
 .popup.regist .add_btn {
 	cursor: pointer;
 	width: 100%;
@@ -1914,7 +1914,6 @@ ul.img_file li p.file_name:hover {
 	margin-top: 8px;
 	text-align: center;
 }
-
 .popup.regist .add_btn span {
 	display: inline-block;
 	font-size: 13px;
@@ -1923,38 +1922,59 @@ ul.img_file li p.file_name:hover {
 	padding-right: 20px;
 	background: url(/global/img/add_btn_ico.gif) no-repeat right center;
 }
-
 .popup.regist .add_btn:hover {
 	background: #34bcad;
 	transition-duration: 0.3s;
 }
-
 .popup.regist .add_btn:hover span {
 	color: #fff;
 	background: url(/global/img/add_btn_icoOn.gif) no-repeat right center;
+}
+.popup.regist .search_box {
+	position: absolute;
+	right: 45px;
+	top: 40px;
+}
+.popup.regist .search_box input {
+	border: 1px solid #ccc;
+	padding: 0 10px;
+	height: 40px;
+	line-height: 40px;
+	width: 200px;
+}
+.popup.regist .search_box button {
+	background: #34bcad;
+	color: #fff;
+	border: none;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 18px;
+	margin-left: 5px;
+	border-radius: 5px;
+	font-weight: 600;
+	font-size: 13px;
+	font-family: "Noto Sans KR", sans-serif;
 }
 
 /* 환경설정 - 학기 기간 설정 */
 .popup.semester {
 	position: relative;
-	width: 890px;
+	width: 615px;
 }
-
 .popup.semester .top_select {
 	position: absolute;
 	top: 40px;
 	right: 40px;
 	display: inline-block;
 }
-
 .popup.semester .top_select span {
 	float: left;
 	line-height: 43px;
 	font-size: 13px;
 	margin-left: 5px;
 }
-
 .popup.semester .top_select .edd-root {
+	margin-left: 10px;
 	float: left;
 	font-size: 13px;
 	width: 85px;
@@ -1962,39 +1982,24 @@ ul.img_file li p.file_name:hover {
 	color: #373a44;
 	border-radius: 5px;
 	border: 1px solid #ccc;
+	line-height: 28px;
 }
-
 .popup.semester .top_select .edd-root:first-child {
 	margin-left: 0;
 	width: 115px;
 }
-
-.popup.semester .search_box {
-	float: right;
-	margin: 30px 0 15px 0;
-}
-
-.popup.semester .search_box input {
-	border: 1px solid #ccc;
-	padding: 0 10px;
-	height: 40px;
-	line-height: 40px;
-	width: 200px;
-}
-
-.popup.semester .search_box button {
-	background: #34bcad;
-	color: #fff;
-	border: none;
-	height: 40px;
-	line-height: 40px;
-	padding: 0 18px;
+.popup.semester .btn {
+	cursor: pointer;
+	float: left;
+	margin-left: 15px;
+	height: 43px;
+	line-height: 43px;
 	border-radius: 5px;
-	font-weight: 600;
+	padding: 0 16px;
+	background: #373a44;
+	color: #fff;
 	font-size: 13px;
-	font-family: "Noto Sans KR", sans-serif;
 }
-
 .date_select {
 	width: 100%;
 	text-align: center;
@@ -2005,22 +2010,18 @@ ul.img_file li p.file_name:hover {
 	margin-top: 10px;
 	display: inline-block;
 }
-
 .date_select span {
 	margin: 0 10px;
 }
-
 .date_select .start_date {
 	display: inline-block;
 	text-align: left;
 }
-
 .date_select .start_date p {
 	font-size: 13px;
 	color: #1c233d;
 	margin-bottom: 8px;
 }
-
 .date_select .start_date .date,
 .date_select .start_date .edd-root {
 	cursor: pointer;
@@ -2038,7 +2039,6 @@ ul.img_file li p.file_name:hover {
 	-moz-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 }
-
 .date_select .start_date .date {
 	padding: 0 0 0 15px;
 	background: #fff url(/global/img/date_select_ico.gif) no-repeat 90% 50%;
@@ -2070,6 +2070,7 @@ ul.img_file li p.file_name:hover {
 	border: none;
 	height: 38px;
 	line-height: 38px;
+	margin-left: 5px;
 	padding: 0 18px;
 	border-radius: 5px;
 	font-weight: 600;
@@ -2080,7 +2081,6 @@ ul.img_file li p.file_name:hover {
 .popup.inquiry table td img {
 	cursor: pointer;
 	display: inline-block;
-	margin-left: 8px;
 	vertical-align: middle;
 }
 
@@ -2341,5 +2341,5 @@ ul.tab.no5 li {
 }
 
 .off {
-	display: none;
+	visibility: hidden;
 }

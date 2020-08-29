@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "react-modal";
 
 const modalStyle = {
@@ -28,7 +28,11 @@ Modal.setAppElement(document.getElementById("modal-root"));
  * @param handleClose
  * @returns {JSX.Element}
  */
-export default function ({ children, isOpen, handleClose }) {
+export default function ({ children, isOpen, handleClose, reRender }) {
+	useEffect(() => {
+		console.log(reRender);
+		return reRender;
+	}, []);
 	return (
 		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
 			{children}
