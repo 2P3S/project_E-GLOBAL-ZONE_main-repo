@@ -13,8 +13,8 @@ const korean = 1321704;
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		isLogin: true,
-		user: { id: korean, userClass: conf.userClass.MANAGER, name: "사람이름" },
+		isLogin: false,
+		user: { id: "", userClass: "", name: "" },
 	},
 	reducers: {
 		logIn: (state) => {

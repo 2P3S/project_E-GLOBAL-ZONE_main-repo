@@ -76,6 +76,13 @@ body {
 	font-weight: 600;
 	letter-spacing: -1px;
 }
+.head .head_area .menu li div {
+	font-size: 16px;
+	color: #fff;
+	font-weight: 600;
+	letter-spacing: -1px;
+	cursor: pointer;
+}
 
 /********************* CONTENT *********************/
 .wrapper {
