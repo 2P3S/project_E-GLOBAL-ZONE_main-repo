@@ -84,6 +84,11 @@ body {
 	box-sizing: border-box;
 }
 
+.mhead, .mfooter, .wrap {
+	max-width:600px;
+	margin:0 auto;
+}
+
 /* 로그인 */
 .wrap.mobile_login {
 	padding: 260px 0 100px 0;

@@ -76,6 +76,13 @@ body {
 	font-weight: 600;
 	letter-spacing: -1px;
 }
+.head .head_area .menu li div {
+	font-size: 16px;
+	color: #fff;
+	font-weight: 600;
+	letter-spacing: -1px;
+	cursor: pointer;
+}
 
 /********************* CONTENT *********************/
 .wrapper {
@@ -171,6 +178,17 @@ body {
 }
 
 .login_wrap .login_input input[type="text"] {
+	float: left;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	height: 50px;
+	line-height: 50px;
+	width: 275px;
+	padding: 0 12px;
+	margin-top: 5px;
+}
+
+.login_wrap .login_input input[type="password"] {
 	float: left;
 	border: 1px solid #ccc;
 	border-radius: 5px;
@@ -497,7 +515,7 @@ table.sch_table tbody tr:hover td:first-child {
 
 .hover_btn {
 	position: absolute;
-	z-index: 10;
+	z-index: 1;
 	left: -50%;
 	margin-left: 50%;
 	bottom: 44px;
@@ -1790,6 +1808,14 @@ table.pop_table3 td {
 .filebox p {
 	font-size: 11px;
 	margin-bottom: 5px;
+}
+.filebox input[type="button"] {
+	position: absolute;
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
 }
 .filebox input[type="file"] {
 	position: absolute;

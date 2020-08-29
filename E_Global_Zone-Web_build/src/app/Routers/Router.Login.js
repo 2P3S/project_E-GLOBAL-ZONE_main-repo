@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
-import Login, {KoreanLogin} from "../../routes/Login/Login";
+import Login, { KoreanLogin } from "../../routes/Login/Login";
 
 /**
  * LoginRouter - Router for Login
@@ -12,6 +12,7 @@ export const LoginRouter = () => {
 		<Switch>
 			{/*<Redirect exact path="/" to={`/student`} />*/}
 			<Route exact path="/" component={Login} />
+			<Route path="/foreigner" component={Login} />
 			<Route path="/student" component={KoreanLogin} />
 			<Route path="/manager" component={""} />
 		</Switch>
