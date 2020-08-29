@@ -13,17 +13,23 @@ const korean = 1321704;
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		isLogin: window.localStorage.getItem("token") ? true : false,
+		// isLogin: window.localStorage.getItem("token") ? true : false,
+		// user: {
+		// 	id: window.localStorage.getItem("loginId")
+		// 		? window.localStorage.getItem("loginId")
+		// 		: "",
+		// 	userClass: window.localStorage.getItem("userClass")
+		// 		? window.localStorage.getItem("userClass")
+		// 		: "",
+		// 	name: window.localStorage.getItem("loginName")
+		// 		? window.localStorage.getItem("loginName")
+		// 		: "",
+		// },
+		isLogin: true,
 		user: {
-			id: window.localStorage.getItem("loginId")
-				? window.localStorage.getItem("loginId")
-				: "",
-			userClass: window.localStorage.getItem("userClass")
-				? window.localStorage.getItem("userClass")
-				: "",
-			name: window.localStorage.getItem("loginName")
-				? window.localStorage.getItem("loginName")
-				: "",
+			id: "",
+			userClass: conf.userClass.MANAGER,
+			name: "이름이다",
 		},
 	},
 	reducers: {
