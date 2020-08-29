@@ -1082,7 +1082,7 @@ table.student_manage_table td:first-child {
 
 .search_student .tsearch {
 	display: inline-block;
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }
 
 .search_student .tsearch input[type="text"] {
@@ -1111,7 +1111,7 @@ table.student_manage_table td:first-child {
 }
 
 .search_student .not_enter,
-.search_student .enter  {
+.search_student .enter {
 	padding: 10px;
 	border: 1px solid #b9c7e6;
 	border-radius: 8px;
@@ -1119,28 +1119,28 @@ table.student_manage_table td:first-child {
 }
 .search_student .not_enter .scroll_area,
 .search_student .enter .scroll_area {
-	margin-top:10px;
-	height:250px;
+	margin-top: 10px;
+	height: 250px;
 }
 .search_student .not_enter p.tit,
 .search_student .enter p.tit {
-	font-size:15px;
-	padding:15px 25px;
-	font-weight:600;
+	font-size: 15px;
+	padding: 15px 25px;
+	font-weight: 600;
 	border-radius: 5px;
-	text-align:left;
+	text-align: left;
 }
 
 .search_student .not_enter p.tit {
-	background:#ebeeff url(/global/img/section_tit_arrow.png) no-repeat 95% center;
+	background: #ebeeff url(/global/img/section_tit_arrow.png) no-repeat 95% center;
 	border: 1px solid #b9c7e6;
-	color:#463fbd;
+	color: #463fbd;
 }
 
 .search_student .enter p.tit {
-	background:#dcf5e8 url(/global/img/section_tit_arrow2.png) no-repeat 95% center;
+	background: #dcf5e8 url(/global/img/section_tit_arrow2.png) no-repeat 95% center;
 	border: 1px solid #b9e6ca;
-	color:#248552;
+	color: #248552;
 }
 
 /* 유학생 관리, 한국인 학생 관리 공용 테이블 */
@@ -1149,11 +1149,11 @@ table.student_manage_table td:first-child {
 	width: 100%;
 	font-size: 12px;
 	font-weight: 500;
-	border-radius: 10px 10px 0 0 ;
+	border-radius: 10px 10px 0 0;
 }
 
-.search_student table th{
-	color:#666;
+.search_student table th {
+	color: #666;
 }
 
 .search_student table th,
@@ -1162,11 +1162,11 @@ table.student_manage_table td:first-child {
 	text-align: center;
 	border-bottom: 1px solid #e3e3e3;
 	padding: 17px 0;
-	color:#222;
+	color: #222;
 }
 
 .search_student table tr:last-child td {
-	border-bottom:none;
+	border-bottom: none;
 }
 
 .search_student table td.time {
@@ -1219,18 +1219,18 @@ table.student_manage_table td:first-child {
 }
 
 .search_student table td button {
-	border:1px solid #ced0d4;
-	font-size:12px;
-	color:#222;
-	padding:5px 15px;
-	border-radius:20px;
-	font-weight:600;
-	background:#fff;
-	cursor:pointer;
+	border: 1px solid #ced0d4;
+	font-size: 12px;
+	color: #222;
+	padding: 5px 15px;
+	border-radius: 20px;
+	font-weight: 600;
+	background: #fff;
+	cursor: pointer;
 }
 
 .search_student table td button:hover {
-	background:#f5f5f5;
+	background: #f5f5f5;
 }
 
 .search_student .scroll_area {
@@ -1238,19 +1238,73 @@ table.student_manage_table td:first-child {
 	height: 500px;
 }
 
-table.work_time {clear:both; width:100%; border-collapse:collapse; color:#373a44; font-size:12px; font-weight:500; border-bottom:1px solid #bcbfc7;}
+table.work_time {
+	clear: both;
+	width: 100%;
+	border-collapse: collapse;
+	color: #373a44;
+	font-size: 12px;
+	font-weight: 500;
+	border-bottom: 1px solid #bcbfc7;
+}
 table.work_time th,
-table.work_time td {position:relative;text-align:center;border: 1px solid #b9c7e6;padding:12px 0;}
-table.work_time td {cursor:pointer; height:65px;}
-table.work_time td.time {color:#463fbd; text-decoration: underline;}
-table.work_time td.name {cursor:pointer; }
-table.work_time td.name:hover {background:#eeeef3; text-decoration: underline; color:#463fbd;}
-table.work_time td.time.none {color:#F49103;}
-table.work_time td .time_area {position:relative; width:100%;height:35px;line-height:35px;background:#463fbd;border: 1px solid #463fbd;margin-left: -1px;}
-table.work_time td .time_area p {position:absolute;z-index:1;color:#fff;width:120px;text-align: left;padding-left: 10px; font-size:11px;}
-table.work_time td .time_area .time_del {cursor:pointer;  margin-top: 12px;float: right;padding-right: 13px;}
-table.work_time td .time_area .time_del img {display:inline-block;}
-table.work_time thead th {border-top: 1px solid #463fbd;background: #ebeeff;color: #2f2a90;}
+table.work_time td {
+	position: relative;
+	text-align: center;
+	border: 1px solid #b9c7e6;
+	padding: 12px 0;
+}
+table.work_time td {
+	cursor: pointer;
+	height: 65px;
+}
+table.work_time td.time {
+	color: #463fbd;
+	text-decoration: underline;
+}
+table.work_time td.name {
+	cursor: pointer;
+}
+table.work_time td.name:hover {
+	background: #eeeef3;
+	text-decoration: underline;
+	color: #463fbd;
+}
+table.work_time td.time.none {
+	color: #f49103;
+}
+table.work_time td .time_area {
+	position: relative;
+	width: 100%;
+	height: 35px;
+	line-height: 35px;
+	background: #463fbd;
+	border: 1px solid #463fbd;
+	margin-left: -1px;
+}
+table.work_time td .time_area p {
+	position: absolute;
+	z-index: 1;
+	color: #fff;
+	width: 120px;
+	text-align: left;
+	padding-left: 10px;
+	font-size: 11px;
+}
+table.work_time td .time_area .time_del {
+	cursor: pointer;
+	margin-top: 12px;
+	float: right;
+	padding-right: 13px;
+}
+table.work_time td .time_area .time_del img {
+	display: inline-block;
+}
+table.work_time thead th {
+	border-top: 1px solid #463fbd;
+	background: #ebeeff;
+	color: #2f2a90;
+}
 
 /********************* POPUP *********************/
 .popup {
@@ -1582,11 +1636,11 @@ table.pop_table3 td {
 }
 
 .top_tit .left p.txt span {
-	font-family: 'Noto Sans KR', sans-serif;
-	display:inline-block;
-	padding:3px 10px;
+	font-family: "Noto Sans KR", sans-serif;
+	display: inline-block;
+	padding: 3px 10px;
 	background: #34bcad;
-	color:#fff;
+	color: #fff;
 	border-radius: 10px;
 	font-size: 11px;
 	font-weight: 600;
@@ -1683,7 +1737,7 @@ table.pop_table3 td {
 	text-align: center;
 	line-height: 70px;
 	width: 100%;
-	font-size:16px;
+	font-size: 16px;
 }
 
 .popup.enrol .area ul li .add_student img {
@@ -1721,52 +1775,52 @@ table.pop_table3 td {
 
 /* 출석결과 입력 [파일업로드]*/
 
-.filebox{
-	margin-top:15px;
-} 
+.filebox {
+	margin-top: 15px;
+}
 .filebox p {
 	font-size: 11px;
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 .filebox input[type="file"] {
-    position: absolute;
-    width: 0;
-    height: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 0;
+	position: absolute;
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
 }
 
 .filebox label {
-    display: inline-block;
-    padding: 10px 20px;
-    color: #222;
-    vertical-align: middle;
-    background-color: #fdfdfd;
-    cursor: pointer;
-    border: 1px solid #dcdcdc;
-    border-radius: 5px;
-    width: 40px;
-    text-align:center;
-    font-size: 12px;
+	display: inline-block;
+	padding: 10px 20px;
+	color: #222;
+	vertical-align: middle;
+	background-color: #fdfdfd;
+	cursor: pointer;
+	border: 1px solid #dcdcdc;
+	border-radius: 5px;
+	width: 40px;
+	text-align: center;
+	font-size: 12px;
 	margin-left: 6px;
 	font-weight: 600;
 }
 
 /* named upload */
 .filebox .upload-name {
-    display: inline-block;
-    height: 35px;
-    font-size:18px;
-    padding: 0 10px;
-    vertical-align: middle;
-    background-color: #f7f7f9;
-    border: 1px solid #dcdcdc;
-    border-radius: 5px;
-    font-size: 13px;
-    overflow: hidden;
-    width: 280px;
-    font-weight: 600;
+	display: inline-block;
+	height: 35px;
+	font-size: 18px;
+	padding: 0 10px;
+	vertical-align: middle;
+	background-color: #f7f7f9;
+	border: 1px solid #dcdcdc;
+	border-radius: 5px;
+	font-size: 13px;
+	overflow: hidden;
+	width: 280px;
+	font-weight: 600;
 }
 
 /* [관리자]출석결과 미입력, 미승인 / [유학생] 출석결과 입력 동일 */
@@ -2170,11 +2224,34 @@ ul.img_file li p.file_name:hover {
 }
 
 /* 신청학생 명단보기 - 학생추가 */
-.popup.student_plus {width:555px; position:relative;}
-.popup.student_plus .search_box {position:absolute; top:40px; right:40px;}
-.popup.student_plus .search_box input {border:1px solid #ccc; padding:0 10px; height:38px; line-height:38px; width:200px;}
-.popup.student_plus .search_box button {background:#34bcad; color:#fff; border:none;height:38px; line-height:38px; padding:0 18px; border-radius:5px;  font-weight:600; font-size:13px; font-family: 'Noto Sans KR', sans-serif;}
-
+.popup.student_plus {
+	width: 555px;
+	position: relative;
+}
+.popup.student_plus .search_box {
+	position: absolute;
+	top: 40px;
+	right: 40px;
+}
+.popup.student_plus .search_box input {
+	border: 1px solid #ccc;
+	padding: 0 10px;
+	height: 38px;
+	line-height: 38px;
+	width: 200px;
+}
+.popup.student_plus .search_box button {
+	background: #34bcad;
+	color: #fff;
+	border: none;
+	height: 38px;
+	line-height: 38px;
+	padding: 0 18px;
+	border-radius: 5px;
+	font-weight: 600;
+	font-size: 13px;
+	font-family: "Noto Sans KR", sans-serif;
+}
 
 /* 환경설정 - 학기 기간 조회 */
 .popup.inquiry {

@@ -464,3 +464,16 @@ export const patchAdminKoreanAccount = (data, setState) => {
 			console.log(e);
 		});
 };
+
+export const deleteAdminScheduleSome = (sch_id, setState) => {
+	defaultAxios({
+		method: "delete",
+		url: conf.url + `api/admin/schedule/some/${sch_id}`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
