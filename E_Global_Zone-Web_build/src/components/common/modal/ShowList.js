@@ -32,6 +32,7 @@ export default function ShowList({
 	const [selectedResId, setSelectedResId] = useState();
 	const [studentList, setStudentList] = useState();
 	const [permission, setPermission] = useState([]);
+	const [pending, setPending] = useState(false);
 	const user = useSelector(selectUser);
 	const history = useHistory();
 	const { isOpen, handleOpen, handleClose: thisHandleClose } = useModal();
@@ -62,6 +63,9 @@ export default function ShowList({
 		}
 		window.easydropdown.all();
 	}, [data]);
+	useEffect(() => {
+		pending && handleClose();
+	}, [pending]);
 
 	const handleDelete = () => {
 		deleteAdminScheduleAdd(selectedResId, handleCloseForDelete);
@@ -174,9 +178,9 @@ export default function ShowList({
 							patchForeignerReservationPermission(
 								sch_id,
 								permission_std_kor_id_list,
-								not_permission_std_kor_id_list
+								not_permission_std_kor_id_list,
+								setPending
 							);
-							handleClose();
 						}}
 					>
 						저장

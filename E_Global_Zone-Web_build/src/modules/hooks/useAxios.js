@@ -131,7 +131,8 @@ export const getForeignerReservation = (sch_id, std_for_id, setData) => {
 export const patchForeignerReservationPermission = (
 	sch_id,
 	permission_std_kor_id_list,
-	not_permission_std_kor_id_list
+	not_permission_std_kor_id_list,
+	setState
 ) => {
 	defaultAxios({
 		url: conf.url + `/api/foreigner/reservation/permission/${sch_id}`,
@@ -141,7 +142,9 @@ export const patchForeignerReservationPermission = (
 			"Context-Type": "application/json",
 		},
 	})
-		.then((res) => {})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
 		.catch((e) => {
 			console.log(e);
 		});

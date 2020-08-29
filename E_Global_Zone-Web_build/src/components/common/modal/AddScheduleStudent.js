@@ -43,6 +43,7 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 			<button onClick={handleSearch}>검색</button>
 			<div>
 				{data &&
+					data.data &&
 					data.data.map((v) => {
 						return (
 							<div>
