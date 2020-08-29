@@ -514,7 +514,7 @@ export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guar
 export const postLoginForeigner = (data, setState, setPending, provider = "foreigners") => {
 	defaultAxios({
 		method: "POST",
-		url: conf.url + `api/login/foreigner`,
+		url: conf.url + `login/foreigner`,
 		params: { provider: provider },
 		data,
 	})

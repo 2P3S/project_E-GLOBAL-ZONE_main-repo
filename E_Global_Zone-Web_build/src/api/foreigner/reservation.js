@@ -1,11 +1,11 @@
 import { foreigner } from "../axios";
 
-const getForeignerReservation = (sch_id) => foreigner.get(`/reservation/${sch_id}`);
+export const getForeignerReservation = (sch_id) => foreigner.get(`/reservation/${sch_id}`);
 
-const patchForeignerReservationPermission = (sch_id, data) =>
+export const patchForeignerReservationPermission = (sch_id, data) =>
 	foreigner.patch(`/reservation/permission/${sch_id}`, data);
 
-const postForeignerReservationResult = (sch_id, data) => {
+export const postForeignerReservationResult = (sch_id, data) => {
 	let ajax = new XMLHttpRequest();
 	ajax.onreadystatechange = () => {
 		if (ajax.readyState === 0) {
@@ -16,12 +16,10 @@ const postForeignerReservationResult = (sch_id, data) => {
 		}
 	};
 
-	ajax.open("post", conf.url + `/api/foreigner/reservation/result/${sch_id}`, true);
+	ajax.open(
+		"post",
+		process.env.REACT_APP_BASE_URL + `/foreigner/reservation/result/${sch_id}`,
+		true
+	);
 	ajax.send(data);
-};
-
-export default {
-	getForeignerReservation,
-	patchForeignerReservationPermission,
-	postForeignerReservationResult,
 };

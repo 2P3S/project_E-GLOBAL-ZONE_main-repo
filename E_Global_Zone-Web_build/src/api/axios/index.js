@@ -12,9 +12,9 @@ function createDefaultInstance() {
 function createInstanceGuard(url) {
 	const instance = axios.create({
 		baseURL: `${process.env.REACT_APP_BASE_URL}${url}`,
-		params: { guard: url },
 	});
-	return setInterceptors(instance);
+
+	return setInterceptors(instance, url);
 }
 
 // 엑시오스 초기화 함수
@@ -22,7 +22,7 @@ function createInstanceGuardKorean(url) {
 	const instance = axios.create({
 		baseURL: `${process.env.REACT_APP_BASE_URL}${url}`,
 	});
-	return setInterceptors(instance, true);
+	return setInterceptors(instance, false, true);
 }
 
 const instance = createDefaultInstance();

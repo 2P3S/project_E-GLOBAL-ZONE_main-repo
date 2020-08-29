@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
 	getForeignerReservation,
-	patchForeignerReservationPermission,
-	postForeignerReservationResult,
+	// postForeignerReservationResult,
 } from "../../../modules/hooks/useAxios";
+import * as postForeignerReservationResult from "../../../api/foreigner";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";

@@ -6,6 +6,10 @@ const schedule = "/schedule";
  *
  * @param {object} params {start_date, end_date}
  */
-const getForeignerSchedule = (params) => foreigner.get(schedule, { params: { ...params } });
-
-export default { getForeignerSchedule };
+export const getForeignerSchedule = (start_date, end_date) =>
+	foreigner.get(`${schedule}`, {
+		params: {
+			start_date: start_date,
+			end_date: end_date,
+		},
+	});

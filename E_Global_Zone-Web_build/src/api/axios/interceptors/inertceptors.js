@@ -1,10 +1,15 @@
-export function setInterceptors(instance, isGoogle = false) {
+export function setInterceptors(instance, guard, isGoogle = false) {
 	instance.interceptors.request.use(
 		function (config) {
 			// 헤더 - 토큰
 			config.headers.Authorization = !isGoogle
 				? `Bearer ${window.localStorage.getItem("token")}`
 				: `${window.localStorage.getItem("token")}`;
+			if (guard)
+				config.params = {
+					guard,
+					...config.params,
+				};
 			return config;
 		},
 		function (error) {

@@ -24,7 +24,7 @@ const Login = () => {
 				console.log(data);
 				alert(data.message);
 
-				window.localStorage.setItem("token", data.token);
+				window.localStorage.setItem("token", data.data.token);
 				window.localStorage.setItem("loginId", data.data.info.std_for_id);
 				window.localStorage.setItem("loginName", data.data.info.std_for_name);
 				window.localStorage.setItem("userClass", conf.userClass.FOREIGNER);
