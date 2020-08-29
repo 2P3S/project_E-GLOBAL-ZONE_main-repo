@@ -42,6 +42,7 @@ class ScheduleController extends Controller
 
 
     private $schedule;
+    private $resultImage;
 
     public function __construct()
     {

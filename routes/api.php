@@ -140,9 +140,6 @@ Route::prefix('/admin')->group(function () {
 
     /* 계열 / 학과 관리 라우터 */
     Route::prefix('/department')->group(function () {
-        /** 등록된 계열 & 학과 목록 조회 */
-        Route::get('', 'DepartmentController@index')->name('departments.index');
-
         /** 계열 & 학과 등록 */
         Route::post('', 'DepartmentController@store')->name('departments.store');
 
@@ -168,9 +165,6 @@ Route::prefix('foreigner')->group(function () {
     /* 유학생 - 특정 기간 개인 스케줄 조회 */
     Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
 
-    /** 등록된 계열 & 학과 목록 조회 */
-    Route::get('department', 'DepartmentController@index')->name('departments.index');
-
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
@@ -194,9 +188,6 @@ Route::prefix('/korean')->group(function () {
 
     // ID 값으로 스케줄 정보 조회
     Route::get('schedule/{sch_id}', 'ScheduleController@std_kor_show_sch')->name('schedules.show_schedule_by_id');
-
-    /** 등록된 계열 & 학과 목록 조회 */
-    Route::get('department', 'DepartmentController@index')->name('departments.index');
 
     /** 참석한 학기 목록 조회 */
     Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
@@ -239,3 +230,7 @@ Route::prefix('reset')->group(function () {
     Route::post('/', 'MailController@request_reset');
     Route::get('/', 'MailController@run_reset');
 });
+
+// 공용 라우터
+/** 등록된 계열 & 학과 목록 조회 */
+Route::get('department', 'DepartmentController@index')->name('departments.index');
