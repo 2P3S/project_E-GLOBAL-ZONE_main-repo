@@ -3,8 +3,11 @@ import Routes from "./Routes";
 import { getAdminDeptList } from "../modules/hooks/useAxios";
 import { setDept, selectDept } from "../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
+import dotenv from "dotenv";
 import conf from "../conf/conf";
 import { useHistory } from "react-router-dom";
+
+dotenv.config();
 
 /**
  * React App

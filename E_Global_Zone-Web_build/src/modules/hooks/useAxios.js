@@ -1,8 +1,6 @@
-import axios from "axios";
+import defaultAxios from "axios";
 import { useEffect, useState } from "react";
 import conf from "../../conf/conf";
-
-const defaultAxios = new axios();
 
 /**
  * Hooks - useAxios is returns response dataset
@@ -104,20 +102,6 @@ export const getForeignerSchedule = (std_for_id, end_date, start_date, setData) 
  * @param result_end_4img
  * @todo => 이미지 데이터를 보내야 되는데 가질 못해!
  */
-export const postForeignerReservationResult = (sch_id, data) => {
-	let ajax = new XMLHttpRequest();
-	ajax.onreadystatechange = () => {
-		if (ajax.readyState === 0) {
-			ajax.setRequestHeader("content-type", "multipart/form-data");
-		}
-		if (ajax.readyState === 4) {
-			// console.log(ajax.response);
-		}
-	};
-
-	ajax.open("post", conf.url + `/api/foreigner/reservation/result/${sch_id}`, true);
-	ajax.send(data);
-};
 
 export const getForeignerReservation = (sch_id, std_for_id, setData) => {
 	defaultAxios({

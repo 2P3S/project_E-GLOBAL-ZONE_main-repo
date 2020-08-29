@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+
 const MANAGER = "MANAGER";
 const FOREIGNER = "FOREIGNER";
 const KOREAN = "KOREAN";
@@ -66,7 +68,7 @@ const conf = {
 		CHINESE,
 	},
 
-	url: "http://hyun9803.iptime.org/",
+	url: process.env.REACT_APP_BASE_URL,
 	// url: "http://www.94soon.net/",
 };
 // http://52.78.204.91/
