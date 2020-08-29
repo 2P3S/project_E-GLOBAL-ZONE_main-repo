@@ -413,3 +413,18 @@ export const deleteAdminScheduleAdd = (sch_id, handleClose) => {
 			console.log(e);
 		});
 };
+
+// /api/admin/korean?page=${params.page}
+export const getAdminKorean = (page, setState) => {
+	defaultAxios({
+		method: "get",
+		url: conf.url + `/api/admin/korean`,
+		params: { page: page },
+	})
+		.then((res) => {
+			setState(res.data);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};

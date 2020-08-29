@@ -5,11 +5,12 @@ import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
-import useAxios from "../../../../modules/hooks/useAxios";
+import useAxios, { getAdminKorean } from "../../../../modules/hooks/useAxios";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
 import conf from "../../../../conf/conf";
+import { useParams, useHistory } from "react-router-dom";
 
 class Student {
 	dept;
@@ -77,14 +78,19 @@ class Data {
  * @constructor
  */
 export default function Students() {
+	const params = useParams();
+	const history = useHistory();
+
 	// api
-	const { loading, data: resData, error } = useAxios({ url: conf.url + "/api/admin/korean" });
+	// const { loading, data: resData, error } = useAxios({
+	// 	url: conf.url + `/api/admin/korean?page=${params.page}`,
+	// });
+	const [resData, setResData] = useState();
 	// department information
 	const dept = useSelector(selectDept);
 	const data = useSelector(selectData);
 	const dispatch = useDispatch();
-	// const [dataSet, setDataSet] = useState();
-	// const [data, setData] = useState([]);
+
 	const [isOpen, setIsOpen] = useState(false);
 	const {
 		isOpen: isRestrict,
@@ -100,9 +106,15 @@ export default function Students() {
 	/**
 	 * api response done
 	 */
+
+	useEffect(() => {
+		window.easydropdown.all();
+		getAdminKorean(params.page, setResData);
+	}, []);
+
 	useEffect(() => {
 		if (Array.isArray(dept))
-			if (resData) {
+			if (resData && resData.data) {
 				console.log(resData);
 				let dataArray = [];
 
@@ -122,11 +134,37 @@ export default function Students() {
 							)
 						);
 					});
-				console.log(dataArray);
 				dispatch(setData(new Data(dataArray)));
+				const pagenation = document.getElementById("pagenation");
+				pagenation.innerHTML = "";
+				let first = document.createElement("button");
+				first.innerText = "<<";
+				first.addEventListener("click", () => {
+					history.push(`/students/${1}/korean`);
+					history.push("/reload");
+				});
+				pagenation.appendChild(first);
+				for (let i = 0; i < resData.data.last_page; i++) {
+					let btn = document.createElement("button");
+					btn.innerText = i + 1;
+					btn.addEventListener("click", () => {
+						history.push(`/students/${i + 1}/korean`);
+					});
+					pagenation.appendChild(btn);
+				}
+				let last = document.createElement("button");
+				last.innerText = ">>";
+				pagenation.appendChild(last);
+				last.addEventListener("click", () => {
+					history.push(`/students/${resData.data.last_page}/korean`);
+				});
 			}
 		// setDataSet(new Data(dataArray));
 	}, [resData, dept]);
+
+	useEffect(() => {
+		getAdminKorean(params.page, setResData);
+	}, [params]);
 
 	const sort = (sortBy) => {
 		if (data.sort === sortBy) {
@@ -145,21 +183,12 @@ export default function Students() {
 			);
 		}
 	};
-	useEffect(() => {
-		window.easydropdown.all();
-	}, []);
 
 	return (
 		<div className="content">
 			<div className="sub_title">
 				<div className="top_semester">
 					<p className="tit">한국인 학생 관리</p>
-					<select name="catgo" className="dropdown">
-						<option>2020학년도 1학기</option>
-						<option>2020학년도 여름학기</option>
-						<option>2020학년도 2학기</option>
-						<option>2020학년도 겨울학기</option>
-					</select>
 				</div>
 
 				<div className="top_search">
@@ -326,6 +355,7 @@ export default function Students() {
 						</tbody>
 					</table>
 				</div>
+				<span id="pagenation"></span>
 
 				<div className="table_btn">
 					<div
