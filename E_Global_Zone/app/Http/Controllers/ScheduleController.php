@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Library\Services\Preference;
 use App\Reservation;
+use App\Restricted_student_korean;
 use App\Schedule;
 use App\SchedulesResultImg;
 use App\Section;
@@ -13,14 +14,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
-    /*
-     * ========== TEST 완료 ==========
-     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
-     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
-     * 3. 유학생 - 특정 기간 전체 스케줄 조회
-     * 4. 관리자 - 특정 날짜 전체 유학생 스케줄 조회
-     */
-
     private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
     private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
 
@@ -34,6 +27,7 @@ class ScheduleController extends Controller
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
 
+    private const _SCHDEULE_RES_APPROVE_DUPLICATED = "이미 출석 승인된 완료된 스케줄입니다.";
     private const _SCHDEULE_RES_APPROVE_SUCCESS = "출석 결과 승인이 완료되었습니다.";
     private const _SCHDEULE_RES_APPROVE_FAILURE = "출석 결과 승인에 실패하였습니다.";
 
@@ -43,11 +37,13 @@ class ScheduleController extends Controller
 
     private $schedule;
     private $resultImage;
+    private $restrict;
 
     public function __construct()
     {
         $this->schedule = new Schedule();
         $this->resultImage = new SchedulesResultImg();
+        $this->restrict = new Restricted_student_korean();
     }
 
     /**
@@ -87,7 +83,8 @@ class ScheduleController extends Controller
                 ->get();
         };
 
-        function std_for_add_schedule_data($response_data, $date) {
+        function std_for_add_schedule_data($response_data, $date)
+        {
             foreach ($response_data as $student) {
                 $student['schedules'] = Schedule::select('sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
                     ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
@@ -498,9 +495,16 @@ class ScheduleController extends Controller
      */
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
+        // 이미 출석 결과가 승인 된 스케줄인 경우
+        if($sch_id['sch_state_of_permission'] == true) {
+            return self::response_json(self::_SCHDEULE_RES_APPROVE_DUPLICATED, 422);
+        }
+
         $rules = [
             'reservation' => 'required|array',
-            'reservation.*' => 'required|integer'
+            'reservation.*' => 'required|integer',
+            'absent' => 'array',
+            'absent.*' => 'integer',
         ];
 
         $validated_result = self::request_validator(
@@ -514,11 +518,19 @@ class ScheduleController extends Controller
         }
 
         $update_res_id_list = $request->input('reservation');
+        $update_absent_id_list = $request->input('absent');
 
         // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
         $sch_id->update([
             'sch_state_of_permission' => true
         ]);
+
+        // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
+        if (!empty($update_absent_id_list)) {
+            foreach ($update_absent_id_list as $std_kor_id) {
+                $this->restrict->set_korean_absent_count($std_kor_id);
+            }
+        }
 
         // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
         Reservation::whereIn('res_id', $update_res_id_list)
