@@ -34,7 +34,18 @@ class Student {
 	 * @param {int} absent std_kor_num_of_absent
 	 * @param {array} deptList state.conf.dept
 	 */
-	constructor(dept, std_id, name, status, ph, e_mail, count, absent, deptList) {
+	constructor(
+		dept,
+		std_id,
+		name,
+		status,
+		ph,
+		e_mail,
+		count,
+		absent,
+		deptList,
+		std_stricted_info = ""
+	) {
 		this.std_id = std_id;
 		this.name = name;
 		this.status = status;
@@ -43,6 +54,7 @@ class Student {
 		this.count = count;
 		this.absent = absent;
 		this._dept = deptList[dept - 1];
+		this.std_stricted_info = std_stricted_info;
 	}
 
 	get dept() {
@@ -80,7 +92,6 @@ class Data {
 export default function Students() {
 	const params = useParams();
 	const history = useHistory();
-
 	// api
 	// const { loading, data: resData, error } = useAxios({
 	// 	url: conf.url + `/api/admin/korean?page=${params.page}`,
@@ -92,6 +103,7 @@ export default function Students() {
 	const dispatch = useDispatch();
 
 	const [isOpen, setIsOpen] = useState(false);
+	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
 	const {
 		isOpen: isRestrict,
 		handleOpen: hadleOpenForRestrict,
@@ -106,6 +118,10 @@ export default function Students() {
 	/**
 	 * api response done
 	 */
+
+	const reRender = () => {
+		getAdminKorean(params.page, setResData);
+	};
 
 	useEffect(() => {
 		window.easydropdown.all();
@@ -130,7 +146,8 @@ export default function Students() {
 								v.std_kor_mail,
 								v.std_kor_num_of_attendance,
 								v.std_kor_num_of_absent,
-								dept
+								dept,
+								v.std_stricted_info
 							)
 						);
 					});
@@ -310,7 +327,15 @@ export default function Students() {
 														<>
 															<div
 																className="mint"
-																onClick={handleOpenForUnrestrict}
+																onClick={() => {
+																	setSelectedKor({
+																		std_kor_id: v.std_id,
+																		std_kor_name: v.name,
+																		std_stricted_info:
+																			v.std_stricted_info,
+																	});
+																	handleOpenForUnrestrict();
+																}}
 															>
 																이용제한 해제
 															</div>
@@ -319,7 +344,13 @@ export default function Students() {
 														<>
 															<div
 																className="mint"
-																onClick={hadleOpenForRestrict}
+																onClick={() => {
+																	setSelectedKor({
+																		std_kor_id: v.std_id,
+																		std_kor_name: v.name,
+																	});
+																	hadleOpenForRestrict();
+																}}
 															>
 																이용제한
 															</div>
@@ -381,16 +412,28 @@ export default function Students() {
 				}}
 			>
 				<ConfirmStudent
+					reRender={reRender}
 					handleClose={() => {
 						setIsOpen(false);
 					}}
 				/>
 			</Modal>
 			<Modal isOpen={isUnrestrict} onRequestClose={handleCloseForUnrestrict}>
-				<ConfirmUnrestriction handleClose={handleCloseForUnrestrict} />
+				<ConfirmUnrestriction
+					std_kor_name={selectedKor.std_kor_name}
+					std_kor_id={selectedKor.std_kor_id}
+					std_stricted_info={selectedKor.std_stricted_info}
+					handleClose={handleCloseForUnrestrict}
+					reRender={reRender}
+				/>
 			</Modal>
 			<Modal isOpen={isRestrict} onRequestClose={handleCloseForRestrict}>
-				<ConfirmRestriction handleClose={handleCloseForRestrict} />
+				<ConfirmRestriction
+					handleClose={handleCloseForRestrict}
+					std_kor_id={selectedKor.std_kor_id}
+					std_kor_name={selectedKor.std_kor_name}
+					reRender={reRender}
+				/>
 			</Modal>
 		</div>
 	);

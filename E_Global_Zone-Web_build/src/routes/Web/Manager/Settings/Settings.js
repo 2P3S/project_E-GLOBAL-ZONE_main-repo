@@ -398,14 +398,14 @@ export default function Settings() {
 						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
 							학기 기간 조회
 						</div>
-						<div
-							className="bbtn darkGray"
-							onClick={() => {
-								postAdminSetting(postSettings);
-							}}
-						>
-							저장
-						</div>
+					</div>
+					<div
+						className="bbtn darkGray"
+						onClick={() => {
+							postAdminSetting(postSettings);
+						}}
+					>
+						저장
 					</div>
 				</div>
 			</div>

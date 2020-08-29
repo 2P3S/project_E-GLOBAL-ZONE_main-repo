@@ -428,3 +428,58 @@ export const getAdminKorean = (page, setState) => {
 			console.log(e);
 		});
 };
+
+// http://hyun9803.iptime.org/api/admin/korean/restrict?std_kor_id=2050342&restrict_reason=사유입니다.&restrict_period=5
+
+export const postAdminKoreanRestrict = (data, setState) => {
+	defaultAxios({
+		method: "post",
+		url: conf.url + `api/admin/korean/restrict`,
+		data,
+	})
+		.then((res) => {
+			res.status === 201 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+export const patchAdminKoreanRestrict = (id, setState) => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/korean/restrict/${id}`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+// http://hyun9803.iptime.org/api/admin/korean/account
+export const getAdminKoreanAccount = (setState) => {
+	defaultAxios({
+		url: conf.url + `api/admin/korean/account`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(res.data);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+export const patchAdminKoreanAccount = (data, setState) => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/korean/account`,
+		data,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
