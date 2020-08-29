@@ -101,31 +101,32 @@ export default function Students() {
 	 * api response done
 	 */
 	useEffect(() => {
-		if (resData) {
-			console.log(resData);
-			let dataArray = [];
+		if (Array.isArray(dept))
+			if (resData) {
+				console.log(resData);
+				let dataArray = [];
 
-			if (resData.data.data)
-				resData.data.data.forEach((v) => {
-					dataArray.push(
-						new Student(
-							v.std_kor_dept,
-							v.std_kor_id,
-							v.std_kor_name,
-							v.std_kor_state_of_restriction,
-							v.std_kor_phone,
-							v.std_kor_mail,
-							v.std_kor_num_of_attendance,
-							v.std_kor_num_of_absent,
-							dept
-						)
-					);
-				});
-			console.log(dataArray);
-			dispatch(setData(new Data(dataArray)));
-		}
+				if (resData.data.data)
+					resData.data.data.forEach((v) => {
+						dataArray.push(
+							new Student(
+								v.std_kor_dept,
+								v.std_kor_id,
+								v.std_kor_name,
+								v.std_kor_state_of_restriction,
+								v.std_kor_phone,
+								v.std_kor_mail,
+								v.std_kor_num_of_attendance,
+								v.std_kor_num_of_absent,
+								dept
+							)
+						);
+					});
+				console.log(dataArray);
+				dispatch(setData(new Data(dataArray)));
+			}
 		// setDataSet(new Data(dataArray));
-	}, [resData]);
+	}, [resData, dept]);
 
 	const sort = (sortBy) => {
 		if (data.sort === sortBy) {
@@ -276,7 +277,6 @@ export default function Students() {
 											{v.name}
 											<div className="hover_off" id={`hover_btn_${index}`}>
 												<div className="area">
-													<div className="navy">비밀번호 초기화</div>
 													{v.status ? (
 														<>
 															<div
