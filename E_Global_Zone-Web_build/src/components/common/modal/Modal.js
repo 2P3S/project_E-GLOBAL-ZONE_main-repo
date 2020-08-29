@@ -13,7 +13,7 @@ const modalStyle = {
 		marginRight: "-50%",
 		transform: "translate(-50%, -50%)",
 		zIndex: "2",
-		overflow: "hidden",
+		overflow: "visible",
 		padding: "0",
 		border: "none",
 		borderRadius: "20px",

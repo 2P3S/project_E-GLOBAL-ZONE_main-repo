@@ -150,30 +150,11 @@ export const patchForeignerReservationPermission = (
 		});
 };
 
-export const postAdminForeignerAccount = (
-	std_for_id,
-	std_for_dept,
-	std_for_name,
-	std_for_lang,
-	std_for_country,
-	std_for_phone,
-	std_for_mail,
-	std_for_zoom_id,
-	setState
-) => {
+export const postAdminForeignerAccount = (data, setState) => {
 	defaultAxios({
 		method: "post",
 		url: conf.url + `/api/admin/foreigner/account`,
-		data: {
-			std_for_id,
-			std_for_dept,
-			std_for_name,
-			std_for_lang,
-			std_for_country,
-			std_for_phone,
-			std_for_mail,
-			std_for_zoom_id,
-		},
+		data: data,
 	})
 		.then((res) => {
 			setState(true);
