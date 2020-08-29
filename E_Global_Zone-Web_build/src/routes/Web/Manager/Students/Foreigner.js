@@ -9,6 +9,7 @@ import {
 	getAdminForeignerWork,
 	getAdminSection,
 	getAdminForeignerAccountFavorite,
+	patchAdminForeignerAccount,
 } from "../../../../modules/hooks/useAxios";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
@@ -54,6 +55,7 @@ export default function Foreigner() {
 	const [sectOfYear, setSectOfYear] = useState();
 	const [selectSect, setSelectSect] = useState();
 	const [monthArray, setMonthArray] = useState();
+	const [pending, setPending] = useState(false);
 	const {
 		isOpen: contactIsOpen,
 		handleOpen: handleOpenForContact,
@@ -63,6 +65,11 @@ export default function Foreigner() {
 		isOpen: addIsOpen,
 		handleOpen: handleOpenForAdd,
 		handleClose: handleCloseForAdd,
+	} = useModal();
+	const {
+		isOpen: resetIsOpen,
+		handleOpen: handleOpenForReset,
+		handleClose: handleCloseForReset,
 	} = useModal();
 	const deptList = useSelector(selectDept);
 
@@ -76,7 +83,9 @@ export default function Foreigner() {
 			flag = !flag;
 		};
 	}
-
+	const reRender = () => {
+		getAdminSection({ year: `${moment().format("YYYY")}` }, setSectOfYear);
+	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 	};
@@ -420,7 +429,16 @@ export default function Foreigner() {
 																className="hover_btn hover_off"
 															>
 																<div className="area">
-																	<div className="navy">
+																	<div
+																		className="navy"
+																		onClick={() => {
+																			patchAdminForeignerAccount(
+																				value.std_for_id,
+																				setPending
+																			);
+																			handleOpenForReset();
+																		}}
+																	>
 																		비밀번호 초기화
 																	</div>
 																	<div className="lightGray">
@@ -491,10 +509,38 @@ export default function Foreigner() {
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
 						<SetSectForeigner sect_id={selectSect} handleClose={handleCloseForAdd} />
 					</Modal>
+					<Modal isOpen={resetIsOpen} handleClose={handleCloseForReset}>
+						{pending && (
+							<Reset
+								handleCloseForReset={handleCloseForReset}
+								setPending={setPending}
+								reRender={reRender}
+							/>
+						)}
+					</Modal>
 				</div>
 			</div>
 		</div>
 	) : (
 		<></>
+	);
+}
+
+function Reset({ handleCloseForReset, reRender, setPending }) {
+	useEffect(() => {
+		return reRender;
+	}, []);
+	return (
+		<>
+			<h1>비밀번호 초기화가 완료되었습니다.</h1>
+			<button
+				onClick={() => {
+					handleCloseForReset();
+					setPending(false);
+				}}
+			>
+				확인
+			</button>
+		</>
 	);
 }

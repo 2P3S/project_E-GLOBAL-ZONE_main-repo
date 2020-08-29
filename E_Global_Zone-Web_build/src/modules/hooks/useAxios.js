@@ -506,3 +506,19 @@ export const patchAdminScheduleAprovel = (sch_id, data, setState) => {
 			console.log(e);
 		});
 };
+// api/admin/foreigner/account/1425197
+
+export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guard = "admins") => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/foreigner/account/${std_for_id}`,
+		data,
+		params: { guard },
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};

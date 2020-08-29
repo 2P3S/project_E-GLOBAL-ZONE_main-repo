@@ -497,7 +497,7 @@ table.sch_table tbody tr:hover td:first-child {
 
 .hover_btn {
 	position: absolute;
-	z-index: 10;
+	z-index: 1;
 	left: -50%;
 	margin-left: 50%;
 	bottom: 44px;

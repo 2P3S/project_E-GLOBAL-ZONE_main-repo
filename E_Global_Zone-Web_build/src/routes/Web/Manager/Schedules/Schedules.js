@@ -24,6 +24,7 @@ import PermissionScheduleResult from "../../../../components/common/modal/Permis
  */
 export default function Schedules() {
 	const params = useParams();
+	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date && params.date);
@@ -85,7 +86,7 @@ export default function Schedules() {
 	};
 
 	useEffect(() => {
-		getAdminSchedule({ search_date: selectDate }, setSchedules);
+		getAdminSchedule({ search_date: params.date }, setSchedules);
 		setPending(true);
 		document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
@@ -93,9 +94,11 @@ export default function Schedules() {
 		});
 	}, []);
 	useEffect(() => {
-		getAdminSchedule({ search_date: _selectDate }, setSchedules);
-		setPending(true);
-	}, [selectDate]);
+		history.push(`/schedules/${_selectDate}`);
+	}, [_selectDate]);
+	useEffect(() => {
+		reRender();
+	}, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
 			setPending(false);
@@ -111,7 +114,7 @@ export default function Schedules() {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
-		getAdminSchedule({ search_date: selectDate }, setSchedules);
+		getAdminSchedule({ search_date: params.date }, setSchedules);
 		setPending(true);
 	};
 
@@ -123,11 +126,18 @@ export default function Schedules() {
 								</div> */
 	useEffect(() => {
 		if (!pending && schedules && schedules.data) {
+			let tag = true;
 			for (const key in schedules.data) {
 				if (schedules.data.hasOwnProperty(key)) {
 					const element = schedules.data[key];
 					element.forEach((v) => {
 						v.schedules.forEach((schedule) => {
+							if (tag) {
+								document.getElementById("date").innerText = moment(
+									schedule.sch_start_date
+								).format("YYYY년 MM월 DD일");
+								tag = false;
+							}
 							let td = document.getElementById(
 								`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
 							);
@@ -276,11 +286,11 @@ export default function Schedules() {
 	return (
 		<div className="content">
 			<div className="sub_title">
-				<p className="tit">{moment(selectDate).format("YYYY년 MM월 DD일")}</p>
+				<p className="tit" id="date"></p>
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
-				<div style={{ position: "absolute" }}>
+				<div style={{ position: "absolute", zIndex: "9999" }}>
 					{calIsOpen && (
 						<ModalCalendar
 							id="calendar"
