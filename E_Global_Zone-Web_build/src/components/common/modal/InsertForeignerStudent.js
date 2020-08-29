@@ -33,6 +33,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 				setDept(v.dept_id);
 			}
 		});
+		handleClose();
 	};
 
 	useEffect(() => {

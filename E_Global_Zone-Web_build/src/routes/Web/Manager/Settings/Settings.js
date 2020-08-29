@@ -6,6 +6,8 @@ import moment from "moment";
 import CreateSection from "../../../../components/common/modal/CreateSection";
 import GetSections from "../../../../components/common/modal/GetSections";
 
+import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+
 /**
  * Manager :: 시스템 환경설정
  * @returns {JSX.Element}
@@ -25,9 +27,18 @@ export default function Settings() {
 		handleClose: handleCloseForGetSectIsOpen,
 		handleOpen: handleOpenForGetSectIsOpen,
 	} = useModal();
+	const {
+		isOpen: isOpenForInsertForeignerStudent,
+		handleOpen: handleOpenForInsertForeignerStudent,
+		handleClose: handleCloseForInsertForeignerStudent,
+	} = useModal();
 
 	const handleChange = (key, value) => {
 		setPostSettings({ ...postSettings, [key]: parseInt(value) });
+	};
+
+	const reRender = () => {
+		getAdminSetting(setSettings);
 	};
 
 	useEffect(() => {
@@ -392,20 +403,26 @@ export default function Settings() {
 					</div>
 
 					<div className="btn_area right">
+						<div
+							className="bbtn darkGray"
+							onClick={handleOpenForInsertForeignerStudent}
+						>
+							유학생 등록
+						</div>
 						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
 							학기 기간 설정
 						</div>
 						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
 							학기 기간 조회
 						</div>
-					</div>
-					<div
-						className="bbtn darkGray"
-						onClick={() => {
-							postAdminSetting(postSettings);
-						}}
-					>
-						저장
+						<div
+							className="bbtn darkGray"
+							onClick={() => {
+								postAdminSetting(postSettings);
+							}}
+						>
+							저장
+						</div>
 					</div>
 				</div>
 			</div>
@@ -414,6 +431,12 @@ export default function Settings() {
 			</Modal>
 			<Modal isOpen={getSectIsOpen} handleClose={handleCloseForGetSectIsOpen}>
 				<GetSections handleClose={handleCloseForGetSectIsOpen} />
+			</Modal>
+			<Modal
+				isOpen={isOpenForInsertForeignerStudent}
+				handleClose={handleCloseForInsertForeignerStudent}
+			>
+				<InsertForeignerStudent handleClose={handleCloseForInsertForeignerStudent} />
 			</Modal>
 		</div>
 	) : (
