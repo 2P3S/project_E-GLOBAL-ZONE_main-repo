@@ -38,6 +38,12 @@ class KoreanController extends Controller
     private const _STD_KOR_INDEX_NONDATA = "해당 학생의 정보가 없습니다.";
     private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
 
+    private $restricted;
+
+    public function __construct()
+    {
+        $this->restricted = new Restricted_student_korean();
+    }
 
     /**
      * 계정 등록 - 대기 명단 조회
@@ -107,7 +113,7 @@ class KoreanController extends Controller
     {
         $rules = [
             'column' => 'required|in:std_kor_id,std_kor_name,std_kor_phone,std_kor_mail',
-            'cloumn_data' => 'required'
+            'column_data' => 'required'
         ];
 
         $validated_result = self::request_validator(
@@ -121,9 +127,9 @@ class KoreanController extends Controller
         }
 
         $column = $request->column;
-        $cloumn_data = $request->cloumn_data;
+        $column_data = $request->column_data;
 
-        $std_kor_info = Student_korean::where($column, $cloumn_data)->get();
+        $std_kor_info = Student_korean::where($column, $column_data)->get();
 
         $is_non_kor_data = $std_kor_info->count() === 0;
 
@@ -142,13 +148,14 @@ class KoreanController extends Controller
     {
         try {
             // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
-            $std_koreans = Student_korean::orderBy('std_kor_state_of_restriction', 'DESC')->paginate(15);
+            $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
+                ->orderBy('std_kor_state_of_restriction', 'DESC')
+                ->paginate(15);
 
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
                 if ($korean['std_kor_state_of_restriction'] == true) {
-                    $result = Restricted_student_korean::where('restrict_std_kor', $korean['std_kor_id'])->get();
-                    $korean['std_stricted_info'] = $result;
+                    $korean['std_stricted_info'] = $this->restricted->get_restricted_korean_info($korean['std_kor_id'], true);
                 }
             }
             return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
