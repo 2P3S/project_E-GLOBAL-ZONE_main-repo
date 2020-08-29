@@ -497,7 +497,7 @@ table.sch_table tbody tr:hover td:first-child {
 
 .hover_btn {
 	position: absolute;
-	z-index: 1;
+	z-index: 10;
 	left: -50%;
 	margin-left: 50%;
 	bottom: 44px;
@@ -1017,7 +1017,7 @@ table.student_manage_table td:first-child {
 .set_wrap .regulation .btn_area div {
 	cursor: pointer;
 	display: inline-block;
-	padding: 0 15px;
+	padding: 0 12px;
 	height: 40px;
 	line-height: 40px;
 	border-radius: 5px;
