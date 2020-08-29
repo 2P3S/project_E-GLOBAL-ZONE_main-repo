@@ -134,7 +134,7 @@ html {
 		font-family: "Lato", sans-serif;
 		font-weight: 600;
 		color: #373a44;
-		border-radius: 100%;
+		border-radius: 8px;
 		position: relative;
 
 		&:hover {
@@ -192,11 +192,18 @@ html {
 }
 
 /********************모바일********************/
-@media (max-width: 700px) {
+@media (max-width:960px) {
 	.calendar .day {
 		padding:2% 0;
 	}
-	.calendar .day.selected {
-		border-radius: 8px;
+	
+}
+
+/********************웹********************/
+@media(min-width:960px){
+	.calendar .day.selected,
+	.calendar .day.today,
+	.calendar .day:hover {
+		border-radius:100%;
 	}
 }
