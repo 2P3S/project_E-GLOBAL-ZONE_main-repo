@@ -165,6 +165,9 @@ Route::prefix('foreigner')->group(function () {
     /* 유학생 - 특정 기간 개인 스케줄 조회 */
     Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
 
+    /** 유학생 비밀번호 변경 */
+    Route::patch('/password', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
+
     /* 예약 관련 */
     Route::prefix('reservation')->group(function () {
         /** 해당 스케줄 신청 학생 명단 조회 */
@@ -209,8 +212,8 @@ Route::prefix('/korean')->group(function () {
 });
 
 Route::prefix('login')->group(static function () {
-    Route::post('admin', 'LoginController@login_admin')->name('auth.adminsLogin');
-    Route::post('foreigner', 'LoginController@login_std_for')->name('auth.foreignersLogin');
+    Route::post('admin', 'LoginController@login_admin')->name('login.adminsLogin');
+    Route::post('foreigner', 'LoginController@login_std_for')->name('login.foreignersLogin');
 });
 
 Route::middleware('auth.multi')->group(static function () {
