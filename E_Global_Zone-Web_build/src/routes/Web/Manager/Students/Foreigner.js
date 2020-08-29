@@ -411,13 +411,13 @@ export default function Foreigner() {
 															onMouseOut={() => {
 																document.getElementById(
 																	`hover_btn_${index}`
-																).className = "off";
+																).className = "hover_off";
 															}}
 														>
 															{value.std_for_name}
 															<div
 																id={`hover_btn_${index}`}
-																className="hover_btn off"
+																className="hover_btn hover_off"
 															>
 																<div className="area">
 																	<div className="navy">

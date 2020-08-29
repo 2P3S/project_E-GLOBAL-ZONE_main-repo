@@ -2343,3 +2343,7 @@ ul.tab.no5 li {
 .off {
 	visibility: hidden;
 }
+
+.hover_off {
+	display: none;
+}
