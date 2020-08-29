@@ -411,13 +411,13 @@ export default function Foreigner() {
 															onMouseOut={() => {
 																document.getElementById(
 																	`hover_btn_${index}`
-																).className = "off";
+																).className = "hover_off";
 															}}
 														>
 															{value.std_for_name}
 															<div
 																id={`hover_btn_${index}`}
-																className="hover_btn off"
+																className="hover_btn hover_off"
 															>
 																<div className="area">
 																	<div className="navy">
@@ -448,29 +448,9 @@ export default function Foreigner() {
 														{Object.values(value.work_time).map((v) => {
 															return <td>{v}분</td>;
 														})}
-
-														{/* <td>
-																		(value.curruntMonth + value.lastMonth +
-																		value.thePastMonth) / 60 ).toFixed(0)} 시간{" "}
-																		{(value.curruntMonth +
-																			value.lastMonth +
-																			value.thePastMonth) %
-																			60}
-																		분
-																	</td>
-																	<td>
-																		{(value.thePastMonth / 60).toFixed(0)}시간{" "}
-																		{value.thePastMonth % 60}분
-																	</td>
-																	<td>
-																		{(value.lastMonth / 60).toFixed(0)}시간{" "}
-																		{value.lastMonth % 60}분
-																	</td>
-																	<td>
-																		{(value.curruntMonth / 60).toFixed(0)}시간{" "}
-																		{value.curruntMonth % 60}분
-																	</td> */}
-														<td>만드는중 회</td>
+														<td>
+															{value.std_for_num_of_delay_permission}
+														</td>
 														<td>
 															{value.std_for_num_of_delay_input}회
 														</td>

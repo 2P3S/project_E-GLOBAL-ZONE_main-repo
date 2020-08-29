@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useClick from "../../../modules/hooks/useClick";
+import { getAdminKoreanAccount, patchAdminKoreanAccount } from "../../../modules/hooks/useAxios";
+import { useSelector } from "react-redux";
+import { selectDept } from "../../../redux/confSlice/confSlice";
 
 /**
  * Moadl - 학생 등록 승인
@@ -7,13 +10,51 @@ import useClick from "../../../modules/hooks/useClick";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ConfirmStudent({ handleClose }) {
+export default function ConfirmStudent({ handleClose, reRender }) {
+	const [korList, setKorList] = useState();
+	const [pending, setPending] = useState(false);
+	const dept = useSelector(selectDept);
+	useEffect(() => {
+		getAdminKoreanAccount(setKorList);
+		return reRender;
+	}, []);
+	useEffect(() => {
+		console.log(korList);
+	}, [korList]);
+	useEffect(() => {
+		pending && handleClose();
+	}, [pending]);
+
+	const handleConfirm = () => {
+		let array = [];
+		for (const key in document.getElementsByName("checkBox")) {
+			if (document.getElementsByName("checkBox").hasOwnProperty(key)) {
+				const element = document.getElementsByName("checkBox")[key];
+				element.checked && array.push(element.value);
+			}
+		}
+		patchAdminKoreanAccount({ approval: array }, setPending);
+	};
+
+	const handleClick = (e) => {
+		if (e.target.value === "all") {
+			console.log(document.getElementsByName("checkBox"));
+			for (const key in document.getElementsByName("checkBox")) {
+				if (document.getElementsByName("checkBox").hasOwnProperty(key)) {
+					const element = document.getElementsByName("checkBox")[key];
+					element.checked = e.target.checked;
+					console.log(element.value);
+				}
+			}
+		}
+	};
+
 	return (
 		<div className="popup approval">
 			<div className="tit_area">
 				<p className="tit">한국인 학생 등록 승인</p>
 				<p className="person">
-					신청인원 : <span>6</span>명
+					신청인원 : <span>{korList && korList.data.length}</span>명
 				</p>
 			</div>
 			<div className="scroll_area">
@@ -22,7 +63,13 @@ export default function ConfirmStudent({ handleClose }) {
 						<tr>
 							<th scope="col">
 								<div className="table_check">
-									<input type="checkbox" id="a1" name="" />
+									<input
+										type="checkbox"
+										id="a1"
+										name=""
+										onClick={handleClick}
+										value="all"
+									/>
 									<label htmlFor="a1"></label>
 								</div>
 							</th>
@@ -34,90 +81,35 @@ export default function ConfirmStudent({ handleClose }) {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a2" name="" />
-									<label htmlFor="a2"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a3" name="" />
-									<label htmlFor="a3"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a4" name="" />
-									<label htmlFor="a4"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a5" name="" />
-									<label htmlFor="a5"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a6" name="" />
-									<label htmlFor="a6"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
-						<tr>
-							<td>
-								<div className="table_check">
-									<input type="checkbox" id="a7" name="" />
-									<label htmlFor="a7"></label>
-								</div>
-							</td>
-							<td>컴정</td>
-							<td>1901192</td>
-							<td>이일영</td>
-							<td>010-0000-0000</td>
-							<td>zxc1234@g.yju.ac.kr</td>
-						</tr>
+						{korList &&
+							korList.data &&
+							korList.data.length > 0 &&
+							korList.data.map((v) => (
+								<tr>
+									<td>
+										<div className="table_check">
+											<input
+												type="checkbox"
+												id={v.std_kor_id}
+												name="checkBox"
+												value={v.std_kor_id}
+											/>
+											<label htmlFor={v.std_kor_id}></label>
+										</div>
+									</td>
+									<td>{dept[parseInt(v.std_kor_dept) - 1].dept_name[1]}</td>
+									<td>{v.std_kor_id}</td>
+									<td>{v.std_kor_name}</td>
+									<td>{v.std_kor_phone}</td>
+									<td>{v.std_kor_mail}</td>
+								</tr>
+							))}
 					</tbody>
 				</table>
 			</div>
 
 			<div className="btn_area">
-				<div href="" className="bbtn mint">
+				<div href="" className="bbtn mint" onClick={handleConfirm}>
 					등록
 				</div>
 				<div

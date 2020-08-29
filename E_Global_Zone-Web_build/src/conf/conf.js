@@ -67,8 +67,8 @@ const conf = {
 	},
 
 	url: "http://hyun9803.iptime.org/",
+	// url: "http://www.94soon.net/",
 };
 // http://52.78.204.91/
-// http://test.94soon.net/api/
 
 export default conf;

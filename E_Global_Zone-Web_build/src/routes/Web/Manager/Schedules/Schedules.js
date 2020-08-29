@@ -37,14 +37,58 @@ export default function Schedules() {
 	const [countOfEng, setCountOfEng] = useState();
 	const [countOfJp, setCountOfJp] = useState();
 	const [countOfCh, setCountOfCh] = useState();
+	const [countOfstate, setCountOfState] = useState({
+		state1: 0,
+		state2: 0,
+		state3: 0,
+		state4: 0,
+		state5: 0,
+		state6: 0,
+		state7: 0,
+	});
 
 	const handleOpenForCalendar = () => {
 		setCalIsOpen(!calIsOpen);
 	};
-	useEffect(() => {});
+
+	const handleCheck = (className, isAdd) => {
+		if (className === "checkAll") {
+			document.getElementsByName("checkBox").forEach((v) => {
+				v.checked = isAdd;
+			});
+			handleCheck("state1", isAdd);
+			handleCheck("state2", isAdd);
+			handleCheck("state3", isAdd);
+			handleCheck("state4", isAdd);
+			handleCheck("state5", isAdd);
+			handleCheck("state6", isAdd);
+			handleCheck("state7", isAdd);
+		} else {
+			for (const key in document.getElementsByClassName(`state_box ${className}`)) {
+				if (document.getElementsByClassName(`state_box ${className}`).hasOwnProperty(key)) {
+					const element = document.getElementsByClassName(`state_box ${className}`)[key];
+					isAdd ? element.classList.remove("off") : element.classList.add("off");
+				}
+			}
+		}
+	};
+
+	const handleClick = (e) => {
+		if (e.target.value === "state1") {
+			handleCheck(e.target.value, e.target.checked);
+			handleCheck("state2", e.target.checked);
+		} else {
+			handleCheck(e.target.value, e.target.checked);
+		}
+	};
+
 	useEffect(() => {
 		getAdminSchedule({ search_date: selectDate }, setSchedules);
 		setPending(true);
+		document.getElementById("allCheck").checked = true;
+		document.getElementsByName("checkBox").forEach((v) => {
+			v.addEventListener("click", handleClick);
+		});
 	}, []);
 	useEffect(() => {
 		getAdminSchedule({ search_date: _selectDate }, setSchedules);
@@ -79,18 +123,12 @@ export default function Schedules() {
 								`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
 							);
 							let div = document.createElement("div");
-							// state1 :: [예약현황] 미승인 / 총 신청 학생
-							// state2 :: [예약 승인 완료]
-							// state3 :: [결과 미입력] 출석 학생
-							// state4 :: [결과 입력 완료]
-							// state5 :: [관리자 미승인] 출석 학생
-							// state6 :: [관리자 승인 완료]
-							// state7 :: 예약없음
 							if (
 								schedule.un_permission_count === 0 &&
 								schedule.reservated_count === 0
 							) {
 								div.className = "state_box state7";
+								setCountOfState({ ...countOfstate, state7: ++countOfstate.state7 });
 							} else {
 								if (new Date(schedule.sch_end_date) > new Date(today)) {
 									// 스케줄 시작 전
@@ -99,11 +137,19 @@ export default function Schedules() {
 										schedule.un_permission_count === 0
 									) {
 										div.className = "state_box state2";
+										setCountOfState({
+											...countOfstate,
+											state2: ++countOfstate.state2,
+										});
 										let p = document.createElement("p");
 										p.innerText = `${schedule.reservated_count}`;
 										div.appendChild(p);
 									} else if (schedule.reservated_count > 0) {
 										div.className = "state_box state1";
+										setCountOfState({
+											...countOfstate,
+											state1: ++countOfstate.state1,
+										});
 										let p = document.createElement("p");
 										p.innerText = `${schedule.un_permission_count} / `;
 										let span = document.createElement("span");
@@ -115,13 +161,25 @@ export default function Schedules() {
 									// 스케줄 완료 후
 									if (schedule.sch_state_of_permission) {
 										div.className = "state_box state6";
+										setCountOfState({
+											...countOfstate,
+											state6: ++countOfstate.state6,
+										});
 									} else if (schedule.sch_state_of_result_input) {
 										div.className = "state_box state5";
+										setCountOfState({
+											...countOfstate,
+											state5: ++countOfstate.state5,
+										});
 										let p = document.createElement("p");
 										p.innerText = `${schedule.reservated_count}`;
 										div.appendChild(p);
 									} else {
 										div.className = "state_box state3";
+										setCountOfState({
+											...countOfstate,
+											state3: ++countOfstate.state3,
+										});
 										let p = document.createElement("p");
 										p.innerText = `${schedule.reservated_count}`;
 										div.appendChild(p);
@@ -195,14 +253,18 @@ export default function Schedules() {
 				<div className="check_box_area">
 					<div className="check_box">
 						<div className="check_box_input all">
-							<input type="checkbox" id="allCheck" name="" />
+							<input type="checkbox" id="allCheck" name="checkBox" value="checkAll" />
 							<label for="allCheck"></label>
 						</div>
 					</div>
-
 					<div className="check_box">
 						<div className="check_box_input">
-							<input type="checkbox" id="no_app_reservation" name="" />
+							<input
+								type="checkbox"
+								id="no_app_reservation"
+								name="checkBox"
+								value="state1"
+							/>
 							<label for="no_app_reservation">
 								<span>
 									예약 미승인 <span className="blue">10</span>건
@@ -213,7 +275,7 @@ export default function Schedules() {
 
 					<div className="check_box">
 						<div className="check_box_input">
-							<input type="checkbox" id="not_result" name="" />
+							<input type="checkbox" id="not_result" name="checkBox" value="state3" />
 							<label for="not_result">
 								<span>
 									결과 미입력 <span className="mint">2</span>건
@@ -224,7 +286,12 @@ export default function Schedules() {
 
 					<div className="check_box">
 						<div className="check_box_input">
-							<input type="checkbox" id="no_app_result" name="" />
+							<input
+								type="checkbox"
+								id="no_app_result"
+								name="checkBox"
+								value="state5"
+							/>
 							<label for="no_app_result">
 								<span>
 									결과 미승인 <span className="yellow">3</span>건
@@ -235,7 +302,7 @@ export default function Schedules() {
 
 					<div className="check_box">
 						<div className="check_box_input">
-							<input type="checkbox" id="ok_result" name="" />
+							<input type="checkbox" id="ok_result" name="checkBox" value="state6" />
 							<label for="ok_result">
 								<span>
 									결과 입력완료 <span className="puple">2</span>건
@@ -292,7 +359,7 @@ export default function Schedules() {
                                 state6 :: [관리자 승인 완료]
                                 state7 :: 예약없음 
                             --> */}
-							
+
 								{/*  ********[마우스 오버 삭제 버튼 예시]********		
 								<div class="hover_btn sch">
 									<div class="area">

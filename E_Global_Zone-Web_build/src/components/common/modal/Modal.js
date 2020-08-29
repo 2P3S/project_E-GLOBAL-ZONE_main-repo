@@ -13,7 +13,7 @@ const modalStyle = {
 		marginRight: "-50%",
 		transform: "translate(-50%, -50%)",
 		zIndex: "2",
-		overflow: "hidden",
+		overflow: "visible",
 		padding: "0",
 		border: "none",
 		borderRadius: "20px",
@@ -28,11 +28,7 @@ Modal.setAppElement(document.getElementById("modal-root"));
  * @param handleClose
  * @returns {JSX.Element}
  */
-export default function ({ children, isOpen, handleClose, reRender }) {
-	useEffect(() => {
-		console.log(reRender);
-		return reRender;
-	}, []);
+export default function ({ children, isOpen, handleClose }) {
 	return (
 		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
 			{children}

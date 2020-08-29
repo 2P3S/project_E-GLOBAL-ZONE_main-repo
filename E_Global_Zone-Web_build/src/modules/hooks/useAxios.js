@@ -131,7 +131,8 @@ export const getForeignerReservation = (sch_id, std_for_id, setData) => {
 export const patchForeignerReservationPermission = (
 	sch_id,
 	permission_std_kor_id_list,
-	not_permission_std_kor_id_list
+	not_permission_std_kor_id_list,
+	setState
 ) => {
 	defaultAxios({
 		url: conf.url + `/api/foreigner/reservation/permission/${sch_id}`,
@@ -141,36 +142,19 @@ export const patchForeignerReservationPermission = (
 			"Context-Type": "application/json",
 		},
 	})
-		.then((res) => {})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
 		.catch((e) => {
 			console.log(e);
 		});
 };
 
-export const postAdminForeignerAccount = (
-	std_for_id,
-	std_for_dept,
-	std_for_name,
-	std_for_lang,
-	std_for_country,
-	std_for_phone,
-	std_for_mail,
-	std_for_zoom_id,
-	setState
-) => {
+export const postAdminForeignerAccount = (data, setState) => {
 	defaultAxios({
 		method: "post",
 		url: conf.url + `/api/admin/foreigner/account`,
-		data: {
-			std_for_id,
-			std_for_dept,
-			std_for_name,
-			std_for_lang,
-			std_for_country,
-			std_for_phone,
-			std_for_mail,
-			std_for_zoom_id,
-		},
+		data: data,
 	})
 		.then((res) => {
 			setState(true);
@@ -405,6 +389,76 @@ export const deleteAdminScheduleAdd = (sch_id, handleClose) => {
 	})
 		.then((res) => {
 			handleClose();
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+// /api/admin/korean?page=${params.page}
+export const getAdminKorean = (page, setState) => {
+	defaultAxios({
+		method: "get",
+		url: conf.url + `/api/admin/korean`,
+		params: { page: page },
+	})
+		.then((res) => {
+			setState(res.data);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+// http://hyun9803.iptime.org/api/admin/korean/restrict?std_kor_id=2050342&restrict_reason=사유입니다.&restrict_period=5
+
+export const postAdminKoreanRestrict = (data, setState) => {
+	defaultAxios({
+		method: "post",
+		url: conf.url + `api/admin/korean/restrict`,
+		data,
+	})
+		.then((res) => {
+			res.status === 201 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+export const patchAdminKoreanRestrict = (id, setState) => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/korean/restrict/${id}`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+// http://hyun9803.iptime.org/api/admin/korean/account
+export const getAdminKoreanAccount = (setState) => {
+	defaultAxios({
+		url: conf.url + `api/admin/korean/account`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(res.data);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+export const patchAdminKoreanAccount = (data, setState) => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/korean/account`,
+		data,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
 		})
 		.catch((e) => {
 			console.log(e);

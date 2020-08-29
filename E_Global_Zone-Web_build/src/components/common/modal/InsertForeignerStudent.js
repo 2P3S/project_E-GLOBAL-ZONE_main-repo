@@ -5,72 +5,46 @@ import { postAdminForeignerAccount } from "../../../modules/hooks/useAxios";
 import { useHistory } from "react-router-dom";
 
 const InsertForeignerStudent = ({ handleClose }) => {
-	const [id, setId] = useState();
-	const [dept, setDept] = useState();
-	const [name, setName] = useState();
-	const [language, setLanguage] = useState();
-	const [country, setCountry] = useState();
-	const [phone, setPhone] = useState();
-	const [mail, setMail] = useState();
-	const [zoomId, setZoomId] = useState();
-
 	const [state, setState] = useState(false);
 	const history = useHistory();
 
 	const departmentList = useSelector(selectDept);
 
-	const handleChange = (e, setValue) => {
+	const handleChange = (e) => {
 		e.preventDefault();
-		setValue(e.target.value);
 	};
 	/*
 	 *   @todo 유효성 검
 	 */
 	const handleSave = () => {
-		console.log(departmentList);
-		departmentList.forEach((v) => {
-			if (v.dept_name[0] === dept || v.dept_name[1] === dept) {
-				setDept(v.dept_id);
-			}
+		let array = [];
+		document.getElementsByName("std_info").forEach((v) => {
+			array.push(v.value);
 		});
+		postAdminForeignerAccount(
+			{
+				std_for_lang: array[0],
+				std_for_country: array[1],
+				std_for_id: array[2],
+				std_for_name: array[3],
+				std_for_dept: array[4],
+				std_for_phone: array[5],
+				std_for_mail: array[6],
+				std_for_zoom_id: array[7],
+			},
+			setState
+		);
 	};
 
 	useEffect(() => {
-		if (typeof dept === "number") {
-			postAdminForeignerAccount(
-				id,
-				dept,
-				name,
-				language,
-				country,
-				phone,
-				mail,
-				zoomId,
-				setState
-			);
-		}
-	}, [dept]);
-
-	useEffect(() => {
 		if (state) {
-			history.push("/students/now/foreigner");
+			handleClose();
 		}
-		return () => {
-			history.push("/students/now/foreigner");
-		};
 	}, [state]);
 	useEffect(() => {
 		window.easydropdown.all();
 	}, []);
-	{
-		/* <input
-        type="text"
-        placeholder="언어 입력"
-        onChange={(e) => {
-            handleChange(e, setLanguage);
-        }}
-    /> */
-	}
+
 	return (
 		<div className="popup account">
 			<p className="tit">유학생 계정 생성</p>
@@ -84,11 +58,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 							<td>
 								<p>언어</p>
 
-								<select
-									onChange={(e) => {
-										handleChange(e, setLanguage);
-									}}
-								>
+								<select id="std_for_lang" name="std_info">
 									<option value="영어">영어</option>
 									<option value="일본어">일본어</option>
 									<option value="중국어">중국어</option>
@@ -98,28 +68,24 @@ const InsertForeignerStudent = ({ handleClose }) => {
 								<p>국가</p>
 								<input
 									type="text"
+									id="std_for_country"
+									name="std_info"
+									onKeyPress={(e) => {
+										console.log(e.keyCode);
+										e.target.value = e.target.value;
+									}}
 									onChange={(e) => {
-										handleChange(e, setCountry);
+										console.log(e.target.value);
 									}}
 								/>
 							</td>
 							<td>
 								<p>학번</p>
-								<input
-									type="text"
-									onChange={(e) => {
-										handleChange(e, setId);
-									}}
-								/>
+								<input type="text" id="std_for_id" name="std_info" />
 							</td>
 							<td>
 								<p>이름</p>
-								<input
-									type="text"
-									onChange={(e) => {
-										handleChange(e, setName);
-									}}
-								/>
+								<input type="text" id="std_for_name" name="std_info" />
 							</td>
 						</tr>
 						<tr>
@@ -127,45 +93,30 @@ const InsertForeignerStudent = ({ handleClose }) => {
 								<p>학과</p>
 								<select
 									onChange={(e) => {
-										handleChange(e, setDept);
+										handleChange(e);
 									}}
+									id="std_for_dept"
+									name="std_info"
 								>
 									{departmentList &&
 										departmentList.map((v) => {
 											return (
-												<option value={v.dept_name[1]}>
-													{v.dept_name[1]}
-												</option>
+												<option value={v.dept_id}>{v.dept_name[1]}</option>
 											);
 										})}
 								</select>
 							</td>
 							<td>
 								<p>연락처</p>
-								<input
-									type="text"
-									onChange={(e) => {
-										handleChange(e, setPhone);
-									}}
-								/>
+								<input type="text" id="std_for_phone" name="std_info" />
 							</td>
 							<td>
 								<p>이메일</p>
-								<input
-									type="text"
-									onChange={(e) => {
-										handleChange(e, setMail);
-									}}
-								/>
+								<input type="text" id="std_for_mail" name="std_info" />
 							</td>
 							<td>
 								<p>ZoomID</p>
-								<input
-									type="text"
-									onChange={(e) => {
-										handleChange(e, setZoomId);
-									}}
-								/>
+								<input type="text" id="std_for_zoom_id" name="std_info" />
 							</td>
 						</tr>
 					</tbody>
