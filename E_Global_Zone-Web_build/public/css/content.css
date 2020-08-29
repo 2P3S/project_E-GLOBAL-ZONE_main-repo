@@ -309,6 +309,7 @@ table.sch_table tbody td {
 	min-height: 42px;
 	line-height: 42px;
 	color: #fff;
+	position: relative;
 }
 
 .state_box p {
