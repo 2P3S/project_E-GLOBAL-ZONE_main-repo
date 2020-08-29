@@ -7,13 +7,15 @@ import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-import { getAdminSchedule } from "../../../../modules/hooks/useAxios";
+import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 import conf from "../../../../conf/conf";
 import ShowList from "../../../../components/common/modal/ShowList";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
+import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
+import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 
 /**
  * Manager :: 스케줄 조회
@@ -22,6 +24,7 @@ import InsertResult from "../../../../components/common/modal/InsertResult";
  */
 export default function Schedules() {
 	const params = useParams();
+	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date && params.date);
@@ -83,7 +86,7 @@ export default function Schedules() {
 	};
 
 	useEffect(() => {
-		getAdminSchedule({ search_date: selectDate }, setSchedules);
+		getAdminSchedule({ search_date: params.date }, setSchedules);
 		setPending(true);
 		document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
@@ -91,9 +94,11 @@ export default function Schedules() {
 		});
 	}, []);
 	useEffect(() => {
-		getAdminSchedule({ search_date: _selectDate }, setSchedules);
-		setPending(true);
-	}, [selectDate]);
+		history.push(`/schedules/${_selectDate}`);
+	}, [_selectDate]);
+	useEffect(() => {
+		reRender();
+	}, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
 			setPending(false);
@@ -109,16 +114,30 @@ export default function Schedules() {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
-		getAdminSchedule({ search_date: selectDate }, setSchedules);
+		getAdminSchedule({ search_date: params.date }, setSchedules);
 		setPending(true);
 	};
+
+	/*  ********[마우스 오버 삭제 버튼 예시]********		
+								<div class="hover_btn sch">
+									<div class="area">
+										<div class="lightGray">삭제</div>
+									</div>
+								</div> */
 	useEffect(() => {
 		if (!pending && schedules && schedules.data) {
+			let tag = true;
 			for (const key in schedules.data) {
 				if (schedules.data.hasOwnProperty(key)) {
 					const element = schedules.data[key];
 					element.forEach((v) => {
 						v.schedules.forEach((schedule) => {
+							if (tag) {
+								document.getElementById("date").innerText = moment(
+									schedule.sch_start_date
+								).format("YYYY년 MM월 DD일");
+								tag = false;
+							}
 							let td = document.getElementById(
 								`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
 							);
@@ -199,13 +218,19 @@ export default function Schedules() {
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
-								} else if (
-									div.className === "state_box state3" ||
-									div.className === "state_box state5"
-								) {
+								} else if (div.className === "state_box state3") {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
 										component: "InsertResult",
+										std_for_id: v.std_for_id,
+										std_for_name: v.std_for_name,
+										sch_end_date: schedule.sch_end_date,
+										sch_start_date: schedule.sch_start_date,
+									});
+								} else if (div.className === "state_box state5") {
+									setSelectedSchedule({
+										sch_id: schedule.sch_id,
+										component: "PermissionScheduleResult",
 										std_for_id: v.std_for_id,
 										std_for_name: v.std_for_name,
 										sch_end_date: schedule.sch_end_date,
@@ -223,7 +248,35 @@ export default function Schedules() {
 								}
 								scheduleOpen();
 							});
+							// 삭제버튼
+							let deleteBtn = document.createElement("div");
+							let area = document.createElement("div");
+							let btn = document.createElement("div");
+							deleteBtn.className = "hover_btn sch hover_off";
+							area.className = "area";
+							btn.className = "lightGray";
+							btn.innerText = "삭제";
+							area.appendChild(btn);
+							deleteBtn.appendChild(area);
+							div.addEventListener("mouseover", () => {
+								deleteBtn.classList.remove("hover_off");
+							});
+							div.addEventListener("mouseout", () => {
+								deleteBtn.classList.add("hover_off");
+							});
+							deleteBtn.addEventListener("click", () => {
+								setSelectedSchedule({
+									sch_id: schedule.sch_id,
+									component: "Delete",
+									std_for_id: v.std_for_id,
+									std_for_name: v.std_for_name,
+									sch_end_date: schedule.sch_end_date,
+									sch_start_date: schedule.sch_start_date,
+								});
+								scheduleOpen();
+							});
 							td.appendChild(div);
+							div.appendChild(deleteBtn);
 						});
 					});
 				}
@@ -233,11 +286,11 @@ export default function Schedules() {
 	return (
 		<div className="content">
 			<div className="sub_title">
-				<p className="tit">{moment(selectDate).format("YYYY년 MM월 DD일")}</p>
+				<p className="tit" id="date"></p>
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
-				<div style={{ position: "absolute" }}>
+				<div style={{ position: "absolute", zIndex: "9999" }}>
 					{calIsOpen && (
 						<ModalCalendar
 							id="calendar"
@@ -267,7 +320,11 @@ export default function Schedules() {
 							/>
 							<label for="no_app_reservation">
 								<span>
-									예약 미승인 <span className="blue">10</span>건
+									예약 미승인{" "}
+									<span className="blue">
+										{countOfstate.state1 + countOfstate.state2}
+									</span>
+									건
 								</span>
 							</label>
 						</div>
@@ -278,7 +335,8 @@ export default function Schedules() {
 							<input type="checkbox" id="not_result" name="checkBox" value="state3" />
 							<label for="not_result">
 								<span>
-									결과 미입력 <span className="mint">2</span>건
+									결과 미입력 <span className="mint">{countOfstate.state3}</span>
+									건
 								</span>
 							</label>
 						</div>
@@ -294,7 +352,8 @@ export default function Schedules() {
 							/>
 							<label for="no_app_result">
 								<span>
-									결과 미승인 <span className="yellow">3</span>건
+									결과 미승인{" "}
+									<span className="yellow">{countOfstate.state5}</span>건
 								</span>
 							</label>
 						</div>
@@ -305,7 +364,8 @@ export default function Schedules() {
 							<input type="checkbox" id="ok_result" name="checkBox" value="state6" />
 							<label for="ok_result">
 								<span>
-									결과 입력완료 <span className="puple">2</span>건
+									결과 입력완료{" "}
+									<span className="puple">{countOfstate.state6}</span>건
 								</span>
 							</label>
 						</div>
@@ -359,13 +419,6 @@ export default function Schedules() {
                                 state6 :: [관리자 승인 완료]
                                 state7 :: 예약없음 
                             --> */}
-
-								{/*  ********[마우스 오버 삭제 버튼 예시]********		
-								<div class="hover_btn sch">
-									<div class="area">
-										<div class="lightGray">삭제</div>
-									</div>
-								</div> */}
 
 								<th scope="row" rowSpan={countOfEng + 1}>
 									{/* rowSpan = 해당 언어 학생 수 */}
@@ -466,12 +519,20 @@ export default function Schedules() {
 						handleClose={scheduleClose}
 						reRender={reRender}
 					/>
+				) : selectedSchedule.component === "PermissionScheduleResult" ? (
+					<PermissionScheduleResult
+						handleClose={scheduleClose}
+						date={params.date}
+						reRender={reRender}
+					/>
 				) : (
-					<>
-						{selectedSchedule.std_for_name}학생의
-						{selectedSchedule.sch_start_date} 스케줄
-						<button>삭제</button>
-					</>
+					<DeleteSchedule
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
+						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
+						handleClose={scheduleClose}
+						reRender={reRender}
+					/>
 				)}
 			</Modal>
 		</div>

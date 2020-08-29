@@ -6,6 +6,8 @@ import moment from "moment";
 import CreateSection from "../../../../components/common/modal/CreateSection";
 import GetSections from "../../../../components/common/modal/GetSections";
 
+import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+
 /**
  * Manager :: 시스템 환경설정
  * @returns {JSX.Element}
@@ -25,9 +27,18 @@ export default function Settings() {
 		handleClose: handleCloseForGetSectIsOpen,
 		handleOpen: handleOpenForGetSectIsOpen,
 	} = useModal();
+	const {
+		isOpen: isOpenForInsertForeignerStudent,
+		handleOpen: handleOpenForInsertForeignerStudent,
+		handleClose: handleCloseForInsertForeignerStudent,
+	} = useModal();
 
 	const handleChange = (key, value) => {
 		setPostSettings({ ...postSettings, [key]: parseInt(value) });
+	};
+
+	const reRender = () => {
+		getAdminSetting(setSettings);
 	};
 
 	useEffect(() => {
@@ -353,8 +364,8 @@ export default function Settings() {
 					</div>
 					<div className="setting_ex">
 						<p>[설정 예시]</p>
-						<span>{postSettings.min_absent}회</span> 부터 패널티가 부여되며,{" "}
-						<span>{postSettings.max_absent}회</span> 이상 노쇼를 할 경우{" "}
+						<span>결석 {postSettings.min_absent}회</span> 부터 패널티가 부여되며,{" "}
+						<span>{postSettings.max_absent}회</span> 이상 결석을 할 경우{" "}
 						<span>{postSettings.once_limit_period}일간</span> 이용이 제한됩니다. (해당
 						학기 동안만 유효)
 					</div>
@@ -392,21 +403,28 @@ export default function Settings() {
 					</div>
 
 					<div className="btn_area right">
+						<div
+							className="bbtn darkGray"
+							onClick={handleOpenForInsertForeignerStudent}
+						>
+							유학생 등록
+						</div>
 						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
 							학기 기간 설정
 						</div>
 						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
 							학기 기간 조회
 						</div>
-						<div
-							className="bbtn darkGray"
-							onClick={() => {
-								postAdminSetting(postSettings);
-							}}
-						>
-							저장
-						</div>
 					</div>
+				</div>
+			</div>
+			<div className="table_btn mb40">
+				<div
+					onClick={() => {
+						postAdminSetting(postSettings);
+					}}
+				>
+					저장
 				</div>
 			</div>
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
@@ -414,6 +432,12 @@ export default function Settings() {
 			</Modal>
 			<Modal isOpen={getSectIsOpen} handleClose={handleCloseForGetSectIsOpen}>
 				<GetSections handleClose={handleCloseForGetSectIsOpen} />
+			</Modal>
+			<Modal
+				isOpen={isOpenForInsertForeignerStudent}
+				handleClose={handleCloseForInsertForeignerStudent}
+			>
+				<InsertForeignerStudent handleClose={handleCloseForInsertForeignerStudent} />
 			</Modal>
 		</div>
 	) : (

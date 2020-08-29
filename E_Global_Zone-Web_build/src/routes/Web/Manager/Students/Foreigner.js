@@ -9,6 +9,7 @@ import {
 	getAdminForeignerWork,
 	getAdminSection,
 	getAdminForeignerAccountFavorite,
+	patchAdminForeignerAccount,
 } from "../../../../modules/hooks/useAxios";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
@@ -54,6 +55,7 @@ export default function Foreigner() {
 	const [sectOfYear, setSectOfYear] = useState();
 	const [selectSect, setSelectSect] = useState();
 	const [monthArray, setMonthArray] = useState();
+	const [pending, setPending] = useState(false);
 	const {
 		isOpen: contactIsOpen,
 		handleOpen: handleOpenForContact,
@@ -63,6 +65,11 @@ export default function Foreigner() {
 		isOpen: addIsOpen,
 		handleOpen: handleOpenForAdd,
 		handleClose: handleCloseForAdd,
+	} = useModal();
+	const {
+		isOpen: resetIsOpen,
+		handleOpen: handleOpenForReset,
+		handleClose: handleCloseForReset,
 	} = useModal();
 	const deptList = useSelector(selectDept);
 
@@ -76,7 +83,9 @@ export default function Foreigner() {
 			flag = !flag;
 		};
 	}
-
+	const reRender = () => {
+		getAdminSection({ year: `${moment().format("YYYY")}` }, setSectOfYear);
+	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 	};
@@ -411,16 +420,25 @@ export default function Foreigner() {
 															onMouseOut={() => {
 																document.getElementById(
 																	`hover_btn_${index}`
-																).className = "off";
+																).className = "hover_off";
 															}}
 														>
 															{value.std_for_name}
 															<div
 																id={`hover_btn_${index}`}
-																className="hover_btn off"
+																className="hover_btn hover_off"
 															>
 																<div className="area">
-																	<div className="navy">
+																	<div
+																		className="navy"
+																		onClick={() => {
+																			patchAdminForeignerAccount(
+																				value.std_for_id,
+																				setPending
+																			);
+																			handleOpenForReset();
+																		}}
+																	>
 																		비밀번호 초기화
 																	</div>
 																	<div className="lightGray">
@@ -448,29 +466,9 @@ export default function Foreigner() {
 														{Object.values(value.work_time).map((v) => {
 															return <td>{v}분</td>;
 														})}
-
-														{/* <td>
-																		(value.curruntMonth + value.lastMonth +
-																		value.thePastMonth) / 60 ).toFixed(0)} 시간{" "}
-																		{(value.curruntMonth +
-																			value.lastMonth +
-																			value.thePastMonth) %
-																			60}
-																		분
-																	</td>
-																	<td>
-																		{(value.thePastMonth / 60).toFixed(0)}시간{" "}
-																		{value.thePastMonth % 60}분
-																	</td>
-																	<td>
-																		{(value.lastMonth / 60).toFixed(0)}시간{" "}
-																		{value.lastMonth % 60}분
-																	</td>
-																	<td>
-																		{(value.curruntMonth / 60).toFixed(0)}시간{" "}
-																		{value.curruntMonth % 60}분
-																	</td> */}
-														<td>만드는중 회</td>
+														<td>
+															{value.std_for_num_of_delay_permission}
+														</td>
 														<td>
 															{value.std_for_num_of_delay_input}회
 														</td>
@@ -511,10 +509,38 @@ export default function Foreigner() {
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
 						<SetSectForeigner sect_id={selectSect} handleClose={handleCloseForAdd} />
 					</Modal>
+					<Modal isOpen={resetIsOpen} handleClose={handleCloseForReset}>
+						{pending && (
+							<Reset
+								handleCloseForReset={handleCloseForReset}
+								setPending={setPending}
+								reRender={reRender}
+							/>
+						)}
+					</Modal>
 				</div>
 			</div>
 		</div>
 	) : (
 		<></>
+	);
+}
+
+function Reset({ handleCloseForReset, reRender, setPending }) {
+	useEffect(() => {
+		return reRender;
+	}, []);
+	return (
+		<>
+			<h1>비밀번호 초기화가 완료되었습니다.</h1>
+			<button
+				onClick={() => {
+					handleCloseForReset();
+					setPending(false);
+				}}
+			>
+				확인
+			</button>
+		</>
 	);
 }

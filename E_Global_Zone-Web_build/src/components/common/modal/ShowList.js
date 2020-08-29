@@ -80,19 +80,19 @@ export default function ShowList({
 	};
 
 	return (
-		<div className="popup list">
+		<div className="popup enrol">
 			<div className="top_tit">
 				<div className="left">
 					<p className="tit">신청 학생 명단보기</p>
-					<p className="txt">{sch_start_date}</p>
-					<p className="txt">{sch_end_date}</p>
+					<p className="txt"><span>시작시간</span> {sch_start_date}</p>
+					<p className="txt"><span>종료시간</span> {sch_end_date}</p>
 				</div>
 				<p className="name">
 					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
 				</p>
 			</div>
 
-			<div className="student_list">
+			<div className="area">
 				<ul>
 					{data && data.data ? (
 						<>

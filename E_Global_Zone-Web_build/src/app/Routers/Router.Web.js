@@ -29,7 +29,7 @@ export function ManagerRouter() {
 					<Route exact path="/schedules/:date" component={Schedules} />
 					{/* term => 학기 */}
 
-					<Route exact path="/students/:term/korean" component={Students} />
+					<Route exact path="/students/:page/korean" component={Students} />
 					<Route exact path="/students/:term/foreigner" component={Foreigner} />
 					{/* category => foreigner, Korean */}
 
