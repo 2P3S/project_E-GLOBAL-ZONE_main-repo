@@ -22,11 +22,11 @@ class RestrictKoreanController extends Controller
 
     private const _UPDATE_SUCCESS = " 학생의 이용 제한 해제가 완료되었습니다.";
 
-    private $restricted;
+    private $restrict;
 
     public function __construct()
     {
-        $this->restricted = new Restricted_student_korean();
+        $this->restrict = new Restricted_student_korean();
     }
 
     // 한국인학생 이용제한 사유 조회
@@ -42,7 +42,7 @@ class RestrictKoreanController extends Controller
             ], 422);
         }
 
-        $restricted_kor_data = $this->restricted->get_restricted_korean_info($request['std_kor_id']);
+        $restricted_kor_data = $this->restrict->get_korean_restricted_info($request['std_kor_id']);
 
         if (empty($restricted_kor_data->first()) || $restricted_kor_data->count() == 0) {
             return response()->json([
@@ -92,22 +92,16 @@ class RestrictKoreanController extends Controller
                     'message' => self::_SECTION_ERROR
                 ], 422);
             }
-
-            $restricted_kor_data = Restricted_student_korean::create([
-                'restrict_std_kor' => $request['std_kor_id'],
-                'restrict_reason' => $request['restrict_reason'],
-                'restrict_end_date' => $sect_data['sect_end_date']
-            ]);
+            $restricted_kor_data =
+                $this->restrict->set_korean_restrict($request['std_kor_id'], $request['restrict_reason'], $sect_data['sect_end_date']);
         }
         // 현재 날짜 기준 +N day 이용 제한
         else {
             $restrict_period = (int)$request['restrict_period'] + 1;
+            $restrict_end_date = date("Y-m-d", strtotime("+{$restrict_period} days"));
 
-            $restricted_kor_data = Restricted_student_korean::create([
-                'restrict_std_kor' => $request['std_kor_id'],
-                'restrict_reason' => $request['restrict_reason'],
-                'restrict_end_date' => date("Y-m-d", strtotime("+{$restrict_period} days"))
-            ]);
+            $restricted_kor_data =
+                $this->restrict->set_korean_restrict($request['std_kor_id'], $request['restrict_reason'], $restrict_end_date);
         }
 
         // 한국인 학생 이용 제한 상태 변경.
@@ -115,7 +109,7 @@ class RestrictKoreanController extends Controller
             'std_kor_state_of_restriction' => (int)true
         ]);
 
-        $restricted_kor_data = $this->restricted->get_restricted_korean_info($request['std_kor_id']);
+        $restricted_kor_data = $this->restrict->get_korean_restricted_info($request['std_kor_id']);
 
         return response()->json([
             "message" => $restricted_kor_data['std_kor_name'] . self::_REGISTER_SUCCESS,
