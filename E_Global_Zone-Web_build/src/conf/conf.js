@@ -66,8 +66,8 @@ const conf = {
 		CHINESE,
 	},
 
-	url: "http://hyun9803.iptime.org/",
-	// url: "http://www.94soon.net/",
+	// url: "http://hyun9803.iptime.org/",
+	url: "http://www.94soon.net/",
 };
 // http://52.78.204.91/
 
