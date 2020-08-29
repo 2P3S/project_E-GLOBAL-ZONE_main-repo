@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import useClick from "../../modules/hooks/useClick";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn, setClass } from "../../redux/userSlice/userSlice";
 import { blankValidator } from "../../modules/validator";
 import conf from "../../conf/conf";
+import { postLoginForeigner } from "../../modules/hooks/useAxios";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -13,10 +14,31 @@ const Login = () => {
 	const id = useRef();
 	const pw = useRef();
 
+	const [data, setData] = useState();
+	const [pending, setPending] = useState(false);
+
+	useEffect(() => {
+		console.log(pending, data);
+		if (pending) {
+			if (data) {
+				console.log(data);
+				alert(data.message);
+
+				window.localStorage.setItem("token", data.token);
+				window.localStorage.setItem("loginId", data.data.info.std_for_id);
+				window.localStorage.setItem("loginName", data.data.info.std_for_name);
+				window.localStorage.setItem("userClass", conf.userClass.FOREIGNER);
+			}
+		}
+		return;
+	}, [pending, data]);
+
 	const handleLogin = () => {
 		const { value: idValue } = id.current;
-		const { value: pwValue } = id.current;
+		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
+		console.log("login", idValue, pwValue);
+		postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
 	};
 
 	return (
@@ -26,19 +48,15 @@ const Login = () => {
 			</div>
 			<div className="login_wrap">
 				<p className="tit">Login</p>
-				<ul className="tab no2">
-					<li
-						onClick={() => {
-							history.push("/student");
-						}}
-					>
-						한국인 학생
-					</li>
-					<li className="on">유학생</li>
-				</ul>
+				<LoginHeader />
 				<div className="login_input">
-					<input type="text" placeholder="학번을 입력해주세요." ref={id} />
-					<input type="password" placeholder="비밀번호를 입력해주세요." ref={pw} />
+					<input type="text" name="id" placeholder="학번을 입력해주세요." ref={id} />
+					<input
+						type="password"
+						name="password"
+						placeholder="비밀번호를 입력해주세요."
+						ref={pw}
+					/>
 					<div className="submit" onClick={handleLogin}>
 						로그인
 					</div>
@@ -59,10 +77,7 @@ export const KoreanLogin = () => {
 			</div>
 			<div className="login_wrap">
 				<p className="tit">Login</p>
-				<ul className="tab no2">
-					<li className="on">한국인 학생</li>
-					<li>유학생</li>
-				</ul>
+				<LoginHeader />
 				<div
 					className="gsuite_login"
 					onClick={() => {
@@ -80,5 +95,30 @@ export const KoreanLogin = () => {
 		</div>
 	);
 };
+
+function LoginHeader() {
+	const history = useHistory();
+	const location = useLocation();
+	return (
+		<ul className="tab no2">
+			<li
+				className={location.pathname === "/student" && "on"}
+				onClick={() => {
+					history.push("/student");
+				}}
+			>
+				한국인 학생
+			</li>
+			<li
+				className={location.pathname === "/foreigner" && "on"}
+				onClick={() => {
+					history.push("/foreigner");
+				}}
+			>
+				유학생
+			</li>
+		</ul>
+	);
+}
 
 export default Login;

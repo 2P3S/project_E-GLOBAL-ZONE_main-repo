@@ -1,6 +1,8 @@
-import defaultAxios from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import conf from "../../conf/conf";
+
+const defaultAxios = new axios();
 
 /**
  * Hooks - useAxios is returns response dataset
@@ -99,7 +101,7 @@ export const getForeignerSchedule = (std_for_id, end_date, start_date, setData) 
  *
  * @param sch_id
  * @param result_start_img
- * @param result_end_img
+ * @param result_end_4img
  * @todo => 이미지 데이터를 보내야 되는데 가질 못해!
  */
 export const postForeignerReservationResult = (sch_id, data) => {
@@ -521,4 +523,20 @@ export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guar
 		.catch((e) => {
 			console.log(e);
 		});
+};
+
+// Login
+
+export const postLoginForeigner = (data, setState, setPending, provider = "foreigners") => {
+	defaultAxios({
+		method: "POST",
+		url: conf.url + `api/login/foreigner`,
+		params: { provider: provider },
+		data,
+	})
+		.then((res) => {
+			setPending(true);
+			res.status === 200 && setState(res.data);
+		})
+		.catch((e) => console.log(e));
 };
