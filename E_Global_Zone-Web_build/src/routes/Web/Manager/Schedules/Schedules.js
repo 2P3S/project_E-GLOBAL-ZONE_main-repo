@@ -15,6 +15,7 @@ import ShowList from "../../../../components/common/modal/ShowList";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
+import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 
 /**
  * Manager :: 스케줄 조회
@@ -207,13 +208,19 @@ export default function Schedules() {
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
-								} else if (
-									div.className === "state_box state3" ||
-									div.className === "state_box state5"
-								) {
+								} else if (div.className === "state_box state3") {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
 										component: "InsertResult",
+										std_for_id: v.std_for_id,
+										std_for_name: v.std_for_name,
+										sch_end_date: schedule.sch_end_date,
+										sch_start_date: schedule.sch_start_date,
+									});
+								} else if (div.className === "state_box state5") {
+									setSelectedSchedule({
+										sch_id: schedule.sch_id,
+										component: "PermissionScheduleResult",
 										std_for_id: v.std_for_id,
 										std_for_name: v.std_for_name,
 										sch_end_date: schedule.sch_end_date,
@@ -241,13 +248,13 @@ export default function Schedules() {
 							btn.innerText = "삭제";
 							area.appendChild(btn);
 							deleteBtn.appendChild(area);
-							td.addEventListener("mouseover", () => {
+							div.addEventListener("mouseover", () => {
 								deleteBtn.classList.remove("hover_off");
 							});
-							td.addEventListener("mouseout", () => {
+							div.addEventListener("mouseout", () => {
 								deleteBtn.classList.add("hover_off");
 							});
-							btn.addEventListener("click", () => {
+							deleteBtn.addEventListener("click", () => {
 								setSelectedSchedule({
 									sch_id: schedule.sch_id,
 									component: "Delete",
@@ -500,6 +507,12 @@ export default function Schedules() {
 						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
 						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
 						handleClose={scheduleClose}
+						reRender={reRender}
+					/>
+				) : selectedSchedule.component === "PermissionScheduleResult" ? (
+					<PermissionScheduleResult
+						handleClose={scheduleClose}
+						date={params.date}
 						reRender={reRender}
 					/>
 				) : (

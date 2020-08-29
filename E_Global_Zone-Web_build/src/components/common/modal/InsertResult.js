@@ -24,20 +24,22 @@ const InsertResult = ({
 	const [data, setData] = useState(new FormData());
 	const [stdData, setStdData] = useState();
 	const handleInputStartImage = (e) => {
-		console.log(e.target.files[0].name);
+		console.log(e.target.files);
 		data.append("result_start_img", e.target.files[0]);
 		// data.append("result_end_img", e.target.files[0]);
 		setImgStart(e.target.files[0]);
 		// setImgEnd(e.target.files[0]);
-		document.getElementById("startImg").value = e.target.files[0].name;
+		let tag = document.getElementById("startImg");
+		tag.value = e.target.files[0].name;
 	};
 	const handleInputEndImage = (e) => {
 		// data.append("result_start_img", e.target.files[0]);
 		data.append("result_end_img", e.target.files[0]);
 		// setImgStart(e.target.files[0]);
 		setImgEnd(e.target.files[0]);
+		console.log(e.target.files);
 		// e.target.value = e.target.files[0]
-		document.getElementById("endImg").innerText = e.target.files[0].name;
+		document.getElementById("endImg").value = e.target.files[0].name;
 	};
 
 	const handleConfirm = () => {
@@ -59,7 +61,9 @@ const InsertResult = ({
 			data.append(`absent_std_kor_id_list[${index}]`, v);
 		});
 
-		console.log(data);
+		for (const iterator of data.entries()) {
+			console.log(iterator);
+		}
 		postForeignerReservationResult(sch_id, data);
 	};
 
@@ -147,15 +151,15 @@ const InsertResult = ({
 
 			<div class="filebox">
 				<p>시작 사진</p>
-				<input id="startImg" class="upload-name" value="파일선택" />
-				<label for="file">업로드</label>
-				<input type="file" id="file" onChange={handleInputStartImage} />
+				<input type="text" id="startImg" class="upload-name" defaultValue="파일선택" />
+				<label htmlFor="file1">업로드</label>
+				<input type="file" id="file1" onChange={handleInputStartImage} />
 			</div>
 
 			<div class="filebox">
 				<p>종료 사진</p>
-				<input id="endImg" class="upload-name" value="파일선택" />
-				<label for="file">업로드</label>
+				<input id="endImg" class="upload-name" defaultValue="파일선택" />
+				<label htmlFor="file">업로드</label>
 				<input type="file" id="file" onChange={handleInputEndImage} />
 			</div>
 

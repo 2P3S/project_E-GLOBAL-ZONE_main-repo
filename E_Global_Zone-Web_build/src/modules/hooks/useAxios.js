@@ -477,3 +477,32 @@ export const deleteAdminScheduleSome = (sch_id, setState) => {
 			console.log(e);
 		});
 };
+// http://hyun9803.iptime.org/api/admin/schedule/unapproved/2020-09-01
+
+export const getAdminScheduleUnaproved = (date, setState) => {
+	defaultAxios({
+		url: conf.url + `api/admin/schedule/unapproved/${date}`,
+	})
+		.then((res) => {
+			res.status === 200 && setState(res.data);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
+
+// http://hyun9803.iptime.org/api/admin/schedule/approval/3668
+
+export const patchAdminScheduleAprovel = (sch_id, data, setState) => {
+	defaultAxios({
+		method: "patch",
+		url: conf.url + `api/admin/schedule/approval/${sch_id}`,
+		data,
+	})
+		.then((res) => {
+			res.status === 200 && setState(true);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+};
