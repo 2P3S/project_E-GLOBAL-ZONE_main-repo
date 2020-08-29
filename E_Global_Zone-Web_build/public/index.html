@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="info.js"></script>
+		<script type="text/javascript" src="info.js"></script>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="/css/template.css" />
 		<!-- <link rel="stylesheet" href="/css/content.css"/>
     <link rel="stylesheet" href="/css/mobile/content.css"/> -->
-		<script>
+		<script type="text/javascript">
 			window.addEventListener("DOMContentLoaded", function () {
 				function isMobile() {
 					return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -54,10 +54,19 @@
   Learn how to configure a non-root public URL by running `npm run build`.
 -->
 		<!-- css/ js-->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src="//cdn.jsdelivr.net/npm/less"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){ 
+				var fileTarget = $('#file'); 
+				fileTarget.on('change', function(){ // 값이 변경되면
+					var cur=$(".filebox input[type='file']").val();
+				$(".upload-name").val(cur);
+				}); 
+			}); 
+		</script>
+		<script type="text/javascript" src="//cdn.jsdelivr.net/npm/less"></script>
 		<!-- <script src="/js/popup.js"></script> -->
-		<script src="/js/easydropdown.js"></script>
+		<script type="text/javascript" src="/js/easydropdown.js"></script>
 		<!-- font -->
 		<link
 			href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,500,700,900&display=swap"

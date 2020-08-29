@@ -66,10 +66,6 @@ const conf = {
 		CHINESE,
 	},
 
-<<<<<<< HEAD
-=======
-	// url: "http://test.94soon.net/api/",
->>>>>>> 2b44a82ede5b251e34a991e9e86d90d1f3e4cee0
 	url: "http://hyun9803.iptime.org/",
 };
 // http://52.78.204.91/

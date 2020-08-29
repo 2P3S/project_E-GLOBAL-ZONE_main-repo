@@ -72,11 +72,12 @@ const InsertResult = ({
 			<div className="top_tit">
 				<div className="left">
 					<p className="tit">출석 결과 입력하기</p>
+					
 					<p className="txt">
-						{user.userClass === conf.userClass.FOREIGNER ? user.name : sch_start_date}
+						<span>시작시간</span> {user.userClass === conf.userClass.FOREIGNER ? user.name : sch_start_date}
 					</p>
 					<p className="txt">
-						{user.userClass === conf.userClass.FOREIGNER ? user.name : sch_end_date}
+						<span>종료시간</span> {user.userClass === conf.userClass.FOREIGNER ? user.name : sch_end_date}
 					</p>
 				</div>
 				<p className="name">
@@ -131,13 +132,28 @@ const InsertResult = ({
 
 			{/*<p className="attend_rate">출석율 : <span>60%</span></p>*/}
 
+			{/* <input type="file" name="img" onChange={handleInputImage} /> */}
+			
+			<div class="filebox"> 
+				<p>시작 사진</p>
+				<input class="upload-name" value="파일선택" onChange={handleInputImage} />
+				<label for="file">업로드</label> 
+				<input type="file" id="file" /> 
+			</div>
+
+			<div class="filebox"> 
+				<p>종료 사진</p>
+				<input class="upload-name" value="파일선택" onChange={handleInputImage} />
+				<label for="file">업로드</label> 
+				<input type="file" id="file" /> 
+			</div>
+
 			<div className="btn_area right">
-				<input type="file" name="img" onChange={handleInputImage} />
 				{/*<div className="bbtn gray">사진 업로드</div>*/}
 				<div className="bbtn mint" onClick={handleConfirm}>
 					저장
 				</div>
-				<div className="bbtn mint" onClick={handleConfirm}>
+				<div className="bbtn red" onClick={handleConfirm}>
 					삭제
 				</div>
 				<div className="bbtn darkGray" onClick={handleClose}>

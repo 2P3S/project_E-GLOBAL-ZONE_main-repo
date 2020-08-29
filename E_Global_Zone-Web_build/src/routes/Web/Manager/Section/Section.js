@@ -152,82 +152,85 @@ export default function Section(props) {
 						<input type="text" />
 						<input type="submit" value="검색" />
 					</div>
-					<div className="scroll_area">
-						<table>
-							<thead>
-								<tr>
-									<th colSpan="3">미입력 리스트</th>
-								</tr>
-								<tr>
-									<th scope="col">학번</th>
-									<th scope="col">이름</th>
-									<th scope="col">근무시간</th>
-								</tr>
-							</thead>
-							<tbody>
-								{forList &&
-									forList.length > 0 &&
-									forList.map((v) => {
-										if (!v.is_schedules_inputed) {
-											return (
-												<tr
-													onClick={() => {
-														history.push(
-															`/section/${params["sect_id"]}/${v.std_for_id}`
-														);
-													}}
-												>
-													<td>{v.std_for_id}</td>
-													<td>{v.std_for_name}</td>
-													<td></td>
-												</tr>
-											);
-										}
-									})}
-							</tbody>
-						</table>
-						<table>
-							<thead>
-								<tr>
-									<th colSpan="3">입력 완료 리스트</th>
-								</tr>
-								<tr>
-									<th scope="col">학번</th>
-									<th scope="col">이름</th>
-									<th scope="col">근무시간</th>
-								</tr>
-							</thead>
-							<tbody>
-								{forList &&
-									forList.length > 0 &&
-									forList.map((v, index) => {
-										if (v.is_schedules_inputed) {
-											return (
-												<tr>
-													<td>{v.std_for_id}</td>
-													<td>{v.std_for_name}</td>
-													<td>
-														<button
+						<div className="not_enter">
+							<p className="tit">미입력 리스트</p>
+							<div className="scroll_area">
+								<table>
+									<thead>
+										<tr>
+											<th scope="col">학번</th>
+											<th scope="col">이름</th>
+											<th scope="col">근무시간</th>
+										</tr>
+									</thead>
+									<tbody>
+										{forList &&
+											forList.length > 0 &&
+											forList.map((v) => {
+												if (!v.is_schedules_inputed) {
+													return (
+														<tr
 															onClick={() => {
-																deleteAdminSchedule(
-																	{
-																		sect_id: params["sect_id"],
-																		std_for_id: v.std_for_id,
-																	},
-																	setIsDone
+																history.push(
+																	`/section/${params["sect_id"]}/${v.std_for_id}`
 																);
 															}}
 														>
-															삭제
-														</button>
-													</td>
-												</tr>
-											);
-										}
-									})}
-							</tbody>
-						</table>
-					</div>
+															<td>{v.std_for_id}</td>
+															<td className="name">{v.std_for_name}</td>
+															<td></td>
+														</tr>
+													);
+												}
+											})}
+									</tbody>
+								</table>
+							</div>
+						</div>
+						
+						<div className="enter">
+							<p className="tit">입력 완료 리스트</p>
+							<div className="scroll_area">
+								<table>
+									<thead>
+										<tr>
+											<th scope="col">학번</th>
+											<th scope="col">이름</th>
+											<th scope="col">근무시간</th>
+										</tr>
+									</thead>
+									<tbody>
+										{forList &&
+											forList.length > 0 &&
+											forList.map((v, index) => {
+												if (v.is_schedules_inputed) {
+													return (
+														<tr>
+															<td>{v.std_for_id}</td>
+															<td>{v.std_for_name}</td>
+															<td>
+																<button
+																	onClick={() => {
+																		deleteAdminSchedule(
+																			{
+																				sect_id: params["sect_id"],
+																				std_for_id: v.std_for_id,
+																			},
+																			setIsDone
+																		);
+																	}}
+																>
+																	삭제
+																</button>
+															</td>
+														</tr>
+													);
+												}
+											})}
+									</tbody>
+								</table>
+							</div>
+						</div>
 				</div>
 
 				<div className="right_wrap">
@@ -237,7 +240,7 @@ export default function Section(props) {
 					<div className="save_btn" onClick={handleOnClick}>
 						저장
 					</div>
-					<table>
+					<table className="work_time">
 						<colgroup>
 							<col width="9%" span="10" />
 						</colgroup>
