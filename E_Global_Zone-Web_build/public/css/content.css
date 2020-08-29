@@ -1782,6 +1782,14 @@ table.pop_table3 td {
 	font-size: 11px;
 	margin-bottom: 5px;
 }
+.filebox input[type="button"] {
+	position: absolute;
+	width: 0;
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 0;
+}
 .filebox input[type="file"] {
 	position: absolute;
 	width: 0;

@@ -259,7 +259,7 @@ export default function Schedules() {
 								scheduleOpen();
 							});
 							td.appendChild(div);
-							td.appendChild(deleteBtn);
+							div.appendChild(deleteBtn);
 						});
 					});
 				}
@@ -303,7 +303,11 @@ export default function Schedules() {
 							/>
 							<label for="no_app_reservation">
 								<span>
-									예약 미승인 <span className="blue">10</span>건
+									예약 미승인{" "}
+									<span className="blue">
+										{countOfstate.state1 + countOfstate.state2}
+									</span>
+									건
 								</span>
 							</label>
 						</div>
@@ -314,7 +318,8 @@ export default function Schedules() {
 							<input type="checkbox" id="not_result" name="checkBox" value="state3" />
 							<label for="not_result">
 								<span>
-									결과 미입력 <span className="mint">2</span>건
+									결과 미입력 <span className="mint">{countOfstate.state3}</span>
+									건
 								</span>
 							</label>
 						</div>
@@ -330,7 +335,8 @@ export default function Schedules() {
 							/>
 							<label for="no_app_result">
 								<span>
-									결과 미승인 <span className="yellow">3</span>건
+									결과 미승인{" "}
+									<span className="yellow">{countOfstate.state5}</span>건
 								</span>
 							</label>
 						</div>
@@ -341,7 +347,8 @@ export default function Schedules() {
 							<input type="checkbox" id="ok_result" name="checkBox" value="state6" />
 							<label for="ok_result">
 								<span>
-									결과 입력완료 <span className="puple">2</span>건
+									결과 입력완료{" "}
+									<span className="puple">{countOfstate.state6}</span>건
 								</span>
 							</label>
 						</div>
