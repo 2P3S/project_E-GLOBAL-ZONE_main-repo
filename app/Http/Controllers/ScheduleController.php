@@ -501,8 +501,8 @@ class ScheduleController extends Controller
         }
 
         $rules = [
-            'reservation' => 'required|array',
-            'reservation.*' => 'required|integer',
+            'attendance' => 'required|array',
+            'attendance.*' => 'required|integer',
             'absent' => 'array',
             'absent.*' => 'integer',
         ];
@@ -517,7 +517,7 @@ class ScheduleController extends Controller
             return $validated_result;
         }
 
-        $update_res_id_list = $request->input('reservation');
+        $update_attendance_id_list = $request->input('attendance');
         $update_absent_id_list = $request->input('absent');
 
         // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
@@ -533,7 +533,7 @@ class ScheduleController extends Controller
         }
 
         // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
-        Reservation::whereIn('res_id', $update_res_id_list)
+        Reservation::whereIn('res_id', $update_attendance_id_list)
             ->where('res_sch', $sch_id['sch_id'])
             ->update([
                 'res_state_of_attendance' => true
