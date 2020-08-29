@@ -148,7 +148,9 @@ class KoreanController extends Controller
     {
         try {
             // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
-            $std_koreans = Student_korean::orderBy('std_kor_state_of_restriction', 'DESC')->paginate(15);
+            $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
+                ->orderBy('std_kor_state_of_restriction', 'DESC')
+                ->paginate(15);
 
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
