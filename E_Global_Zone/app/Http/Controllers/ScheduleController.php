@@ -140,11 +140,10 @@ class ScheduleController extends Controller
      */
     public function std_for_show_sch_by_date(Request $request): JsonResponse
     {
-        // TODO std_for_id 미들웨어로 부터 받아오기.
+        // TODO (적용완료) std_for_id 미들웨어로 부터 받아오기.
         $rules = [
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'std_for_id' => 'required|integer'
         ];
 
         // <<-- Request 유효성 검사
@@ -159,9 +158,11 @@ class ScheduleController extends Controller
         }
         // -->>
 
+        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
+
         $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
-            ->where('std_for_id', $request->std_for_id)
+            ->where('std_for_id', $std_for_id)
             ->whereDate('sch_start_date', '>=', $request->start_date)
             ->whereDate('sch_start_date', '<=', $request->end_date)
             ->orderBy('sch_start_date')
