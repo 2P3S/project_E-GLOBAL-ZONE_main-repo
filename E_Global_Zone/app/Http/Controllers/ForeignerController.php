@@ -55,7 +55,7 @@ class ForeignerController extends Controller
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
     private const _STD_FOR_RESET_SUCCESS = " 비밀번호 초기화가 성공하였습니다.";
-    private const _STD_FOR_RESET_FAILURE = " 비밀번호 초기화에 실패하였습니다.";
+    private const _STD_FOR_RESET_FAILURE = " 비밀번호 변경에 실패하였습니다.";
 
     private const _STD_FOR_FAVORITE_SUCCESS = "유학생 즐겨찾기 변경에 성공하였습니다.";
     private const _STD_FOR_FAVORITE_FAILURE = "유학생 즐겨찾기 변경에 실패하였습니다.";
@@ -364,20 +364,20 @@ class ForeignerController extends Controller
      * 유학생 비밀번호 변경
      * 관리자로 접근 -> 비밀번호 초기화.
      *
-     * @param int $std_for_id
+     * @param Student_foreigner $std_for_id
      * @param Request $request
      * @return Response
      */
-    public function updateAccount(Student_foreigner $std_for_id, Request $request): JsonResponse
+    public function updateAccount(?Student_foreigner $std_for_id, Request $request): JsonResponse
     {
-        $is_user_admin = true;                                          /* 관리자 인증 여부 */
+        $is_user_admin = $request->guard == "admin";                                          /* 관리자 인증 여부 */
 
-        //TODO auth 정보로 로직 나누기.
         $user_password = self::_STD_FOR_INIT_PASSWORD;
 
         if (!$is_user_admin) {
             $rules = [
-                'std_for_passwd' => 'required|string|min:8',
+                'gurad' => 'required|string|in:foreigner',
+                'std_for_passwd' => 'required|string|min:8'
             ];
 
             $validated_result = self::request_validator(
@@ -389,6 +389,8 @@ class ForeignerController extends Controller
             if (is_object($validated_result)) {
                 return $validated_result;
             }
+
+            $std_for_id = $request->user($request->input('guard'));
 
             /* 유학생이 원하는 비밀번호로 변경 */
             $user_password = $request->std_for_passwd;
