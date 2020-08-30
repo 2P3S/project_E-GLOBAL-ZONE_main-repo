@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Restricted_student_korean;
 use App\Student_korean;
+use Socialite;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,8 @@ class KoreanController extends Controller
     private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
     private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";
     private const _STD_KOR_APR_INDEX_FAILURE = "가입 승인 대기중인 한국인 학생이 없습니다.";
+    private const _STD_KOR_IS_ALREADY_REGISTERED = "이미 존재하는 학생의 정보입니다.";
+    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입 가능합니다.";
 
     // updateApproval
     private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
@@ -29,7 +32,6 @@ class KoreanController extends Controller
 
     private const _STD_KOR_RGS_SUCCESS = "가입 신청에 성공하였습니다. 글로벌 존 관리자 승인 시 이용가능합니다.";
     private const _STD_KOR_RGS_FAILURE = "가입 신청에 실패하였습니다. 글로벌 존 관리자에게 문의해주세요.";
-    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입가능합니다.";
 
     private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
     private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
@@ -177,28 +179,40 @@ class KoreanController extends Controller
             'std_kor_dept' => 'required|integer',
             'std_kor_name' => 'required|string|min:2',
             'std_kor_phone' => 'required|string|min:13',
-            'std_kor_mail' => 'required|email',
         ]);
 
-        // 지슈트 g.yju.ac.kr 이메일 벨리데이션 검사
-        $check_email = explode('@', $request->std_kor_mail)[1];
-        $check_email = strcmp($check_email, 'g.yju.ac.kr');
+        $std_kor_user = Socialite::driver('google')->userFromToken($request->header('Authorization'));
+        $std_kor_mail = $std_kor_user['email'];
+
+        $parse_email = explode('@', $std_kor_mail)[1];
+        $check_email = strcmp($parse_email, 'g.yju.ac.kr');
 
         if ($validator->fails() || $check_email) {
             return response()->json([
-                'message' => $check_email ? "G Suite 계정만 가입 가능합니다." : $validator->errors(),
+                'message' => $check_email ? self::_STD_KOR_RGS_MAIL_FAILURE : $validator->errors(),
             ], 422);
         }
 
-        Student_korean::create([
-            'std_kor_id' => $request->std_kor_id,
-            'std_kor_dept' => $request->std_kor_dept,
-            'std_kor_name' => $request->std_kor_name,
-            'std_kor_phone' => $request->std_kor_phone,
-            'std_kor_mail' => $request->std_kor_mail,
-        ]);
+        // 중복 회원 검사
+        $is_registered_korean = Student_korean::where('std_kor_mail', $std_kor_mail)
+            ->orWhere('std_kor_id', $request->std_kor_id)
+            ->count() > 0;
 
-        return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
+        if ($is_registered_korean) {
+            return self::response_json(self::_STD_KOR_IS_ALREADY_REGISTERED, 422);
+        }
+        // 새로운 회원인 경우 계정 생성
+        else {
+            Student_korean::create([
+                'std_kor_id' => $request->std_kor_id,
+                'std_kor_dept' => $request->std_kor_dept,
+                'std_kor_name' => $request->std_kor_name,
+                'std_kor_phone' => $request->std_kor_phone,
+                'std_kor_mail' => $std_kor_mail,
+            ]);
+
+            return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
+        }
     }
 
     /**

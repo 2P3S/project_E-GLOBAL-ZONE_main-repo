@@ -60,9 +60,16 @@ class ReservationController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function std_kor_destroy_res(Reservation $res_id): JsonResponse
+    public function std_kor_destroy_res(Request $request, Reservation $res_id): JsonResponse
     {
         try {
+            // 해당 예약의 한국인 학생 인증.
+            $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+            $is_alright_korean = $res_id->where('res_std_kor', $std_kor_id)->count() != 1;
+            if (!$is_alright_korean) {
+                throw new Exception('err');
+            }
+
             $res_id->delete();
         } catch (Exception $e) {
             return
@@ -322,11 +329,8 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // std_kor_id 미들웨어로 부터 받아오기
-        // $std_kor_id = $request->input('std_kor_info');
-
         // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
-        $std_kor_id = $request->std_kor_id;
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
         $search_date = $request->input('search_date');
 
         return $this->reservation->get_std_kor_res_by_date($std_kor_id, $search_date);
