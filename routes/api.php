@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Config;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +21,7 @@ Route::prefix('/admin')->group(function () {
         Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
         /** 해당 학기 미등록 유학생 정보 조회 */
-        Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
+        Route::get('no_work/{sect_id}', 'WorkStudentForeignerController@work_std_for_not_registered_index_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
 
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
@@ -30,7 +29,7 @@ Route::prefix('/admin')->group(function () {
         /* 학기별 유학생 관리 */
         Route::prefix('work')->group(function () {
             /** 학기별 전체 유학생 정보 조회 */
-            Route::get('{sect_id}', 'ForeignerController@index')->name('foreigners.index');
+            Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
             /** 학기별 유학생 등록 */
             Route::post('', 'ForeignerController@store')->name('foreigners.store');
