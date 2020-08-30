@@ -226,7 +226,7 @@ Route::middleware('auth.korean')->group(function () {
 // 공용 라우터
 /** 로그인 */
 Route::prefix('login')->group(static function () {
-    Route::get('admin', 'LoginController@login_admin')->name('login.adminsLogin');
+    Route::post('admin', 'LoginController@login_admin')->name('login.adminsLogin');
     Route::post('foreigner', 'LoginController@login_std_for')->name('login.foreignersLogin');
 });
 
