@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+
 use Socialite;
-use App\Model\Authenticator;
 use App\Student_korean;
+use App\Admin;
+use App\Model\Authenticator;
+use App\Student_foreigner;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -38,7 +43,7 @@ class LoginController extends Controller
      *
      * @param Request $request
      * @param string $key
-     * @return array|null
+     * @return object|null
      */
     private function login_authenticator(
         Request $request,
@@ -51,23 +56,19 @@ class LoginController extends Controller
             return null;
         }
 
-        $token = '';
-
         $initial_password = [
             'admins' => self::_ADMIN_INIT_PASSWORD,
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
         ];
 
-        // <<-- 초기 비밀번호로 로그인 시
-        $is_login_init_password = $initial_password[$credentials[2]] !== $credentials[1];
-        if ($is_login_init_password) {
-            $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
-        }
-        // -->>
+        $token = '';
+        $is_login_init_password = $initial_password[$credentials[2]] === $credentials[1];
+        $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
 
         return [
+            'flag' => $is_login_init_password,
             'info' => $user,
-            'token' => $token
+            'token' => $token,
         ];
     }
 
@@ -77,7 +78,7 @@ class LoginController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function login_admin(Request $request): JsonResponse
+    public function login_admin(Request $request): object
     {
         $rules = [
             'account' => 'required|string',
@@ -102,12 +103,15 @@ class LoginController extends Controller
         }
         // -->>
 
-        $token = $admin['token'];
-
-        // <<-- 초기 비밀번호로 로그인 시
-        if (empty($token)) {
-            return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
+        // <<-- 초기 비밀번호 로그인 시
+        if ($admin['flag']) {
+            $data = [
+                'provider' => $request->input('provider'),
+                'account' => $admin['info']['account'],
+                'name' => $admin['info']['name'],
+                'token' => $admin['token']
+            ];
+            return view('password_update', $data);
         }
         // -->>
 
@@ -116,7 +120,7 @@ class LoginController extends Controller
 
         return
             self::response_json($message_template, 200, (object)$admin);
-        // -->
+        // -->>
     }
 
     /**
@@ -185,7 +189,7 @@ class LoginController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function login_std_for(Request $request): JsonResponse
+    public function login_std_for(Request $request): object
     {
         $rules = [
             'std_for_id' => 'required|string',
@@ -213,9 +217,14 @@ class LoginController extends Controller
         $token = $foreigner['token'];
 
         // <<-- 초기 비밀번호로 로그인 시
-        if (empty($token)) {
-            return
-                self::response_json(self::_PASSWORD_CHANGE_REQUIRE, 202);
+        if ($foreigner['flag']) {
+            $data = [
+                'provider' => $request->input('provider'),
+                'account' => $foreigner['info']['std_for_id'],
+                'name' => $foreigner['info']['std_for_name'],
+                'token' => $foreigner['token']
+            ];
+            return view('password_update', $data);
         }
         // -->>
 
@@ -235,17 +244,97 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user($request->input('guard'))->token()->revoke();
+        $this->request_user_data($request, false)->token()->revoke();
 
         return
             self::response_json(self::_LOGOUT_SUCCESS, 200);
     }
 
-    public function request_user_data(Request $request)
+    public function request_user_data(
+        Request $request,
+        bool $is_response_json = true
+    )
     {
         $user_data = $request->user($request->input('guard'));
 
+        if (!$is_response_json) {
+            return $user_data;
+        }
+
         return
             self::response_json("", 200, $user_data);
+    }
+
+    public function remeber_token(
+        array $request
+    )
+    {
+        $provider = $request['provider'];
+        $users = [
+            'admins' => new Admin(),
+            'foreigners' => new Student_foreigner()
+        ];
+
+        return $users[$provider]->set_user_info($request);
+    }
+
+    public function update_password_url(
+        array $request,
+        string $expire_time
+    )
+    {
+        $is_possible_password = $this->validate_password($request, $expire_time);
+
+        $provider = $request['provider'];
+        $password = trim($request['password']);
+
+        if ($is_possible_password) {
+            $users = [
+                'admins' => new Admin(),
+                'foreigners' => new Student_foreigner()
+            ];
+
+            $user = $users[$provider]->get_user_info($request);
+            $is_no_users = !$user->count();
+
+            if ($is_no_users) {
+                return false;
+            }
+
+            return $users[$provider]->update_user_info($user, Hash::make($password));
+        }
+
+        return false;
+    }
+
+    private function validate_password(
+        array $request,
+        string $expire_time
+    ): bool
+    {
+        $initial_password = [
+            'admins' => self::_ADMIN_INIT_PASSWORD,
+            'foreigners' => self::_STD_FOR_INIT_PASSWORD
+        ];
+
+        $provider = $request['provider'];
+        $password = trim($request['password']);
+        $password_confirmation = trim($request['password_confirmation']);
+
+        $is_possible_provider = $provider === 'admins' || $provider === 'foreigners';
+        $is_initial_password =
+            $initial_password[$provider] === $password ||
+            $initial_password[$provider] === $password_confirmation;
+        $is_password_confirm = $password === $password_confirmation;
+
+        $pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
+        $is_possible_password = preg_match($pattern, $password);
+
+        return
+            $is_password_confirm &&
+            $is_possible_provider &&
+            !$is_initial_password &&
+            $is_possible_password &&
+            $expire_time < date("Y-m-d H:i:s");
     }
 }
