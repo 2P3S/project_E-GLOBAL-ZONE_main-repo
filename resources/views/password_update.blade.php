@@ -143,9 +143,15 @@
         $is_password_update_success = $login_controller
             ->update_password_url(array_merge($_SESSION, $_POST), $_GET['expire_time']);
 
+        echo "<h1>비밀번호 변경 중입니다.</h1>";
+
         if ($is_password_update_success) {
+            echo "비밀번호 변경을 성공하였습니다.<br>다시 로그인해주세요.";
+            echo "<a href='http://www.94soon.net'>메인페이지로 이동</a>";
             echo "<script>go_main_page(`비밀번호 변경을 성공하였습니다.\n다시 로그인해주세요.`)</script>";
         } else {
+            echo "비밀번호 변경을 실패하였습니다.<br>다시 로그인해주세요.";
+            echo "<a href='http://www.94soon.net'>메인페이지로 이동</a>";
             echo "<script>go_main_page(`비밀번호 변경을 실패하였습니다.`)</script>";
         }
     @endphp
