@@ -17,10 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
 
-    Route::prefix('request')->group(static function () {
-        Route::get('admin', 'LoginController@request_user_data')->name('auth.adminsRequest');
-        Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
-    });
+    /** 해당 학기 미등록 유학생 정보 조회 */
+        Route::get('no_work/{sect_id}', 'WorkStudentForeignerController@work_std_for_not_registered_index_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
 
     /* 관리자 라우터 */
     Route::prefix('/admin')->group(function () {
@@ -32,13 +30,16 @@ Route::middleware('auth.multi')->group(static function () {
             /** 해당 학기 미등록 유학생 정보 조회 */
             Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
 
+            /* 학기별 유학생 관리 */
+            Route::prefix('work')->group(function () {
+
             /** 학생정보 CSV 파일 다운로드 */
             // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
 
             /* 학기별 유학생 관리 */
             Route::prefix('work')->group(function () {
-                /** 학기별 전체 유학생 정보 조회 */
-                Route::get('{sect_id}', 'ForeignerController@index')->name('foreigners.index');
+                 /** 학기별 전체 유학생 정보 조회 */
+                Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
                 /** 학기별 유학생 등록 */
                 Route::post('', 'ForeignerController@store')->name('foreigners.store');
