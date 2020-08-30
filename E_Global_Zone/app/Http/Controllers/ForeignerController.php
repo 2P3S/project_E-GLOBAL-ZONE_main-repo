@@ -3,17 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Schedule;
-use App\Section;
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
 use App\Work_student_foreigner;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class ForeignerController extends Controller
 {
@@ -68,146 +64,12 @@ class ForeignerController extends Controller
     // 000 학번의 학생의 데이터가 중복입니다.
     private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
 
-    // 해당 학기 미등록 유학생 정보 조회
-    private const _STD_FOR_NON_DATA_BY_SECT_SUCCESS = " 학기 미등록 유학생 정보 조회 결과를 반환합니다.";
 
     private $schedule;
 
     public function __construct()
     {
         $this->schedule = new Schedule();
-    }
-
-    /**
-     * 학기별 전체 유학생 정보 조회
-     *
-     * @param Section $sect_id
-     * @return JsonResponse
-     */
-    public function index(Request $request, Section $sect_id): JsonResponse
-    {
-        // <<-- Request 요청 관리자 권한 검사.
-        $is_admin = self::is_admin($request);
-
-        if (is_object($is_admin)) {
-            return $is_admin;
-        }
-        // -->>
-
-        $sect_name = $sect_id['sect_name'];
-        $work_std_for_list =
-            Work_student_foreigner::select(
-                'work_list_id',
-                'std_for_id',
-                'std_for_dept',
-                'std_for_name',
-                'std_for_lang',
-                'std_for_country',
-                'std_for_state_of_favorite',
-                'std_for_num_of_delay_permission',
-                'std_for_num_of_delay_input'
-            )
-            ->join('student_foreigners as for', 'work_student_foreigners.work_std_for', 'for.std_for_id')
-            ->where('work_sect', $sect_id['sect_id'])
-            ->orderBy('std_for_state_of_favorite')
-            ->orderBy('std_for_lang')
-            ->get();
-
-        $time['sect_start_date'] = $sect_id['sect_start_date'];
-        $time['sect_end_date'] = $sect_id['sect_end_date'];
-
-        if (count($work_std_for_list) === 0) {
-            return response()->json([
-                'message' => self::_WORK_STD_FOR_INDEX_FAILURE,
-                'time' => $time
-            ], 202);
-        }
-
-        // 활동 00월 계산
-        $sect_start_month = (int)date("m", strtotime($sect_id['sect_start_date']));
-        $sect_end_month = (int)date("m", strtotime($sect_id['sect_end_date']));
-
-        // 활동 시간 조회
-        foreach ($work_std_for_list as $work_std_for_id) {
-            $isSearchMode = true;
-            $sect_temp_month = $sect_start_month;
-            $work_time = [];
-
-            while ($isSearchMode) {
-                $work_time[$sect_temp_month . "월"] = Schedule::where('sch_std_for', $work_std_for_id['std_for_id'])
-                    ->where('sch_sect', $sect_id['sect_id'])
-                    ->where('sch_state_of_permission', true)
-                    ->whereMonth('sch_start_date', $sect_temp_month)
-                    ->count() / 2;
-
-                $sect_temp_month++;
-
-                // 학기 년도가 변경되는 경우
-                if ($sect_temp_month == 13 && $sect_end_month != 12) {
-                    $sect_temp_month = 1;
-                } else if ($sect_temp_month > $sect_end_month) {
-                    $isSearchMode = false;
-                }
-            }
-            $work_std_for_id['work_time'] = $work_time;
-
-            // 해당학기 스케줄 등록여부 반환
-            $get_sect_by_sch_count = $this->schedule->get_sch_by_sect((int)$sect_id['sect_id'], (int)$work_std_for_id['std_for_id'])->count();
-
-            $work_std_for_id['is_schedules_inputed'] = $get_sect_by_sch_count > 0;
-        }
-
-        return response()->json([
-            'message' => $sect_name . self::_WORK_STD_FOR_INDEX_SUCCESS,
-            'data' => $work_std_for_list,
-            'time' => $time
-        ], 200);
-    }
-
-    /**
-     * 해당 학기 미등록 유학생 정보 조회
-     *
-     * @param Section $sect_id
-     * @return JsonResponse
-     */
-    public function std_for_index_no_data_by_sect(
-        Request $request,
-        Section $sect_id
-    ): JsonResponse {
-        // <<-- Request 요청 관리자 권한 검사.
-        $is_admin = self::is_admin($request);
-
-        if (is_object($is_admin)) {
-            return $is_admin;
-        }
-        // -->>
-
-        $work_list_data = Work_student_foreigner::where('work_sect', $sect_id['sect_id'])->get();
-
-        $work_list_arr = [];
-
-        foreach ($work_list_data as $data) {
-            array_push($work_list_arr, $data['work_std_for']);
-        };
-
-        $select_column_list = [
-            'student_foreigners.std_for_lang',
-            'student_foreigners.std_for_country',
-            'student_foreigners.std_for_id',
-            'student_foreigners.std_for_name',
-            'student_foreigners.std_for_dept',
-            'contact.std_for_phone',
-            'contact.std_for_mail',
-            'contact.std_for_zoom_id'
-        ];
-
-        $search_data = Student_foreigner::select($select_column_list)
-            ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-            ->whereNotIn('student_foreigners.std_for_id', $work_list_arr)
-            ->orderBy('student_foreigners.std_for_lang')
-            ->get();
-
-        return self::response_json($sect_id['sect_name'] . self::_STD_FOR_NON_DATA_BY_SECT_SUCCESS, 200, $search_data);
     }
 
     /**
@@ -236,7 +98,7 @@ class ForeignerController extends Controller
 
         $req_std_for_id = $request->input('foreigners');
 
-        $select_column_list = [
+        $select_column = [
             'student_foreigners.std_for_id',
             'student_foreigners.std_for_name',
             'contact.std_for_phone',
@@ -250,9 +112,9 @@ class ForeignerController extends Controller
         foreach ($req_std_for_id as $std_for_id) {
             // 학번 기준 검색
             $search_result =
-                Student_foreigner::select($select_column_list)
-                ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-                ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
+                Student_foreigner::select($select_column)
+                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+                    ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
 
             // 검색 결과 저장
             if ($search_result) {
@@ -475,7 +337,7 @@ class ForeignerController extends Controller
             return $validated_result;
         }
 
-        $std_for_id->update(['std_for_state_of_favorite' => (int) $request->input('favorite_bool')]);
+        $std_for_id->update(['std_for_state_of_favorite' => (int)$request->input('favorite_bool')]);
 
         return self::response_json(self::_STD_FOR_FAVORITE_SUCCESS, 200);
     }

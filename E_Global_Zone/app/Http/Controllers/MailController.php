@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -45,9 +46,9 @@ class MailController extends Controller
         try {
             Mail::send('emails.reset', $data, function ($message) {
 
-                $mail_from_address = env('MAIL_FROM_ADDRESS');
-                $mail_from_name = env('MAIL_FROM_NAME');
-                $mail_to_address = env('MAIL_USERNAME');
+                $mail_from_address = Config::get('mail.from.address');
+                $mail_from_name = Config::get('mail.from.name');
+                $mail_to_address = Config::get('mail.username');
 
                 $message->from($mail_from_address, $mail_from_name);
                 $message->to($mail_to_address)
