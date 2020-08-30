@@ -431,4 +431,37 @@ class ReservationController extends Controller
 
         return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
     }
+
+    /**
+     * 관리자 - 해당 스케줄 학생 삭제.
+     *
+     * @param Reservation $res_id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function destroy_kor_reservation_by_admin(
+        Request $request,
+        Reservation $res_id
+    ): JsonResponse {
+        // <<-- Request 유효성 검사
+        $rules = [
+            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RES_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $res_id->delete();
+
+        return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
+    }
 }

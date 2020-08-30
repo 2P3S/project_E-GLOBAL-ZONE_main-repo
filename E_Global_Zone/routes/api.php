@@ -17,9 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
 
-    /** 해당 학기 미등록 유학생 정보 조회 */
-        Route::get('no_work/{sect_id}', 'WorkStudentForeignerController@work_std_for_not_registered_index_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
-
     /* 관리자 라우터 */
     Route::prefix('/admin')->group(function () {
         /* 유학생 관리 */
@@ -28,10 +25,7 @@ Route::middleware('auth.multi')->group(static function () {
             Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
             /** 해당 학기 미등록 유학생 정보 조회 */
-            Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
-
-            /* 학기별 유학생 관리 */
-            Route::prefix('work')->group(function () {
+            Route::get('no_work/{sect_id}', 'WorkStudentForeignerController@work_std_for_not_registered_index_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
 
             /** 학생정보 CSV 파일 다운로드 */
             // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
@@ -138,6 +132,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /* 해당 스케줄 학생 추가 */
             Route::post('add/{sch_id}', 'ReservationController@add_kor_schedule_by_admin')->name('reservations.add_kor_schedule_by_admin');
+
+            /* 해당 스케줄 학생 삭제 */
+            Route::delete('add/{res_id}', 'ReservationController@destroy_kor_reservation_by_admin')->name('reservations.destroy_kor_reservation_by_admin');
 
             /* 스케줄 관련 미입력 관리 라우터 */
             /** 해당 날짜 출석 결과 미입력건 조회 */
