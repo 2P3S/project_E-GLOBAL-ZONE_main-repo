@@ -41,7 +41,8 @@ class DepartmentController extends Controller
     public function store(Request $request): JsonResponse
     {
         $rules = [
-            'dept_name' => 'required|string|unique:departments,dept_name'
+            'dept_name' => 'required|string|unique:departments,dept_name',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -74,6 +75,7 @@ class DepartmentController extends Controller
     {
         $rules = [
             'dept_name' => 'required|string|unique:departments,dept_name',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -103,8 +105,16 @@ class DepartmentController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function destroy(Department $dept_id): JsonResponse
+    public function destroy(Request $request, Department $dept_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $deleted_dept_name = $dept_id['dept_name'];
         $dept_id->delete();
 

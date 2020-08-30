@@ -56,7 +56,8 @@ class ScheduleController extends Controller
     public function showForeignerSchedules(Request $request): JsonResponse
     {
         $rules = [
-            'search_date' => 'required|date'
+            'search_date' => 'required|date',
+            'guard' => 'required|string|in:admin'
         ];
 
         // <<-- Request 유효성 검사
@@ -200,6 +201,7 @@ class ScheduleController extends Controller
             'schedule.*.*' => 'integer',
             'ecept_date' => 'array',
             'ecept_date.*' => 'date',
+            'guard' => 'required|string|in:admin'
         ];
 
         // <<-- Request 유효성 검사
@@ -321,6 +323,7 @@ class ScheduleController extends Controller
             'sch_std_for' => 'required|integer',
             'sch_start_date' => 'required|date',
             'sch_end_date' => 'required|date',
+            'guard' => 'required|string|in:admin'
         ];
 
         // <<-- Request 유효성 검사
@@ -354,6 +357,7 @@ class ScheduleController extends Controller
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
         // <<-- Request 유효성 검사
@@ -394,6 +398,7 @@ class ScheduleController extends Controller
             'schedule.*.times' => 'required|array',
             'schedule.*.times.*' => 'required|integer',
             'schedule.*.date' => 'required|date',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -452,8 +457,17 @@ class ScheduleController extends Controller
      * @param int $sch_id
      * @return JsonResponse
      */
-    public function destroy(Schedule $sch_id): JsonResponse
+    public function destroy(Request $request, Schedule $sch_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        SchedulesResultImg::where('sch_id', $sch_id['sch_id'])->delete();
         Reservation::where('res_sch', $sch_id['sch_id'])->delete();
         $sch_id->delete();
 
@@ -466,8 +480,16 @@ class ScheduleController extends Controller
      * @param string $date
      * @return JsonResponse
      */
-    public function indexUninputedList($date)
+    public function indexUninputedList(Request $request, $date)
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $uninput_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
             ->whereDate('sch_start_date', $date)
@@ -495,8 +517,16 @@ class ScheduleController extends Controller
      * @param string $date
      * @return JsonResponse
      */
-    public function indexUnapprovedList($date)
+    public function indexUnapprovedList(Request $request, $date)
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $unapproved_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date', 'start_img_url', 'end_img_url')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
             ->join('schedules_result_imgs as img', 'schedules.sch_id', '=', 'img.sch_id')
@@ -546,6 +576,7 @@ class ScheduleController extends Controller
             'attendance.*' => 'required|integer',
             'absent' => 'array',
             'absent.*' => 'integer',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
