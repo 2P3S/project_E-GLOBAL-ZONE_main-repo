@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use Socialite;
 use App\Model\Authenticator;
+use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
     private const _LOGIN_FAILURE = "로그인에 실패하였습니다.";
+    private const _AUTH_FAILURE = "G-Suite 계정이 아닙니다.";
+    private const _ACCESS_FAILURE   = "회원 가입 후 이용 가능합니다.";
+
     private const _LOGIN_ERROR = "아이디 또는 비밀번호를 다시 확인하세요.";
-    private const _LOGIN_SUCCESS = " 님 로그인 되습니다. 어서오세요";
+    private const _LOGIN_SUCCESS = " 님 로그인 됐습니다. 어서오세요";
     private const _LOGOUT_SUCCESS = "로그아웃되었습니다.";
     private const _PASSWORD_CHANGE_REQUIRE = "초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.";
 
@@ -37,8 +42,7 @@ class LoginController extends Controller
     private function login_authenticator(
         Request $request,
         string $key
-    ): ?array
-    {
+    ): ?array {
         $credentials = array_values($request->only($key, 'password', 'provider'));
         $credentials[] = $key;
 
@@ -81,7 +85,9 @@ class LoginController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_LOGIN_FAILURE
+            $request,
+            $rules,
+            self::_LOGIN_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -113,6 +119,60 @@ class LoginController extends Controller
     }
 
     /**
+     * 한국인 학생 로그인
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function login_std_kor(Request $request): JsonResponse
+    {
+        $header_token = $request->header('Authorization');
+
+        // 헤더에 토큰이 없는 경우
+        if (empty($header_token))
+            return response()->json([
+                'message' => self::_LOGIN_FAILURE,
+            ], 422);
+
+        try {
+            $std_kor_user = Socialite::driver('google')->userFromToken($header_token);
+            $check_email = explode('@', $std_kor_user['email'])[1];
+            $is_not_g_suite_mail = strcmp($check_email, 'g.yju.ac.kr');
+
+            // E_Global_Zone 회원 확인
+            $std_kor_info = Student_korean::where('std_kor_mail', '=', $std_kor_user['email'])->get()->first();
+
+            // 지슈트 메일이 아닌 경우
+            if ($is_not_g_suite_mail) {
+                return response()->json([
+                    'message' => self::_AUTH_FAILURE,
+                ], 422);
+            }
+
+            // 회원가입을 하지 않은 경우
+            else if (empty($std_kor_info)) {
+                return response()->json([
+                    'message' => self::_ACCESS_FAILURE,
+                ], 202);
+            }
+
+            // 회원인 경우 로그인 성공과 함께 회원정보 전달
+            else {
+                return response()->json([
+                    'message' => $std_kor_info['std_kor_name'].self::_LOGIN_SUCCESS,
+                    'data' => $std_kor_info
+                ], 200);
+            }
+
+        } catch (Exception $e) {
+            // 토큰이 만료 된 경우
+            return response()->json([
+                'message' => self::_LOGIN_FAILURE,
+            ], 422);
+        }
+    }
+
+    /**
      * 외국인 유학생 로그인
      *
      * @param Request $request
@@ -127,7 +187,9 @@ class LoginController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_LOGIN_FAILURE
+            $request,
+            $rules,
+            self::_LOGIN_FAILURE
         );
 
         if (is_object($validated_result)) {

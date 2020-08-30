@@ -12,6 +12,7 @@ class GoogleAuth
 {
     private const _AUTH_FAILURE     = "사용자 인증에 실패하였습니다.";
     private const _ACCESS_FAILURE   = "회원 가입 후 이용 가능합니다.";
+    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 접속 가능합니다.";
     private const _ACCESS_ERROR     = "잘못된 접근입니다.";
 
     /**
@@ -42,7 +43,7 @@ class GoogleAuth
             // 지슈트 메일이 아닌 경우
             if ($is_not_g_suite_mail) {
                 return response()->json([
-                    'message' => self::_ACCESS_ERROR,
+                    'message' => self::_STD_KOR_RGS_MAIL_FAILURE,
                 ], 422);
             } else if (empty($std_kor_info)) {
                 return response()->json([
