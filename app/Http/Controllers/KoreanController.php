@@ -128,8 +128,8 @@ class KoreanController extends Controller
             return $validated_result;
         }
 
-        $column = $request->column;
-        $column_data = $request->column_data;
+        $column = $request->input('column');
+        $column_data = $request->input('column_data');
 
         $std_kor_info = Student_korean::where($column, $column_data)->get();
 
@@ -195,7 +195,7 @@ class KoreanController extends Controller
 
         // 중복 회원 검사
         $is_registered_korean = Student_korean::where('std_kor_mail', $std_kor_mail)
-            ->orWhere('std_kor_id', $request->std_kor_id)
+            ->orWhere('std_kor_id', $request->input('std_kor_id'))
             ->count() > 0;
 
         if ($is_registered_korean) {
@@ -204,10 +204,10 @@ class KoreanController extends Controller
         // 새로운 회원인 경우 계정 생성
         else {
             Student_korean::create([
-                'std_kor_id' => $request->std_kor_id,
-                'std_kor_dept' => $request->std_kor_dept,
-                'std_kor_name' => $request->std_kor_name,
-                'std_kor_phone' => $request->std_kor_phone,
+                'std_kor_id' => $request->input('std_kor_id'),
+                'std_kor_dept' => $request->input('std_kor_dept'),
+                'std_kor_name' => $request->input('std_kor_name'),
+                'std_kor_phone' => $request->input('std_kor_phone'),
                 'std_kor_mail' => $std_kor_mail,
             ]);
 
