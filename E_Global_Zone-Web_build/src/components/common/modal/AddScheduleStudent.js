@@ -37,27 +37,34 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 	}, [result]);
 	return (
 		<>
-			<input type="text" placeholder="학생 이름 으로 검색 하기" id="term" />
-			<button onClick={handleSearch}>검색</button>
-			<div>
-				{data &&
-					data.data &&
-					data.data.map((v) => {
-						return (
-							<div>
-								<span>{v.std_kor_id} ||</span>
-								<span>{v.std_kor_name} ||</span>
-								<span>
-									<button onClick={handleAdd}>
-										추가하기
-										<input type="hidden" value={v.std_kor_id} />
-									</button>
-								</span>
-							</div>
-						);
-					})}
+			<div className="popup student_plus">
+				<div className="top_tit">
+					<p className="tit">학생추가</p>
+					<div className="tsearch_box">
+						<input type="text" placeholder="학생 이름 으로 검색 하기" id="term" />
+						<button onClick={handleSearch}>검색</button>
+					</div>
+				</div>
+				<div className="student_plus_list">
+					{data &&
+						data.data &&
+						data.data.map((v) => {
+							return (
+								<div>
+									<span>{v.std_kor_id} ||</span>
+									<span>{v.std_kor_name} ||</span>
+									<span>
+										<button onClick={handleAdd}>
+											추가하기
+											<input type="hidden" value={v.std_kor_id} />
+										</button>
+									</span>
+								</div>
+							);
+						})}
+				</div>
+				<button className="del_btn" onClick={handleClose}>취소</button>
 			</div>
-			<button onClick={handleClose}>취소</button>
 		</>
 	);
 }
