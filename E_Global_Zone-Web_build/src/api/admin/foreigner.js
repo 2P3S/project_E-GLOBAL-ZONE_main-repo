@@ -1,0 +1,19 @@
+import { admin } from "../axios";
+
+function foreigner(url) {
+	return `foreigner/${url}`;
+}
+
+export const postAdminForeignerAccount = (data) => admin.post(foreigner("account"), data);
+export const patchAdminForeignerAccount = (std_for_id) =>
+	admin.patch(foreigner(`account/${std_for_id}`), data);
+
+export const getAdminForeignerWork = (sect_id) => admin.get(foreigner(`work/${sect_id}`));
+export const postAdminForeignerWork = (data) => admin.post(foreigner("work"), data);
+
+export const getAdminForeignerNoWork = (sect_id) => admin.get(foreigner(`no_work/${sect_id}`));
+
+export const getAdminForeignerAccountFavorite = (std_id, favorite_bool) =>
+	admin.get(foreigner(`account/${std_id}`), { params: { favorite_bool } });
+
+export const getAdminForeignerInfo = (params) => admin.get(foreigner(), { params });

@@ -43,6 +43,7 @@ export const foreignerLogout = createInstanceGuard("logout", "foreigner");
 // loginProvider
 
 export const foreignerLogin = createInstanceLogin("foreigner");
+export const adminLogin = createInstanceLogin("admin");
 
 // commons
 export const getDepartment = () => instance.get("department");
