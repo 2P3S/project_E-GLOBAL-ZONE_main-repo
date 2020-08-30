@@ -58,4 +58,19 @@ class Admin extends Authenticatable
 
         return $admin;
     }
+
+    public function update_user_info(
+        Builder $user, string $hashed_password
+    ): bool
+    {
+        try {
+            $user->update([
+                'password' => $hashed_password
+            ]);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
 }

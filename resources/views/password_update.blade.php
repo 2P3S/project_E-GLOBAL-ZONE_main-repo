@@ -119,7 +119,7 @@
         function go_main_page(message) {
             alert(message);
             // TODO URL 수정필요
-            // location.href = "http://www.94soon.net";
+            location.href = "http://www.94soon.net";
         }
     </script>
     <title>E Global Zone 비밀번호 변경</title>
@@ -146,9 +146,9 @@
         if ($is_password_update_success) {
             unset($_SESSION, $_POST, $_GET);
             session_destroy();
-            echo "<script>go_main_page('패스워드 변경을 성공하였습니다.');</script>";
+            echo "<script>go_main_page('비밀번호 변경을 성공하였습니다.\n다시 로그인해주세요.');</script>";
         } else {
-            echo "<script>go_main_page('패스워드 변경을 실패하였습니다.')</script>";
+            echo "<script>go_main_page('비밀번호 변경을 실패하였습니다.')</script>";
         }
     @endphp
 
