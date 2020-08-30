@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 import Login, { KoreanLogin } from "../../routes/Login/Login";
+import SignUp from "../../routes/Login/SignUp";
 
 /**
  * LoginRouter - Router for Login
@@ -11,10 +12,14 @@ export const LoginRouter = () => {
 	return (
 		<Switch>
 			{/*<Redirect exact path="/" to={`/student`} />*/}
-			<Route exact path="/" component={Login} />
-			<Route path="/foreigner" component={Login} />
-			<Route path="/student" component={KoreanLogin} />
-			<Route path="/manager" component={""} />
+
+			<Route exact path="/foreigner" component={Login} />
+			<Route exact path="/student" component={KoreanLogin} />
+			<Route exact path="/manager" component={""} />
+
+			<Route path="/" component={KoreanLogin} />
+
+			<Route exact path="/korean/sign-up" component={SignUp} />
 		</Switch>
 	);
 };

@@ -3,8 +3,10 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 		function (config) {
 			// 헤더 - 토큰
 			config.headers.Authorization = !isGoogle
-				? `Bearer ${window.localStorage.getItem("token")}`
-				: `${window.localStorage.getItem("token")}`;
+				? guard === "foreigner"
+					? `Bearer ${window.localStorage.getItem("global-zone-foreigner-token")}`
+					: `Bearer ${window.localStorage.getItem("global-zone-admin-token")}`
+				: `${window.localStorage.getItem("global-zone-korean-token")}`;
 			if (guard)
 				config.params = {
 					guard,

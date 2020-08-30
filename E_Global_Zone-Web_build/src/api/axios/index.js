@@ -17,7 +17,7 @@ function createInstanceGuard(url, guard = false) {
 	return setInterceptors(instance, guard ? guard : url);
 }
 
-// 엑시오스 구글 로그인 함수
+// 엑시오스 한국인 가드 함수
 function createInstanceGuardKorean(url) {
 	const instance = axios.create({
 		baseURL: `${process.env.REACT_APP_BASE_URL}${url}`,
@@ -36,6 +36,7 @@ const instance = createDefaultInstance();
 export const admin = createInstanceGuard("admin");
 export const foreigner = createInstanceGuard("foreigner");
 export const korean = createInstanceGuardKorean("korean");
+export const koreanLogin = createInstanceGuardKorean("login/korean");
 
 export const foreignerLogout = createInstanceGuard("logout", "foreigner");
 

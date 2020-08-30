@@ -7,7 +7,10 @@ import { blankValidator } from "../../modules/validator";
 import conf from "../../conf/conf";
 // import { postLoginForeigner } from "../../modules/hooks/useAxios";
 import { postForeignerLogin } from "../../api/foreigner";
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin, useGoogleLogin } from "react-google-login";
+import { postKoreanLogin } from "../../api/korean";
+import { getDepartment } from "../../api/axios";
+import { setDept } from "../../redux/confSlice/confSlice";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -20,16 +23,23 @@ const Login = () => {
 	const [pending, setPending] = useState(false);
 
 	useEffect(() => {
+		if (window.localStorage.getItem("global-zone-korean-token")) {
+			// useGoogleLogin();
+		}
+	}, []);
+
+	useEffect(() => {
 		console.log(pending, data);
 		if (pending) {
 			if (data) {
 				console.log(data);
 				alert(data.message);
 
-				window.localStorage.setItem("token", data.data.token);
-				window.localStorage.setItem("loginId", data.data.info.std_for_id);
-				window.localStorage.setItem("loginName", data.data.info.std_for_name);
-				window.localStorage.setItem("userClass", conf.userClass.FOREIGNER);
+				window.localStorage.setItem("global-zone-foreigner-token", data.data.token);
+				window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
+				window.localStorage.setItem("global-zone-loginName", data.data.info.std_for_name);
+				window.localStorage.setItem("global-zone-userClass", conf.userClass.FOREIGNER);
+				window.localStorage.setItem("global-zone-isLogin", true);
 
 				window.location.replace("/");
 			}
@@ -79,11 +89,37 @@ export const KoreanLogin = () => {
 	const history = useHistory();
 	const googleLogin = () => {}; //googleLogin
 	const onSuccess = (res) => {
+		window.localStorage.clear();
 		console.log(res);
+		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
+		} else {
+			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
+			postKoreanLogin()
+				.then((response) => {
+					if (response.status === 202) {
+						history.push("/korean/sign-up", { email: res.profileObj.email });
+					} else if (response.status === 200) {
+						console.log(response);
+						alert(response.data.message);
+						const { std_kor_id, std_kor_name } = response.data.data;
+						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
+						dispatch(logIn());
+						history.push("/");
+					} else if (response.status === 203) {
+						alert(response.data.message);
+						window.localStorage.clear();
+					}
+				})
+				.catch((e) => alert(e.data.message));
+		}
 	};
 	const onFailure = (e) => {
 		console.log(e);
 	};
+	useEffect(() => {
+		getDepartment().then((res) => dispatch(setDept(res.data)));
+	}, []);
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -98,8 +134,18 @@ export const KoreanLogin = () => {
 					<GoogleLogin
 						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 						buttonText="Google"
+						render={(renderProps) => (
+							<div
+								className="btn"
+								onClick={renderProps.onClick}
+								disabled={renderProps.disabled}
+							>
+								G-suite 계정으로 로그인하기
+							</div>
+						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
+						isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
