@@ -175,10 +175,10 @@ class KoreanController extends Controller
     public function registerAccount(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|integer|min:7',
+            'std_kor_id' => 'required|integer|unique:student_koreans,std_kor_id|distinct|min:1000000|max:9999999',
             'std_kor_dept' => 'required|integer',
             'std_kor_name' => 'required|string|min:2',
-            'std_kor_phone' => 'required|string|min:13',
+            'std_kor_phone' => 'required|string|unique:student_koreans,std_kor_phone|min:13',
         ]);
 
         $std_kor_user = Socialite::driver('google')->userFromToken($request->header('Authorization'));
