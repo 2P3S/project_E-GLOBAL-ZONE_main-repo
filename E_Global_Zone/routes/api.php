@@ -242,3 +242,7 @@ Route::post('korean/account', 'KoreanController@registerAccount')->name('koreans
 
 /** 등록된 계열 & 학과 목록 조회 */
 Route::get('department', 'DepartmentController@index')->name('departments.index');
+
+Route::post('/password/update', function () {
+    return view('password_update');
+});
