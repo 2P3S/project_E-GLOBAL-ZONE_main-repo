@@ -117,6 +117,9 @@ Route::prefix('/admin')->group(function () {
         /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
         Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
+        /* 특정 스케줄 추가 */
+        Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
+
         /* 특정 스케줄 업데이트 */
         Route::patch('some/{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
@@ -194,9 +197,6 @@ Route::middleware('auth.multi')->group(static function () {
 Route::middleware('auth.korean')->group(function () {
     /* 한국인학생 라우터 */
     Route::prefix('/korean')->group(function () {
-        /** 한국인 학생 계정 생성 (회원가입) */
-        Route::post('account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
-
         /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
         Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
 
@@ -226,8 +226,9 @@ Route::middleware('auth.korean')->group(function () {
 // 공용 라우터
 /** 로그인 */
 Route::prefix('login')->group(static function () {
-    Route::post('admin', 'LoginController@login_admin')->name('login.adminsLogin');
-    Route::post('foreigner', 'LoginController@login_std_for')->name('login.foreignersLogin');
+    Route::post('admin', 'LoginController@login_admin')->name('login.login_admin');
+    Route::post('foreigner', 'LoginController@login_std_for')->name('login.login_std_for');
+    Route::post('korean', 'LoginController@login_std_kor')->name('login.login_std_kor');
 });
 
 /** 관리자 비밀번호 초기화 */
@@ -235,6 +236,9 @@ Route::prefix('reset')->group(function () {
     Route::post('/', 'MailController@request_reset');
     Route::get('/', 'MailController@run_reset');
 });
+
+/** 한국인 학생 계정 생성 (회원가입) */
+Route::post('korean/account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
 
 /** 등록된 계열 & 학과 목록 조회 */
 Route::get('department', 'DepartmentController@index')->name('departments.index');
