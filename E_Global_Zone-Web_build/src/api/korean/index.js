@@ -15,6 +15,6 @@ export const postKoreanAccount = (data) => korean.post("account", data);
 /**
  * get a schedule list that is can applicate today
  */
-export const getKoreanSchedule = () => korean.get("schedule");
+export const getKoreanSchedule = (sch_id) => korean.get("schedule" + (sch_id ? `/${sch_id}` : ""));
 
 export const postKoreanLogin = () => koreanLogin.post();

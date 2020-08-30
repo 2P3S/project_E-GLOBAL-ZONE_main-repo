@@ -24,8 +24,9 @@ import { setTodayFuture, setTodayToday } from "../redux/confSlice/confSlice";
 function Routes() {
 	const isLogin = useSelector(selectIsLogin);
 	const User = useSelector(selectUser);
+
 	return (
-		<Router>
+		<Router id="router">
 			<Test />
 			{isLogin ? (
 				User.userClass === conf.userClass.KOREAN ? (

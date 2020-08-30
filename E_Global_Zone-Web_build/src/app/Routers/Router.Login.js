@@ -1,8 +1,8 @@
 import React from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
-import Login, { KoreanLogin } from "../../routes/Login/Login";
+import Login, { KoreanLogin, MobileLogin } from "../../routes/Login/Login";
 import SignUp from "../../routes/Login/SignUp";
-
+import { isMobile } from "react-device-detect";
 /**
  * LoginRouter - Router for Login
  * @returns {JSX.Element}
@@ -17,7 +17,7 @@ export const LoginRouter = () => {
 			<Route exact path="/student" component={KoreanLogin} />
 			<Route exact path="/manager" component={""} />
 
-			<Route path="/" component={KoreanLogin} />
+			<Route path="/" component={isMobile ? MobileLogin : KoreanLogin} />
 
 			<Route exact path="/korean/sign-up" component={SignUp} />
 		</Switch>

@@ -14,6 +14,7 @@
 		"moment": "^2.27.0",
 		"react": "^16.13.1",
 		"react-calendar": "^3.1.0",
+		"react-device-detect": "^1.13.1",
 		"react-dom": "^16.13.1",
 		"react-google-login": "^5.1.21",
 		"react-modal": "^3.11.2",

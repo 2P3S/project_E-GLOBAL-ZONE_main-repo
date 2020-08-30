@@ -51,7 +51,7 @@ export default function Header() {
 						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 						buttonText="Logout"
 						onLogoutSuccess={(res) => {
-							console.log(res);
+							window.location.reload(true);
 						}}
 					></GoogleLogout>
 				</div>
