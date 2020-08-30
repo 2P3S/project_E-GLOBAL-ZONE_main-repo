@@ -212,6 +212,35 @@ class LoginController extends Controller
         string $expire_time
     )
     {
+        $is_possible_password = $this->validate_password($request, $expire_time);
+
+        $provider = $request['provider'];
+        $password = trim($request['password']);
+
+        if ($is_possible_password) {
+            $users = [
+                'admins' => new Admin(),
+                'foreigners' => new Student_foreigner()
+            ];
+
+            $user = $users[$provider]->get_user_info($request);
+            $is_no_users = !$user->count();
+
+            if ($is_no_users) {
+                return false;
+            }
+
+            return $users[$provider]->update_user_info($user, Hash::make($password));
+        }
+
+        return false;
+    }
+
+    private function validate_password(
+        array $request,
+        string $expire_time
+    ): bool
+    {
         $initial_password = [
             'admins' => self::_ADMIN_INIT_PASSWORD,
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
@@ -226,38 +255,15 @@ class LoginController extends Controller
             $initial_password[$provider] === $password ||
             $initial_password[$provider] === $password_confirmation;
         $is_password_confirm = $password === $password_confirmation;
-        $is_possible_password = $this->validate_password($password);
 
-        if (
-            !$is_password_confirm &&
-            !$is_possible_provider &&
-            $is_initial_password &&
-            $is_possible_password &&
-            $expire_time > date("Y-m-d H:i:s")
-        ) {
-            return false;
-        }
-
-        $users = [
-            'admins' => new Admin(),
-            'foreigners' => new Student_foreigner()
-        ];
-
-        $user = $users[$provider]->get_user_info($request);
-        $is_no_users = !$user->count();
-
-        if ($is_no_users) {
-            return false;
-        }
-
-        return $users[$provider]->update_user_info($user, Hash::make($password));
-    }
-
-    private function validate_password(
-        string $password
-    ): bool
-    {
         $pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
-        return preg_match($pattern, $password);
+        $is_possible_password = preg_match($pattern, $password);
+
+        return
+            $is_password_confirm &&
+            $is_possible_provider &&
+            !$is_initial_password &&
+            $is_possible_password &&
+            $expire_time < date("Y-m-d H:i:s");
     }
 }

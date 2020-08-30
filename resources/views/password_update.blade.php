@@ -144,11 +144,9 @@
             ->update_password_url(array_merge($_SESSION, $_POST), $_GET['expire_time']);
 
         if ($is_password_update_success) {
-            unset($_SESSION, $_POST, $_GET);
-            session_destroy();
-            echo "<script>go_main_page('비밀번호 변경을 성공하였습니다.\n다시 로그인해주세요.');</script>";
+            echo "<script>go_main_page(`비밀번호 변경을 성공하였습니다.\n다시 로그인해주세요.`)</script>";
         } else {
-            echo "<script>go_main_page('비밀번호 변경을 실패하였습니다.')</script>";
+            echo "<script>go_main_page(`비밀번호 변경을 실패하였습니다.`)</script>";
         }
     @endphp
 
