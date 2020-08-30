@@ -42,6 +42,7 @@ class SettingController extends Controller
             'max_absent' => 'integer',
             'once_limit_period' => 'integer',
             'result_input_deadline' => 'integer',
+            'guard' => 'required|string|in:admin'
         ]);
 
         if ($validator->fails()) {

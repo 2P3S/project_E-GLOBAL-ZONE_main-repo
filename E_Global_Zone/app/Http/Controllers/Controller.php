@@ -58,4 +58,19 @@ class Controller extends BaseController
 
         return true;
     }
+
+    public static function is_admin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'guard' => 'required|string|in:admin'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "관리자만 접근 할 수 있습니다.",
+            ], 422);
+        }
+
+        return true;
+    }
 }

@@ -34,6 +34,7 @@ class RestrictKoreanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'std_kor_id' => 'required|integer|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ]);
 
         if ($validator->fails()) {
@@ -63,6 +64,7 @@ class RestrictKoreanController extends Controller
             'std_kor_id' => 'required|integer|min:1000000|max:9999999',
             'restrict_reason' => 'required|string|max:300',
             'restrict_period' => 'required|integer|min:1|max:999',
+            'guard' => 'required|string|in:admin'
         ]);
 
         if ($validator->fails()) {
@@ -119,8 +121,18 @@ class RestrictKoreanController extends Controller
     }
 
     // 한국인 학생 이용제한 해제
-    public function update(Restricted_student_korean $restrict_id): JsonResponse
-    {
+    public function update(
+        Request $request,
+        Restricted_student_korean $restrict_id
+    ): JsonResponse {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $std_kor_id = $restrict_id['restrict_std_kor'];
         $student = Student_korean::find($std_kor_id);
 

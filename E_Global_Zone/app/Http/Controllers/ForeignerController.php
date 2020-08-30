@@ -82,7 +82,8 @@ class ForeignerController extends Controller
     {
         $rules = [
             'foreigners' => 'required|array',
-            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999'
+            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -138,7 +139,8 @@ class ForeignerController extends Controller
         $rules = [
             'foreigners' => 'required|array',
             'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
-            'sect_id' => 'required|integer|distinct|min:0|max:100'
+            'sect_id' => 'required|integer|distinct|min:0|max:100',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -183,8 +185,16 @@ class ForeignerController extends Controller
      * @param Work_student_foreigner $work_list_id
      * @return JsonResponse
      */
-    public function destroy(Work_student_foreigner $work_list_id): JsonResponse
+    public function destroy(Request $request, Work_student_foreigner $work_list_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $work_list_id->delete();
 
         return self::response_json(self::_SECT_STD_FOR_EACH_DELETE_SUCCESS, 200);
@@ -207,6 +217,7 @@ class ForeignerController extends Controller
             'std_for_phone' => 'required|string|unique:student_foreigners_contacts,std_for_phone',                  /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
             'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
             'std_for_zoom_id' => 'required|string|unique:student_foreigners_contacts,std_for_zoom_id',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -282,8 +293,18 @@ class ForeignerController extends Controller
      * @param int $std_for_id
      * @return Response
      */
-    public function destroyAccount(Student_foreigner $std_for_id): JsonResponse
-    {
+    public function destroyAccount(
+        Request $request,
+        Student_foreigner $std_for_id
+    ): JsonResponse {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         // 1. 연락처 정보 삭제
         Student_foreigners_contact::find($std_for_id['std_for_id'])->delete();
         // 2. 계정 삭제
@@ -303,6 +324,7 @@ class ForeignerController extends Controller
     {
         $rules = [
             'favorite_bool' => 'required|bool',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
