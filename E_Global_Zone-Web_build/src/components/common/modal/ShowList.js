@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { deleteAdminScheduleAdd } from "../../../modules/hooks/useAxios";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
-	deleteAdminScheduleAdd,
-} from "../../../modules/hooks/useAxios";
+} from "../../../api/foreigner/reservation";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import { useHistory } from "react-router-dom";
@@ -44,11 +44,12 @@ export default function ShowList({
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getForeignerReservation(
-			sch_id,
-			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-			setData
-		);
+		getForeignerReservation(sch_id).then((res) => setData(res.data));
+		// getForeignerReservation(
+		// 	sch_id,
+		// 	user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
+		// 	setData
+		// );
 		return thisReRender;
 	}, []);
 	useEffect(() => {
@@ -84,8 +85,12 @@ export default function ShowList({
 			<div className="top_tit">
 				<div className="left">
 					<p className="tit">신청 학생 명단보기</p>
-					<p className="txt"><span>시작시간</span> {sch_start_date}</p>
-					<p className="txt"><span>종료시간</span> {sch_end_date}</p>
+					<p className="txt">
+						<span>시작시간</span> {sch_start_date}
+					</p>
+					<p className="txt">
+						<span>종료시간</span> {sch_end_date}
+					</p>
 				</div>
 				<p className="name">
 					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
@@ -131,27 +136,31 @@ export default function ShowList({
 									</li>
 								);
 							})}
-							<li>
-								<div onClick={handleOpen} class="add_student">
-									학생 추가{" "}
-									<img
-										src="/global/img/add_student_ico.gif"
-										alt="학생 추가 아이콘"
-									/>
-								</div>
-							</li>
+							{user.userClass === conf.userClass.MANAGER && (
+								<li>
+									<div onClick={handleOpen} class="add_student">
+										학생 추가{" "}
+										<img
+											src="/global/img/add_student_ico.gif"
+											alt="학생 추가 아이콘"
+										/>
+									</div>
+								</li>
+							)}
 						</>
 					) : (
 						<>
-							<li>
-								<div onClick={handleOpen} class="add_student">
-									학생 추가{" "}
-									<img
-										src="/global/img/add_student_ico.gif"
-										alt="학생 추가 아이콘"
-									/>
-								</div>
-							</li>
+							{user.userClass === conf.userClass.MANAGER && (
+								<li>
+									<div onClick={handleOpen} class="add_student">
+										학생 추가{" "}
+										<img
+											src="/global/img/add_student_ico.gif"
+											alt="학생 추가 아이콘"
+										/>
+									</div>
+								</li>
+							)}
 						</>
 					)}
 				</ul>
@@ -175,12 +184,12 @@ export default function ShowList({
 									not_permission_std_kor_id_list.push(v.std_kor_id);
 								}
 							});
-							patchForeignerReservationPermission(
-								sch_id,
+							patchForeignerReservationPermission(sch_id, {
 								permission_std_kor_id_list,
 								not_permission_std_kor_id_list,
-								setPending
-							);
+							}).then((res) => {
+								setPending(true);
+							});
 						}}
 					>
 						저장

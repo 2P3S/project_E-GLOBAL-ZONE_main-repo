@@ -13,8 +13,18 @@ const korean = 1321704;
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		isLogin: true,
-		user: { id: korean, userClass: conf.userClass.MANAGER, name: "사람이름" },
+		isLogin: window.localStorage.getItem("global-zone-isLogin"),
+		user: {
+			id: window.localStorage.getItem("gloabl-zone-loginId")
+				? window.localStorage.getItem("gloabl-zone-loginId")
+				: "",
+			userClass: window.localStorage.getItem("global-zone-userClass")
+				? window.localStorage.getItem("global-zone-userClass")
+				: "",
+			name: window.localStorage.getItem("global-zone-loginName")
+				? window.localStorage.getItem("global-zone-loginName")
+				: "",
+		},
 	},
 	reducers: {
 		logIn: (state) => {
@@ -24,7 +34,11 @@ export const userSlice = createSlice({
 			state.isLogin = false;
 		},
 		setClass: (state, action) => {
-			state.user = { ...state.user, id: action.payload[0], userClass: action.payload[1] };
+			state.user = {
+				id: action.payload[0],
+				userClass: action.payload[1],
+				name: action.payload[2],
+			};
 		},
 	},
 });

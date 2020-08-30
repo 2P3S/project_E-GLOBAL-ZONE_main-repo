@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import useClick from "../../modules/hooks/useClick";
+import { GoogleLogout } from "react-google-login";
 
 /**
  * Header for Mobile
@@ -46,9 +47,13 @@ export default function Header() {
 					</Link>
 				</div>
 				<div className="login">
-					<div>
-						<img src="/global/mobile/img/login_ico.gif" alt="로그인 페이지 이동" />
-					</div>
+					<GoogleLogout
+						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+						buttonText="Logout"
+						onLogoutSuccess={(res) => {
+							window.location.reload(true);
+						}}
+					></GoogleLogout>
 				</div>
 			</div>
 			{/* {pathname !== "/login" ? (

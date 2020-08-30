@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import {
-	getForeignerReservation,
-	patchForeignerReservationPermission,
 	postForeignerReservationResult,
-} from "../../../modules/hooks/useAxios";
+	getForeignerReservation,
+} from "../../../api/foreigner/reservation";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";
-// import FormData from "form-data";
 
 const InsertResult = ({
 	sch_id,
@@ -23,6 +22,7 @@ const InsertResult = ({
 	const [imgEnd, setImgEnd] = useState();
 	const [data, setData] = useState(new FormData());
 	const [stdData, setStdData] = useState();
+	const [pending, setPending] = useState(false);
 	const handleInputStartImage = (e) => {
 		console.log(e.target.files);
 		data.append("result_start_img", e.target.files[0]);
@@ -64,18 +64,17 @@ const InsertResult = ({
 		for (const iterator of data.entries()) {
 			console.log(iterator);
 		}
-		postForeignerReservationResult(sch_id, data);
+		postForeignerReservationResult(sch_id, data, setPending);
 	};
 
 	useEffect(() => {
-		getForeignerReservation(
-			sch_id,
-			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-			setStdData
-		);
+		getForeignerReservation(sch_id).then((res) => setStdData(res.data));
 		window.easydropdown.all();
 		return reRender;
 	}, []);
+	useEffect(() => {
+		pending && handleClose();
+	}, [pending]);
 	useEffect(() => {
 		window.easydropdown.all();
 		console.log(stdData);
@@ -87,12 +86,10 @@ const InsertResult = ({
 					<p className="tit">출석 결과 입력하기</p>
 
 					<p className="txt">
-						<span>시작시간</span>{" "}
-						{user.userClass === conf.userClass.FOREIGNER ? user.name : sch_start_date}
+						<span>시작시간</span> {sch_start_date}
 					</p>
 					<p className="txt">
-						<span>종료시간</span>{" "}
-						{user.userClass === conf.userClass.FOREIGNER ? user.name : sch_end_date}
+						<span>종료시간</span> {sch_end_date}
 					</p>
 				</div>
 				<p className="name">

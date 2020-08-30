@@ -28,7 +28,7 @@ const useAxios = (opts, axiosInstance = defaultAxios) => {
 };
 //
 export const getAdminDeptList = (setState) => {
-	defaultAxios({ url: conf.url + "/api/department" }).then((res) => {
+	defaultAxios({ url: conf.url + "/api/admin/department" }).then((res) => {
 		setState(res.data);
 	});
 };
@@ -99,23 +99,9 @@ export const getForeignerSchedule = (std_for_id, end_date, start_date, setData) 
  *
  * @param sch_id
  * @param result_start_img
- * @param result_end_img
+ * @param result_end_4img
  * @todo => 이미지 데이터를 보내야 되는데 가질 못해!
  */
-export const postForeignerReservationResult = (sch_id, data) => {
-	let ajax = new XMLHttpRequest();
-	ajax.onreadystatechange = () => {
-		if (ajax.readyState === 0) {
-			ajax.setRequestHeader("content-type", "multipart/form-data");
-		}
-		if (ajax.readyState === 4) {
-			// console.log(ajax.response);
-		}
-	};
-
-	ajax.open("post", conf.url + `/api/foreigner/reservation/result/${sch_id}`, true);
-	ajax.send(data);
-};
 
 export const getForeignerReservation = (sch_id, std_for_id, setData) => {
 	defaultAxios({
@@ -508,7 +494,7 @@ export const patchAdminScheduleAprovel = (sch_id, data, setState) => {
 };
 // api/admin/foreigner/account/1425197
 
-export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guard = "admins") => {
+export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guard = "admin") => {
 	defaultAxios({
 		method: "patch",
 		url: conf.url + `api/admin/foreigner/account/${std_for_id}`,
@@ -521,4 +507,20 @@ export const patchAdminForeignerAccount = (std_for_id, setState, data = {}, guar
 		.catch((e) => {
 			console.log(e);
 		});
+};
+
+// Login
+
+export const postLoginForeigner = (data, setState, setPending, provider = "foreigners") => {
+	defaultAxios({
+		method: "POST",
+		url: conf.url + `login/foreigner`,
+		params: { provider: provider },
+		data,
+	})
+		.then((res) => {
+			setPending(true);
+			res.status === 200 && setState(res.data);
+		})
+		.catch((e) => console.log(e));
 };

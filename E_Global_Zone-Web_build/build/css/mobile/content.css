@@ -84,9 +84,11 @@ body {
 	box-sizing: border-box;
 }
 
-.mhead, .mfooter, .wrap {
-	max-width:600px;
-	margin:0 auto;
+.mhead,
+.mfooter,
+.wrap {
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 /* 로그인 */
@@ -95,7 +97,7 @@ body {
 	background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
 	text-align: center;
 }
-.mobile_login a {
+.mobile_login div {
 	display: inline-block;
 	width: 270px;
 	height: 45px;
@@ -234,7 +236,7 @@ body {
 	border: 1px solid #bcbfc7;
 	font-weight: 600;
 	border-radius: 5px;
-	box-sizing:border-box;
+	box-sizing: border-box;
 }
 .input_box input {
 	height: 50px;
@@ -529,6 +531,12 @@ select::-ms-expand {
 
 /********************모바일********************/
 @media (max-width: 400px) {
-	.mfooter p {color:#525252; word-break:keep-all;}
-	.mfooter p span {display:inline; color:#aaa;}
+	.mfooter p {
+		color: #525252;
+		word-break: keep-all;
+	}
+	.mfooter p span {
+		display: inline;
+		color: #aaa;
+	}
 }
