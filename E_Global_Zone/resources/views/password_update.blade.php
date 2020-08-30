@@ -131,6 +131,8 @@
     session_start();
     $expire_time = date("Y-m-d H:i:s", strtotime("+30 seconds"));
     $url = "/api/password/update?expire_time=" . "'{$expire_time}'";
+
+    $request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
 @endphp
 
 @if (isset(
@@ -152,8 +154,8 @@
 
 @elseif (
     isset($account, $provider, $name, $token) && (
-        $_SERVER['PATH_INFO'] === '/api/login/admin' ||
-        $_SERVER['PATH_INFO'] === '/api/login/foreigner'
+        $request_uri === '/api/login/admin' ||
+        $request_uri === '/api/login/foreigner'
     )
 )
     <?php
