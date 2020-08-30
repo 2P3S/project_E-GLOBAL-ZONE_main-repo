@@ -13,6 +13,7 @@ class LoginController extends Controller
     private const _LOGIN_FAILURE = "로그인에 실패하였습니다.";
     private const _AUTH_FAILURE = "G-Suite 계정이 아닙니다.";
     private const _ACCESS_FAILURE   = "회원 가입 후 이용 가능합니다.";
+    private const _AUTH_NO_PERMISSION = "관리자 승인 후 서비스 이용이 가능합니다.";
 
     private const _LOGIN_ERROR = "아이디 또는 비밀번호를 다시 확인하세요.";
     private const _LOGIN_SUCCESS = " 님 로그인 됐습니다. 어서오세요";
@@ -141,6 +142,7 @@ class LoginController extends Controller
 
             // E_Global_Zone 회원 확인
             $std_kor_info = Student_korean::where('std_kor_mail', '=', $std_kor_user['email'])->get()->first();
+            $is_kor_state_of_permission = $std_kor_info['std_kor_state_of_permission'];
 
             // 지슈트 메일이 아닌 경우
             if ($is_not_g_suite_mail) {
@@ -155,7 +157,12 @@ class LoginController extends Controller
                     'message' => self::_ACCESS_FAILURE,
                 ], 202);
             }
-
+            // 관리자 승인을 받지 않은 경우
+            else if (!$is_kor_state_of_permission) {
+                return response()->json([
+                    'message' => self::_AUTH_NO_PERMISSION,
+                ], 203);
+            }
             // 회원인 경우 로그인 성공과 함께 회원정보 전달
             else {
                 return response()->json([
