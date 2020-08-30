@@ -125,9 +125,9 @@ class SectionController extends Controller
         }
 
         $create_section = Section::create([
-            'sect_name' => $request->sect_name,
-            'sect_start_date' => $request->sect_start_date,
-            'sect_end_date' => $request->sect_end_date,
+            'sect_name' => $request->input('sect_name'),
+            'sect_start_date' => $request->input('sect_start_date'),
+            'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
         return self::response_json(self::_SECTION_STORE_RES_SUCCESS, 201, $create_section);
@@ -158,8 +158,8 @@ class SectionController extends Controller
         }
 
         $sect_id->update([
-            'sect_start_date' => $request->sect_start_date,
-            'sect_end_date' => $request->sect_end_date,
+            'sect_start_date' => $request->input('sect_start_date'),
+            'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
         return self::response_json(self::_SECTION_UPDATE_RES_SUCCESS, 200);
