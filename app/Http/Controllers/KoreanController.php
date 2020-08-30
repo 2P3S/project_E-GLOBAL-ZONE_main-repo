@@ -175,7 +175,7 @@ class KoreanController extends Controller
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
                 if ($korean['std_kor_state_of_restriction'] == true) {
-                    $korean['std_stricted_info'] = $this->restricted->get_restricted_korean_info($korean['std_kor_id'], true);
+                    $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
                 }
             }
             return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
