@@ -78,8 +78,9 @@ class SectionController extends Controller
      */
     public function std_kor_attendanced_index(Request $request): JsonResponse
     {
-        //TODO std_kor_id 제거
-        $std_kor_id = $request->std_kor_id;
+        //TODO (적용완료) std_kor_id 제거
+        // $std_kor_id = $request->std_kor_id;
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
 
         $attendanced_section_data = Reservation::select(DB::raw('count(*) as res_count'), 'sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
             ->join('schedules as sch', 'sch_id', 'res_sch')
@@ -124,9 +125,9 @@ class SectionController extends Controller
         }
 
         $create_section = Section::create([
-            'sect_name' => $request->sect_name,
-            'sect_start_date' => $request->sect_start_date,
-            'sect_end_date' => $request->sect_end_date,
+            'sect_name' => $request->input('sect_name'),
+            'sect_start_date' => $request->input('sect_start_date'),
+            'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
         return self::response_json(self::_SECTION_STORE_RES_SUCCESS, 201, $create_section);
@@ -157,8 +158,8 @@ class SectionController extends Controller
         }
 
         $sect_id->update([
-            'sect_start_date' => $request->sect_start_date,
-            'sect_end_date' => $request->sect_end_date,
+            'sect_start_date' => $request->input('sect_start_date'),
+            'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
         return self::response_json(self::_SECTION_UPDATE_RES_SUCCESS, 200);
