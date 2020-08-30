@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice/userSlice";
 import conf from "../../conf/conf";
 import useModal from "../../modules/hooks/useModal";
 import Modal from "./modal/Modal";
 import { patchAdminForeignerAccount } from "../../modules/hooks/useAxios";
-
+import { postForeignerLogout } from "../../api/foreigner";
 /**
  * Header for Manager
  * @returns {JSX.Element}
  * @constructor
  */
 export default function Header() {
+	const history = useHistory();
 	const user = useSelector(selectUser);
 	const { isOpen, handleOpen, handleClose } = useModal();
 	const [pending, setPending] = useState(false);
@@ -70,6 +71,19 @@ export default function Header() {
 					<ul className="menu">
 						<li>
 							<div onClick={handleOpen}>비밀번호 변경</div>
+						</li>
+						<li>
+							<div
+								onClick={() => {
+									postForeignerLogout().then(() => {
+										window.localStorage.clear();
+										alert("로그아웃 되었습니다.");
+										window.location.replace("/");
+									});
+								}}
+							>
+								로그아웃
+							</div>
 						</li>
 						<Modal isOpen={isOpen} handleClose={handleClose}>
 							<div>

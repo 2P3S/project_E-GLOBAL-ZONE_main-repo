@@ -86,6 +86,8 @@ class Schedule {
 	state;
 	reservated_count;
 	un_permission_count;
+	sch_start_date;
+	sch_end_date;
 
 	constructor(schObj, today) {
 		this.sch_id = schObj.sch_id;
@@ -100,6 +102,8 @@ class Schedule {
 		this.reservated_count = schObj.reservated_count;
 		this.un_permission_count = schObj.un_permission_count;
 		this.setDate(schObj.sch_start_date);
+		this.sch_end_date = schObj.sch_end_date;
+		this.sch_start_date = schObj.sch_start_date;
 	}
 
 	setDate(sch_start_date) {
@@ -197,6 +201,11 @@ export default function Schedules() {
 	const [scheduleData, setScheduleData] = useState();
 	const { isOpen, handleClose, handleOpen } = useModal();
 	const [modal, setModal] = useState(<></>);
+	const reRender = () => {
+		getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
+			setData(res.data);
+		});
+	};
 
 	const getWeekStart = (currentDay) => {
 		let startDate = currentDay;
@@ -209,24 +218,52 @@ export default function Schedules() {
 		setWeekStartDate(moment(selectedDate).subtract(i, "d").format("YYYY-MM-DD"));
 		setWeekEndDate(startDate.add(6, "d").format("YYYY-MM-DD"));
 	};
-	const buildDiv = (td, state, value, sch_id) => {
+	const buildDiv = (td, state, value, sch_id, sch_start_date, sch_end_date) => {
 		let div = document.createElement("div");
 		switch (state) {
 			case STATE_PENDING:
 				div.className = "blue";
 				div.addEventListener("click", () => {
-					setModal(<ShowList handleClose={handleClose} sch_id={sch_id} />);
+					setModal(
+						<ShowList
+							handleClose={handleClose}
+							sch_id={sch_id}
+							sch_start_date={sch_start_date}
+							sch_end_date={sch_end_date}
+							reRender={reRender}
+						/>
+					);
 					handleOpen();
 				});
 				div.style.cursor = "pointer";
 				break;
 			case STATE_RESERVED:
 				div.className = "mint";
+				div.addEventListener("click", () => {
+					setModal(
+						<ShowList
+							handleClose={handleClose}
+							sch_id={sch_id}
+							sch_start_date={sch_start_date}
+							sch_end_date={sch_end_date}
+							reRender={reRender}
+						/>
+					);
+					handleOpen();
+				});
 				break;
 			case STATE_DONE:
 				div.className = "yellow";
 				div.addEventListener("click", () => {
-					setModal(<InsertResult handleClose={handleClose} sch_id={sch_id} />);
+					setModal(
+						<InsertResult
+							handleClose={handleClose}
+							sch_id={sch_id}
+							sch_start_date={sch_start_date}
+							sch_end_date={sch_end_date}
+							reRender={reRender}
+						/>
+					);
 					handleOpen();
 				});
 				div.style.cursor = "pointer";
@@ -236,6 +273,7 @@ export default function Schedules() {
 				break;
 			case STATE_NOTHING:
 				div.className = "gray";
+
 				break;
 		}
 		if (typeof value === "object") {
@@ -269,6 +307,7 @@ export default function Schedules() {
 		td.appendChild(div);
 	};
 	const buildTable = (scheduleData) => {
+		console.log(scheduleData);
 		const { monday, tuesday, wednesday, thursday, friday } = scheduleData;
 		const tbody = document.getElementById("tbody");
 		tbody.innerText = "";
@@ -287,6 +326,7 @@ export default function Schedules() {
 					case 1:
 						td.id = `monday${i}`;
 						monday.forEach((v) => {
+							console.log(v);
 							if (v.index[0] === i) {
 								if (v.index[1] === 1) {
 									if (v.state === STATE_PENDING) {
@@ -297,14 +337,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -316,14 +360,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -343,14 +391,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -362,14 +414,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -529,9 +585,8 @@ export default function Schedules() {
 		getWeekStart(moment(selectedDate));
 	}, [selectedDate]);
 	useEffect(() => {
-		setWeek(makeWeek(weekStartDate));
-		console.log(`weekStartDate: ${weekStartDate}`);
 		if (weekStartDate !== undefined) {
+			setWeek(makeWeek(weekStartDate));
 			// getForeignerSchedule(user.id, weekEndDate, weekStartDate, setData);
 			getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
 				setData(res.data);

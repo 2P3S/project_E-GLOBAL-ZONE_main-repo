@@ -5,7 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { logIn, setClass } from "../../redux/userSlice/userSlice";
 import { blankValidator } from "../../modules/validator";
 import conf from "../../conf/conf";
-import { postLoginForeigner } from "../../modules/hooks/useAxios";
+// import { postLoginForeigner } from "../../modules/hooks/useAxios";
+import { postForeignerLogin } from "../../api/foreigner";
+import { GoogleLogin } from "react-google-login";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -28,6 +30,8 @@ const Login = () => {
 				window.localStorage.setItem("loginId", data.data.info.std_for_id);
 				window.localStorage.setItem("loginName", data.data.info.std_for_name);
 				window.localStorage.setItem("userClass", conf.userClass.FOREIGNER);
+
+				window.location.replace("/");
 			}
 		}
 		return;
@@ -38,7 +42,11 @@ const Login = () => {
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
 		console.log("login", idValue, pwValue);
-		postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
+		// postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
+		postForeignerLogin({ std_for_id: idValue, password: pwValue }).then((res) => {
+			setPending(true);
+			res.status === 200 && setData(res.data);
+		});
 	};
 
 	return (
@@ -70,6 +78,12 @@ export const KoreanLogin = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 	const googleLogin = () => {}; //googleLogin
+	const onSuccess = (res) => {
+		console.log(res);
+	};
+	const onFailure = (e) => {
+		console.log(e);
+	};
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -78,17 +92,16 @@ export const KoreanLogin = () => {
 			<div className="login_wrap">
 				<p className="tit">Login</p>
 				<LoginHeader />
-				<div
-					className="gsuite_login"
-					onClick={() => {
-						if (googleLogin) {
-						}
-						dispatch(logIn());
-						dispatch(setClass([1, conf.userClass.KOREAN]));
-						history.push("/");
-					}}
-				>
-					<div className="btn">g.yju.ac.kr 계정으로 로그인하기</div>
+				<div className="gsuite_login">
+					{/* <div className="btn"> */}
+					{/* {" "} */}
+					<GoogleLogin
+						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+						buttonText="Google"
+						onSuccess={onSuccess}
+						onFailure={onFailure}
+					/>
+					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 				</div>
 			</div>

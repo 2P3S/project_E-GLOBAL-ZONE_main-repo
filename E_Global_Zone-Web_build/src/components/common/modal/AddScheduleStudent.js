@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-	postAdminKorean,
-	postAdminScheduleAdd,
-	getForeignerReservation,
-} from "../../../modules/hooks/useAxios";
+import { postAdminKorean, postAdminScheduleAdd } from "../../../modules/hooks/useAxios";
+import { getForeignerReservation } from "../../../api/foreigner/reservation";
 
 export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_for_id }) {
 	const [data, setData] = useState();
@@ -24,7 +21,8 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 	};
 	useEffect(() => {
 		return () => {
-			getForeignerReservation(sch_id, std_for_id, _setData);
+			getForeignerReservation(sch_id).then((res) => _setData(res.data));
+			// getForeignerReservation(sch_id, std_for_id, _setData);
 		};
 	}, []);
 

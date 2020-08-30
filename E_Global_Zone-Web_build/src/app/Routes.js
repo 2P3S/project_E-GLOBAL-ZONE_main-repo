@@ -61,7 +61,7 @@ const Fake = () => {
 };
 
 const Test = () => {
-	const nakamura = 1231234;
+	// const nakamura = 1231234;
 	const korean = 1321704;
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -71,7 +71,7 @@ const Test = () => {
 		history.push("/");
 	};
 	const foreigner = () => {
-		dispatch(setClass([nakamura, conf.userClass.FOREIGNER]));
+		dispatch(setClass([window.localStorage.getItem("loginId"), conf.userClass.FOREIGNER]));
 		history.push("/");
 	};
 	const manager = () => {

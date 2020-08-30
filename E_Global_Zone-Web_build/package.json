@@ -15,6 +15,7 @@
 		"react": "^16.13.1",
 		"react-calendar": "^3.1.0",
 		"react-dom": "^16.13.1",
+		"react-google-login": "^5.1.21",
 		"react-modal": "^3.11.2",
 		"react-redux": "^7.1.3",
 		"react-router-dom": "^5.2.0",
