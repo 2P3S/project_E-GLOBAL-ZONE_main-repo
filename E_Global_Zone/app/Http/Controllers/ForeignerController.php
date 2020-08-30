@@ -84,8 +84,16 @@ class ForeignerController extends Controller
      * @param Section $sect_id
      * @return JsonResponse
      */
-    public function index(Section $sect_id): JsonResponse
+    public function index(Request $request, Section $sect_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $sect_name = $sect_id['sect_name'];
         $work_std_for_list =
             Work_student_foreigner::select(
@@ -162,8 +170,18 @@ class ForeignerController extends Controller
      * @param Section $sect_id
      * @return JsonResponse
      */
-    public function std_for_index_no_data_by_sect(Section $sect_id): JsonResponse
-    {
+    public function std_for_index_no_data_by_sect(
+        Request $request,
+        Section $sect_id
+    ): JsonResponse {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $work_list_data = Work_student_foreigner::where('work_sect', $sect_id['sect_id'])->get();
 
         $work_list_arr = [];
@@ -202,7 +220,8 @@ class ForeignerController extends Controller
     {
         $rules = [
             'foreigners' => 'required|array',
-            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999'
+            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -258,7 +277,8 @@ class ForeignerController extends Controller
         $rules = [
             'foreigners' => 'required|array',
             'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
-            'sect_id' => 'required|integer|distinct|min:0|max:100'
+            'sect_id' => 'required|integer|distinct|min:0|max:100',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -303,8 +323,16 @@ class ForeignerController extends Controller
      * @param Work_student_foreigner $work_list_id
      * @return JsonResponse
      */
-    public function destroy(Work_student_foreigner $work_list_id): JsonResponse
+    public function destroy(Request $request, Work_student_foreigner $work_list_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $work_list_id->delete();
 
         return self::response_json(self::_SECT_STD_FOR_EACH_DELETE_SUCCESS, 200);
@@ -327,6 +355,7 @@ class ForeignerController extends Controller
             'std_for_phone' => 'required|string|unique:student_foreigners_contacts,std_for_phone',                  /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
             'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
             'std_for_zoom_id' => 'required|string|unique:student_foreigners_contacts,std_for_zoom_id',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -384,7 +413,7 @@ class ForeignerController extends Controller
             return $validated_result;
         }
 
-        if($request->input('guard') == 'foreigner') {
+        if ($request->input('guard') == 'foreigner') {
             $std_for_id = $request->user($request->input('guard'))['std_for_id'];
             $std_for_id = Student_foreigner::find($std_for_id);
         }
@@ -402,8 +431,18 @@ class ForeignerController extends Controller
      * @param int $std_for_id
      * @return Response
      */
-    public function destroyAccount(Student_foreigner $std_for_id): JsonResponse
-    {
+    public function destroyAccount(
+        Request $request,
+        Student_foreigner $std_for_id
+    ): JsonResponse {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         // 1. 연락처 정보 삭제
         Student_foreigners_contact::find($std_for_id['std_for_id'])->delete();
         // 2. 계정 삭제
@@ -423,6 +462,7 @@ class ForeignerController extends Controller
     {
         $rules = [
             'favorite_bool' => 'required|bool',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
