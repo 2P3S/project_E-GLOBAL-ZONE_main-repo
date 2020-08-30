@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { deleteAdminScheduleSome } from "../../../modules/hooks/useAxios";
+import { deleteAdminScheduleSome } from "../../../api/admin/schedule";
+// import { deleteAdminScheduleSome } from "../../../modules/hooks/useAxios";
 
 export default function DeleteSchedule({
 	sch_id,
@@ -23,7 +24,10 @@ export default function DeleteSchedule({
 			</p>
 			<button
 				onClick={() => {
-					deleteAdminScheduleSome(sch_id, setPending);
+					// deleteAdminScheduleSome(sch_id, setPending);
+					deleteAdminScheduleSome(sch_id).then((res) => {
+						setPending(true);
+					});
 				}}
 			>
 				넹

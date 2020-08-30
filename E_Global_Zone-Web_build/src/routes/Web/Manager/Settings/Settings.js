@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAdminSetting, postAdminSetting } from "../../../../modules/hooks/useAxios";
+import { getAdminSetting, postAdminSetting } from "../../../../api/admin/setting";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import moment from "moment";
@@ -38,11 +38,11 @@ export default function Settings() {
 	};
 
 	const reRender = () => {
-		getAdminSetting(setSettings);
+		getAdminSetting().then((res) => setSettings(res.data));
 	};
 
 	useEffect(() => {
-		getAdminSetting(setSettings);
+		getAdminSetting().then((res) => setSettings(res.data));
 	}, []);
 	useEffect(() => {
 		if (settings) {
@@ -421,7 +421,7 @@ export default function Settings() {
 			<div className="table_btn mb40">
 				<div
 					onClick={() => {
-						postAdminSetting(postSettings);
+						postAdminSetting(postSettings).then((res) => alert(res.message));
 					}}
 				>
 					저장

@@ -7,7 +7,9 @@ import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
+// import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
+
+import { getAdminSchedule } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 import conf from "../../../../conf/conf";
@@ -86,8 +88,11 @@ export default function Schedules() {
 	};
 
 	useEffect(() => {
-		getAdminSchedule({ search_date: params.date }, setSchedules);
-		setPending(true);
+		getAdminSchedule({ search_date: params.date }).then((res) => {
+			setSchedules(res.data);
+			setPending(true);
+		});
+
 		document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
 			v.addEventListener("click", handleClick);
@@ -101,8 +106,8 @@ export default function Schedules() {
 	}, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
-			setPending(false);
 		}
+		setPending(false);
 		if (schedules && schedules.data) {
 			setCountOfEng(schedules.data.English.length);
 			setCountOfJp(schedules.data.Japanese.length);
@@ -114,8 +119,10 @@ export default function Schedules() {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
-		getAdminSchedule({ search_date: params.date }, setSchedules);
 		setPending(true);
+		getAdminSchedule({ search_date: params.date }, setSchedules).then((res) => {
+			setSchedules(res.data);
+		});
 	};
 
 	/*  ********[마우스 오버 삭제 버튼 예시]********		
@@ -205,7 +212,7 @@ export default function Schedules() {
 									}
 								}
 							}
-							div.addEventListener("click", () => {
+							function clickListner() {
 								if (
 									div.className === "state_box state2" ||
 									div.className === "state_box state1"
@@ -218,15 +225,17 @@ export default function Schedules() {
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
+									scheduleOpen();
 								} else if (div.className === "state_box state3") {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
-										component: "InsertResult",
+										component: "",
 										std_for_id: v.std_for_id,
 										std_for_name: v.std_for_name,
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
+									scheduleOpen();
 								} else if (div.className === "state_box state5") {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
@@ -236,7 +245,8 @@ export default function Schedules() {
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
-								} else {
+									scheduleOpen();
+								} else if (div.className !== "state_box state6") {
 									setSelectedSchedule({
 										sch_id: schedule.sch_id,
 										component: "ShowList",
@@ -245,9 +255,13 @@ export default function Schedules() {
 										sch_end_date: schedule.sch_end_date,
 										sch_start_date: schedule.sch_start_date,
 									});
+									scheduleOpen();
 								}
-								scheduleOpen();
-							});
+							}
+							function addListner(div) {
+								div.addEventListener("click", clickListner);
+							}
+							addListner(div);
 							// 삭제버튼
 							let deleteBtn = document.createElement("div");
 							let area = document.createElement("div");
@@ -264,16 +278,25 @@ export default function Schedules() {
 							div.addEventListener("mouseout", () => {
 								deleteBtn.classList.add("hover_off");
 							});
-							deleteBtn.addEventListener("click", () => {
-								setSelectedSchedule({
-									sch_id: schedule.sch_id,
-									component: "Delete",
-									std_for_id: v.std_for_id,
-									std_for_name: v.std_for_name,
-									sch_end_date: schedule.sch_end_date,
-									sch_start_date: schedule.sch_start_date,
-								});
-								scheduleOpen();
+							btn.addEventListener("mouseover", (e) => {
+								div.removeEventListener("click", clickListner);
+							});
+							btn.addEventListener("mouseout", () => {
+								addListner(div);
+							});
+							btn.addEventListener("click", (e) => {
+								if (e.target.innerText === "삭제") {
+									setSelectedSchedule({
+										sch_id: schedule.sch_id,
+										component: "Delete",
+										std_for_id: v.std_for_id,
+										std_for_name: v.std_for_name,
+										sch_end_date: schedule.sch_end_date,
+										sch_start_date: schedule.sch_start_date,
+									});
+								}
+								setTimeout(scheduleOpen, 500);
+								// scheduleOpen();
 							});
 							td.appendChild(div);
 							div.appendChild(deleteBtn);

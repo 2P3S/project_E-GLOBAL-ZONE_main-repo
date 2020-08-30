@@ -3,11 +3,7 @@ import moment from "moment";
 import Modal from "./Modal";
 import ModalCalendar from "../../common/modal/ModalCalendar";
 import useModal from "../../../modules/hooks/useModal";
-import {
-	getAdminSection,
-	patchAdminSection,
-	postAdminSection,
-} from "../../../modules/hooks/useAxios";
+import { getAdminSection, patchAdminSection, postAdminSection } from "../../../api/admin/section";
 
 export default function CreateSection({
 	isSetSectMode,
@@ -34,12 +30,11 @@ export default function CreateSection({
 
 	useEffect(() => {
 		if (defaultSect) {
-			getAdminSection({ name: defaultSect }, setResData);
+			getAdminSection({ name: defaultSect }).then((res) => setResData(res.data));
 		} else {
-			getAdminSection(
-				{ name: `${moment(Date.now()).format("YYYY학년도")} 1학기` },
-				setResData
-			);
+			getAdminSection({
+				name: `${moment(Date.now()).format("YYYY학년도")} 1학기`,
+			}).then((res) => setResData(res.data));
 		}
 	}, []);
 
@@ -74,7 +69,9 @@ export default function CreateSection({
 
 	useEffect(() => {
 		console.log(selectSect);
-		getAdminSection({ name: `${selectSect.year}학년도 ${selectSect.sect}학기` }, setResData);
+		getAdminSection({ name: `${selectSect.year}학년도 ${selectSect.sect}학기` }).then((res) =>
+			setResData(res.data)
+		);
 	}, [selectSect]);
 
 	useEffect(() => {
@@ -129,18 +126,18 @@ export default function CreateSection({
 							onClick={
 								mode
 									? () => {
-											postAdminSection(
-												{
-													sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
-													sect_start_date: startDate,
-													sect_end_date: endDate,
-												},
-												setIsDone
-											);
-									}
+											postAdminSection({
+												sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
+												sect_start_date: startDate,
+												sect_end_date: endDate,
+											}).then((res) => setIsDone(true));
+									  }
 									: () => {
-											patchAdminSection(currentSect.sect_id, currentSect, setIsDone);
-									}
+											patchAdminSection(
+												currentSect.sect_id,
+												currentSect
+											).then((res) => setIsDone(true));
+									  }
 							}
 						>
 							{mode ? "저장" : "수정"}

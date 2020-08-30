@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { postAdminKorean, postAdminScheduleAdd } from "../../../modules/hooks/useAxios";
+// import { postAdminKorean, postAdminScheduleAdd } from "../../../modules/hooks/useAxios";
+import { postAdminKorean } from "../../../api/admin/korean";
+import { postAdminScheduleAdd } from "../../../api/admin/schedule";
+import { getAdminReservation } from "../../../api/admin/foreigner";
 import { getForeignerReservation } from "../../../api/foreigner/reservation";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../redux/userSlice/userSlice";
+import conf from "../../../conf/conf";
 
 export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_for_id }) {
 	const [data, setData] = useState();
 	const [result, setResult] = useState();
+	const user = useSelector(selectUser);
 
 	const handleSearch = () => {
 		const column_data = document.getElementById("term").value;
@@ -12,17 +19,18 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 		if (isNaN(parseInt(column_data))) {
 			column = "std_kor_name";
 		}
-		postAdminKorean({ column, column_data }, setData);
+		postAdminKorean({ column, column_data }).then((res) => setData(res.data));
 	};
 
 	const handleAdd = (e) => {
 		const std_kor_id = e.target.children[0].value;
-		postAdminScheduleAdd(sch_id, { std_kor_id }, setResult);
+		postAdminScheduleAdd(sch_id, { std_kor_id }).then((res) => setResult(res.data));
 	};
 	useEffect(() => {
 		return () => {
-			getForeignerReservation(sch_id).then((res) => _setData(res.data));
-			// getForeignerReservation(sch_id, std_for_id, _setData);
+			user.class === conf.userClass.MANAGER
+				? getAdminReservation(sch_id).then((res) => _setData(res.data))
+				: getForeignerReservation(sch_id, std_for_id, _setData);
 		};
 	}, []);
 
@@ -63,7 +71,9 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 							);
 						})}
 				</div>
-				<button className="del_btn" onClick={handleClose}>취소</button>
+				<button className="del_btn" onClick={handleClose}>
+					취소
+				</button>
 			</div>
 		</>
 	);

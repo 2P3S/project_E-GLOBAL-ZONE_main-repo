@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { getKoreanReservationResult } from "../../../../modules/hooks/useAxios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../redux/userSlice/userSlice";
 import { selectToday } from "../../../../redux/confSlice/confSlice";

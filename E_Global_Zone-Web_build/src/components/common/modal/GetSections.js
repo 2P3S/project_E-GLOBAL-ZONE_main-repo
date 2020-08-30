@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAdminSection } from "../../../modules/hooks/useAxios";
+import { getAdminSection } from "../../../api/admin/section";
 import moment from "moment";
 import useModal from "../../../modules/hooks/useModal";
 import Modal from "./Modal";
@@ -12,7 +12,7 @@ export default function GetSections() {
 	const { isOpen, handleClose, handleOpen } = useModal();
 
 	useEffect(() => {
-		getAdminSection({ year: moment().format("YYYY") }, setSectList);
+		getAdminSection({ year: moment().format("YYYY") }).then((res) => setSectList(res.data));
 	}, []);
 	useEffect(() => {
 		console.log(sectList);
@@ -54,7 +54,7 @@ export default function GetSections() {
 										</td>
 										<td>{moment(v.sect_start_date).format("YYYY-MM-DD")}</td>
 										<td>{moment(v.sect_end_date).format("YYYY-MM-DD")}</td>
-										<td>{v.std_for_count}명{" "}</td>
+										<td>{v.std_for_count}명 </td>
 										<td>
 											<img
 												onClick={() => {

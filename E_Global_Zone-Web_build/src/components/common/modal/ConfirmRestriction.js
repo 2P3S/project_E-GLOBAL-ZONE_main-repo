@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useClick from "../../../modules/hooks/useClick";
-import { postAdminKoreanRestrict } from "../../../modules/hooks/useAxios";
+import { postAdminKoreanRestrict } from "../../../api/admin/korean";
 
 /**
  * Modal - 이용 제한 등록
@@ -32,14 +32,11 @@ export default function ConfirmRestriction({ std_kor_id, std_kor_name, handleClo
 	};
 
 	const handleConfirm = () => {
-		postAdminKoreanRestrict(
-			{
-				std_kor_id,
-				restrict_reason: document.getElementById("restrict_reason").value,
-				restrict_period: date,
-			},
-			setPending
-		);
+		postAdminKoreanRestrict({
+			std_kor_id,
+			restrict_reason: document.getElementById("restrict_reason").value,
+			restrict_period: date,
+		}).then((res) => setPending(true));
 	};
 
 	useEffect(() => {
