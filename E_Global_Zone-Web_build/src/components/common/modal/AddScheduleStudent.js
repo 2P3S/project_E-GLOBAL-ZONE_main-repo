@@ -40,9 +40,14 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 	return (
 		<>
 			<div className="popup student_plus">
-				<input type="text" placeholder="학생 이름 으로 검색 하기" id="term" />
-				<button onClick={handleSearch}>검색</button>
-				<div>
+				<div className="top_tit">
+					<p className="tit">학생추가</p>
+					<div className="tsearch_box">
+						<input type="text" placeholder="학생 이름 으로 검색 하기" id="term" />
+						<button onClick={handleSearch}>검색</button>
+					</div>
+				</div>
+				<div className="student_plus_list">
 					{data &&
 						data.data &&
 						data.data.map((v) => {
@@ -60,7 +65,7 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 							);
 						})}
 				</div>
-				<button onClick={handleClose}>취소</button>
+				<button className="del_btn" onClick={handleClose}>취소</button>
 			</div>
 		</>
 	);

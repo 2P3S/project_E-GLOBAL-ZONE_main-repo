@@ -2275,22 +2275,28 @@ ul.img_file li p.file_name:hover {
 
 /* 신청학생 명단보기 - 학생추가 */
 .popup.student_plus {
-	width: 555px;
-	position: relative;
+	width:400px;
+	display:inline-block;
 }
-.popup.student_plus .search_box {
-	position: absolute;
-	top: 40px;
-	right: 40px;
+.popup.student_plus .top_tit {
+	width:100%;
+	display:inline-block;
 }
-.popup.student_plus .search_box input {
+.popup.student_plus .top_tit p.tit {
+	float:left;
+	font-size:24px;
+}
+.popup.student_plus .top_tit .tsearch_box {
+	float:right;
+}
+.popup.student_plus .top_tit .tsearch_box input {
 	border: 1px solid #ccc;
 	padding: 0 10px;
 	height: 38px;
 	line-height: 38px;
-	width: 200px;
+	width: 150px;
 }
-.popup.student_plus .search_box button {
+.popup.student_plus .top_tit .tsearch_box button {
 	background: #34bcad;
 	color: #fff;
 	border: none;
@@ -2301,6 +2307,60 @@ ul.img_file li p.file_name:hover {
 	font-weight: 600;
 	font-size: 13px;
 	font-family: "Noto Sans KR", sans-serif;
+	margin-left:5px;
+}
+
+.popup.student_plus .student_plus_list {
+	width:100%;
+	background:#f7f7f9;
+	border:1px solid #e8e8ee;
+	border-radius: 10px;
+}
+
+.popup.student_plus .student_plus_list div {
+	width:100%;
+	border-top:1px solid #ddd;
+	padding:10px 0;
+}
+
+.popup.student_plus .student_plus_list div:first-child {
+	border-top:none;
+}
+
+.popup.student_plus .student_plus_list div span {
+	font-size:13px;
+	width:32.7%;
+	display:inline-block;
+	text-align:center;
+	border-left:1px solid #ddd;
+}
+
+.popup.student_plus .student_plus_list div span:first-child {
+	border-left:none;
+}
+
+.popup.student_plus .student_plus_list div span button {
+	font-size:12px;
+	background: #ffffff;
+	padding:5px 15px;
+	border-radius:30px;
+	border:1px solid #ccc;
+	font-weight:600;
+}
+
+
+.popup.student_plus button.del_btn {
+	float:right;
+	margin-top:15px;
+	padding: 0 15px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 5px;
+	font-size: 13px;
+	color: #fff;
+	font-weight: 600;
+	border:none;
+	background: #373a44;
 }
 
 /* 환경설정 - 학기 기간 조회 */
