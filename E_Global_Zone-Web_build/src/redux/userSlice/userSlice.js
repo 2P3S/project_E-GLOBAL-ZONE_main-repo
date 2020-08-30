@@ -13,23 +13,17 @@ const korean = 1321704;
 export const userSlice = createSlice({
 	name: "user",
 	initialState: {
-		// isLogin: window.localStorage.getItem("token") ? true : false,
-		// user: {
-		// 	id: window.localStorage.getItem("loginId")
-		// 		? window.localStorage.getItem("loginId")
-		// 		: "",
-		// 	userClass: window.localStorage.getItem("userClass")
-		// 		? window.localStorage.getItem("userClass")
-		// 		: "",
-		// 	name: window.localStorage.getItem("loginName")
-		// 		? window.localStorage.getItem("loginName")
-		// 		: "",
-		// },
-		isLogin: true,
+		isLogin: window.localStorage.getItem("global-zone-isLogin"),
 		user: {
-			id: "",
-			userClass: conf.userClass.MANAGER,
-			name: "이름이다",
+			id: window.localStorage.getItem("gloabl-zone-loginId")
+				? window.localStorage.getItem("gloabl-zone-loginId")
+				: "",
+			userClass: window.localStorage.getItem("global-zone-userClass")
+				? window.localStorage.getItem("global-zone-userClass")
+				: "",
+			name: window.localStorage.getItem("global-zone-loginName")
+				? window.localStorage.getItem("global-zone-loginName")
+				: "",
 		},
 	},
 	reducers: {
@@ -40,7 +34,11 @@ export const userSlice = createSlice({
 			state.isLogin = false;
 		},
 		setClass: (state, action) => {
-			state.user = { ...state.user, id: action.payload[0], userClass: action.payload[1] };
+			state.user = {
+				id: action.payload[0],
+				userClass: action.payload[1],
+				name: action.payload[2],
+			};
 		},
 	},
 });

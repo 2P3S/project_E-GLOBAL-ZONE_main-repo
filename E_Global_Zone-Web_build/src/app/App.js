@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Routes from "./Routes";
-import { getAdminDeptList } from "../modules/hooks/useAxios";
+
 import { setDept, selectDept } from "../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
+import dotenv from "dotenv";
 import conf from "../conf/conf";
 import { useHistory } from "react-router-dom";
+import { getDepartment } from "../api/axios";
+
+dotenv.config();
 
 /**
  * React App
@@ -16,7 +20,7 @@ const App = () => {
 	const dispatch = useDispatch();
 	const dept = useSelector(selectDept);
 	useEffect(() => {
-		getAdminDeptList(setData);
+		getDepartment().then((res) => setData(res.data));
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
