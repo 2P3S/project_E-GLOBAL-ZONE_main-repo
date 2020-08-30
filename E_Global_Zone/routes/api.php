@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* 관리자 라우터 */
-
 Route::prefix('/admin')->group(function () {
     /* 유학생 관리 */
     Route::prefix('/foreigner')->group(function () {
@@ -22,7 +21,7 @@ Route::prefix('/admin')->group(function () {
         Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
         /** 해당 학기 미등록 유학생 정보 조회 */
-        Route::get('no_work/{sect_id}', 'ForeignerController@std_for_index_no_data_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
+        Route::get('no_work/{sect_id}', 'WorkStudentForeignerController@work_std_for_not_registered_index_by_sect')->name('foreigners.std_for_index_no_data_by_sect');
 
         /** 학생정보 CSV 파일 다운로드 */
         // Route::get('data/{id}', 'ForeignerController@csv')->name('foreigners.csv');
@@ -30,7 +29,7 @@ Route::prefix('/admin')->group(function () {
         /* 학기별 유학생 관리 */
         Route::prefix('work')->group(function () {
             /** 학기별 전체 유학생 정보 조회 */
-            Route::get('{sect_id}', 'ForeignerController@index')->name('foreigners.index');
+            Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
             /** 학기별 유학생 등록 */
             Route::post('', 'ForeignerController@store')->name('foreigners.store');
@@ -118,6 +117,9 @@ Route::prefix('/admin')->group(function () {
         /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
         Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
+        /* 특정 스케줄 추가 */
+        Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
+
         /* 특정 스케줄 업데이트 */
         Route::patch('some/{sch_id}', 'ScheduleController@update')->name('schedules.update');
 
@@ -140,9 +142,6 @@ Route::prefix('/admin')->group(function () {
 
     /* 계열 / 학과 관리 라우터 */
     Route::prefix('/department')->group(function () {
-        /** 등록된 계열 & 학과 목록 조회 */
-        Route::get('', 'DepartmentController@index')->name('departments.index');
-
         /** 계열 & 학과 등록 */
         Route::post('', 'DepartmentController@store')->name('departments.store');
 
@@ -163,65 +162,7 @@ Route::prefix('/admin')->group(function () {
     });
 });
 
-/* 유학생 라우터 */
-Route::prefix('foreigner')->group(function () {
-    /* 유학생 - 특정 기간 개인 스케줄 조회 */
-    Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
-
-    /** 등록된 계열 & 학과 목록 조회 */
-    Route::get('department', 'DepartmentController@index')->name('departments.index');
-
-    /* 예약 관련 */
-    Route::prefix('reservation')->group(function () {
-        /** 해당 스케줄 신청 학생 명단 조회 */
-        Route::get('{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
-
-        /** 해당 스케줄 신청 학생 명단 승인 */
-        Route::patch('permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
-
-        /** 해당 스케줄 출석 결과 입력 */
-        Route::post('result/{sch_id}', 'ReservationController@std_for_input_sch_result')->name('reservations.inputResult');
-    });
-});
-
-/* 한국인학생 라우터 */
-Route::prefix('/korean')->group(function () {
-    /** 한국인 학생 계정 생성 (회원가입) */
-    Route::post('account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
-
-    /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
-    Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
-
-    // ID 값으로 스케줄 정보 조회
-    Route::get('schedule/{sch_id}', 'ScheduleController@std_kor_show_sch')->name('schedules.show_schedule_by_id');
-
-    /** 등록된 계열 & 학과 목록 조회 */
-    Route::get('department', 'DepartmentController@index')->name('departments.index');
-
-    /** 참석한 학기 목록 조회 */
-    Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
-
-    /* 예약 관련 */
-    Route::prefix('reservation')->group(function () {
-        /** 해당 일자에 대한 예약 조회 */
-        Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
-
-        /** 예약 신청 */
-        Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');
-
-        /** 내 예약 일정 삭제 */
-        Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
-
-        /** 학기별 미팅 목록 결과 조회 */
-        Route::get('/result', 'ReservationController@std_kor_show_res_by_sect')->name('reservations.show');
-    });
-});
-
-Route::prefix('login')->group(static function () {
-    Route::post('admin', 'LoginController@login_admin')->name('auth.adminsLogin');
-    Route::post('foreigner', 'LoginController@login_std_for')->name('auth.foreignersLogin');
-});
-
+// 관리자, 유학생 미들웨어 적용
 Route::middleware('auth.multi')->group(static function () {
     Route::post('logout', 'LoginController@logout')->name('auth.logout');
 
@@ -229,13 +170,79 @@ Route::middleware('auth.multi')->group(static function () {
         Route::get('admin', 'LoginController@request_user_data')->name('auth.adminsRequest');
         Route::get('foreigner', 'LoginController@request_user_data')->name('auth.foreignersRequest');
     });
+
+    /* 유학생 라우터 */
+    Route::prefix('foreigner')->group(function () {
+        /* 유학생 - 특정 기간 개인 스케줄 조회 */
+        Route::get('schedule', 'ScheduleController@std_for_show_sch_by_date')->name('schedules.show');
+
+        /** 유학생 비밀번호 변경 */
+        Route::patch('/password', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
+
+        /* 예약 관련 */
+        Route::prefix('reservation')->group(function () {
+            /** 해당 스케줄 신청 학생 명단 조회 */
+            Route::get('{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
+
+            /** 해당 스케줄 신청 학생 명단 승인 */
+            Route::patch('permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
+
+            /** 해당 스케줄 출석 결과 입력 */
+            Route::post('result/{sch_id}', 'ReservationController@std_for_input_sch_result')->name('reservations.inputResult');
+        });
+    });
 });
 
+// 한국인 학생 미들웨어 적용
 Route::middleware('auth.korean')->group(function () {
-    // Route::get('/test', 'ReservationController@test')->name('reservations.test');
+    /* 한국인학생 라우터 */
+    Route::prefix('/korean')->group(function () {
+        /* 한국인학생 - 현재 날짜 기준 스케줄 조회 */
+        Route::get('schedule', 'ScheduleController@index')->name('schedules.index');
+
+        // ID 값으로 스케줄 정보 조회
+        Route::get('schedule/{sch_id}', 'ScheduleController@std_kor_show_sch')->name('schedules.show_schedule_by_id');
+
+        /** 참석한 학기 목록 조회 */
+        Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
+
+        /* 예약 관련 */
+        Route::prefix('reservation')->group(function () {
+            /** 해당 일자에 대한 예약 조회 */
+            Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
+
+            /** 예약 신청 */
+            Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');
+
+            /** 내 예약 일정 삭제 */
+            Route::delete('{res_id}', 'ReservationController@std_kor_destroy_res')->name('reservations.destroy');
+
+            /** 학기별 미팅 목록 결과 조회 */
+            Route::get('/result', 'ReservationController@std_kor_show_res_by_sect')->name('reservations.show');
+        });
+    });
 });
 
+// 공용 라우터
+/** 로그인 */
+Route::prefix('login')->group(static function () {
+    Route::post('admin', 'LoginController@login_admin')->name('login.login_admin');
+    Route::post('foreigner', 'LoginController@login_std_for')->name('login.login_std_for');
+    Route::post('korean', 'LoginController@login_std_kor')->name('login.login_std_kor');
+});
+
+/** 관리자 비밀번호 초기화 */
 Route::prefix('reset')->group(function () {
     Route::post('/', 'MailController@request_reset');
     Route::get('/', 'MailController@run_reset');
+});
+
+/** 한국인 학생 계정 생성 (회원가입) */
+Route::post('korean/account', 'KoreanController@registerAccount')->name('koreans.registerAccount');
+
+/** 등록된 계열 & 학과 목록 조회 */
+Route::get('department', 'DepartmentController@index')->name('departments.index');
+
+Route::post('/password/update', function () {
+    return view('password_update');
 });

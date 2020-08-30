@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Library\Services\Preference;
 use App\Reservation;
+use App\Restricted_student_korean;
 use App\Schedule;
 use App\SchedulesResultImg;
 use App\Section;
@@ -13,18 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
-    /*
-     * ========== TEST 완료 ==========
-     * 1. 한국인 학생 - 현재 날짜 기준 예약 가능 스케줄 조회(refactoring 필요)
-     * 2. 한국인 학생 - 특정 스케줄 조회(TODO 미완성 - 예외 요소 확인 필요)
-     * 3. 유학생 - 특정 기간 전체 스케줄 조회
-     * 4. 관리자 - 특정 날짜 전체 유학생 스케줄 조회
-     */
-
     private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
     private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
+    private const _SCHEDULE_RES_STORE_FAILURE = "스케줄 등록에 실패하였습니다.";
 
     private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
     private const _SCHEDULE_RES_DELETE_FAILURE = "해당 학기에 등록된 스케줄이 없습니다.";
@@ -34,6 +28,7 @@ class ScheduleController extends Controller
     private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
     private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
 
+    private const _SCHDEULE_RES_APPROVE_DUPLICATED = "이미 출석 승인된 완료된 스케줄입니다.";
     private const _SCHDEULE_RES_APPROVE_SUCCESS = "출석 결과 승인이 완료되었습니다.";
     private const _SCHDEULE_RES_APPROVE_FAILURE = "출석 결과 승인에 실패하였습니다.";
 
@@ -42,11 +37,14 @@ class ScheduleController extends Controller
 
 
     private $schedule;
+    private $resultImage;
+    private $restrict;
 
     public function __construct()
     {
         $this->schedule = new Schedule();
         $this->resultImage = new SchedulesResultImg();
+        $this->restrict = new Restricted_student_korean();
     }
 
     /**
@@ -73,7 +71,7 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        $search_date = $request->search_date;
+        $search_date = $request->input('search_date');
 
         function std_for_search_by_lang($date, $std_for_lang)
         {
@@ -86,7 +84,8 @@ class ScheduleController extends Controller
                 ->get();
         };
 
-        function std_for_add_schedule_data($response_data, $date) {
+        function std_for_add_schedule_data($response_data, $date)
+        {
             foreach ($response_data as $student) {
                 $student['schedules'] = Schedule::select('sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
                     ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
@@ -142,11 +141,10 @@ class ScheduleController extends Controller
      */
     public function std_for_show_sch_by_date(Request $request): JsonResponse
     {
-        // TODO std_for_id 미들웨어로 부터 받아오기.
+        // TODO (적용완료) std_for_id 미들웨어로 부터 받아오기.
         $rules = [
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'std_for_id' => 'required|integer'
         ];
 
         // <<-- Request 유효성 검사
@@ -161,11 +159,13 @@ class ScheduleController extends Controller
         }
         // -->>
 
+        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
+
         $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
-            ->where('std_for_id', $request->std_for_id)
-            ->whereDate('sch_start_date', '>=', $request->start_date)
-            ->whereDate('sch_start_date', '<=', $request->end_date)
+            ->where('std_for_id', $std_for_id)
+            ->whereDate('sch_start_date', '>=', $request->input('start_date'))
+            ->whereDate('sch_start_date', '<=', $request->input('end_date'))
             ->orderBy('sch_start_date')
             ->get();
 
@@ -188,8 +188,8 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 해당 유학생 스케줄 등록
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request, Preference $preference_instance): JsonResponse
     {
@@ -206,7 +206,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_SHOW_SCH_FAILURE
+            self::_SCHEDULE_RES_STORE_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -217,11 +217,11 @@ class ScheduleController extends Controller
 
         $schedule_data = $request->input('schedule');                                   /* 스케줄 데이터 */
         $ecept_date = $request->input('ecept_date');                                    /* 제외날짜 */
-        $sect = Section::find($request->sect_id);                                       /* 학기 데이터 */
-        $std_for_id = $request->std_for_id;                                             /* 외국인 유학생 학번 */
+        $sect = Section::find($request->input('sect_id'));                                       /* 학기 데이터 */
+        $std_for_id = $request->input('std_for_id');                                             /* 외국인 유학생 학번 */
 
         // 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
-        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->sect_id, $std_for_id);
+        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->input('sect_id'), $std_for_id);
 
         $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
         if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
@@ -278,39 +278,11 @@ class ScheduleController extends Controller
 
                 // 시간 리스트 목록
                 foreach ($day as $hour) {
-                    // 줌 비밀번호 생성
-                    $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
+                    // 앞타임 스케줄 생성
+                    $this->set_custom_schedule(true, $setting_value, $sect_start_date, $hour, $sect->sect_id, $std_for_id);
 
-                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":00:00");
-                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$setting_value->once_meet_time}:00");
-                    $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
-                    $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
-
-                    Schedule::create([
-                        'sch_sect' => $sect->sect_id,
-                        'sch_std_for' => $std_for_id,
-                        'sch_start_date' => $sch_start_date,
-                        'sch_end_date' => $sch_end_date,
-                        'sch_for_zoom_pw' => $zoom_pw,
-                    ]);
-
-                    // 줌 비밀번호 생성
-                    $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
-                    $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
-                    $end_time = $start_time + $setting_value->once_meet_time;
-                    $sch_start_date = strtotime($sect_start_date . " " . $hour . ":{$start_time}:00");
-                    $sch_end_date = strtotime($sect_start_date . " " . $hour . ":{$end_time}:00");
-
-                    $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
-                    $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
-
-                    Schedule::create([
-                        'sch_sect' => $sect->sect_id,
-                        'sch_std_for' => $std_for_id,
-                        'sch_start_date' => $sch_start_date,
-                        'sch_end_date' => $sch_end_date,
-                        'sch_for_zoom_pw' => $zoom_pw,
-                    ]);
+                    // 뒷타임 스케줄 생성
+                    $this->set_custom_schedule(false, $setting_value, $sect_start_date, $hour, $sect->sect_id, $std_for_id);
                 }
 
                 // 종료 날짜에 맞춰 반복문 종료.
@@ -363,8 +335,8 @@ class ScheduleController extends Controller
         }
 
         $sch_id->update([
-            'sch_start_date' => $request->sch_start_date,
-            'sch_end_date' => $request->sch_end_date,
+            'sch_start_date' => $request->input('sch_start_date'),
+            'sch_end_date' => $request->input('sch_end_date'),
         ]);
 
         return self::response_json(self::_SCHEDULE_RES_UPDATE_SUCCESS, 200);
@@ -396,7 +368,7 @@ class ScheduleController extends Controller
         }
 
         // 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
-        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->sect_id, $request->std_for_id);
+        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->input('sect_id'), $request->input('std_for_id'));
 
         $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
         if ($is_already_inserted_schedule) {
@@ -408,10 +380,77 @@ class ScheduleController extends Controller
     }
 
     /**
+     * 관리자 - 특정 스케줄 추가
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function store_some_schedule(Request $request, Preference $preference_instance): JsonResponse
+    {
+        $rules = [
+            'sect_id' => 'required|integer',
+            'schedule' => 'required|array',
+            'schedule.*.std_for_id' => 'required|integer',
+            'schedule.*.times' => 'required|array',
+            'schedule.*.times.*' => 'required|integer',
+            'schedule.*.date' => 'required|date',
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SCHEDULE_RES_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $allSchdules = $request->input('schedule');
+        $sect_id = $request->input('sect_id');
+
+        $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
+
+        foreach ($allSchdules as $schedule) {
+            $std_for_id = $schedule['std_for_id'];
+            $date = $schedule['date'];
+            $times = $schedule['times'];
+
+            foreach ($times as $hour) {
+                // 1. 기존 스케줄 존재 여부 확인
+                $sch_end_date = strtotime($date . " " . ++$hour . ":00:00");
+                $sch_start_date = strtotime($date . " " . --$hour . ":00:00");
+
+                $start_day = date("Y-m-d H:i:s", $sch_start_date);
+                $end_day = date("Y-m-d H:i:s", $sch_end_date);
+
+                // 중복 스케줄 조회
+                $is_duplicated_schedule = Schedule::where('sch_std_for', $std_for_id)
+                    ->where('sch_start_date', '>=', $start_day)
+                    ->where('sch_start_date', '<', $end_day)
+                    ->where('sch_end_date', '>=', $start_day)
+                    ->where('sch_end_date', '<', $end_day)
+                    ->count();
+
+                // 중복된 스케줄인 경우 뛰어넘기
+                if ($is_duplicated_schedule) continue;
+
+                // 앞타임 스케줄 생성
+                $this->set_custom_schedule(true, $setting_value, $date, $hour, $sect_id, $std_for_id);
+
+                // 뒷타임 스케줄 생성
+                $this->set_custom_schedule(false, $setting_value, $date, $hour, $sect_id, $std_for_id);
+            }
+        }
+
+        return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
+    }
+
+    /**
      * 관리자 - 특정 스케줄 삭제
      *
      * @param int $sch_id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function destroy(Schedule $sch_id): JsonResponse
     {
@@ -425,7 +464,7 @@ class ScheduleController extends Controller
      * 관리자 - 해당 날짜 출석 결과 미입력건 조회
      *
      * @param string $date
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function indexUninputedList($date)
     {
@@ -454,7 +493,7 @@ class ScheduleController extends Controller
      * 관리자 - 해당 날짜 출석 결과 미승인건 조회
      *
      * @param string $date
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function indexUnapprovedList($date)
     {
@@ -492,14 +531,21 @@ class ScheduleController extends Controller
      * 관리자 - 출석 결과 미승인 건 승인
      *
      * @param int $sch_id
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function updateApprovalOfUnapprovedCase(Request $request, Schedule $sch_id)
     {
+        // 이미 출석 결과가 승인 된 스케줄인 경우
+        if ($sch_id['sch_state_of_permission'] == true) {
+            return self::response_json(self::_SCHDEULE_RES_APPROVE_DUPLICATED, 422);
+        }
+
         $rules = [
-            'reservation' => 'required|array',
-            'reservation.*' => 'required|integer'
+            'attendance' => 'required|array',
+            'attendance.*' => 'required|integer',
+            'absent' => 'array',
+            'absent.*' => 'integer',
         ];
 
         $validated_result = self::request_validator(
@@ -512,15 +558,23 @@ class ScheduleController extends Controller
             return $validated_result;
         }
 
-        $update_res_id_list = $request->input('reservation');
+        $update_attendance_id_list = $request->input('attendance');
+        $update_absent_id_list = $request->input('absent');
 
         // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
         $sch_id->update([
             'sch_state_of_permission' => true
         ]);
 
+        // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
+        if (!empty($update_absent_id_list)) {
+            foreach ($update_absent_id_list as $std_kor_id) {
+                $this->restrict->set_korean_absent_count($std_kor_id);
+            }
+        }
+
         // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
-        Reservation::whereIn('res_id', $update_res_id_list)
+        Reservation::whereIn('res_id', $update_attendance_id_list)
             ->where('res_sch', $sch_id['sch_id'])
             ->update([
                 'res_state_of_attendance' => true
@@ -559,7 +613,7 @@ class ScheduleController extends Controller
 
         return response()->json([
             'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
-            'result' => $allSchdules,
+            'data' => $allSchdules,
         ], 200);
     }
 
@@ -573,5 +627,36 @@ class ScheduleController extends Controller
     public function std_kor_show_sch(Schedule $sch_id): JsonResponse
     {
         return $this->schedule->get_sch_by_id($sch_id);
+    }
+
+    // 스케줄 생성 커스텀 함수.
+    public function set_custom_schedule(bool $is_first_time, Object $setting_value, string $date, string $hour, int $sect_id, int $std_for_id)
+    {
+        // 줌 비밀번호 생성
+        $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
+
+        // 앞타임 스케줄 정의.
+        if ($is_first_time) {
+            $sch_start_date = strtotime($date . " " . $hour . ":00:00");
+            $sch_end_date = strtotime($date . " " . $hour . ":{$setting_value->once_meet_time}:00");
+        }
+        // 뒷타임 스케줄 정의.
+        else {
+            $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
+            $end_time = $start_time + $setting_value->once_meet_time;
+            $sch_start_date = strtotime($date . " " . $hour . ":{$start_time}:00");
+            $sch_end_date = strtotime($date . " " . $hour . ":{$end_time}:00");
+        }
+
+        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
+        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+
+        return Schedule::create([
+            'sch_sect' => $sect_id,
+            'sch_std_for' => $std_for_id,
+            'sch_start_date' => $sch_start_date,
+            'sch_end_date' => $sch_end_date,
+            'sch_for_zoom_pw' => $zoom_pw,
+        ]);
     }
 }
