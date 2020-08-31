@@ -51,7 +51,9 @@ class SettingController extends Controller
             ], 422);
         }
 
-        $create_setting = Setting::create($request->all());
+        $request = $request->except('guard');
+
+        $create_setting = Setting::create($request);
 
         return response()->json([
             'message' => 'Setting Value 등록 완료',
