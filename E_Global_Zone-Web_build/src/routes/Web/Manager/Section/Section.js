@@ -29,7 +29,7 @@ export default function Section(props) {
 	const [schedule, setSchedule] = useState();
 	const { isOpen, handleOpen, handleClose } = useModal();
 
-	const timeArray = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+	const timeArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 	const dayArray = ["월", "화", "수", "목", "금"];
 
 	const closure = (function () {
@@ -273,7 +273,7 @@ export default function Section(props) {
 								<th scope="col">3</th>
 								<th scope="col">4</th>
 								<th scope="col">5</th>
-								<th scope="col">6</th>
+								{/* <th scope="col">6</th> */}
 							</tr>
 						</thead>
 						<tbody id="tbody"></tbody>

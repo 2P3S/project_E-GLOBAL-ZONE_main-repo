@@ -5,7 +5,11 @@ import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
-import { getAdminKorean } from "../../../../api/admin/korean";
+import {
+	getAdminKorean,
+	deleteAdminKoreanAccount,
+	postAdminKorean,
+} from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
@@ -92,8 +96,14 @@ class Data {
 export default function Students() {
 	const params = useParams();
 	const history = useHistory();
-
 	const [resData, setResData] = useState();
+	const [orderBy, setOrderBy] = useState([
+		"std_kor_dept",
+		"std_kor_state_of_restriction",
+		"std_kor_num_of_attendance",
+		"std_kor_num_of_absent",
+	]);
+	const [orderIndex, setOrderIndex] = useState(1);
 	// department information
 	const dept = useSelector(selectDept);
 	const data = useSelector(selectData);
@@ -101,6 +111,8 @@ export default function Students() {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
+	const [pending, setPending] = useState(false);
+	const [column, setColumn] = useState("std_kor_name");
 	const {
 		isOpen: isRestrict,
 		handleOpen: hadleOpenForRestrict,
@@ -117,18 +129,17 @@ export default function Students() {
 	 */
 
 	const reRender = () => {
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		setPending(true);
 	};
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		setPending(true);
 	}, []);
 
 	useEffect(() => {
 		if (Array.isArray(dept))
 			if (resData && resData.data) {
-				console.log(resData);
 				let dataArray = [];
 
 				if (resData.data.data)
@@ -149,53 +160,57 @@ export default function Students() {
 						);
 					});
 				dispatch(setData(new Data(dataArray)));
-				const pagenation = document.getElementById("pagenation");
-				pagenation.innerHTML = "";
-				let first = document.createElement("button");
-				first.innerText = "<<";
-				first.addEventListener("click", () => {
-					history.push(`/students/${1}/korean`);
-					history.push("/reload");
-				});
-				pagenation.appendChild(first);
-				for (let i = 0; i < resData.data.last_page; i++) {
-					let btn = document.createElement("button");
-					btn.innerText = i + 1;
-					btn.addEventListener("click", () => {
-						history.push(`/students/${i + 1}/korean`);
+				if (resData.data.last_page) {
+					const pagenation = document.getElementById("pagenation");
+					pagenation.innerHTML = "";
+					let first = document.createElement("button");
+					first.innerText = "<<";
+					first.addEventListener("click", () => {
+						history.push(`/students/1/korean`);
+						history.push("/reload");
 					});
-					pagenation.appendChild(btn);
+					pagenation.appendChild(first);
+					for (let i = 0; i < resData.data.last_page; i++) {
+						let btn = document.createElement("button");
+						btn.innerText = i + 1;
+						btn.addEventListener("click", () => {
+							history.push(`/students/${i + 1}/korean`);
+							setPending(true);
+						});
+						pagenation.appendChild(btn);
+					}
+					let last = document.createElement("button");
+					last.innerText = ">>";
+					pagenation.appendChild(last);
+					last.addEventListener("click", () => {
+						history.push(`/students/${resData.data.last_page}/korean`);
+					});
 				}
-				let last = document.createElement("button");
-				last.innerText = ">>";
-				pagenation.appendChild(last);
-				last.addEventListener("click", () => {
-					history.push(`/students/${resData.data.last_page}/korean`);
-				});
 			}
 		// setDataSet(new Data(dataArray));
 	}, [resData, dept]);
 
 	useEffect(() => {
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		console.log(params);
 	}, [params]);
 
-	const sort = (sortBy) => {
-		if (data.sort === sortBy) {
-			setData(
-				new Data(
-					data.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
-					null
-				)
-			);
-		} else {
-			setData(
-				new Data(
-					data.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)),
-					sortBy
-				)
-			);
+	useEffect(() => {
+		if (pending) {
+			getAdminKorean({ page: params.page, orderby: orderBy[orderIndex] }).then((res) => {
+				setResData(res.data);
+				setPending(false);
+			});
 		}
+	}, [pending]);
+
+	useEffect(() => {
+		history.push(`/students/1/korean`);
+		setPending(true);
+	}, [orderIndex]);
+
+	const handleSearch = () => {
+		const column_data = document.getElementById("term").value;
+		postAdminKorean({ column, column_data }).then((res) => setResData({ data: res.data }));
 	};
 
 	return (
@@ -206,13 +221,19 @@ export default function Students() {
 				</div>
 
 				<div className="top_search">
-					<select name="catgo" className="dropdown">
-						<option>이름</option>
-						<option>학번</option>
-						<option>연락처</option>
+					<select
+						name="catgo"
+						className="dropdown"
+						onChange={(e) => {
+							setColumn(e.target.value);
+						}}
+					>
+						<option value="std_kor_name">이름</option>
+						<option value="std_kor_id">학번</option>
+						<option value="std_kor_phone">연락처</option>
 					</select>
-					<input type="text" />
-					<input type="submit" value="검색" />
+					<input type="text" id="term" />
+					<input type="submit" value="검색" onClick={handleSearch} />
 				</div>
 			</div>
 
@@ -230,8 +251,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("dept");
+										setOrderIndex(0);
 									})}
 								>
 									계열학과
@@ -249,10 +269,7 @@ export default function Students() {
 								<th
 									scope="col"
 									className="bg align"
-									ref={useClick(() => {
-										setData([]);
-										sort("status");
-									})}
+									ref={useClick(() => setOrderIndex(1))}
 								>
 									이용제한
 									<img
@@ -270,8 +287,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("count");
+										setOrderIndex(2);
 									})}
 								>
 									활동 횟수
@@ -284,8 +300,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("absent");
+										setOrderIndex(3);
 									})}
 								>
 									미참석 횟수
@@ -306,19 +321,23 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											onMouseOver={() => {
-												document.getElementById(
-													`hover_btn_${index}`
-												).className = "hover_btn kor";
-											}}
-											onMouseOut={() => {
-												document.getElementById(
-													`hover_btn_${index}`
-												).className = "hover_off";
+											onClick={() => {
+												if (
+													window.confirm(`[경고]정말 삭제 하시겠습니까?
+												학번 : ${v.std_id}
+												이름 : ${v.name}
+											`) === true
+												) {
+													deleteAdminKoreanAccount(v.std_id)
+														.then((res) => {
+															setPending(true);
+														})
+														.catch((e) => console.log(e));
+												}
 											}}
 										>
 											{v.name}
-											<div className="hover_off" id={`hover_btn_${index}`}>
+											{/* <div className="hover_off" id={`hover_btn_${index}`}>
 												<div className="area">
 													{v.status ? (
 														<>
@@ -355,18 +374,37 @@ export default function Students() {
 													)}
 													<div className="lightGray">삭제</div>
 												</div>
-											</div>
+											</div> */}
 										</td>
 										<td>
 											{v.status ? (
-												<div className="restriction">
+												<div
+													className="restriction"
+													onClick={() => {
+														setSelectedKor({
+															std_kor_id: v.std_id,
+															std_kor_name: v.name,
+															std_stricted_info: v.std_stricted_info,
+														});
+														handleOpenForUnrestrict();
+													}}
+												>
 													<img
 														src="/global/img/restriction_on.png"
 														alt="이용제한"
 													/>
 												</div>
 											) : (
-												<div className="restriction">
+												<div
+													className="restriction"
+													onClick={() => {
+														setSelectedKor({
+															std_kor_id: v.std_id,
+															std_kor_name: v.name,
+														});
+														hadleOpenForRestrict();
+													}}
+												>
 													<img
 														src="/global/img/restriction_off.png"
 														alt="이용제한 해제"

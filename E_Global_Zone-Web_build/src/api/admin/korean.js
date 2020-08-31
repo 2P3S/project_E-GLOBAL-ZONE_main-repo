@@ -9,3 +9,5 @@ export const patchAdminKoreanRestrict = (id) => admin.patch(`korean/restrict/${i
 
 export const getAdminKoreanAccount = () => admin.get("korean/account");
 export const patchAdminKoreanAccount = (data) => admin.patch("korean/account", data);
+export const deleteAdminKoreanAccount = (std_kor_id) =>
+	admin.delete(`korean/account/${std_kor_id}`);

@@ -18,6 +18,7 @@ import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
+import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 
 /**
  * Manager :: 스케줄 조회
@@ -32,6 +33,7 @@ export default function Schedules() {
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
+
 	const {
 		isOpen: scheduleIsOpen,
 		handleClose: scheduleClose,
@@ -115,10 +117,22 @@ export default function Schedules() {
 	}, [selectDate]);
 
 	useEffect(() => {
-		if (pending) document.getElementById("date").innerText = "로딩중";
+		if (pending) {
+			document.getElementById("date").innerText = "로딩중";
+			setCountOfState({
+				state1: 0,
+				state2: 0,
+				state3: 0,
+				state4: 0,
+				state5: 0,
+				state6: 0,
+				state7: 0,
+			});
+		}
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
 				setSchedules(res.data);
+				console.log(res.data);
 			});
 	}, [pending]);
 
@@ -325,6 +339,7 @@ export default function Schedules() {
 								});
 								div.appendChild(deleteBtn);
 								td.appendChild(div);
+								console.log(td);
 							});
 						});
 					}
@@ -469,10 +484,12 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
 
-								<th scope="row" rowSpan={countOfEng + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									영어
-								</th>
+								{schedules && schedules.data && schedules.data.English.length > 0 && (
+									<th scope="row" rowSpan={countOfEng + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										영어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.English.map((v) => {
@@ -491,10 +508,13 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfJp + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									일본어
-								</th>
+								{schedules && schedules.data && schedules.data.Japanese.length > 0 && (
+									<th scope="row" rowSpan={countOfJp + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										일본어
+									</th>
+								)}
+
 								{schedules &&
 									schedules.data &&
 									schedules.data.Japanese.map((v) => {
@@ -513,10 +533,12 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfCh + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									중국어
-								</th>
+								{schedules && schedules.data && schedules.data.Chinese.length > 0 && (
+									<th scope="row" rowSpan={countOfCh + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										중국어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.Chinese.map((v) => {
@@ -542,10 +564,7 @@ export default function Schedules() {
 					)}
 				</div>
 
-				<div className="table_btn">
-					<div>개별 입력</div>
-					<div>CSV 입력</div>
-				</div>
+				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (

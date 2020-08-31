@@ -23,6 +23,7 @@ import { selectDept } from "../../../../redux/confSlice/confSlice";
 import moment from "moment";
 import SetSectForeigner from "../../../../components/common/modal/SetSectForeigner";
 import { useHistory, useParams } from "react-router-dom";
+import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 
 let i = 1601214;
 let j = 0;
@@ -77,6 +78,11 @@ export default function Foreigner() {
 		isOpen: resetIsOpen,
 		handleOpen: handleOpenForReset,
 		handleClose: handleCloseForReset,
+	} = useModal();
+	const {
+		isOpen: createIsOpen,
+		handleClose: handleCloseForCreate,
+		handleOpen: handleOpenForCreate,
 	} = useModal();
 	const deptList = useSelector(selectDept);
 
@@ -516,6 +522,7 @@ export default function Foreigner() {
 						>
 							학기 스케줄 등록
 						</div>
+						<div onClick={handleOpenForCreate}>개별 입력</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
@@ -529,6 +536,14 @@ export default function Foreigner() {
 								reRender={reRender}
 							/>
 						)}
+					</Modal>
+					<Modal isOpen={createIsOpen} handleClose={handleCloseForCreate}>
+						<CreateSchedule
+							reRender={reRender}
+							sect_id={selectSect}
+							handleClose={handleCloseForCreate}
+							std_for_list={dataSet && dataSet.data && dataSet.data}
+						/>
 					</Modal>
 				</div>
 			</div>
