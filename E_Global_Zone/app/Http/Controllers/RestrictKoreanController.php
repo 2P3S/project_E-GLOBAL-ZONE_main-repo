@@ -99,7 +99,7 @@ class RestrictKoreanController extends Controller
         }
         // 현재 날짜 기준 +N day 이용 제한
         else {
-            $restrict_period = (int)$request['restrict_period'] + 1;
+            $restrict_period = (int)$request['restrict_period'];
             $restrict_end_date = date("Y-m-d", strtotime("+{$restrict_period} days"));
 
             $restricted_kor_data =
