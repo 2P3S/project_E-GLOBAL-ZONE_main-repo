@@ -95,6 +95,7 @@ export const MobileLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
 		} else {
+			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
@@ -112,7 +113,7 @@ export const MobileLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => alert(e.data.message));
+				.catch((e) => alert(e));
 		}
 	};
 	const onFailure = (e) => {
@@ -138,7 +139,7 @@ export const MobileLogin = () => {
 				)}
 				onSuccess={onSuccess}
 				onFailure={onFailure}
-				isSignedIn={true}
+				// isSignedIn={true}
 			/>
 			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
@@ -205,7 +206,7 @@ export const KoreanLogin = () => {
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						isSignedIn={true}
+						// isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>

@@ -9,7 +9,7 @@ import { useParams, useHistory } from "react-router-dom";
 // } from "../../../../modules/hooks/useAxios";
 
 import { getAdminForeignerInfo, getAdminForeignerWork } from "../../../../api/admin/foreigner";
-import { postAdminSchedule } from "../../../../api/admin/schedule";
+import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
 import { getAdminSection } from "../../../../api/admin/section";
 
 import deepmerge from "deepmerge";
@@ -221,12 +221,12 @@ export default function Section(props) {
 														<td>
 															<button
 																onClick={() => {
-																	// deleteAdminSchedule({
-																	// 	sect_id: params["sect_id"],
-																	// 	std_for_id: v.std_for_id,
-																	// }).then((res) =>
-																	// 	setIsDone(true)
-																	// );
+																	deleteAdminSchedule({
+																		sect_id: params["sect_id"],
+																		std_for_id: v.std_for_id,
+																	}).then((res) =>
+																		setIsDone(true)
+																	);
 																}}
 															>
 																삭제

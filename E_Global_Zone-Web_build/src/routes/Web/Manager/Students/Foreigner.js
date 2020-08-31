@@ -91,14 +91,18 @@ export default function Foreigner() {
 		};
 	}
 	const reRender = () => {
-		getAdminSection(`${moment().format("YYYY")}`).then((res) => setSectOfYear(res.data));
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
+			setSectOfYear(res.data)
+		);
 	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 	};
 
 	useEffect(() => {
-		getAdminSection(`${moment().format("YYYY")}`).then((res) => setSectOfYear(res.data));
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
+			setSectOfYear(res.data)
+		);
 	}, []);
 	useEffect(() => {
 		if (sectOfYear) {

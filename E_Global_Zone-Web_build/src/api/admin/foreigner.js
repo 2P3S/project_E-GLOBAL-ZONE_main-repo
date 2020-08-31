@@ -16,7 +16,7 @@ export const getAdminForeignerNoWork = (sect_id) => admin.get(foreigner(`no_work
 export const getAdminForeignerAccountFavorite = (std_id, favorite_bool) =>
 	admin.get(foreigner(`account/${std_id}`), { params: { favorite_bool } });
 
-export const getAdminForeignerInfo = (params) => admin.get(foreigner(), { params });
+export const getAdminForeignerInfo = (params) => admin.get(foreigner(""), { params });
 
 export const getAdminReservation = (sch_id) => admin.get(`/reservation/${sch_id}`);
 export const patchAdminReservationPermission = (sch_id, data) =>

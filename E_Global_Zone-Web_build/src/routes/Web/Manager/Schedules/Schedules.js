@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
@@ -26,6 +26,7 @@ import PermissionScheduleResult from "../../../../components/common/modal/Permis
  */
 export default function Schedules() {
 	const params = useParams();
+
 	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
@@ -86,28 +87,35 @@ export default function Schedules() {
 			handleCheck(e.target.value, e.target.checked);
 		}
 	};
+	// useEffect(() => {
+	// 	console.log(params);
+	// }, [params]);
 
 	useEffect(() => {
-		getAdminSchedule({ search_date: params.date }).then((res) => {
-			setSchedules(res.data);
-			setPending(true);
-		});
-
 		document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
-	useEffect(() => {
+	useMemo(() => {
+		// console.log(params);
 		history.push(`/schedules/${_selectDate}`);
+		setSelectDate(_selectDate);
 	}, [_selectDate]);
 	useEffect(() => {
-		reRender();
-	}, [params]);
+		console.log(selectDate);
+		getAdminSchedule({ search_date: params.date }).then((res) => {
+			setPending(true);
+			setSchedules(res.data);
+		});
+	}, [selectDate]);
+	// useEffect(() => {
+	// 	reRender();
+	// }, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
+			setPending(false);
 		}
-		setPending(false);
 		if (schedules && schedules.data) {
 			setCountOfEng(schedules.data.English.length);
 			setCountOfJp(schedules.data.Japanese.length);
@@ -115,12 +123,12 @@ export default function Schedules() {
 		}
 	}, [schedules]);
 
-	useState(() => {
+	useEffect(() => {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
 		setPending(true);
-		getAdminSchedule({ search_date: params.date }, setSchedules).then((res) => {
+		getAdminSchedule({ search_date: selectDate }, setSchedules).then((res) => {
 			setSchedules(res.data);
 		});
 	};
@@ -132,180 +140,185 @@ export default function Schedules() {
 									</div>
 								</div> */
 	useEffect(() => {
-		if (!pending && schedules && schedules.data) {
-			let tag = true;
-			for (const key in schedules.data) {
-				if (schedules.data.hasOwnProperty(key)) {
-					const element = schedules.data[key];
-					element.forEach((v) => {
-						v.schedules.forEach((schedule) => {
-							if (tag) {
-								document.getElementById("date").innerText = moment(
-									schedule.sch_start_date
-								).format("YYYY년 MM월 DD일");
-								tag = false;
-							}
-							let td = document.getElementById(
-								`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
-							);
-							let div = document.createElement("div");
-							if (
-								schedule.un_permission_count === 0 &&
-								schedule.reservated_count === 0
-							) {
-								div.className = "state_box state7";
-								setCountOfState({ ...countOfstate, state7: ++countOfstate.state7 });
-							} else {
-								if (new Date(schedule.sch_end_date) > new Date(today)) {
-									// 스케줄 시작 전
-									if (
-										schedule.reservated_count > 0 &&
-										schedule.un_permission_count === 0
-									) {
-										div.className = "state_box state2";
-										setCountOfState({
-											...countOfstate,
-											state2: ++countOfstate.state2,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									} else if (schedule.reservated_count > 0) {
-										div.className = "state_box state1";
-										setCountOfState({
-											...countOfstate,
-											state1: ++countOfstate.state1,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.un_permission_count} / `;
-										let span = document.createElement("span");
-										span.innerText = `${schedule.reservated_count}`;
-										p.appendChild(span);
-										div.appendChild(p);
-									}
-								} else {
-									// 스케줄 완료 후
-									if (schedule.sch_state_of_permission) {
-										div.className = "state_box state6";
-										setCountOfState({
-											...countOfstate,
-											state6: ++countOfstate.state6,
-										});
-									} else if (schedule.sch_state_of_result_input) {
-										div.className = "state_box state5";
-										setCountOfState({
-											...countOfstate,
-											state5: ++countOfstate.state5,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									} else {
-										div.className = "state_box state3";
-										setCountOfState({
-											...countOfstate,
-											state3: ++countOfstate.state3,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									}
+		if (schedules && schedules.data) {
+			if (!pending) {
+				let tag = true;
+				for (const key in schedules.data) {
+					if (schedules.data.hasOwnProperty(key)) {
+						const element = schedules.data[key];
+						element.forEach((v) => {
+							v.schedules.forEach((schedule) => {
+								if (tag) {
+									document.getElementById("date").innerText = moment(
+										selectDate
+									).format("YYYY년 MM월 DD일");
+									tag = false;
 								}
-							}
-							function clickListner() {
+								let td = document.getElementById(
+									`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
+								);
+								let div = document.createElement("div");
 								if (
-									div.className === "state_box state2" ||
-									div.className === "state_box state1"
+									schedule.un_permission_count === 0 &&
+									schedule.reservated_count === 0
 								) {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "ShowList",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
+									div.className = "state_box state7";
+									setCountOfState({
+										...countOfstate,
+										state7: ++countOfstate.state7,
 									});
-									scheduleOpen();
-								} else if (div.className === "state_box state3") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-									scheduleOpen();
-								} else if (div.className === "state_box state5") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "PermissionScheduleResult",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-									scheduleOpen();
-								} else if (div.className !== "state_box state6") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "ShowList",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-									scheduleOpen();
+								} else {
+									if (new Date(schedule.sch_end_date) > new Date(today)) {
+										// 스케줄 시작 전
+										if (
+											schedule.reservated_count > 0 &&
+											schedule.un_permission_count === 0
+										) {
+											div.className = "state_box state2";
+											setCountOfState({
+												...countOfstate,
+												state2: ++countOfstate.state2,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										} else if (schedule.reservated_count > 0) {
+											div.className = "state_box state1";
+											setCountOfState({
+												...countOfstate,
+												state1: ++countOfstate.state1,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.un_permission_count} / `;
+											let span = document.createElement("span");
+											span.innerText = `${schedule.reservated_count}`;
+											p.appendChild(span);
+											div.appendChild(p);
+										}
+									} else {
+										// 스케줄 완료 후
+										if (schedule.sch_state_of_permission) {
+											div.className = "state_box state6";
+											setCountOfState({
+												...countOfstate,
+												state6: ++countOfstate.state6,
+											});
+										} else if (schedule.sch_state_of_result_input) {
+											div.className = "state_box state5";
+											setCountOfState({
+												...countOfstate,
+												state5: ++countOfstate.state5,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										} else {
+											div.className = "state_box state3";
+											setCountOfState({
+												...countOfstate,
+												state3: ++countOfstate.state3,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										}
+									}
 								}
-							}
-							function addListner(div) {
-								div.addEventListener("click", clickListner);
-							}
-							addListner(div);
-							// 삭제버튼
-							let deleteBtn = document.createElement("div");
-							let area = document.createElement("div");
-							let btn = document.createElement("div");
-							deleteBtn.className = "hover_btn sch hover_off";
-							area.className = "area";
-							btn.className = "lightGray";
-							btn.innerText = "삭제";
-							area.appendChild(btn);
-							deleteBtn.appendChild(area);
-							div.addEventListener("mouseover", () => {
-								deleteBtn.classList.remove("hover_off");
-							});
-							div.addEventListener("mouseout", () => {
-								deleteBtn.classList.add("hover_off");
-							});
-							btn.addEventListener("mouseover", (e) => {
-								div.removeEventListener("click", clickListner);
-							});
-							btn.addEventListener("mouseout", () => {
+								function clickListner() {
+									if (
+										div.className === "state_box state2" ||
+										div.className === "state_box state1"
+									) {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className === "state_box state3") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className === "state_box state5") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "PermissionScheduleResult",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className !== "state_box state6") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									}
+								}
+								function addListner(div) {
+									div.addEventListener("click", clickListner);
+								}
 								addListner(div);
+								// 삭제버튼
+								let deleteBtn = document.createElement("div");
+								let area = document.createElement("div");
+								let btn = document.createElement("div");
+								deleteBtn.className = "hover_btn sch hover_off";
+								area.className = "area";
+								btn.className = "lightGray";
+								btn.innerText = "삭제";
+								area.appendChild(btn);
+								deleteBtn.appendChild(area);
+								div.addEventListener("mouseover", () => {
+									deleteBtn.classList.remove("hover_off");
+								});
+								div.addEventListener("mouseout", () => {
+									deleteBtn.classList.add("hover_off");
+								});
+								btn.addEventListener("mouseover", (e) => {
+									div.removeEventListener("click", clickListner);
+								});
+								btn.addEventListener("mouseout", () => {
+									addListner(div);
+								});
+								btn.addEventListener("click", (e) => {
+									if (e.target.innerText === "삭제") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "Delete",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+									}
+									setTimeout(scheduleOpen, 500);
+									// scheduleOpen();
+								});
+								div.appendChild(deleteBtn);
+								td.appendChild(div);
 							});
-							btn.addEventListener("click", (e) => {
-								if (e.target.innerText === "삭제") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "Delete",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-								}
-								setTimeout(scheduleOpen, 500);
-								// scheduleOpen();
-							});
-							td.appendChild(div);
-							div.appendChild(deleteBtn);
 						});
-					});
+					}
 				}
 			}
 		}
-	}, [pending]);
+	}, [schedules, pending]);
 	return (
 		<div className="content">
 			<div className="sub_title">

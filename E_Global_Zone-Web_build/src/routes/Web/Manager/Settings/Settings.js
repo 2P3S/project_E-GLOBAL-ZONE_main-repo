@@ -364,10 +364,9 @@ export default function Settings() {
 					</div>
 					<div className="setting_ex">
 						<p>[설정 예시]</p>
-						<span>결석 {postSettings.min_absent}회</span> 부터 패널티가 부여되며,{" "}
-						<span>{postSettings.max_absent}회</span> 이상 결석을 할 경우{" "}
-						<span>{postSettings.once_limit_period}일간</span> 이용이 제한됩니다. (해당
-						학기 동안만 유효)
+						<span>결석 {postSettings.min_absent}회</span> 부터 결석 시,{" "}
+						<span>{postSettings.once_limit_period}일간</span> 이용제한 <br />,
+						<span>{postSettings.max_absent}회</span> 이상 결석 시, 해당 학기 이용 제한
 					</div>
 
 					<div className="input">
