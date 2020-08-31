@@ -631,7 +631,7 @@ class ScheduleController extends Controller
         $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
         $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_start_date', 'sch_end_date')
-            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
+            ->whereDate('schedules.sch_start_date', '>', $sch_start_date)
             ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->orderBy('schedules.sch_start_date')

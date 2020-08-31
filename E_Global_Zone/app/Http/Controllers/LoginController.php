@@ -19,6 +19,7 @@ class LoginController extends Controller
     private const _AUTH_FAILURE = "G-Suite 계정이 아닙니다.";
     private const _ACCESS_FAILURE   = "회원 가입 후 이용 가능합니다.";
     private const _AUTH_NO_PERMISSION = "관리자 승인 후 서비스 이용이 가능합니다.";
+    private const _AUTH_HAS_RESTRICT = "이용제한 학생으로 사용할 수 없습니다.";
 
     private const _LOGIN_ERROR = "아이디 또는 비밀번호를 다시 확인하세요.";
     private const _LOGIN_SUCCESS = " 님 로그인 됐습니다. 어서오세요";
@@ -162,11 +163,18 @@ class LoginController extends Controller
             }
 
             $is_kor_state_of_permission = $std_kor_info['std_kor_state_of_permission'];
+            $is_kor_state_of_restricted = $std_kor_info['std_kor_state_of_restriction'];
 
             // 관리자 승인을 받지 않은 경우
             if (!$is_kor_state_of_permission) {
                 return response()->json([
                     'message' => self::_AUTH_NO_PERMISSION,
+                ], 203);
+            }
+            // 이용 제한 학생인 경우
+            else if ($is_kor_state_of_restricted) {
+                return response()->json([
+                    'message' => self::_AUTH_HAS_RESTRICT,
                 ], 203);
             }
             // 회원인 경우 로그인 성공과 함께 회원정보 전달
