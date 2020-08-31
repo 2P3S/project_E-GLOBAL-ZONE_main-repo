@@ -115,7 +115,18 @@ export default function Schedules() {
 	}, [selectDate]);
 
 	useEffect(() => {
-		if (pending) document.getElementById("date").innerText = "로딩중";
+		if (pending) {
+			document.getElementById("date").innerText = "로딩중";
+			setCountOfState({
+				state1: 0,
+				state2: 0,
+				state3: 0,
+				state4: 0,
+				state5: 0,
+				state6: 0,
+				state7: 0,
+			});
+		}
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
 				setSchedules(res.data);
@@ -470,10 +481,12 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
 
-								<th scope="row" rowSpan={countOfEng + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									영어
-								</th>
+								{schedules && schedules.data && schedules.data.English.length > 0 && (
+									<th scope="row" rowSpan={countOfEng + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										영어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.English.map((v) => {
@@ -492,10 +505,13 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfJp + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									일본어
-								</th>
+								{schedules && schedules.data && schedules.data.Japanese.length > 0 && (
+									<th scope="row" rowSpan={countOfJp + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										일본어
+									</th>
+								)}
+
 								{schedules &&
 									schedules.data &&
 									schedules.data.Japanese.map((v) => {
@@ -514,10 +530,12 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfCh + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									중국어
-								</th>
+								{schedules && schedules.data && schedules.data.Chinese.length > 0 && (
+									<th scope="row" rowSpan={countOfCh + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										중국어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.Chinese.map((v) => {
