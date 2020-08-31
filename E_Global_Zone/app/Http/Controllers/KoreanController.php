@@ -165,7 +165,7 @@ class KoreanController extends Controller
             return $is_admin;
         }
         // -->>
-
+        // TODO 컬럼 추가해서 ORDERBY 기능 넣기.
         try {
             // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
             $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
@@ -175,7 +175,7 @@ class KoreanController extends Controller
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
                 if ($korean['std_kor_state_of_restriction'] == true) {
-                    $korean['std_stricted_info'] = $this->restricted->get_restricted_korean_info($korean['std_kor_id'], true);
+                    $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
                 }
             }
             return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
