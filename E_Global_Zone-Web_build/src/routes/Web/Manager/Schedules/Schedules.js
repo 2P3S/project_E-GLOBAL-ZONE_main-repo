@@ -18,6 +18,7 @@ import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
+import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 
 /**
  * Manager :: 스케줄 조회
@@ -32,6 +33,7 @@ export default function Schedules() {
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
+
 	const {
 		isOpen: scheduleIsOpen,
 		handleClose: scheduleClose,
@@ -130,6 +132,7 @@ export default function Schedules() {
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
 				setSchedules(res.data);
+				console.log(res.data);
 			});
 	}, [pending]);
 
@@ -561,10 +564,7 @@ export default function Schedules() {
 					)}
 				</div>
 
-				<div className="table_btn">
-					<div>개별 입력</div>
-					<div>CSV 입력</div>
-				</div>
+				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (
