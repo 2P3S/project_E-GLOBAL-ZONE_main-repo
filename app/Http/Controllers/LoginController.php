@@ -131,22 +131,22 @@ class LoginController extends Controller
      */
     public function login_std_kor(Request $request): JsonResponse
     {
-        $header_token = $request->header('Authorization');
-
-        // 헤더에 토큰이 없는 경우
-        if (empty($header_token))
-            return response()->json([
-                'message' => self::_LOGIN_FAILURE,
-            ], 422);
-
         try {
+            $header_token = $request->header('Authorization');
+
             $std_kor_user = Socialite::driver('google')->userFromToken($header_token);
+
+            // 헤더에 토큰이 없는 경우
+            if (empty($header_token) || empty($std_kor_user))
+                return response()->json([
+                    'message' => self::_LOGIN_FAILURE,
+                ], 422);
+
             $check_email = explode('@', $std_kor_user['email'])[1];
             $is_not_g_suite_mail = strcmp($check_email, 'g.yju.ac.kr');
 
             // E_Global_Zone 회원 확인
             $std_kor_info = Student_korean::where('std_kor_mail', '=', $std_kor_user['email'])->get()->first();
-            $is_kor_state_of_permission = $std_kor_info['std_kor_state_of_permission'];
 
             // 지슈트 메일이 아닌 경우
             if ($is_not_g_suite_mail) {
@@ -154,15 +154,17 @@ class LoginController extends Controller
                     'message' => self::_AUTH_FAILURE,
                 ], 422);
             }
-
             // 회원가입을 하지 않은 경우
             else if (empty($std_kor_info)) {
                 return response()->json([
                     'message' => self::_ACCESS_FAILURE,
                 ], 202);
             }
+
+            $is_kor_state_of_permission = $std_kor_info['std_kor_state_of_permission'];
+
             // 관리자 승인을 받지 않은 경우
-            else if (!$is_kor_state_of_permission) {
+            if (!$is_kor_state_of_permission) {
                 return response()->json([
                     'message' => self::_AUTH_NO_PERMISSION,
                 ], 203);
@@ -170,11 +172,10 @@ class LoginController extends Controller
             // 회원인 경우 로그인 성공과 함께 회원정보 전달
             else {
                 return response()->json([
-                    'message' => $std_kor_info['std_kor_name'].self::_LOGIN_SUCCESS,
+                    'message' => $std_kor_info['std_kor_name'] . self::_LOGIN_SUCCESS,
                     'data' => $std_kor_info
                 ], 200);
             }
-
         } catch (Exception $e) {
             // 토큰이 만료 된 경우
             return response()->json([
@@ -253,8 +254,7 @@ class LoginController extends Controller
     public function request_user_data(
         Request $request,
         bool $is_response_json = true
-    )
-    {
+    ) {
         $user_data = $request->user($request->input('guard'));
 
         if (!$is_response_json) {
@@ -267,8 +267,7 @@ class LoginController extends Controller
 
     public function remeber_token(
         array $request
-    )
-    {
+    ) {
         $provider = $request['provider'];
         $users = [
             'admins' => new Admin(),
@@ -281,8 +280,7 @@ class LoginController extends Controller
     public function update_password_url(
         array $request,
         string $expire_time
-    )
-    {
+    ) {
         $is_possible_password = $this->validate_password($request, $expire_time);
 
         $provider = $request['provider'];
@@ -310,8 +308,7 @@ class LoginController extends Controller
     private function validate_password(
         array $request,
         string $expire_time
-    ): bool
-    {
+    ): bool {
         $initial_password = [
             'admins' => self::_ADMIN_INIT_PASSWORD,
             'foreigners' => self::_STD_FOR_INIT_PASSWORD
