@@ -130,7 +130,7 @@ export default function Settings() {
 										);
 									})}
 								</select>
-								<span>번</span>
+								<span>명</span>
 							</div>
 						</div>
 						<div className="input">
@@ -365,7 +365,7 @@ export default function Settings() {
 					<div className="setting_ex">
 						<p>[설정 예시]</p>
 						<span>결석 {postSettings.min_absent}회</span> 부터 결석 시,{" "}
-						<span>{postSettings.once_limit_period}일간</span> 이용제한 <br />,
+						<span>{postSettings.once_limit_period}일간</span> 이용제한 <br />
 						<span>{postSettings.max_absent}회</span> 이상 결석 시, 해당 학기 이용 제한
 					</div>
 

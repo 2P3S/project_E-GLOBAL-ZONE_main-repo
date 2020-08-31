@@ -325,6 +325,7 @@ export default function Schedules() {
 								});
 								div.appendChild(deleteBtn);
 								td.appendChild(div);
+								console.log(td);
 							});
 						});
 					}

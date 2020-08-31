@@ -21,6 +21,7 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 
 	instance.interceptors.response.use(
 		function (response) {
+			alert(response.data.message);
 			return response;
 		},
 		function (error) {
