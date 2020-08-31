@@ -142,6 +142,7 @@ class SectionController extends Controller
      */
     public function update(Request $request, Section $sect_id): JsonResponse
     {
+        // TODO 학기가 시작하면 변경 X
         $rules = [
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date',
