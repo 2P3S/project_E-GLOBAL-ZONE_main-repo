@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
@@ -15,9 +16,9 @@ class Controller extends BaseController
 
     public static function response_json(
         string $message,
-        int $http_response_code,
+        int $http_response_code = 202,
         object $data = null
-    )
+    ): JsonResponse
     {
         $is_no_data = !(bool)$data;
 
@@ -33,6 +34,13 @@ class Controller extends BaseController
         ], $http_response_code);
     }
 
+    public static function response_json_error(
+        string $message
+    ): JsonResponse
+    {
+        return self::response_json($message);
+    }
+
     public static function request_validator(
         Request $request,
         array $rules,
@@ -45,6 +53,21 @@ class Controller extends BaseController
             return response()->json([
                 'message' => $error_msg,
                 'error' => $validator->errors(),
+            ], 422);
+        }
+
+        return true;
+    }
+
+    public static function is_admin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'guard' => 'required|string|in:admin'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "관리자만 접근 할 수 있습니다.",
             ], 422);
         }
 

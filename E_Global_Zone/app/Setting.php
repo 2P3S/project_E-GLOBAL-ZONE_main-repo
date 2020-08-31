@@ -39,7 +39,6 @@ class Setting extends Model
         $res_start_period = $setting_values['res_start_period'] + 1;
         $res_end_period = $setting_values['res_end_period'];
 
-        // TODO TEST 후 수정필요
         $today = date("Y-m-d");
 
         return [

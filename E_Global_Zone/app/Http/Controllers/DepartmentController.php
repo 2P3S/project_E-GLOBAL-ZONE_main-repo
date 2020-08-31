@@ -3,22 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Department;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class DepartmentController extends Controller
 {
-    private const _DEPT_INDEX_SUCCESS = "계열/학과 목록 조회에 성공하였습니다.";
+    private $department;
 
-    private const _DEPT_STORE_SUCCESS = "(을)를 계열/학과 목록에 추가하였습니다.";
-    private const _DEPT_STORE_FAILURE = "계열/학과 목록 추가에 실패하였습니다.";
-
-    private const _DEPT_UPDATE_SUCCESS1 = "계열/학과 이름을 ";
-    private const _DEPT_UPDATE_SUCCESS2 = "(으)로 변경하였습니다.";
-    private const _DEPT_UPDATE_FAILURE = "계열/학과 이름 변경을 실패하였습니다.";
-
-    private const _DEPT_DELETE_SUCCESS = "(을)를 계열/학과 목록에서 제거하였습니다.";
+    public function __construct()
+    {
+        $this->department = new Department();
+    }
 
     /**
      * 등록된 계열 / 학과 목록 조회
@@ -27,9 +23,7 @@ class DepartmentController extends Controller
      */
     public function index(): JsonResponse
     {
-        $departments = Department::all();
-        return
-            self::response_json(self::_DEPT_INDEX_SUCCESS, 200, $departments);
+        return $this->department->get_departments_list();
     }
 
     /**
@@ -41,11 +35,12 @@ class DepartmentController extends Controller
     public function store(Request $request): JsonResponse
     {
         $rules = [
-            'dept_name' => 'required|string|unique:departments,dept_name'
+            'dept_name' => 'required|string|unique:departments,dept_name',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_DEPT_STORE_FAILURE
+            $request, $rules, Config::get('constants.kor.dept.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -53,14 +48,7 @@ class DepartmentController extends Controller
         }
 
         $new_dept_name = $request->input('dept_name');
-
-        $created_department = Department::create([
-            'dept_name' => $new_dept_name
-        ]);
-
-        $message_template = $new_dept_name . self::_DEPT_STORE_SUCCESS;
-        return
-            self::response_json($message_template, 201, $created_department);
+        return $this->department->store_department($new_dept_name);
     }
 
     /**
@@ -74,26 +62,19 @@ class DepartmentController extends Controller
     {
         $rules = [
             'dept_name' => 'required|string|unique:departments,dept_name',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_DEPT_UPDATE_FAILURE
+            $request, $rules, Config::get('constants.kor.dept.update.failure')
         );
 
         if (is_object($validated_result)) {
             return $validated_result;
         }
 
-        // <<-- 계열/학과 이름 변경 -> 메세지 저장
-        $old_dept_name = $dept_id['dept_name'];
-        $new_dept_name = $request->input('dept_name');
-        $message_template =
-            self::_DEPT_UPDATE_SUCCESS1 . $old_dept_name . "에서 " .
-            $new_dept_name . self::_DEPT_UPDATE_SUCCESS2;
-        // -->>
-
-        return
-            self::response_json($message_template, 200);
+        $update_dept_name = $request->input('dept_name');
+        return $this->department->update_department($dept_id, $update_dept_name);
     }
 
     /**
@@ -101,15 +82,17 @@ class DepartmentController extends Controller
      *
      * @param Department $dept_id
      * @return JsonResponse
-     * @throws Exception
      */
-    public function destroy(Department $dept_id): JsonResponse
+    public function destroy(Request $request, Department $dept_id): JsonResponse
     {
-        $deleted_dept_name = $dept_id['dept_name'];
-        $dept_id->delete();
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
 
-        $message_template = $deleted_dept_name . self::_DEPT_DELETE_SUCCESS;
-        return
-            self::response_json($message_template, 200);
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        return $this->department->destroy_department($dept_id);
     }
 }
