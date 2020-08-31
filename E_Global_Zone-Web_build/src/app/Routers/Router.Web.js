@@ -7,6 +7,8 @@ import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
 import Foreigner from "../../routes/Web/Manager/Students/Foreigner";
 import ForeignerSchedules from "../../routes/Web/Foreigner/Schedules/Schedules";
+import { useSelector } from "react-redux";
+import { selectToday } from "../../redux/confSlice/confSlice";
 
 /**
  * ManagerRouter - Router for Manager
@@ -14,6 +16,7 @@ import ForeignerSchedules from "../../routes/Web/Foreigner/Schedules/Schedules";
  * @constructor
  */
 export function ManagerRouter() {
+	const today = useSelector(selectToday);
 	useEffect(() => {
 		window.easydropdown.all();
 	}, []);
@@ -22,9 +25,9 @@ export function ManagerRouter() {
 			<Header />
 			<div className="wrapper">
 				<Switch>
-					{/* <Redirect exact path="/" to={`/schedules/now`} /> */}
+					<Redirect exact path="/" to={`/schedules/${today}`} />
 
-					<Route exact path="/" component={Schedules} />
+					{/* <Route exact path="/" component={Schedules} /> */}
 
 					<Route exact path="/schedules/:date" component={Schedules} />
 					{/* term => 학기 */}

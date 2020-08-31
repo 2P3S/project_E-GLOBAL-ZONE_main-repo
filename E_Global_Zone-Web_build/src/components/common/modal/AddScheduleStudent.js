@@ -48,6 +48,8 @@ export default function AddScheduleStudent({
 		console.log(result);
 		if (result && result.status === 201) {
 			handleClose();
+		} else if (result && result.status !== 201) {
+			alert("[에러] 이미 추가한 학생입니다.");
 		}
 	}, [result]);
 	return (

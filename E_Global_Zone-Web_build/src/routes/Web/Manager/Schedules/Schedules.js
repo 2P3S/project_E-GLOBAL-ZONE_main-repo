@@ -30,7 +30,7 @@ export default function Schedules() {
 	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
-	const [selectDate, setSelectDate] = useState(params.date && params.date);
+	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
 	const {
 		isOpen: scheduleIsOpen,
@@ -87,9 +87,14 @@ export default function Schedules() {
 			handleCheck(e.target.value, e.target.checked);
 		}
 	};
-	// useEffect(() => {
-	// 	console.log(params);
-	// }, [params]);
+	useMemo(() => {
+		if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
+			setSelectDate(moment(params.date).format("YYYY-MM-DD"));
+		}
+		if (params.date.length > 10 || params.date.length < 9) {
+			history.push("/");
+		}
+	}, [params]);
 
 	useEffect(() => {
 		document.getElementById("allCheck").checked = true;
@@ -99,15 +104,18 @@ export default function Schedules() {
 	}, []);
 	useMemo(() => {
 		// console.log(params);
-		history.push(`/schedules/${_selectDate}`);
-		setSelectDate(_selectDate);
+		if (_selectDate !== today) {
+			history.push(`/schedules/${_selectDate}`);
+			setSelectDate(_selectDate);
+		}
 	}, [_selectDate]);
 	useEffect(() => {
-		console.log(selectDate);
+		// console.log(selectDate);
 		setPending(true);
 	}, [selectDate]);
 
 	useEffect(() => {
+		if (pending) document.getElementById("date").innerText = "로딩중";
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
 				setSchedules(res.data);
@@ -132,10 +140,10 @@ export default function Schedules() {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
+		// getAdminSchedule({ search_date: selectDate }).then((res) => {
+		// 	setSchedules(res.data);
+		// });
 		setPending(true);
-		getAdminSchedule({ search_date: selectDate }, setSchedules).then((res) => {
-			setSchedules(res.data);
-		});
 	};
 
 	/*  ********[마우스 오버 삭제 버튼 예시]********		

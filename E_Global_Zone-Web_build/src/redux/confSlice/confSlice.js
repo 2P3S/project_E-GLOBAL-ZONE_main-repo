@@ -9,8 +9,8 @@ export const confSlice = createSlice({
 	name: "conf",
 	initialState: {
 		dept: {},
-		today: parseDate(new Date("2020-08-31")),
-		selectDate: moment("2020-09-01").format("YYYY-MM-DD"),
+		today: parseDate(new Date(Date.now())),
+		selectDate: moment(new Date(Date.now())).format("YYYY-MM-DD"),
 	},
 	reducers: {
 		setDept: (state, action) => {
