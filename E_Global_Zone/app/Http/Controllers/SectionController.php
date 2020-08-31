@@ -142,9 +142,11 @@ class SectionController extends Controller
      */
     public function update(Request $request, Section $sect_id): JsonResponse
     {
+        // TODO 학기가 시작하면 변경 X
         $rules = [
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -171,8 +173,16 @@ class SectionController extends Controller
      * @param int $sect_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Section $sect_id): JsonResponse
+    public function destroy(Request $request, Section $sect_id): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         try {
             $sect_id->delete();
             return self::response_json(self::_SECTION_DELETE_RES_SUCCESS, 200);

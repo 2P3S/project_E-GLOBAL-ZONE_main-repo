@@ -52,8 +52,16 @@ class KoreanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexApproval(): JsonResponse
+    public function indexApproval(Request $request): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $approval_result = Student_korean::select('std_kor_id', 'std_kor_dept', 'std_kor_name', 'std_kor_phone', 'std_kor_mail')
             ->where('std_kor_state_of_permission', 0)
             ->get();
@@ -82,7 +90,8 @@ class KoreanController extends Controller
     {
         $rules = [
             'approval' => 'required|array',
-            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999'
+            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -115,7 +124,8 @@ class KoreanController extends Controller
     {
         $rules = [
             'column' => 'required|in:std_kor_id,std_kor_name,std_kor_phone,std_kor_mail',
-            'column_data' => 'required'
+            'column_data' => 'required',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -146,8 +156,16 @@ class KoreanController extends Controller
      * 페이지 url => api/admin/korean?page=1  ->  page = n 번호에 따라서 바뀜.
      * @return \Illuminate\Http\Response
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+        // TODO 컬럼 추가해서 ORDERBY 기능 넣기.
         try {
             // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
             $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
@@ -157,7 +175,7 @@ class KoreanController extends Controller
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
                 if ($korean['std_kor_state_of_restriction'] == true) {
-                    $korean['std_stricted_info'] = $this->restricted->get_restricted_korean_info($korean['std_kor_id'], true);
+                    $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
                 }
             }
             return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
@@ -218,12 +236,12 @@ class KoreanController extends Controller
     /**
      * 계정 삭제
      *
-     * @param int $std_kor_id
      * @return \Illuminate\Http\Response
      */
-    public function destroyAccount(Student_korean $std_kor_id): JsonResponse
+    public function destroyAccount(Request $request): JsonResponse
     {
-        $std_kor_id->delete();
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+        Student_korean::id($std_kor_id)->delete();
 
         return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);
     }

@@ -87,15 +87,12 @@ class ReservationController extends Controller
      * @return JsonResponse
      */
     public function std_for_show_res_by_id(
-        Request $request,
         Schedule $sch_id
     ): JsonResponse {
-        // TODO (적용완료) std_for_id 미들웨어로 부터 받아오기
-        $std_for_id = $request->user($request->input('guard'))['std_for_id'];
-        // $std_for_id = $request->std_for_id;
+        $std_for_id = $sch_id['sch_std_for'];
 
         // <<-- 스케줄에 대한 예약 학생 명단 조회
-        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', $std_for_id, true);
+        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', (int) $std_for_id, true);
     }
 
     /**
@@ -391,11 +388,12 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
+        // <<-- Request 유효성 검사
         $rules = [
             'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
-        // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
             $request,
             $rules,
@@ -405,6 +403,7 @@ class ReservationController extends Controller
         if (is_object($validated_result)) {
             return $validated_result;
         }
+        // -->>
 
         $std_kor_id = $request->std_kor_id;
         $schedule_id = $sch_id['sch_id'];
@@ -431,5 +430,38 @@ class ReservationController extends Controller
         $schedule_date = date("Y-m-d", $schedule_date);
 
         return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+    }
+
+    /**
+     * 관리자 - 해당 스케줄 학생 삭제.
+     *
+     * @param Reservation $res_id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function destroy_kor_reservation_by_admin(
+        Request $request,
+        Reservation $res_id
+    ): JsonResponse {
+        // <<-- Request 유효성 검사
+        $rules = [
+            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RES_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $res_id->delete();
+
+        return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
     }
 }
