@@ -60,9 +60,16 @@ class ReservationController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function std_kor_destroy_res(Reservation $res_id): JsonResponse
+    public function std_kor_destroy_res(Request $request, Reservation $res_id): JsonResponse
     {
         try {
+            // 해당 예약의 한국인 학생 인증.
+            $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+            $is_alright_korean = $res_id->where('res_std_kor', $std_kor_id)->count() != 1;
+            if (!$is_alright_korean) {
+                throw new Exception('err');
+            }
+
             $res_id->delete();
         } catch (Exception $e) {
             return
@@ -80,15 +87,12 @@ class ReservationController extends Controller
      * @return JsonResponse
      */
     public function std_for_show_res_by_id(
-        Request $request,
         Schedule $sch_id
     ): JsonResponse {
-        // TODO std_for_id 미들웨어로 부터 받아오기
-        // $std_for_id = $request->user($request->input('guard'));
-        $std_for_id = $request->std_for_id;
+        $std_for_id = $sch_id['sch_std_for'];
 
         // <<-- 스케줄에 대한 예약 학생 명단 조회
-        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', $std_for_id, true);
+        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', (int) $std_for_id, true);
     }
 
     /**
@@ -250,9 +254,9 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // TODO std_kor_id 미들웨어로 부터 받아오기
-        // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
-        $std_kor_id = $request->std_kor_id;
+        // TODO (적용완료) std_kor_id 미들웨어로 부터 받아오기
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+        // $std_kor_id = $request->std_kor_id;
 
         // <<-- 해당 스케줄 정원 최대 예약 가능 횟수 비교
         $std_kor_res_count = Reservation::where('res_sch', $sch_id['sch_id'])->count();
@@ -322,11 +326,8 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // TODO (CASE 1) 토큰으로 한국인 학생 정보 확인 -> 학번 조회 (CASE 2) 구글 로그인 리다이렉션으로 한국인 학생 정보 확인 -> email 조회
-        // $std_kor_id = $request->user($request['guard'])['std_kor_id'];
-
         // <<-- 날짜로 한국인 학생 예약 내역 조회, 반환
-        $std_kor_id = $request->std_kor_id;
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
         $search_date = $request->input('search_date');
 
         return $this->reservation->get_std_kor_res_by_date($std_kor_id, $search_date);
@@ -341,7 +342,8 @@ class ReservationController extends Controller
      */
     public function std_kor_show_res_by_sect(Request $request): JsonResponse
     {
-        //TODO std_kor_id 미들웨어로 처리하기
+        //TODO (적용완료) std_kor_id 미들웨어로 부터 받아오기.
+
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'search_month' => 'required|integer|distinct|min:1|max:12',
@@ -360,11 +362,14 @@ class ReservationController extends Controller
         }
         // -->>
 
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+
         $sect_by_reservations = Reservation::select('res_id', 'std_for_name', 'sch_start_date', 'sch_end_date')
             ->join('schedules', 'res_sch', 'sch_id')
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->where('schedules.sch_sect', $request->sect_id)
-            ->where('res_std_kor', $request->std_kor_id)
+            ->where('res_std_kor', $std_kor_id)
+            // ->where('res_std_kor', $request->std_kor_id)
             ->whereMonth('schedules.sch_start_date', $request->search_month)
             ->where('res_state_of_attendance', true)
             ->get();
@@ -383,11 +388,12 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
+        // <<-- Request 유효성 검사
         $rules = [
             'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
-        // <<-- Request 유효성 검사
         $validated_result = self::request_validator(
             $request,
             $rules,
@@ -397,6 +403,7 @@ class ReservationController extends Controller
         if (is_object($validated_result)) {
             return $validated_result;
         }
+        // -->>
 
         $std_kor_id = $request->std_kor_id;
         $schedule_id = $sch_id['sch_id'];
@@ -423,5 +430,38 @@ class ReservationController extends Controller
         $schedule_date = date("Y-m-d", $schedule_date);
 
         return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+    }
+
+    /**
+     * 관리자 - 해당 스케줄 학생 삭제.
+     *
+     * @param Reservation $res_id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function destroy_kor_reservation_by_admin(
+        Request $request,
+        Reservation $res_id
+    ): JsonResponse {
+        // <<-- Request 유효성 검사
+        $rules = [
+            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RES_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $res_id->delete();
+
+        return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
     }
 }

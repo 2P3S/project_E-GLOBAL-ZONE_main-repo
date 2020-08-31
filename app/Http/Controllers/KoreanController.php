@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Restricted_student_korean;
 use App\Student_korean;
+use Socialite;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,8 @@ class KoreanController extends Controller
     private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
     private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";
     private const _STD_KOR_APR_INDEX_FAILURE = "가입 승인 대기중인 한국인 학생이 없습니다.";
+    private const _STD_KOR_IS_ALREADY_REGISTERED = "이미 존재하는 학생의 정보입니다.";
+    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입 가능합니다.";
 
     // updateApproval
     private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
@@ -29,7 +32,6 @@ class KoreanController extends Controller
 
     private const _STD_KOR_RGS_SUCCESS = "가입 신청에 성공하였습니다. 글로벌 존 관리자 승인 시 이용가능합니다.";
     private const _STD_KOR_RGS_FAILURE = "가입 신청에 실패하였습니다. 글로벌 존 관리자에게 문의해주세요.";
-    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입가능합니다.";
 
     private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
     private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
@@ -38,14 +40,28 @@ class KoreanController extends Controller
     private const _STD_KOR_INDEX_NONDATA = "해당 학생의 정보가 없습니다.";
     private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
 
+    private $restricted;
+
+    public function __construct()
+    {
+        $this->restricted = new Restricted_student_korean();
+    }
 
     /**
      * 계정 등록 - 대기 명단 조회
      *
      * @return \Illuminate\Http\Response
      */
-    public function indexApproval(): JsonResponse
+    public function indexApproval(Request $request): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
         $approval_result = Student_korean::select('std_kor_id', 'std_kor_dept', 'std_kor_name', 'std_kor_phone', 'std_kor_mail')
             ->where('std_kor_state_of_permission', 0)
             ->get();
@@ -74,7 +90,8 @@ class KoreanController extends Controller
     {
         $rules = [
             'approval' => 'required|array',
-            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999'
+            'approval.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -107,7 +124,8 @@ class KoreanController extends Controller
     {
         $rules = [
             'column' => 'required|in:std_kor_id,std_kor_name,std_kor_phone,std_kor_mail',
-            'cloumn_data' => 'required'
+            'column_data' => 'required',
+            'guard' => 'required|string|in:admin'
         ];
 
         $validated_result = self::request_validator(
@@ -120,10 +138,10 @@ class KoreanController extends Controller
             return $validated_result;
         }
 
-        $column = $request->column;
-        $cloumn_data = $request->cloumn_data;
+        $column = $request->input('column');
+        $column_data = $request->input('column_data');
 
-        $std_kor_info = Student_korean::where($column, $cloumn_data)->get();
+        $std_kor_info = Student_korean::where($column, $column_data)->get();
 
         $is_non_kor_data = $std_kor_info->count() === 0;
 
@@ -138,17 +156,26 @@ class KoreanController extends Controller
      * 페이지 url => api/admin/korean?page=1  ->  page = n 번호에 따라서 바뀜.
      * @return \Illuminate\Http\Response
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+        // TODO 컬럼 추가해서 ORDERBY 기능 넣기.
         try {
             // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
-            $std_koreans = Student_korean::orderBy('std_kor_state_of_restriction', 'DESC')->paginate(15);
+            $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
+                ->orderBy('std_kor_state_of_restriction', 'DESC')
+                ->paginate(15);
 
             // 이용제한 학생인경우 제한 사유 같이 보내기.
             foreach ($std_koreans as $korean) {
                 if ($korean['std_kor_state_of_restriction'] == true) {
-                    $result = Restricted_student_korean::where('restrict_std_kor', $korean['std_kor_id'])->get();
-                    $korean['std_stricted_info'] = $result;
+                    $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
                 }
             }
             return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
@@ -166,43 +193,55 @@ class KoreanController extends Controller
     public function registerAccount(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'std_kor_id' => 'required|integer|min:7',
+            'std_kor_id' => 'required|integer|unique:student_koreans,std_kor_id|distinct|min:1000000|max:9999999',
             'std_kor_dept' => 'required|integer',
             'std_kor_name' => 'required|string|min:2',
-            'std_kor_phone' => 'required|string|min:13',
-            'std_kor_mail' => 'required|email',
+            'std_kor_phone' => 'required|string|unique:student_koreans,std_kor_phone|min:13',
         ]);
 
-        // 지슈트 g.yju.ac.kr 이메일 벨리데이션 검사
-        $check_email = explode('@', $request->std_kor_mail)[1];
-        $check_email = strcmp($check_email, 'g.yju.ac.kr');
+        $std_kor_user = Socialite::driver('google')->userFromToken($request->header('Authorization'));
+        $std_kor_mail = $std_kor_user['email'];
+
+        $parse_email = explode('@', $std_kor_mail)[1];
+        $check_email = strcmp($parse_email, 'g.yju.ac.kr');
 
         if ($validator->fails() || $check_email) {
             return response()->json([
-                'message' => $check_email ? "G Suite 계정만 가입 가능합니다." : $validator->errors(),
+                'message' => $check_email ? self::_STD_KOR_RGS_MAIL_FAILURE : $validator->errors(),
             ], 422);
         }
 
-        Student_korean::create([
-            'std_kor_id' => $request->std_kor_id,
-            'std_kor_dept' => $request->std_kor_dept,
-            'std_kor_name' => $request->std_kor_name,
-            'std_kor_phone' => $request->std_kor_phone,
-            'std_kor_mail' => $request->std_kor_mail,
-        ]);
+        // 중복 회원 검사
+        $is_registered_korean = Student_korean::where('std_kor_mail', $std_kor_mail)
+            ->orWhere('std_kor_id', $request->input('std_kor_id'))
+            ->count() > 0;
 
-        return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
+        if ($is_registered_korean) {
+            return self::response_json(self::_STD_KOR_IS_ALREADY_REGISTERED, 422);
+        }
+        // 새로운 회원인 경우 계정 생성
+        else {
+            Student_korean::create([
+                'std_kor_id' => $request->input('std_kor_id'),
+                'std_kor_dept' => $request->input('std_kor_dept'),
+                'std_kor_name' => $request->input('std_kor_name'),
+                'std_kor_phone' => $request->input('std_kor_phone'),
+                'std_kor_mail' => $std_kor_mail,
+            ]);
+
+            return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
+        }
     }
 
     /**
      * 계정 삭제
      *
-     * @param int $std_kor_id
      * @return \Illuminate\Http\Response
      */
-    public function destroyAccount(Student_korean $std_kor_id): JsonResponse
+    public function destroyAccount(Request $request): JsonResponse
     {
-        $std_kor_id->delete();
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+        Student_korean::id($std_kor_id)->delete();
 
         return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);
     }
