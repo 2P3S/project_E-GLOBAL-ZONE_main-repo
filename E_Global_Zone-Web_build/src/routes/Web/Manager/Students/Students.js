@@ -5,7 +5,11 @@ import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
-import { getAdminKorean, deleteAdminKoreanAccount } from "../../../../api/admin/korean";
+import {
+	getAdminKorean,
+	deleteAdminKoreanAccount,
+	postAdminKorean,
+} from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
@@ -108,6 +112,7 @@ export default function Students() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
 	const [pending, setPending] = useState(false);
+	const [column, setColumn] = useState("std_kor_name");
 	const {
 		isOpen: isRestrict,
 		handleOpen: hadleOpenForRestrict,
@@ -135,7 +140,6 @@ export default function Students() {
 	useEffect(() => {
 		if (Array.isArray(dept))
 			if (resData && resData.data) {
-				console.log(resData);
 				let dataArray = [];
 
 				if (resData.data.data)
@@ -156,30 +160,32 @@ export default function Students() {
 						);
 					});
 				dispatch(setData(new Data(dataArray)));
-				const pagenation = document.getElementById("pagenation");
-				pagenation.innerHTML = "";
-				let first = document.createElement("button");
-				first.innerText = "<<";
-				first.addEventListener("click", () => {
-					history.push(`/students/1/korean`);
-					history.push("/reload");
-				});
-				pagenation.appendChild(first);
-				for (let i = 0; i < resData.data.last_page; i++) {
-					let btn = document.createElement("button");
-					btn.innerText = i + 1;
-					btn.addEventListener("click", () => {
-						history.push(`/students/${i + 1}/korean`);
-						setPending(true);
+				if (resData.data.last_page) {
+					const pagenation = document.getElementById("pagenation");
+					pagenation.innerHTML = "";
+					let first = document.createElement("button");
+					first.innerText = "<<";
+					first.addEventListener("click", () => {
+						history.push(`/students/1/korean`);
+						history.push("/reload");
 					});
-					pagenation.appendChild(btn);
+					pagenation.appendChild(first);
+					for (let i = 0; i < resData.data.last_page; i++) {
+						let btn = document.createElement("button");
+						btn.innerText = i + 1;
+						btn.addEventListener("click", () => {
+							history.push(`/students/${i + 1}/korean`);
+							setPending(true);
+						});
+						pagenation.appendChild(btn);
+					}
+					let last = document.createElement("button");
+					last.innerText = ">>";
+					pagenation.appendChild(last);
+					last.addEventListener("click", () => {
+						history.push(`/students/${resData.data.last_page}/korean`);
+					});
 				}
-				let last = document.createElement("button");
-				last.innerText = ">>";
-				pagenation.appendChild(last);
-				last.addEventListener("click", () => {
-					history.push(`/students/${resData.data.last_page}/korean`);
-				});
 			}
 		// setDataSet(new Data(dataArray));
 	}, [resData, dept]);
@@ -202,22 +208,9 @@ export default function Students() {
 		setPending(true);
 	}, [orderIndex]);
 
-	const sort = (sortBy) => {
-		if (data.sort === sortBy) {
-			setData(
-				new Data(
-					data.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
-					null
-				)
-			);
-		} else {
-			setData(
-				new Data(
-					data.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)),
-					sortBy
-				)
-			);
-		}
+	const handleSearch = () => {
+		const column_data = document.getElementById("term").value;
+		postAdminKorean({ column, column_data }).then((res) => setResData({ data: res.data }));
 	};
 
 	return (
@@ -228,13 +221,19 @@ export default function Students() {
 				</div>
 
 				<div className="top_search">
-					<select name="catgo" className="dropdown">
-						<option>이름</option>
-						<option>학번</option>
-						<option>연락처</option>
+					<select
+						name="catgo"
+						className="dropdown"
+						onChange={(e) => {
+							setColumn(e.target.value);
+						}}
+					>
+						<option value="std_kor_name">이름</option>
+						<option value="std_kor_id">학번</option>
+						<option value="std_kor_phone">연락처</option>
 					</select>
-					<input type="text" />
-					<input type="submit" value="검색" />
+					<input type="text" id="term" />
+					<input type="submit" value="검색" onClick={handleSearch} />
 				</div>
 			</div>
 
