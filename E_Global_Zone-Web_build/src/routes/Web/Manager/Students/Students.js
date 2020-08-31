@@ -5,7 +5,7 @@ import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
-import useAxios, { getAdminKorean } from "../../../../modules/hooks/useAxios";
+import { getAdminKorean } from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
@@ -92,10 +92,7 @@ class Data {
 export default function Students() {
 	const params = useParams();
 	const history = useHistory();
-	// api
-	// const { loading, data: resData, error } = useAxios({
-	// 	url: conf.url + `/api/admin/korean?page=${params.page}`,
-	// });
+
 	const [resData, setResData] = useState();
 	// department information
 	const dept = useSelector(selectDept);
@@ -120,12 +117,12 @@ export default function Students() {
 	 */
 
 	const reRender = () => {
-		getAdminKorean(params.page, setResData);
+		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
 	};
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getAdminKorean(params.page, setResData);
+		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
 	}, []);
 
 	useEffect(() => {
@@ -180,7 +177,7 @@ export default function Students() {
 	}, [resData, dept]);
 
 	useEffect(() => {
-		getAdminKorean(params.page, setResData);
+		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
 	}, [params]);
 
 	const sort = (sortBy) => {

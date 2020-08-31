@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { deleteAdminScheduleAdd } from "../../../modules/hooks/useAxios";
+import { deleteAdminScheduleAdd, postAdminScheduleAdd } from "../../../api/admin/schedule";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
 } from "../../../api/foreigner/reservation";
+import { getAdminReservation, patchAdminReservationPermission } from "../../../api/admin/foreigner";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import { useHistory } from "react-router-dom";
@@ -44,12 +45,10 @@ export default function ShowList({
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getForeignerReservation(sch_id).then((res) => setData(res.data));
-		// getForeignerReservation(
-		// 	sch_id,
-		// 	user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-		// 	setData
-		// );
+		user.userClass === conf.userClass.MANAGER
+			? getAdminReservation(sch_id).then((res) => setData(res.data))
+			: getForeignerReservation(sch_id).then((res) => setData(res.data));
+
 		return thisReRender;
 	}, []);
 	useEffect(() => {
@@ -69,7 +68,9 @@ export default function ShowList({
 	}, [pending]);
 
 	const handleDelete = () => {
-		deleteAdminScheduleAdd(selectedResId, handleCloseForDelete);
+		postAdminScheduleAdd(selectedResId).then((res) => {
+			handleCloseForDelete();
+		});
 	};
 
 	const reRender = () => {
@@ -184,12 +185,19 @@ export default function ShowList({
 									not_permission_std_kor_id_list.push(v.std_kor_id);
 								}
 							});
-							patchForeignerReservationPermission(sch_id, {
-								permission_std_kor_id_list,
-								not_permission_std_kor_id_list,
-							}).then((res) => {
-								setPending(true);
-							});
+							user.userClass === conf.userClass.MANAGER
+								? patchAdminReservationPermission(sch_id, {
+										permission_std_kor_id_list,
+										not_permission_std_kor_id_list,
+								  }).then((res) => {
+										setPending(true);
+								  })
+								: patchForeignerReservationPermission(sch_id, {
+										permission_std_kor_id_list,
+										not_permission_std_kor_id_list,
+								  }).then((res) => {
+										setPending(true);
+								  });
 						}}
 					>
 						저장

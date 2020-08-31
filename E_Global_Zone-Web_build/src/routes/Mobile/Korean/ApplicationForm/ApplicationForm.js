@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useAxios, { postAxios } from "../../../../modules/hooks/useAxios";
 import { useParams, useHistory } from "react-router-dom";
 import conf from "../../../../conf/conf";
 import { useSelector } from "react-redux";

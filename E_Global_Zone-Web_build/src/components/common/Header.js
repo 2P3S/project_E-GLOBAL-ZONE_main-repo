@@ -5,7 +5,7 @@ import { selectUser } from "../../redux/userSlice/userSlice";
 import conf from "../../conf/conf";
 import useModal from "../../modules/hooks/useModal";
 import Modal from "./modal/Modal";
-import { patchAdminForeignerAccount } from "../../modules/hooks/useAxios";
+import { patchAdminForeignerAccount } from "../../api/admin/foreigner";
 import { postForeignerLogout } from "../../api/foreigner";
 /**
  * Header for Manager
@@ -37,12 +37,9 @@ export default function Header() {
 	const handleClick = () => {
 		console.log(user);
 		isSame &&
-			patchAdminForeignerAccount(
-				user.id,
-				setPending,
-				{ std_for_passwd: document.getElementById("password").value },
-				"foreigner"
-			);
+			patchAdminForeignerAccount(user.id, {
+				std_for_passwd: document.getElementById("password").value,
+			}).then((res) => setPending(true));
 	};
 	return (
 		<div className="head">

@@ -12,6 +12,7 @@ import { isMobile } from "react-device-detect";
 import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
+import { postAdminLogin } from "../../api/admin";
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -94,6 +95,7 @@ export const MobileLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
 		} else {
+			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
@@ -111,7 +113,7 @@ export const MobileLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => alert(e.data.message));
+				.catch((e) => alert(e));
 		}
 	};
 	const onFailure = (e) => {
@@ -137,7 +139,7 @@ export const MobileLogin = () => {
 				)}
 				onSuccess={onSuccess}
 				onFailure={onFailure}
-				isSignedIn={true}
+				// isSignedIn={true}
 			/>
 			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
@@ -170,7 +172,7 @@ export const KoreanLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => alert(e.data.message));
+				.catch((e) => console.log(e));
 		}
 	};
 	const onFailure = (e) => {
@@ -204,7 +206,7 @@ export const KoreanLogin = () => {
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						isSignedIn={true}
+						// isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
@@ -236,6 +238,71 @@ function LoginHeader() {
 				유학생
 			</li>
 		</ul>
+	);
+}
+
+export function AdminLogin() {
+	const dispatch = useDispatch();
+	const login = useSelector(logIn);
+	const history = useHistory();
+	const id = useRef();
+	const pw = useRef();
+
+	const [data, setData] = useState();
+	const [pending, setPending] = useState(false);
+
+	useEffect(() => {
+		console.log(pending, data);
+		if (pending) {
+			if (data) {
+				console.log(data);
+				alert(data.message);
+
+				window.localStorage.setItem("global-zone-admin-token", data.data.token);
+				window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
+				window.localStorage.setItem("global-zone-loginName", data.data.info.std_for_name);
+				window.localStorage.setItem("global-zone-userClass", conf.userClass.MANAGER);
+				window.localStorage.setItem("global-zone-isLogin", true);
+
+				window.location.replace("/");
+			}
+		}
+		return;
+	}, [pending, data]);
+
+	const handleLogin = () => {
+		const { value: idValue } = id.current;
+		const { value: pwValue } = pw.current;
+		if (blankValidator(idValue, pwValue));
+		console.log("login", idValue, pwValue);
+		// postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
+		postAdminLogin({ account: idValue, password: pwValue }).then((res) => {
+			setPending(true);
+			res.status === 200 && setData(res.data);
+		});
+	};
+
+	return (
+		<div className="content">
+			<div className="sub_title">
+				<p className="tit">글로벌존 서비스 로그인</p>
+			</div>
+			<div className="login_wrap">
+				<p className="tit">관리자 계정 로그인</p>
+				<div className="login_input">
+					<input type="text" name="adminId" placeholder="학번을 입력해주세요." ref={id} />
+					<input
+						type="password"
+						name="password"
+						placeholder="비밀번호를 입력해주세요."
+						ref={pw}
+					/>
+					<div className="submit" onClick={handleLogin}>
+						로그인
+					</div>
+				</div>
+			</div>
+		</div>
 	);
 }
 

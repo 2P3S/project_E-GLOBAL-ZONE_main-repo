@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "../../../../components/mobile/Calendar";
 import TabView from "../../../../components/mobile/TabView";
-import useAxios from "../../../../modules/hooks/useAxios";
+
 import conf from "../../../../conf/conf";
 import { getKoreanSchedule } from "../../../../api/korean";
 

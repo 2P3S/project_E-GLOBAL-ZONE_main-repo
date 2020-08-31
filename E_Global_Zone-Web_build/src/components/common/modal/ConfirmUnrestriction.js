@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useClick from "../../../modules/hooks/useClick";
-import { patchAdminKoreanRestrict } from "../../../modules/hooks/useAxios";
+import { patchAdminKoreanRestrict } from "../../../api/admin/korean";
 
 /**
  * Modal - 이용 제한 헤제
@@ -26,7 +26,7 @@ const ConfirmUnrestriction = ({
 	}, [pending]);
 
 	const handleClick = () => {
-		patchAdminKoreanRestrict(std_stricted_info.restrict_id, setPending);
+		patchAdminKoreanRestrict(std_stricted_info.restrict_id).then((res) => setPending(true));
 	};
 
 	return (

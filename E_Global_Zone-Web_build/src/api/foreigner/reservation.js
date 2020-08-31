@@ -26,6 +26,9 @@ export const postForeignerReservationResult = (sch_id, data, setState) => {
 		true
 	);
 
-	ajax.setRequestHeader("Authorization", `Bearer ${window.localStorage.getItem("token")}`);
+	ajax.setRequestHeader(
+		"Authorization",
+		`Bearer ${window.localStorage.getItem("global-zone-foreigner-token")}`
+	);
 	ajax.send(data);
 };

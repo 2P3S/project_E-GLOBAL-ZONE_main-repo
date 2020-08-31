@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { getAdminForeignerNoWork, postAdminForeignerWork } from "../../../modules/hooks/useAxios";
+import { getAdminForeignerNoWork, postAdminForeignerWork } from "../../../api/admin/foreigner";
 
 export default function SetSectForeigner({ sect_id, handleClose }) {
 	const [forList, setForList] = useState();
 	const [isDone, setIsDone] = useState(false);
+	const [pending, setPending] = useState(false);
 	useEffect(() => {
-		getAdminForeignerNoWork(sect_id, setForList);
+		getAdminForeignerNoWork(sect_id).then((res) => {
+			setForList(res.data.data);
+			setPending(true);
+		});
 	}, []);
 
 	const handleCheckAll = () => {
@@ -16,6 +20,13 @@ export default function SetSectForeigner({ sect_id, handleClose }) {
 			checkBox.checked = allBox.checked;
 		});
 	};
+
+	useEffect(() => {
+		if (pending) {
+			setPending(true);
+			console.log(forList);
+		}
+	}, [pending]);
 
 	const handleSave = () => {
 		let array = [];
@@ -28,7 +39,7 @@ export default function SetSectForeigner({ sect_id, handleClose }) {
 		if (array.length === 0) {
 			alert("아무도 체크하지 않았습니다.");
 		} else {
-			postAdminForeignerWork({ sect_id, foreigners: array }, setIsDone);
+			postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => setIsDone(true));
 		}
 	};
 	useEffect(() => {
@@ -70,7 +81,8 @@ export default function SetSectForeigner({ sect_id, handleClose }) {
 						</tr>
 					</thead>
 					<tbody>
-						{forList &&
+						{pending &&
+							forList &&
 							forList.map((v, index) => (
 								<tr>
 									<td>

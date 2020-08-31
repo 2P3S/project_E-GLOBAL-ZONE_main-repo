@@ -5,12 +5,19 @@ import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+// import {
+// 	getAdminForeignerWork,
+// 	getAdminSection,
+// 	getAdminForeignerAccountFavorite,
+// 	patchAdminForeignerAccount,
+// } from "../../../../modules/hooks/useAxios";
+
 import {
-	getAdminForeignerWork,
-	getAdminSection,
 	getAdminForeignerAccountFavorite,
+	getAdminForeignerWork,
 	patchAdminForeignerAccount,
-} from "../../../../modules/hooks/useAxios";
+} from "../../../../api/admin/foreigner";
+import { getAdminSection } from "../../../../api/admin/section";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import moment from "moment";
@@ -84,18 +91,22 @@ export default function Foreigner() {
 		};
 	}
 	const reRender = () => {
-		getAdminSection({ year: `${moment().format("YYYY")}` }, setSectOfYear);
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
+			setSectOfYear(res.data)
+		);
 	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 	};
 
 	useEffect(() => {
-		getAdminSection({ year: `${moment().format("YYYY")}` }, setSectOfYear);
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
+			setSectOfYear(res.data)
+		);
 	}, []);
 	useEffect(() => {
 		if (sectOfYear) {
-			getAdminForeignerWork(setDataSet, sectOfYear.data[0].sect_id);
+			getAdminForeignerWork(sectOfYear.data[0].sect_id).then((res) => setDataSet(res.data));
 			setSelectSect(sectOfYear.data[0].sect_id);
 		}
 	}, [sectOfYear]);
@@ -103,7 +114,7 @@ export default function Foreigner() {
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
-		getAdminForeignerWork(setDataSet, selectSect);
+		getAdminForeignerWork(selectSect).then((res) => setDataSet(res.data));
 	}, [selectSect]);
 
 	useEffect(() => {
@@ -433,8 +444,9 @@ export default function Foreigner() {
 																		className="navy"
 																		onClick={() => {
 																			patchAdminForeignerAccount(
-																				value.std_for_id,
-																				setPending
+																				value.std_for_id
+																			).then((res) =>
+																				setPending(true)
 																			);
 																			handleOpenForReset();
 																		}}
