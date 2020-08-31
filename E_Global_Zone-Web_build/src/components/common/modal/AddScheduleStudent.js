@@ -8,7 +8,13 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";
 
-export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_for_id }) {
+export default function AddScheduleStudent({
+	handleClose,
+	sch_id,
+	_setData,
+	std_for_id,
+	reRender,
+}) {
 	const [data, setData] = useState();
 	const [result, setResult] = useState();
 	const user = useSelector(selectUser);
@@ -24,11 +30,11 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 
 	const handleAdd = (e) => {
 		const std_kor_id = e.target.children[0].value;
-		postAdminScheduleAdd(sch_id, { std_kor_id }).then((res) => setResult(res.data));
+		postAdminScheduleAdd(sch_id, { std_kor_id }).then((res) => setResult(res));
 	};
 	useEffect(() => {
 		return () => {
-			user.class === conf.userClass.MANAGER
+			user.userClass === conf.userClass.MANAGER
 				? getAdminReservation(sch_id).then((res) => _setData(res.data))
 				: getForeignerReservation(sch_id, std_for_id, _setData);
 		};
@@ -39,7 +45,8 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 		console.log(data);
 	}, [data]);
 	useEffect(() => {
-		if (result === "success") {
+		console.log(result);
+		if (result && result.status === 201) {
 			handleClose();
 		}
 	}, [result]);
@@ -59,8 +66,8 @@ export default function AddScheduleStudent({ handleClose, sch_id, _setData, std_
 						data.data.map((v) => {
 							return (
 								<div>
-									<span>{v.std_kor_id} ||</span>
-									<span>{v.std_kor_name} ||</span>
+									<span>{v.std_kor_id} </span>
+									<span>{v.std_kor_name} </span>
 									<span>
 										<button onClick={handleAdd}>
 											추가하기

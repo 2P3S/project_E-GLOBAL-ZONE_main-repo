@@ -104,11 +104,16 @@ export default function Schedules() {
 	}, [_selectDate]);
 	useEffect(() => {
 		console.log(selectDate);
-		getAdminSchedule({ search_date: params.date }).then((res) => {
-			setPending(true);
-			setSchedules(res.data);
-		});
+		setPending(true);
 	}, [selectDate]);
+
+	useEffect(() => {
+		pending &&
+			getAdminSchedule({ search_date: params.date }).then((res) => {
+				setSchedules(res.data);
+			});
+	}, [pending]);
+
 	// useEffect(() => {
 	// 	reRender();
 	// }, [params]);
