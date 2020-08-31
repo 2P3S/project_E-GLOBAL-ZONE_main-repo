@@ -208,8 +208,12 @@ class ForeignerController extends Controller
      */
     public function registerAccount(Request $request): JsonResponse
     {
+        // $this->validate($request, [
+        //     'url' => 'unique:site1,your_column_name|unique:site2:your_column_name_2'
+        // ]);
+
         $rules = [
-            'std_for_id' => 'required|integer|unique:student_foreigners,std_for_id|unique:student_koreans.std_kor_id|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|unique:student_foreigners,std_for_id|unique:student_koreans,std_kor_id|distinct|min:1000000|max:9999999',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2',
