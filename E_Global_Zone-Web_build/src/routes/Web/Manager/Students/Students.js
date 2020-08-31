@@ -5,7 +5,7 @@ import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
 import useModal from "../../../../modules/hooks/useModal";
-import { getAdminKorean } from "../../../../api/admin/korean";
+import { getAdminKorean, deleteAdminKoreanAccount } from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
@@ -92,8 +92,14 @@ class Data {
 export default function Students() {
 	const params = useParams();
 	const history = useHistory();
-
 	const [resData, setResData] = useState();
+	const [orderBy, setOrderBy] = useState([
+		"std_kor_dept",
+		"std_kor_state_of_restriction",
+		"std_kor_num_of_attendance",
+		"std_kor_num_of_absent",
+	]);
+	const [orderIndex, setOrderIndex] = useState(1);
 	// department information
 	const dept = useSelector(selectDept);
 	const data = useSelector(selectData);
@@ -101,6 +107,7 @@ export default function Students() {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
+	const [pending, setPending] = useState(false);
 	const {
 		isOpen: isRestrict,
 		handleOpen: hadleOpenForRestrict,
@@ -117,12 +124,12 @@ export default function Students() {
 	 */
 
 	const reRender = () => {
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		setPending(true);
 	};
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		setPending(true);
 	}, []);
 
 	useEffect(() => {
@@ -154,7 +161,7 @@ export default function Students() {
 				let first = document.createElement("button");
 				first.innerText = "<<";
 				first.addEventListener("click", () => {
-					history.push(`/students/${1}/korean`);
+					history.push(`/students/1/korean`);
 					history.push("/reload");
 				});
 				pagenation.appendChild(first);
@@ -163,6 +170,7 @@ export default function Students() {
 					btn.innerText = i + 1;
 					btn.addEventListener("click", () => {
 						history.push(`/students/${i + 1}/korean`);
+						setPending(true);
 					});
 					pagenation.appendChild(btn);
 				}
@@ -177,8 +185,22 @@ export default function Students() {
 	}, [resData, dept]);
 
 	useEffect(() => {
-		getAdminKorean({ page: params.page }).then((res) => setResData(res.data));
+		console.log(params);
 	}, [params]);
+
+	useEffect(() => {
+		if (pending) {
+			getAdminKorean({ page: params.page, orderby: orderBy[orderIndex] }).then((res) => {
+				setResData(res.data);
+				setPending(false);
+			});
+		}
+	}, [pending]);
+
+	useEffect(() => {
+		history.push(`/students/1/korean`);
+		setPending(true);
+	}, [orderIndex]);
 
 	const sort = (sortBy) => {
 		if (data.sort === sortBy) {
@@ -230,8 +252,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("dept");
+										setOrderIndex(0);
 									})}
 								>
 									계열학과
@@ -249,10 +270,7 @@ export default function Students() {
 								<th
 									scope="col"
 									className="bg align"
-									ref={useClick(() => {
-										setData([]);
-										sort("status");
-									})}
+									ref={useClick(() => setOrderIndex(1))}
 								>
 									이용제한
 									<img
@@ -270,8 +288,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("count");
+										setOrderIndex(2);
 									})}
 								>
 									활동 횟수
@@ -284,8 +301,7 @@ export default function Students() {
 									scope="col"
 									className="bg align"
 									ref={useClick(() => {
-										setData([]);
-										sort("absent");
+										setOrderIndex(3);
 									})}
 								>
 									미참석 횟수
@@ -306,19 +322,23 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											onMouseOver={() => {
-												document.getElementById(
-													`hover_btn_${index}`
-												).className = "hover_btn kor";
-											}}
-											onMouseOut={() => {
-												document.getElementById(
-													`hover_btn_${index}`
-												).className = "hover_off";
+											onClick={() => {
+												if (
+													window.confirm(`[경고]정말 삭제 하시겠습니까?
+												학번 : ${v.std_id}
+												이름 : ${v.name}
+											`) === true
+												) {
+													deleteAdminKoreanAccount(v.std_id)
+														.then((res) => {
+															setPending(true);
+														})
+														.catch((e) => console.log(e));
+												}
 											}}
 										>
 											{v.name}
-											<div className="hover_off" id={`hover_btn_${index}`}>
+											{/* <div className="hover_off" id={`hover_btn_${index}`}>
 												<div className="area">
 													{v.status ? (
 														<>
@@ -355,18 +375,37 @@ export default function Students() {
 													)}
 													<div className="lightGray">삭제</div>
 												</div>
-											</div>
+											</div> */}
 										</td>
 										<td>
 											{v.status ? (
-												<div className="restriction">
+												<div
+													className="restriction"
+													onClick={() => {
+														setSelectedKor({
+															std_kor_id: v.std_id,
+															std_kor_name: v.name,
+															std_stricted_info: v.std_stricted_info,
+														});
+														handleOpenForUnrestrict();
+													}}
+												>
 													<img
 														src="/global/img/restriction_on.png"
 														alt="이용제한"
 													/>
 												</div>
 											) : (
-												<div className="restriction">
+												<div
+													className="restriction"
+													onClick={() => {
+														setSelectedKor({
+															std_kor_id: v.std_id,
+															std_kor_name: v.name,
+														});
+														hadleOpenForRestrict();
+													}}
+												>
 													<img
 														src="/global/img/restriction_off.png"
 														alt="이용제한 해제"
