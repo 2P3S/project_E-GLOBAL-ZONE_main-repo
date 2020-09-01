@@ -60,10 +60,15 @@ export default function Foreigner() {
 	const [loading, setLoading] = useState(true);
 	const [dataSet, setDataSet] = useState();
 	const [data, setData] = useState(mockup.data);
+	const [isSearchMode, setIsSearchMode] = useState(false);
+	const [searchFor, setSearchFor] = useState("std_for_name");
+	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
 	const [selectSect, setSelectSect] = useState();
 	const [monthArray, setMonthArray] = useState();
+	const [contactList, setContactList] = useState([]);
 	const [pending, setPending] = useState(false);
+	const [toggle, setToggle] = useState(true);
 	const {
 		isOpen: contactIsOpen,
 		handleOpen: handleOpenForContact,
@@ -86,15 +91,10 @@ export default function Foreigner() {
 	} = useModal();
 	const deptList = useSelector(selectDept);
 
-	function handleCheckAll() {
-		let flag = true;
-		return function () {
-			data.forEach((v) => {
-				document.getElementById(v.std_id).checked = flag;
-				v.check = flag;
-			});
-			flag = !flag;
-		};
+	function handleCheckAll(e) {
+		dataSet.data.forEach((v) => {
+			document.getElementById(v.std_for_id).checked = e.target.checked;
+		});
 	}
 	const reRender = () => {
 		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
@@ -105,6 +105,33 @@ export default function Foreigner() {
 		setSelectSect(e.target.value);
 	};
 
+	const handleSearch = (e) => {
+		let term = document.getElementById("term").value;
+		let searchData = [];
+		setIsSearchMode(true);
+		if (searchFor) {
+			console.log(term, searchFor);
+			defaultData.data.forEach((v) => {
+				switch (searchFor) {
+					case "std_for_name":
+						if (v.std_for_name.match(term)) {
+							searchData.push(v);
+						}
+						break;
+					case "std_for_id":
+						if (v.std_for_id.toString().match(term)) {
+							searchData.push(v);
+						}
+						break;
+
+					default:
+						break;
+				}
+			});
+		}
+		setDataSet({ ...setData, data: searchData });
+	};
+
 	useEffect(() => {
 		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
 			setSectOfYear(res.data)
@@ -112,7 +139,10 @@ export default function Foreigner() {
 	}, []);
 	useEffect(() => {
 		if (sectOfYear) {
-			getAdminForeignerWork(sectOfYear.data[0].sect_id).then((res) => setDataSet(res.data));
+			getAdminForeignerWork(sectOfYear.data[0].sect_id).then((res) => {
+				setDataSet(res.data);
+				setDefaultData(res.data);
+			});
 			setSelectSect(sectOfYear.data[0].sect_id);
 		}
 	}, [sectOfYear]);
@@ -129,6 +159,13 @@ export default function Foreigner() {
 			setData({ ...dataSet });
 		}
 	}, [dataSet]);
+
+	useEffect(() => {
+		if (isSearchMode) {
+			alert(isSearchMode);
+		}
+	}, [isSearchMode]);
+
 	useEffect(() => {
 		if (!setLoading) {
 			console.log(dataSet);
@@ -171,14 +208,21 @@ export default function Foreigner() {
 	};
 
 	const sort = (sortBy) => {
-		setData([]); // reset
-		if (mockup.sort === sortBy) {
-			setData(mockup.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)));
-			mockup.sort = null;
+		setDataSet({ ...dataSet, data: [] }); // reset
+		console.log(sortBy, document.getElementById(sortBy).value);
+		if (toggle) {
+			setDataSet({
+				...dataSet,
+				data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
+			});
+			// mockup.sort = null;
 		} else {
-			setData(mockup.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)));
-			mockup.sort = sortBy;
+			setDataSet({
+				...dataSet,
+				data: defaultData.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)),
+			});
 		}
+		setToggle(!toggle);
 	};
 
 	return sectOfYear ? (
@@ -197,13 +241,18 @@ export default function Foreigner() {
 					</div>
 
 					<div className="top_search">
-						<select name="catgo" className="dropdown">
-							<option>이름</option>
-							<option>학번</option>
-							<option>연락처</option>
+						<select
+							name="catgo"
+							className="dropdown"
+							onChange={(e) => {
+								setSearchFor(e.target.value);
+							}}
+						>
+							<option value="std_for_name">이름</option>
+							<option value="std_for_id">학번</option>
 						</select>
-						<input type="text" />
-						<input type="submit" value="검색" />
+						<input type="text" id="term" onChange={handleSearch} />
+						<input type="submit" value="검색" onClick={handleSearch} />
 					</div>
 				</div>
 				<div className="wrap">
@@ -228,7 +277,7 @@ export default function Foreigner() {
 														type="checkbox"
 														id="a1"
 														name=""
-														onClick={handleCheckAll()}
+														onClick={handleCheckAll}
 													/>
 													<label htmlFor="a1"></label>
 												</div>
@@ -237,9 +286,14 @@ export default function Foreigner() {
 												rowSpan="2"
 												className="align"
 												onClick={() => {
-													sort("language");
+													sort("std_for_lang");
 												}}
 											>
+												<input
+													type="hidden"
+													id="std_for_lang"
+													value={false}
+												/>
 												언어{" "}
 												<img
 													src="/global/img/table_align_arrow.gif"
@@ -250,9 +304,14 @@ export default function Foreigner() {
 												rowSpan="2"
 												className="align"
 												onClick={() => {
-													sort("country");
+													sort("std_for_country");
 												}}
 											>
+												<input
+													type="hidden"
+													id="std_for_country"
+													value={false}
+												/>
 												국가명{" "}
 												<img
 													src="/global/img/table_align_arrow.gif"
@@ -263,9 +322,14 @@ export default function Foreigner() {
 												rowSpan="2"
 												className="align"
 												onClick={() => {
-													sort("favorite");
+													sort("std_for_state_of_favorite");
 												}}
 											>
+												<input
+													type="hidden"
+													id="std_for_state_of_favorite"
+													value={false}
+												/>
 												즐겨찾기{" "}
 												<img
 													src="/global/img/table_align_arrow.gif"
@@ -283,7 +347,18 @@ export default function Foreigner() {
 											>
 												활동시간
 											</th>
-											<th rowSpan="2" className="align">
+											<th
+												rowSpan="2"
+												className="align"
+												onClick={() =>
+													sort("std_for_num_of_delay_permission")
+												}
+											>
+												<input
+													type="hidden"
+													id="std_for_num_of_delay_permission"
+													value={false}
+												/>
 												예약 미승인
 												<br />
 												횟수
@@ -292,7 +367,16 @@ export default function Foreigner() {
 													alt="예약 미승인 횟수 기준 정렬"
 												/>
 											</th>
-											<th rowSpan="2" className="align">
+											<th
+												rowSpan="2"
+												className="align"
+												onClick={() => sort("std_for_num_of_delay_input")}
+											>
+												<input
+													type="hidden"
+													id="std_for_num_of_delay_input"
+													value={false}
+												/>
 												결과 지연
 												<br />
 												입력 횟수
@@ -309,16 +393,28 @@ export default function Foreigner() {
 												rowSpan="2"
 												className="align"
 												onClick={() => {
-													sort("dept");
+													sort("std_for_dept");
 												}}
 											>
+												<input
+													type="hidden"
+													id="std_for_dept"
+													value={false}
+												/>
 												계열학과
 												<img
 													src="/global/img/table_align_arrow.gif"
 													alt="계열학과 기준 정렬"
 												/>
 											</th>
-											<th rowSpan="2" className="align">
+											<th
+												rowSpan="2"
+												className="align"
+												// onClick={() => {
+												// 		sort("");
+												// 	}}
+											>
+												{/* <input type="hidden" id="" value={false}/> */}
 												합계
 												<img
 													src="/global/img/table_align_arrow.gif"
@@ -332,7 +428,18 @@ export default function Foreigner() {
 												dataSet.data.length > 0 &&
 												dataSet.data[0].work_time &&
 												Object.keys(dataSet.data[0].work_time).map((v) => (
-													<th rowSpan="2" className="align">
+													<th
+														rowSpan="2"
+														className="align"
+														onClick={() => {
+															sort(`${v}`);
+														}}
+													>
+														<input
+															type="hidden"
+															id={`${v}`}
+															value={false}
+														/>
 														{v}
 														<img
 															src="/global/img/table_align_arrow.gif"
@@ -343,157 +450,155 @@ export default function Foreigner() {
 										</tr>
 									</thead>
 									<tbody>
-										{dataSet.data.map((value, index) => {
-											let toggle = value.std_for_state_of_favorite
-												? true
-												: false;
-											return (function () {
-												return (
-													<tr
-														className={
-															value.std_for_lang ===
-															conf.language.ENGLISH
-																? "eng"
-																: value.std_for_lang ===
-																  conf.language.JAPANESE
-																? "jp"
-																: "ch"
-														}
-														key={value.std_for_id}
-													>
-														<td>
-															<div className="table_check">
-																<input
-																	type="checkbox"
-																	id={value.std_for_id}
-																	name=""
-																	ref={value.ref}
-																	onClick={() => {
-																		if (value.check) {
-																			value.check = false;
-																		} else {
-																			value.check = true;
-																		}
+										{dataSet &&
+											dataSet.data &&
+											dataSet.data.map((value, index) => {
+												let toggle = value.std_for_state_of_favorite
+													? true
+													: false;
+												return (function () {
+													return (
+														<tr
+															className={
+																value.std_for_lang ===
+																conf.language.ENGLISH
+																	? "eng"
+																	: value.std_for_lang ===
+																	  conf.language.JAPANESE
+																	? "jp"
+																	: "ch"
+															}
+															key={value.std_for_id}
+														>
+															<td>
+																<div className="table_check">
+																	<input
+																		type="checkbox"
+																		id={value.std_for_id}
+																		name=""
+																	/>
+																	<label
+																		htmlFor={value.std_for_id}
+																	></label>
+																</div>
+															</td>
+															<td>{value.std_for_lang}</td>
+															<td>{value.std_for_country}</td>
+															<td>
+																<div
+																	id={`parent_fav_${value.std_for_id}`}
+																	className="favor"
+																	onClick={(e) => {
+																		getAdminForeignerAccountFavorite(
+																			value.std_for_id,
+																			toggle ? 0 : 1
+																		);
+																		toggle = !toggle;
+																		let parent = document.getElementById(
+																			`parent_fav_${value.std_for_id}`
+																		);
+																		let item = document.getElementById(
+																			`fav_${value.std_for_id}`
+																		);
+																		item.parentNode.removeChild(
+																			item
+																		);
+																		let btn = document.createElement(
+																			"img"
+																		);
+																		btn.id = `fav_${value.std_for_id}`;
+																		btn.src = toggle
+																			? "/global/img/favor_on.png"
+																			: "/global/img/favor_off.png";
+																		parent.appendChild(btn);
 																	}}
-																/>
-																<label
-																	htmlFor={value.std_for_id}
-																></label>
-															</div>
-														</td>
-														<td>{value.std_for_lang}</td>
-														<td>{value.std_for_country}</td>
-														<td>
-															<div
-																id={`parent_fav_${value.std_for_id}`}
-																className="favor"
-																onClick={(e) => {
-																	getAdminForeignerAccountFavorite(
-																		value.std_for_id,
-																		toggle ? 0 : 1
-																	);
-																	toggle = !toggle;
-																	let parent = document.getElementById(
-																		`parent_fav_${value.std_for_id}`
-																	);
-																	let item = document.getElementById(
-																		`fav_${value.std_for_id}`
-																	);
-																	item.parentNode.removeChild(
-																		item
-																	);
-																	let btn = document.createElement(
-																		"img"
-																	);
-																	btn.id = `fav_${value.std_for_id}`;
-																	btn.src = toggle
-																		? "/global/img/favor_on.png"
-																		: "/global/img/favor_off.png";
-																	parent.appendChild(btn);
+																>
+																	{toggle ? (
+																		<img
+																			id={`fav_${value.std_for_id}`}
+																			src="/global/img/favor_on.png"
+																			alt="즐겨찾기 on"
+																		/>
+																	) : (
+																		<img
+																			id={`fav_${value.std_for_id}`}
+																			src="/global/img/favor_off.png"
+																			alt="즐겨찾기 off"
+																		/>
+																	)}
+																</div>
+															</td>
+															<td>{value.std_for_id}</td>
+															<td
+																onMouseOver={() => {
+																	document.getElementById(
+																		`hover_btn_${index}`
+																	).className = "hover_btn";
+																}}
+																onMouseOut={() => {
+																	document.getElementById(
+																		`hover_btn_${index}`
+																	).className = "hover_off";
 																}}
 															>
-																{toggle ? (
-																	<img
-																		id={`fav_${value.std_for_id}`}
-																		src="/global/img/favor_on.png"
-																		alt="즐겨찾기 on"
-																	/>
-																) : (
-																	<img
-																		id={`fav_${value.std_for_id}`}
-																		src="/global/img/favor_off.png"
-																		alt="즐겨찾기 off"
-																	/>
-																)}
-															</div>
-														</td>
-														<td>{value.std_for_id}</td>
-														<td
-															onMouseOver={() => {
-																document.getElementById(
-																	`hover_btn_${index}`
-																).className = "hover_btn";
-															}}
-															onMouseOut={() => {
-																document.getElementById(
-																	`hover_btn_${index}`
-																).className = "hover_off";
-															}}
-														>
-															{value.std_for_name}
-															<div
-																id={`hover_btn_${index}`}
-																className="hover_btn hover_off"
-															>
-																<div className="area">
-																	<div
-																		className="navy"
-																		onClick={() => {
-																			patchAdminForeignerAccount(
-																				value.std_for_id
-																			).then((res) =>
-																				setPending(true)
-																			);
-																			handleOpenForReset();
-																		}}
-																	>
-																		비밀번호 초기화
-																	</div>
-																	<div className="lightGray">
-																		삭제
+																{value.std_for_name}
+																<div
+																	id={`hover_btn_${index}`}
+																	className="hover_btn hover_off"
+																>
+																	<div className="area">
+																		<div
+																			className="navy"
+																			onClick={() => {
+																				patchAdminForeignerAccount(
+																					value.std_for_id
+																				).then((res) =>
+																					setPending(true)
+																				);
+																				handleOpenForReset();
+																			}}
+																		>
+																			비밀번호 초기화
+																		</div>
+																		<div className="lightGray">
+																			삭제
+																		</div>
 																	</div>
 																</div>
-															</div>
-														</td>
-														<td>
-															{returnDept(
-																value.std_for_dept,
-																deptList
+															</td>
+															<td>
+																{returnDept(
+																	value.std_for_dept,
+																	deptList
+																)}
+															</td>
+															<td>
+																{(() => {
+																	let sum = 0;
+																	Object.values(
+																		value.work_time
+																	).map((v) => (sum += v));
+																	return sum;
+																})()}
+																분
+															</td>
+															{Object.values(value.work_time).map(
+																(v) => {
+																	return <td>{v}분</td>;
+																}
 															)}
-														</td>
-														<td>
-															{(() => {
-																let sum = 0;
-																Object.values(value.work_time).map(
-																	(v) => (sum += v)
-																);
-																return sum;
-															})()}
-															분
-														</td>
-														{Object.values(value.work_time).map((v) => {
-															return <td>{v}분</td>;
-														})}
-														<td>
-															{value.std_for_num_of_delay_permission}
-														</td>
-														<td>
-															{value.std_for_num_of_delay_input}회
-														</td>
-													</tr>
-												);
-											})();
-										})}
+															<td>
+																{
+																	value.std_for_num_of_delay_permission
+																}
+															</td>
+															<td>
+																{value.std_for_num_of_delay_input}회
+															</td>
+														</tr>
+													);
+												})();
+											})}
 									</tbody>
 								</table>
 							</div>
@@ -503,10 +608,24 @@ export default function Foreigner() {
 					)}
 
 					<div className="table_btn">
-						<div onClick={handleOpenForContact}>연락처 정보</div>
-						<Modal isOpen={contactIsOpen} handleClose={handleCloseForContact}>
-							<ForeignerContact list={{}} handleClose={handleCloseForContact} />
-						</Modal>
+						<div
+							onClick={() => {
+								let arrayOfContact = [];
+								dataSet.data.forEach((v) => {
+									// if(isSearchMode){
+									// 	document.getElementById(v.std_for_id).checked
+									// }else{
+									if (document.getElementById(v.std_for_id).checked) {
+										arrayOfContact.push(v.std_for_id);
+									}
+									// }
+								});
+								setContactList(arrayOfContact);
+								handleOpenForContact();
+							}}
+						>
+							연락처 정보
+						</div>
 						<div onClick={handleOpenForAdd}>등록</div>
 						<div
 							onClick={() => {
@@ -544,6 +663,9 @@ export default function Foreigner() {
 							handleClose={handleCloseForCreate}
 							std_for_list={dataSet && dataSet.data && dataSet.data}
 						/>
+					</Modal>
+					<Modal isOpen={contactIsOpen} handleClose={handleCloseForContact}>
+						<ForeignerContact list={contactList} handleClose={handleCloseForContact} />
 					</Modal>
 				</div>
 			</div>

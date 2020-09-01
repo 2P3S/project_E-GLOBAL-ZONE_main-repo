@@ -39,7 +39,7 @@ export const korean = createInstanceGuardKorean("korean");
 export const koreanLogin = createInstanceGuardKorean("login/korean");
 
 export const foreignerLogout = createInstanceGuard("logout", "foreigner");
-
+export const adminLogout = createInstanceGuard("logout", "admin");
 // loginProvider
 
 export const foreignerLogin = createInstanceLogin("foreigner");
