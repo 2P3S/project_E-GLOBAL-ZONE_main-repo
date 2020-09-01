@@ -135,12 +135,15 @@ class ReservationController extends Controller
             'res_state_of_permission',
             true
         );
-        $this->reservation->update_std_kor_res(
-            $sch_id,
-            $not_permission_std_kor_id_list,
-            'res_state_of_permission',
-            false
-        );
+
+        // 승인 -> 미승인 변경은 관리자만 가능.
+        if ($request->input('guard') == "admin")
+            $this->reservation->update_std_kor_res(
+                $sch_id,
+                $not_permission_std_kor_id_list,
+                'res_state_of_permission',
+                false
+            );
         // -->>
 
         return self::response_json(self::_STD_FOR_RES_UPDATE_SUCCESS, 200);
