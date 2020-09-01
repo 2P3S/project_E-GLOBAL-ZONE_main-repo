@@ -33,7 +33,7 @@ export default function Schedules() {
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
-
+	const [firstRendering, setFirstRendering] = useState(true);
 	const {
 		isOpen: scheduleIsOpen,
 		handleClose: scheduleClose,
@@ -106,7 +106,7 @@ export default function Schedules() {
 	}, []);
 	useMemo(() => {
 		// console.log(params);
-		if (_selectDate !== today) {
+		if (!firstRendering) {
 			history.push(`/schedules/${_selectDate}`);
 			setSelectDate(_selectDate);
 		}
@@ -132,7 +132,7 @@ export default function Schedules() {
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
 				setSchedules(res.data);
-				console.log(res.data);
+				setFirstRendering(false);
 			});
 	}, [pending]);
 

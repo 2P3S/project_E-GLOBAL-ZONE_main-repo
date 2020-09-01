@@ -7,6 +7,7 @@ import useModal from "../../modules/hooks/useModal";
 import Modal from "./modal/Modal";
 import { patchAdminForeignerAccount } from "../../api/admin/foreigner";
 import { postForeignerLogout } from "../../api/foreigner";
+import { postAdminLogout } from "../../api/admin";
 /**
  * Header for Manager
  * @returns {JSX.Element}
@@ -62,6 +63,19 @@ export default function Header() {
 						</li>
 						<li>
 							<Link to="/settings">시스템 환경설정</Link>
+						</li>
+						<li>
+							<div
+								onClick={() => {
+									postAdminLogout().then(() => {
+										window.localStorage.clear();
+										alert("로그아웃 되었습니다.");
+										window.location.replace("/");
+									});
+								}}
+							>
+								로그아웃
+							</div>
 						</li>
 					</ul>
 				) : (
