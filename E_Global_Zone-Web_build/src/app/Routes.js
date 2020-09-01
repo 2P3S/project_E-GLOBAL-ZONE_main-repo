@@ -87,9 +87,9 @@ const Test = () => {
 	};
 	return (
 		<div>
-			<button onClick={student}>학생</button>
+			{/* <button onClick={student}>학생</button>
 			<button onClick={foreigner}>유학생</button>
-			<button onClick={manager}>관리자</button>
+			<button onClick={manager}>관리자</button> */}
 			<button onClick={future}>미래</button>
 			<button onClick={today}>현재</button>
 		</div>
