@@ -265,8 +265,8 @@ class ForeignerController extends Controller
     public function updateAccount(?Student_foreigner $std_for_id, Request $request): JsonResponse
     {
         $rules = [
-            'gurad' => 'required|string|in:foreigner, admin',
-            'std_for_passwd' => 'required|string|min:8'
+            'guard' => 'required|string|in:foreigner,admin',
+            'password' => 'nullable|string|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
         ];
 
         $validated_result = self::request_validator(
@@ -281,12 +281,15 @@ class ForeignerController extends Controller
 
         if ($request->input('guard') == 'foreigner') {
             $std_for_id = $request->user($request->input('guard'))['std_for_id'];
-            $std_for_id = Student_foreigner::find($std_for_id);
+            Student_foreigner::find($std_for_id)->update([
+                'password' => Hash::make($request->input('password')),
+            ]);
+        } else {
+            $std_for_id->update([
+                'password' => Hash::make(self::_STD_FOR_INIT_PASSWORD),
+            ]);
         }
 
-        $std_for_id->update([
-            'password' => Hash::make(self::_STD_FOR_INIT_PASSWORD),
-        ]);
 
         return self::response_json(self::_STD_FOR_RESET_SUCCESS, 200);
     }
