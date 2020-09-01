@@ -8,6 +8,7 @@ use App\Restricted_student_korean;
 use App\Schedule;
 use App\SchedulesResultImg;
 use App\Section;
+use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -610,6 +611,10 @@ class ScheduleController extends Controller
             ->update([
                 'res_state_of_attendance' => true
             ]);
+
+        // 해당 스케줄이 대한 한국인 학생 활동 참여 횟수 업데이트
+        Student_korean::whereIn('std_kor_id', $update_attendance_id_list)
+                ->increment('std_kor_num_of_attendance', 1);
 
         return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
