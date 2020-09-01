@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Reservation;
 use App\Restricted_student_korean;
 use App\Student_korean;
 use Socialite;
@@ -158,30 +159,34 @@ class KoreanController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // <<-- Request 요청 관리자 권한 검사.
-        $is_admin = self::is_admin($request);
+        $rules = [
+            'orderby' => 'required|in:std_kor_dept,std_kor_state_of_restriction,std_kor_num_of_attendance,std_for_num_of_absent,',
+            'guard' => 'required|string|in:admin'
+        ];
 
-        if (is_object($is_admin)) {
-            return $is_admin;
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_INDEX_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
-        // -->>
-        // TODO 컬럼 추가해서 ORDERBY 기능 넣기.
-        try {
-            // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
-            $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
-                ->orderBy('std_kor_state_of_restriction', 'DESC')
-                ->paginate(15);
 
-            // 이용제한 학생인경우 제한 사유 같이 보내기.
-            foreach ($std_koreans as $korean) {
-                if ($korean['std_kor_state_of_restriction'] == true) {
-                    $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
-                }
+        // 이용제한 학생 기준 정렬 +  페이지네이션 기능 추가
+        $std_koreans = Student_korean::where('std_kor_state_of_permission', true)
+            ->orderBy($request->input('orderby'), 'DESC')
+            ->paginate(10);
+
+        // 이용제한 학생인경우 제한 사유 같이 보내기.
+        foreach ($std_koreans as $korean) {
+            if ($korean['std_kor_state_of_restriction'] == true) {
+                $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
             }
-            return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
-        } catch (Exception $e) {
-            return self::response_json(self::_STD_KOR_INDEX_FAILURE, 422);
         }
+
+        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
     }
 
     /**
@@ -238,10 +243,18 @@ class KoreanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroyAccount(Request $request): JsonResponse
+    public function destroyAccount(Student_korean $std_kor_id): JsonResponse
     {
-        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
-        Student_korean::id($std_kor_id)->delete();
+        // $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+        // Student_korean::id($std_kor_id)->delete();
+        // TODO 제한 학생 테이블, 예약 테이블 연관성 때문에 다 지워야 한다. 이게 맞을까?
+        $has_restricted_korean = Restricted_student_korean::where('restrict_std_kor', $std_kor_id['std_kor_id']);
+        $has_reservation_korean = Reservation::where('res_std_kor', $std_kor_id['std_kor_id']);
+
+        if($has_reservation_korean) $has_restricted_korean->delete();
+        if($has_reservation_korean) $has_reservation_korean->delete();
+
+        $std_kor_id->delete();
 
         return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);
     }

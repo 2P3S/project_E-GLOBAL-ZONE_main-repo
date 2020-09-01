@@ -8,6 +8,7 @@ use App\Restricted_student_korean;
 use App\Schedule;
 use App\SchedulesResultImg;
 use App\Section;
+use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -611,6 +612,10 @@ class ScheduleController extends Controller
                 'res_state_of_attendance' => true
             ]);
 
+        // 해당 스케줄이 대한 한국인 학생 활동 참여 횟수 업데이트
+        Student_korean::whereIn('std_kor_id', $update_attendance_id_list)
+                ->increment('std_kor_num_of_attendance', 1);
+
         return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
 
@@ -631,7 +636,7 @@ class ScheduleController extends Controller
         $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
         $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_start_date', 'sch_end_date')
-            ->whereDate('schedules.sch_start_date', '>=', $sch_start_date)
+            ->whereDate('schedules.sch_start_date', '>', $sch_start_date)
             ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->orderBy('schedules.sch_start_date')

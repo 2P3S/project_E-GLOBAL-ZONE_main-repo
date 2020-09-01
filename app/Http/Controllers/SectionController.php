@@ -111,7 +111,7 @@ class SectionController extends Controller
         $rules = [
             'sect_name' => 'required|string|unique:sections,sect_name',
             'sect_start_date' => 'required|date',
-            'sect_end_date' => 'required|date',
+            'sect_end_date' => 'required|date|after_or_equal:sect_start_date',
         ];
 
         $validated_result = self::request_validator(
@@ -145,7 +145,7 @@ class SectionController extends Controller
         // TODO 학기가 시작하면 변경 X
         $rules = [
             'sect_start_date' => 'required|date',
-            'sect_end_date' => 'required|date',
+            'sect_end_date' => 'required|date|after_or_equal:sect_start_date',
             'guard' => 'required|string|in:admin'
         ];
 
