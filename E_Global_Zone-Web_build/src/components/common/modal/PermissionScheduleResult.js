@@ -185,7 +185,10 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 							patchAdminScheduleApproval(data.data[selectIndex].sch_id, {
 								absent,
 								attendance,
-							}).then((res) => setPending(true));
+							}).then((res) => {
+								setPending(true);
+								alert(res.message);
+							});
 						}}
 					>
 						승인

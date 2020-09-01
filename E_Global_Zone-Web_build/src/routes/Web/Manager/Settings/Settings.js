@@ -54,7 +54,9 @@ export default function Settings() {
 		if (postSettings && postSettings.once_meet_time + postSettings.once_rest_time > 30) {
 			document.getElementById("time_input1").value = 0;
 			document.getElementById("time_input2").value = 0;
-			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 });
+			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 }).then((res) =>
+				alert(res.message)
+			);
 		}
 	}, [postSettings]);
 	useEffect(() => {

@@ -35,8 +35,8 @@ const Login = () => {
 		if (pending) {
 			if (data) {
 				console.log(data);
-				alert(data.message);
 				if (data.data && data.data.token) {
+					alert(data.message);
 					window.localStorage.setItem("global-zone-foreigner-token", data.data.token);
 					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
 					window.localStorage.setItem(
@@ -99,7 +99,7 @@ export const MobileLogin = () => {
 		window.localStorage.clear();
 		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
 			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
@@ -261,7 +261,6 @@ export function AdminLogin() {
 		console.log(pending, data);
 		if (pending) {
 			if (data) {
-				console.log(data);
 				alert(data.message);
 				if (data.data && data.data.token) {
 					window.localStorage.setItem("global-zone-admin-token", data.data.token);

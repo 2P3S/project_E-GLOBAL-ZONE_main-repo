@@ -18,6 +18,7 @@ export default function AddScheduleStudent({
 	const [data, setData] = useState();
 	const [result, setResult] = useState();
 	const user = useSelector(selectUser);
+	const [notReRendering, setNotReRendering] = useState(false);
 
 	const handleSearch = () => {
 		const column_data = document.getElementById("term").value;
@@ -47,6 +48,7 @@ export default function AddScheduleStudent({
 	useEffect(() => {
 		console.log(result);
 		if (result && result.status === 201) {
+			alert(result.message);
 			handleClose();
 		} else if (result && result.status !== 201) {
 			alert("[에러] 이미 추가한 학생입니다.");
@@ -80,7 +82,13 @@ export default function AddScheduleStudent({
 							);
 						})}
 				</div>
-				<button className="del_btn" onClick={handleClose}>
+				<button
+					className="del_btn"
+					onClick={() => {
+						setNotReRendering(true);
+						handleClose();
+					}}
+				>
 					취소
 				</button>
 			</div>

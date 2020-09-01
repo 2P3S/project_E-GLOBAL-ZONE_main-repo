@@ -6,7 +6,7 @@ import conf from "../../conf/conf";
 import useModal from "../../modules/hooks/useModal";
 import Modal from "./modal/Modal";
 import { patchAdminForeignerAccount } from "../../api/admin/foreigner";
-import { postForeignerLogout } from "../../api/foreigner";
+import { postForeignerLogout, patchPassword } from "../../api/foreigner";
 import { postAdminLogout } from "../../api/admin";
 /**
  * Header for Manager
@@ -23,8 +23,8 @@ export default function Header() {
 		pending && handleClose();
 	}, [pending]);
 	const handleChange = () => {
-		const password = document.getElementById("password");
-		const checkPassword = document.getElementById("checkPassword");
+		const password = document.getElementById("_password");
+		const checkPassword = document.getElementById("_checkPassword");
 		if (password.value !== "" && checkPassword.value !== "") {
 			if (password.value === checkPassword.value) {
 				setIsSame(true);
@@ -38,9 +38,12 @@ export default function Header() {
 	const handleClick = () => {
 		console.log(user);
 		isSame &&
-			patchAdminForeignerAccount(user.id, {
-				std_for_passwd: document.getElementById("password").value,
-			}).then((res) => setPending(true));
+			patchPassword({
+				password: document.getElementById("_password").value,
+			}).then((res) => {
+				setPending(true);
+				alert(res.data.message);
+			});
 	};
 	return (
 		<div className="head">
@@ -100,13 +103,13 @@ export default function Header() {
 							<div>
 								<p>비밀번호 변경 할거냐</p>
 								<input
-									id="password"
+									id="_password"
 									type="password"
 									onChange={handleChange}
 									placeholder="비밀번호"
 								/>
 								<input
-									id="checkPassword"
+									id="_checkPassword"
 									type="password"
 									onChange={handleChange}
 									placeholder="비밀번호 확인"

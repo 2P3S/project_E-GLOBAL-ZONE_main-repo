@@ -130,13 +130,19 @@ export default function CreateSection({
 												sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
 												sect_start_date: startDate,
 												sect_end_date: endDate,
-											}).then((res) => setIsDone(true));
+											}).then((res) => {
+												alert(res.message);
+												setIsDone(true);
+											});
 									  }
 									: () => {
 											patchAdminSection(
 												currentSect.sect_id,
 												currentSect
-											).then((res) => setIsDone(true));
+											).then((res) => {
+												setIsDone(true);
+												alert(res.message);
+											});
 									  }
 							}
 						>

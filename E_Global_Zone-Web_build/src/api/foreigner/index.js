@@ -1,6 +1,6 @@
 import { foreigner, foreignerLogin, foreignerLogout } from "../axios";
 
-export const patchPassword = (std_for_passwd) => foreigner.patch("/password", { std_for_passwd });
+export const patchPassword = (data) => foreigner.patch("/password", data);
 
 export const postForeignerLogout = () => foreignerLogout.post("");
 

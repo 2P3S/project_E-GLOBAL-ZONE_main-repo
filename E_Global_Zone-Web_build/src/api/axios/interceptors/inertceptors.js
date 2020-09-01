@@ -15,16 +15,20 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 			return config;
 		},
 		function (error) {
+			alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
 
 	instance.interceptors.response.use(
 		function (response) {
-			alert(response.data.message);
+			if (response.status === 201 || response.status === 202) {
+				alert(response.data.message);
+			}
 			return response;
 		},
 		function (error) {
+			alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
@@ -42,15 +46,18 @@ export function setLoginInterceptors(instance, provider) {
 			return config;
 		},
 		function (error) {
+			alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
 
 	instance.interceptors.response.use(
 		function (response) {
+			alert(response.message);
 			return response;
 		},
 		function (error) {
+			alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);

@@ -36,7 +36,10 @@ export default function ConfirmRestriction({ std_kor_id, std_kor_name, handleClo
 			std_kor_id,
 			restrict_reason: document.getElementById("restrict_reason").value,
 			restrict_period: date,
-		}).then((res) => setPending(true));
+		}).then((res) => {
+			alert(res.message);
+			setPending(true);
+		});
 	};
 
 	useEffect(() => {

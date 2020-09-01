@@ -19,9 +19,6 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 		return reRender;
 	}, []);
 	useEffect(() => {
-		console.log(korList);
-	}, [korList]);
-	useEffect(() => {
 		pending && handleClose();
 	}, [pending]);
 
@@ -33,7 +30,10 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 				element.checked && array.push(element.value);
 			}
 		}
-		patchAdminKoreanAccount({ approval: array }).then((res) => setPending(true));
+		patchAdminKoreanAccount({ approval: array }).then((res) => {
+			setPending(true);
+			alert(res.message);
+		});
 	};
 
 	const handleClick = (e) => {
