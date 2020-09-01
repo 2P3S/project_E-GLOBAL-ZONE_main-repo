@@ -196,8 +196,9 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 				<div
 					className="bbtn blue"
 					onClick={() => {
-						postAdminScheduleSome(data).then(() => {
+						postAdminScheduleSome(data).then((res) => {
 							handleClose();
+							alert(res.message);
 						});
 					}}
 				>

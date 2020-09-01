@@ -30,7 +30,10 @@ const InsertForeignerStudent = ({ handleClose }) => {
 			std_for_phone: array[5],
 			std_for_mail: array[6],
 			std_for_zoom_id: array[7],
-		}).then((res) => setState(res.data));
+		}).then((res) => {
+			setState(res.data);
+			alert(res.message);
+		});
 	};
 
 	useEffect(() => {

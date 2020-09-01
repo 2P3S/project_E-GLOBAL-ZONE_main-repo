@@ -26,7 +26,10 @@ export default function DeleteSchedule({
 				onClick={() => {
 					// deleteAdminScheduleSome(sch_id, setPending);
 					deleteAdminScheduleSome(sch_id).then((res) => {
-						setPending(true);
+						{
+							setPending(true);
+							alert(res.message);
+						}
 					});
 				}}
 			>

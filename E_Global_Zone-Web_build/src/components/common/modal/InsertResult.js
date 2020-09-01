@@ -64,7 +64,7 @@ const InsertResult = ({
 		for (const iterator of data.entries()) {
 			console.log(iterator);
 		}
-		postForeignerReservationResult(sch_id, data, setPending);
+		postForeignerReservationResult(sch_id, data, setPending).then((res) => alert(res.message));
 	};
 
 	useEffect(() => {

@@ -138,7 +138,7 @@ export default function Foreigner() {
 		);
 	}, []);
 	useEffect(() => {
-		if (sectOfYear) {
+		if (sectOfYear && sectOfYear.data) {
 			getAdminForeignerWork(sectOfYear.data[0].sect_id).then((res) => {
 				setDataSet(res.data);
 				setDefaultData(res.data);
@@ -150,7 +150,7 @@ export default function Foreigner() {
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
-		getAdminForeignerWork(selectSect).then((res) => setDataSet(res.data));
+		selectSect && getAdminForeignerWork(selectSect).then((res) => setDataSet(res.data));
 	}, [selectSect]);
 
 	useEffect(() => {
@@ -550,12 +550,27 @@ export default function Foreigner() {
 																		<div
 																			className="navy"
 																			onClick={() => {
-																				patchAdminForeignerAccount(
-																					value.std_for_id
-																				).then((res) =>
-																					setPending(true)
-																				);
-																				handleOpenForReset();
+																				if (
+																					window.confirm(
+																						"비밀번호를 초기화 시키겠습니까?"
+																					) === true
+																				) {
+																					patchAdminForeignerAccount(
+																						value.std_for_id
+																					).then(
+																						(res) => {
+																							setPending(
+																								true
+																							);
+																							alert(
+																								res
+																									.data
+																									.message
+																							);
+																						}
+																					);
+																				}
+																				// handleOpenForReset();
 																			}}
 																		>
 																			비밀번호 초기화

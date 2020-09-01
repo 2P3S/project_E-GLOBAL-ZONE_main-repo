@@ -83,7 +83,10 @@ export default function ApplicationForm() {
 				onClick={async () => {
 					let agreement = document.getElementById("a1").checked;
 					if (agreement) {
-						postKoreanReservation(sch_id).then((res) => history.push("/reservation"));
+						postKoreanReservation(sch_id).then((res) => {
+							history.push("/reservation");
+							alert(res.message);
+						});
 					} else {
 						alert("e-글로벌 존 예약 방침에 동의하셔야 신청 할 수 있습니다.");
 					}

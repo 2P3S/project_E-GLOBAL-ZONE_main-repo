@@ -26,7 +26,10 @@ const ConfirmUnrestriction = ({
 	}, [pending]);
 
 	const handleClick = () => {
-		patchAdminKoreanRestrict(std_stricted_info.restrict_id).then((res) => setPending(true));
+		patchAdminKoreanRestrict(std_stricted_info.restrict_id).then((res) => {
+			setPending(true);
+			alert(res.message);
+		});
 	};
 
 	return (

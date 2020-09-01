@@ -48,7 +48,6 @@ export default function ShowList({
 		user.userClass === conf.userClass.MANAGER
 			? getAdminReservation(sch_id).then((res) => setData(res.data))
 			: getForeignerReservation(sch_id).then((res) => setData(res.data));
-
 		return thisReRender;
 	}, []);
 	useEffect(() => {
@@ -70,6 +69,7 @@ export default function ShowList({
 	const handleDelete = () => {
 		postAdminScheduleAdd(selectedResId).then((res) => {
 			handleCloseForDelete();
+			alert(res.message);
 		});
 	};
 
@@ -107,18 +107,20 @@ export default function ShowList({
 								return (
 									<li key={v.std_kor_id + "index"}>
 										<div className="student">
-											<div
-												class="del_btn"
-												onClick={() => {
-													handleOpenForDelete();
-													setSelectedResId(v.res_id);
-												}}
-											>
-												<img
-													src="/global/img/enrol_del_btn.gif"
-													alt="신청 학생 삭제"
-												/>
-											</div>
+											{user.userClass === conf.userClass.MANAGER && (
+												<div
+													class="del_btn"
+													onClick={() => {
+														handleOpenForDelete();
+														setSelectedResId(v.res_id);
+													}}
+												>
+													<img
+														src="/global/img/enrol_del_btn.gif"
+														alt="신청 학생 삭제"
+													/>
+												</div>
+											)}
 											<p className="name">{v.std_kor_name}</p>
 											<select
 												name={"catgo"}
@@ -129,7 +131,14 @@ export default function ShowList({
 												<option value={true} selected={permission}>
 													승인
 												</option>
-												<option value={false} selected={!permission}>
+
+												<option
+													value={false}
+													selected={!permission}
+													disabled={
+														user.userClass !== conf.userClass.MANAGER
+													}
+												>
 													미승인
 												</option>
 											</select>
@@ -139,13 +148,15 @@ export default function ShowList({
 							})}
 							{user.userClass === conf.userClass.MANAGER && (
 								<li>
-									<div onClick={handleOpen} class="add_student">
-										학생 추가{" "}
-										<img
-											src="/global/img/add_student_ico.gif"
-											alt="학생 추가 아이콘"
-										/>
-									</div>
+									{user.userClass === conf.userClass.MANAGER && (
+										<div onClick={handleOpen} class="add_student">
+											학생 추가{" "}
+											<img
+												src="/global/img/add_student_ico.gif"
+												alt="학생 추가 아이콘"
+											/>
+										</div>
+									)}
 								</li>
 							)}
 						</>
@@ -191,12 +202,14 @@ export default function ShowList({
 										not_permission_std_kor_id_list,
 								  }).then((res) => {
 										setPending(true);
+										alert(res.message);
 								  })
 								: patchForeignerReservationPermission(sch_id, {
 										permission_std_kor_id_list,
 										not_permission_std_kor_id_list,
 								  }).then((res) => {
 										setPending(true);
+										alert(res.message);
 								  });
 						}}
 					>
