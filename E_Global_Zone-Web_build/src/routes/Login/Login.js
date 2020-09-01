@@ -36,14 +36,20 @@ const Login = () => {
 			if (data) {
 				console.log(data);
 				alert(data.message);
-
-				window.localStorage.setItem("global-zone-foreigner-token", data.data.token);
-				window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
-				window.localStorage.setItem("global-zone-loginName", data.data.info.std_for_name);
-				window.localStorage.setItem("global-zone-userClass", conf.userClass.FOREIGNER);
-				window.localStorage.setItem("global-zone-isLogin", true);
-
-				window.location.replace("/");
+				if (data.data && data.data.token) {
+					window.localStorage.setItem("global-zone-foreigner-token", data.data.token);
+					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
+					window.localStorage.setItem(
+						"global-zone-loginName",
+						data.data.info.std_for_name
+					);
+					window.localStorage.setItem("global-zone-userClass", conf.userClass.FOREIGNER);
+					window.localStorage.setItem("global-zone-isLogin", true);
+					window.location.replace("/");
+				} else {
+					document.getElementById("password").innerHTML = data;
+					document.getElementById("root").style.display = "none";
+				}
 			}
 		}
 		return;
@@ -257,14 +263,21 @@ export function AdminLogin() {
 			if (data) {
 				console.log(data);
 				alert(data.message);
+				if (data.data && data.data.token) {
+					window.localStorage.setItem("global-zone-admin-token", data.data.token);
+					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
+					window.localStorage.setItem(
+						"global-zone-loginName",
+						data.data.info.std_for_name
+					);
+					window.localStorage.setItem("global-zone-userClass", conf.userClass.MANAGER);
+					window.localStorage.setItem("global-zone-isLogin", true);
 
-				window.localStorage.setItem("global-zone-admin-token", data.data.token);
-				window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
-				window.localStorage.setItem("global-zone-loginName", data.data.info.std_for_name);
-				window.localStorage.setItem("global-zone-userClass", conf.userClass.MANAGER);
-				window.localStorage.setItem("global-zone-isLogin", true);
-
-				window.location.replace("/");
+					window.location.replace("/");
+				} else {
+					document.getElementById("password").innerHTML = data;
+					document.getElementById("root").style.display = "none";
+				}
 			}
 		}
 		return;
