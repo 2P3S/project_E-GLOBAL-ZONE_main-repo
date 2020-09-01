@@ -73,9 +73,10 @@ class Restricted_student_korean extends Model
          * 5.
          */
         $std_kor_data = Student_korean::find($std_kor_id);
-        $std_kor_data->update([
-            'std_kor_num_of_absent' => $std_kor_data['std_kor_num_of_absent'] + 1
-        ]);
+        $std_kor_data->increment('std_kor_num_of_absent', 1);
+        // update([
+        //     'std_kor_num_of_absent' => $std_kor_data['std_kor_num_of_absent'] + 1
+        // ]);
 
         if ($std_kor_data['std_kor_num_of_absent'] >= $max_absent) {
             $this->set_korean_restrict($std_kor_id, self::_MAX_ABSENT_COUNT_KOREAN_REASON, date("Y-m-d", strtotime("+999 days")));
