@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAdminSetting, postAdminSetting } from "../../../../modules/hooks/useAxios";
+import { getAdminSetting, postAdminSetting } from "../../../../api/admin/setting";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import moment from "moment";
@@ -38,11 +38,11 @@ export default function Settings() {
 	};
 
 	const reRender = () => {
-		getAdminSetting(setSettings);
+		getAdminSetting().then((res) => setSettings(res.data));
 	};
 
 	useEffect(() => {
-		getAdminSetting(setSettings);
+		getAdminSetting().then((res) => setSettings(res.data));
 	}, []);
 	useEffect(() => {
 		if (settings) {
@@ -54,7 +54,9 @@ export default function Settings() {
 		if (postSettings && postSettings.once_meet_time + postSettings.once_rest_time > 30) {
 			document.getElementById("time_input1").value = 0;
 			document.getElementById("time_input2").value = 0;
-			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 });
+			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 }).then((res) =>
+				alert(res.message)
+			);
 		}
 	}, [postSettings]);
 	useEffect(() => {
@@ -130,7 +132,7 @@ export default function Settings() {
 										);
 									})}
 								</select>
-								<span>번</span>
+								<span>명</span>
 							</div>
 						</div>
 						<div className="input">
@@ -364,10 +366,9 @@ export default function Settings() {
 					</div>
 					<div className="setting_ex">
 						<p>[설정 예시]</p>
-						<span>결석 {postSettings.min_absent}회</span> 부터 패널티가 부여되며,{" "}
-						<span>{postSettings.max_absent}회</span> 이상 결석을 할 경우{" "}
-						<span>{postSettings.once_limit_period}일간</span> 이용이 제한됩니다. (해당
-						학기 동안만 유효)
+						<span>결석 {postSettings.min_absent}회</span> 부터 결석 시,{" "}
+						<span>{postSettings.once_limit_period}일간</span> 이용제한 <br />
+						<span>{postSettings.max_absent}회</span> 이상 결석 시, 해당 학기 이용 제한
 					</div>
 
 					<div className="input">
@@ -421,7 +422,7 @@ export default function Settings() {
 			<div className="table_btn mb40">
 				<div
 					onClick={() => {
-						postAdminSetting(postSettings);
+						postAdminSetting(postSettings).then((res) => alert(res.message));
 					}}
 				>
 					저장

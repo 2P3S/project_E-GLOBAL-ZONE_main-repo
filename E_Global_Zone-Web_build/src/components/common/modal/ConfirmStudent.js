@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useClick from "../../../modules/hooks/useClick";
-import { getAdminKoreanAccount, patchAdminKoreanAccount } from "../../../modules/hooks/useAxios";
+import { getAdminKoreanAccount, patchAdminKoreanAccount } from "../../../api/admin/korean";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
@@ -15,12 +15,9 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 	const [pending, setPending] = useState(false);
 	const dept = useSelector(selectDept);
 	useEffect(() => {
-		getAdminKoreanAccount(setKorList);
+		getAdminKoreanAccount().then((res) => setKorList(res.data));
 		return reRender;
 	}, []);
-	useEffect(() => {
-		console.log(korList);
-	}, [korList]);
 	useEffect(() => {
 		pending && handleClose();
 	}, [pending]);
@@ -33,7 +30,10 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 				element.checked && array.push(element.value);
 			}
 		}
-		patchAdminKoreanAccount({ approval: array }, setPending);
+		patchAdminKoreanAccount({ approval: array }).then((res) => {
+			setPending(true);
+			alert(res.message);
+		});
 	};
 
 	const handleClick = (e) => {
@@ -54,7 +54,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 			<div className="tit_area">
 				<p className="tit">한국인 학생 등록 승인</p>
 				<p className="person">
-					신청인원 : <span>{korList && korList.data.length}</span>명
+					신청인원 : <span>{korList && korList.data && korList.data.length}</span>명
 				</p>
 			</div>
 			<div className="scroll_area">

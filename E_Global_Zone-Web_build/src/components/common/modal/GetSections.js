@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAdminSection } from "../../../modules/hooks/useAxios";
+import { getAdminSection } from "../../../api/admin/section";
 import moment from "moment";
 import useModal from "../../../modules/hooks/useModal";
 import Modal from "./Modal";
@@ -12,8 +12,15 @@ export default function GetSections() {
 	const { isOpen, handleClose, handleOpen } = useModal();
 
 	useEffect(() => {
-		getAdminSection({ year: moment().format("YYYY") }, setSectList);
+		getAdminSection({ year: moment().format("YYYY") }).then((res) => setSectList(res.data));
 	}, []);
+
+	const handleClick = () => {
+		getAdminSection({ year: document.getElementById("year").value })
+			.then((res) => setSectList(res.data))
+			.catch((res) => alert(res.message));
+	};
+
 	useEffect(() => {
 		console.log(sectList);
 	}, [sectList]);
@@ -22,8 +29,8 @@ export default function GetSections() {
 			<p className="tit">학기 기간 조회</p>
 
 			<div className="search_box">
-				<input type="text" placeholder="년도를 입력하세요" />
-				<button>검색</button>
+				<input type="text" placeholder="년도를 입력하세요" id="year" />
+				<button onClick={handleClick}>검색</button>
 			</div>
 
 			<div className="scroll_area mt20">
@@ -54,7 +61,7 @@ export default function GetSections() {
 										</td>
 										<td>{moment(v.sect_start_date).format("YYYY-MM-DD")}</td>
 										<td>{moment(v.sect_end_date).format("YYYY-MM-DD")}</td>
-										<td>{v.std_for_count}명{" "}</td>
+										<td>{v.std_for_count}명 </td>
 										<td>
 											<img
 												onClick={() => {

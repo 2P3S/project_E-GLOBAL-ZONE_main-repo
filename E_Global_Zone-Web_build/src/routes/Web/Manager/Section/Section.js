@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import {
-	getAdminForeignerWork,
-	getAdminSection,
-	postAdminSchedule,
-	deleteAdminSchedule,
-	getAdminForeignerInfo,
-} from "../../../../modules/hooks/useAxios";
+// import {
+// 	getAdminForeignerWork,
+// 	getAdminSection,
+// 	postAdminSchedule,
+// 	deleteAdminSchedule,
+// 	getAdminForeigner,
+// } from "../../../../modules/hooks/useAxios";
+
+import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
+import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
+import { getAdminSection } from "../../../../api/admin/section";
 
 import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
@@ -25,7 +29,7 @@ export default function Section(props) {
 	const [schedule, setSchedule] = useState();
 	const { isOpen, handleOpen, handleClose } = useModal();
 
-	const timeArray = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+	const timeArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 	const dayArray = ["월", "화", "수", "목", "금"];
 
 	const closure = (function () {
@@ -102,16 +106,20 @@ export default function Section(props) {
 			schedule: schedule,
 			ecept_date: [],
 		};
-		postAdminSchedule(data, setIsDone);
+		postAdminSchedule(data).then((res) => setIsDone(true));
 
 		handleOpen();
 	}
 
 	useEffect(() => {
 		console.log(params["sect_id"]);
-		getAdminForeignerWork(setForList, params["sect_id"]);
-		getAdminSection({ sect_id: params["sect_id"] }, setSectName);
-		getAdminForeignerInfo({ foreigners: [params["std_for_id"]] }, setForName);
+		getAdminForeignerWork(params["sect_id"]).then((res) => {
+			setForList(res.data);
+		});
+		getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
+		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
+			setForName(res.data)
+		);
 		buildTable();
 	}, []);
 	useEffect(() => {
@@ -124,7 +132,9 @@ export default function Section(props) {
 	}, [forList]);
 
 	useEffect(() => {
-		getAdminForeignerInfo({ foreigners: [params["std_for_id"]] }, setForName);
+		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
+			setForName(res.data)
+		);
 	}, [params]);
 
 	useEffect(() => {
@@ -152,85 +162,84 @@ export default function Section(props) {
 						<input type="text" />
 						<input type="submit" value="검색" />
 					</div>
-						<div className="not_enter">
-							<p className="tit">미입력 리스트</p>
-							<div className="scroll_area">
-								<table>
-									<thead>
-										<tr>
-											<th scope="col">학번</th>
-											<th scope="col">이름</th>
-											<th scope="col">근무시간</th>
-										</tr>
-									</thead>
-									<tbody>
-										{forList &&
-											forList.length > 0 &&
-											forList.map((v) => {
-												if (!v.is_schedules_inputed) {
-													return (
-														<tr
-															onClick={() => {
-																history.push(
-																	`/section/${params["sect_id"]}/${v.std_for_id}`
-																);
-															}}
-														>
-															<td>{v.std_for_id}</td>
-															<td className="name">{v.std_for_name}</td>
-															<td></td>
-														</tr>
-													);
-												}
-											})}
-									</tbody>
-								</table>
-							</div>
+					<div className="not_enter">
+						<p className="tit">미입력 리스트</p>
+						<div className="scroll_area">
+							<table>
+								<thead>
+									<tr>
+										<th scope="col">학번</th>
+										<th scope="col">이름</th>
+										<th scope="col">근무시간</th>
+									</tr>
+								</thead>
+								<tbody>
+									{forList &&
+										forList.length > 0 &&
+										forList.map((v) => {
+											if (!v.is_schedules_inputed) {
+												return (
+													<tr
+														onClick={() => {
+															history.push(
+																`/section/${params["sect_id"]}/${v.std_for_id}`
+															);
+														}}
+													>
+														<td>{v.std_for_id}</td>
+														<td className="name">{v.std_for_name}</td>
+														<td></td>
+													</tr>
+												);
+											}
+										})}
+								</tbody>
+							</table>
 						</div>
-						
-						<div className="enter">
-							<p className="tit">입력 완료 리스트</p>
-							<div className="scroll_area">
-								<table>
-									<thead>
-										<tr>
-											<th scope="col">학번</th>
-											<th scope="col">이름</th>
-											<th scope="col">근무시간</th>
-										</tr>
-									</thead>
-									<tbody>
-										{forList &&
-											forList.length > 0 &&
-											forList.map((v, index) => {
-												if (v.is_schedules_inputed) {
-													return (
-														<tr>
-															<td>{v.std_for_id}</td>
-															<td>{v.std_for_name}</td>
-															<td>
-																<button
-																	onClick={() => {
-																		deleteAdminSchedule(
-																			{
-																				sect_id: params["sect_id"],
-																				std_for_id: v.std_for_id,
-																			},
-																			setIsDone
-																		);
-																	}}
-																>
-																	삭제
-																</button>
-															</td>
-														</tr>
-													);
-												}
-											})}
-									</tbody>
-								</table>
-							</div>
+					</div>
+
+					<div className="enter">
+						<p className="tit">입력 완료 리스트</p>
+						<div className="scroll_area">
+							<table>
+								<thead>
+									<tr>
+										<th scope="col">학번</th>
+										<th scope="col">이름</th>
+										<th scope="col">근무시간</th>
+									</tr>
+								</thead>
+								<tbody>
+									{forList &&
+										forList.length > 0 &&
+										forList.map((v, index) => {
+											if (v.is_schedules_inputed) {
+												return (
+													<tr>
+														<td>{v.std_for_id}</td>
+														<td>{v.std_for_name}</td>
+														<td>
+															<button
+																onClick={() => {
+																	deleteAdminSchedule({
+																		sect_id: params["sect_id"],
+																		std_for_id: v.std_for_id,
+																	}).then((res) =>
+																		setIsDone(true)
+																	);
+																}}
+															>
+																삭제
+															</button>
+														</td>
+													</tr>
+												);
+											}
+										})}
+								</tbody>
+							</table>
 						</div>
+					</div>
 				</div>
 
 				<div className="right_wrap">
@@ -264,7 +273,7 @@ export default function Section(props) {
 								<th scope="col">3</th>
 								<th scope="col">4</th>
 								<th scope="col">5</th>
-								<th scope="col">6</th>
+								{/* <th scope="col">6</th> */}
 							</tr>
 						</thead>
 						<tbody id="tbody"></tbody>

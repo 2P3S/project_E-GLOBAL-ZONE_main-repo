@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import parseDate from "../../modules/parseDate";
-
+import moment from "moment";
 /**
  * ReduxSlice - conf
  * @type {Slice<{dept: {}}, {setDept: reducers.setDept}, string>}
@@ -9,8 +9,8 @@ export const confSlice = createSlice({
 	name: "conf",
 	initialState: {
 		dept: {},
-		today: parseDate(new Date("2020-08-31")),
-		selectDate: parseDate(new Date("2020-09-01")),
+		today: parseDate(new Date(Date.now())),
+		selectDate: moment(new Date(Date.now())).format("YYYY-MM-DD"),
 	},
 	reducers: {
 		setDept: (state, action) => {

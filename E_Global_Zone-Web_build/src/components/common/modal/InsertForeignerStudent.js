@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
-import { postAdminForeignerAccount } from "../../../modules/hooks/useAxios";
+import { postAdminForeignerAccount } from "../../../api/admin/foreigner";
 import { useHistory } from "react-router-dom";
 
 const InsertForeignerStudent = ({ handleClose }) => {
@@ -21,19 +21,19 @@ const InsertForeignerStudent = ({ handleClose }) => {
 		document.getElementsByName("std_info").forEach((v) => {
 			array.push(v.value);
 		});
-		postAdminForeignerAccount(
-			{
-				std_for_lang: array[0],
-				std_for_country: array[1],
-				std_for_id: array[2],
-				std_for_name: array[3],
-				std_for_dept: array[4],
-				std_for_phone: array[5],
-				std_for_mail: array[6],
-				std_for_zoom_id: array[7],
-			},
-			setState
-		);
+		postAdminForeignerAccount({
+			std_for_lang: array[0],
+			std_for_country: array[1],
+			std_for_id: array[2],
+			std_for_name: array[3],
+			std_for_dept: array[4],
+			std_for_phone: array[5],
+			std_for_mail: array[6],
+			std_for_zoom_id: array[7],
+		}).then((res) => {
+			setState(res.data);
+			alert(res.message);
+		});
 	};
 
 	useEffect(() => {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { deleteAdminScheduleAdd, postAdminScheduleAdd } from "../../../api/admin/schedule";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
-	deleteAdminScheduleAdd,
-} from "../../../modules/hooks/useAxios";
+} from "../../../api/foreigner/reservation";
+import { getAdminReservation, patchAdminReservationPermission } from "../../../api/admin/foreigner";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import { useHistory } from "react-router-dom";
@@ -44,11 +45,9 @@ export default function ShowList({
 
 	useEffect(() => {
 		window.easydropdown.all();
-		getForeignerReservation(
-			sch_id,
-			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-			setData
-		);
+		user.userClass === conf.userClass.MANAGER
+			? getAdminReservation(sch_id).then((res) => setData(res.data))
+			: getForeignerReservation(sch_id).then((res) => setData(res.data));
 		return thisReRender;
 	}, []);
 	useEffect(() => {
@@ -68,7 +67,10 @@ export default function ShowList({
 	}, [pending]);
 
 	const handleDelete = () => {
-		deleteAdminScheduleAdd(selectedResId, handleCloseForDelete);
+		postAdminScheduleAdd(selectedResId).then((res) => {
+			handleCloseForDelete();
+			alert(res.message);
+		});
 	};
 
 	const reRender = () => {
@@ -84,8 +86,12 @@ export default function ShowList({
 			<div className="top_tit">
 				<div className="left">
 					<p className="tit">신청 학생 명단보기</p>
-					<p className="txt"><span>시작시간</span> {sch_start_date}</p>
-					<p className="txt"><span>종료시간</span> {sch_end_date}</p>
+					<p className="txt">
+						<span>시작시간</span> {sch_start_date}
+					</p>
+					<p className="txt">
+						<span>종료시간</span> {sch_end_date}
+					</p>
 				</div>
 				<p className="name">
 					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
@@ -101,18 +107,20 @@ export default function ShowList({
 								return (
 									<li key={v.std_kor_id + "index"}>
 										<div className="student">
-											<div
-												class="del_btn"
-												onClick={() => {
-													handleOpenForDelete();
-													setSelectedResId(v.res_id);
-												}}
-											>
-												<img
-													src="/global/img/enrol_del_btn.gif"
-													alt="신청 학생 삭제"
-												/>
-											</div>
+											{user.userClass === conf.userClass.MANAGER && (
+												<div
+													class="del_btn"
+													onClick={() => {
+														handleOpenForDelete();
+														setSelectedResId(v.res_id);
+													}}
+												>
+													<img
+														src="/global/img/enrol_del_btn.gif"
+														alt="신청 학생 삭제"
+													/>
+												</div>
+											)}
 											<p className="name">{v.std_kor_name}</p>
 											<select
 												name={"catgo"}
@@ -123,7 +131,14 @@ export default function ShowList({
 												<option value={true} selected={permission}>
 													승인
 												</option>
-												<option value={false} selected={!permission}>
+
+												<option
+													value={false}
+													selected={!permission}
+													disabled={
+														user.userClass !== conf.userClass.MANAGER
+													}
+												>
 													미승인
 												</option>
 											</select>
@@ -131,27 +146,33 @@ export default function ShowList({
 									</li>
 								);
 							})}
-							<li>
-								<div onClick={handleOpen} class="add_student">
-									학생 추가{" "}
-									<img
-										src="/global/img/add_student_ico.gif"
-										alt="학생 추가 아이콘"
-									/>
-								</div>
-							</li>
+							{user.userClass === conf.userClass.MANAGER && (
+								<li>
+									{user.userClass === conf.userClass.MANAGER && (
+										<div onClick={handleOpen} class="add_student">
+											학생 추가{" "}
+											<img
+												src="/global/img/add_student_ico.gif"
+												alt="학생 추가 아이콘"
+											/>
+										</div>
+									)}
+								</li>
+							)}
 						</>
 					) : (
 						<>
-							<li>
-								<div onClick={handleOpen} class="add_student">
-									학생 추가{" "}
-									<img
-										src="/global/img/add_student_ico.gif"
-										alt="학생 추가 아이콘"
-									/>
-								</div>
-							</li>
+							{user.userClass === conf.userClass.MANAGER && (
+								<li>
+									<div onClick={handleOpen} class="add_student">
+										학생 추가{" "}
+										<img
+											src="/global/img/add_student_ico.gif"
+											alt="학생 추가 아이콘"
+										/>
+									</div>
+								</li>
+							)}
 						</>
 					)}
 				</ul>
@@ -175,12 +196,21 @@ export default function ShowList({
 									not_permission_std_kor_id_list.push(v.std_kor_id);
 								}
 							});
-							patchForeignerReservationPermission(
-								sch_id,
-								permission_std_kor_id_list,
-								not_permission_std_kor_id_list,
-								setPending
-							);
+							user.userClass === conf.userClass.MANAGER
+								? patchAdminReservationPermission(sch_id, {
+										permission_std_kor_id_list,
+										not_permission_std_kor_id_list,
+								  }).then((res) => {
+										setPending(true);
+										alert(res.message);
+								  })
+								: patchForeignerReservationPermission(sch_id, {
+										permission_std_kor_id_list,
+										not_permission_std_kor_id_list,
+								  }).then((res) => {
+										setPending(true);
+										alert(res.message);
+								  });
 						}}
 					>
 						저장

@@ -1,91 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAdminForeigner } from "../../../api/admin/foreigner";
 
 /**
  * Modal - 유학생 연락처
- * @param list
+ * @param {array} list
  * @param handleClose
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ForeignerContact({list, handleClose}){
+export default function ForeignerContact({ list, handleClose }) {
+	const [data, setData] = useState();
+	useEffect(() => {
+		getAdminForeigner({ foreigners: list }).then((res) => setData(res.data));
+	}, []);
 
-    return <div className="popup contact">
-        <p className="tit">유학생 연락처 정보</p>
-        <div className="scroll_area">
-            <table className="pop_table">
-                <thead>
-                <tr>
-                    <th scope="col">이름</th>
-                    <th scope="col">연락처</th>
-                    <th scope="col">이메일</th>
-                    <th scope="col">ZoomID</th>
-                    <th scope="col">ZoomPW</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                <tr>
-                    <td>바라트벡 울잔</td>
-                    <td>010-0000-0000</td>
-                    <td>zxc1234@naver.com</td>
-                    <td>211 233 1546</td>
-                    <td>7209</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+	return (
+		<div className="popup contact">
+			<p className="tit">유학생 연락처 정보</p>
+			<div className="scroll_area">
+				<table className="pop_table">
+					<thead>
+						<tr>
+							<th scope="col">이름</th>
+							<th scope="col">연락처</th>
+							<th scope="col">이메일</th>
+							<th scope="col">ZoomID</th>
+						</tr>
+					</thead>
+					<tbody>
+						{data &&
+							data.data &&
+							data.data.map((v) => {
+								return (
+									<tr>
+										<td>{v.std_for_name}</td>
+										<td>{v.std_for_phone}</td>
+										<td>{v.std_for_mail}</td>
+										<td>{v.std_for_zoom_id}</td>
+									</tr>
+								);
+							})}
+					</tbody>
+				</table>
+			</div>
 
-        <div className="btn_area right">
-            <div className="bbtn mint">등록</div>
-            <div className="bbtn darkGray" onClick={handleClose}>닫기</div>
-        </div>
-    </div>
+			<div className="btn_area right">
+				<div className="bbtn darkGray" onClick={handleClose}>
+					닫기
+				</div>
+			</div>
+		</div>
+	);
 }

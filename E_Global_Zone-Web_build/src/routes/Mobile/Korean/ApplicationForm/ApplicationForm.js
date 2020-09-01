@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import useAxios, { postAxios } from "../../../../modules/hooks/useAxios";
 import { useParams, useHistory } from "react-router-dom";
 import conf from "../../../../conf/conf";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../redux/userSlice/userSlice";
 import useClick from "../../../../modules/hooks/useClick";
+import { getKoreanSchedule } from "../../../../api/korean";
+import { postKoreanReservation } from "../../../../api/korean/reservation";
 
 /**
  * Korean :: 신청 양식
@@ -13,23 +14,15 @@ import useClick from "../../../../modules/hooks/useClick";
  * @todo setup
  */
 export default function ApplicationForm() {
-	const { id: schId } = useParams();
+	const { id: sch_id } = useParams();
 	const [data, setData] = useState();
-	const { loading, error, data: resData } = useAxios({
-		url: conf.url + `api/korean/schedule/${schId}`,
-	});
+
 	const user = useSelector(selectUser);
 	const history = useHistory();
 
-	async function getResData(loading, error, data) {
-		if (!loading) {
-			setData(data.data);
-		}
-	}
-
 	useEffect(() => {
-		getResData(loading, error, resData);
-	});
+		getKoreanSchedule(sch_id).then((res) => setData(res.data.data));
+	}, []);
 
 	return data ? (
 		<div className="wrap">
@@ -90,16 +83,10 @@ export default function ApplicationForm() {
 				onClick={async () => {
 					let agreement = document.getElementById("a1").checked;
 					if (agreement) {
-						postAxios(
-							{
-								url: conf.url + `/api/korean/reservation/${schId}`,
-								method: "post",
-								data: {
-									std_kor_id: user.id,
-								},
-							},
-							history
-						);
+						postKoreanReservation(sch_id).then((res) => {
+							history.push("/reservation");
+							alert(res.message);
+						});
 					} else {
 						alert("e-글로벌 존 예약 방침에 동의하셔야 신청 할 수 있습니다.");
 					}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
@@ -7,7 +7,9 @@ import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
+// import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
+
+import { getAdminSchedule } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 import conf from "../../../../conf/conf";
@@ -16,6 +18,7 @@ import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
+import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 
 /**
  * Manager :: 스케줄 조회
@@ -24,11 +27,13 @@ import PermissionScheduleResult from "../../../../components/common/modal/Permis
  */
 export default function Schedules() {
 	const params = useParams();
+
 	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
-	const [selectDate, setSelectDate] = useState(params.date && params.date);
+	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
+	const [firstRendering, setFirstRendering] = useState(true);
 	const {
 		isOpen: scheduleIsOpen,
 		handleClose: scheduleClose,
@@ -84,21 +89,56 @@ export default function Schedules() {
 			handleCheck(e.target.value, e.target.checked);
 		}
 	};
+	useMemo(() => {
+		if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
+			setSelectDate(moment(params.date).format("YYYY-MM-DD"));
+		}
+		if (params.date.length > 10 || params.date.length < 9) {
+			history.push("/");
+		}
+	}, [params]);
 
 	useEffect(() => {
-		getAdminSchedule({ search_date: params.date }, setSchedules);
-		setPending(true);
 		document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
-	useEffect(() => {
-		history.push(`/schedules/${_selectDate}`);
+	useMemo(() => {
+		// console.log(params);
+		if (!firstRendering) {
+			history.push(`/schedules/${_selectDate}`);
+			setSelectDate(_selectDate);
+		}
 	}, [_selectDate]);
 	useEffect(() => {
-		reRender();
-	}, [params]);
+		// console.log(selectDate);
+		setPending(true);
+	}, [selectDate]);
+
+	useEffect(() => {
+		if (pending) {
+			document.getElementById("date").innerText = "로딩중";
+			setCountOfState({
+				state1: 0,
+				state2: 0,
+				state3: 0,
+				state4: 0,
+				state5: 0,
+				state6: 0,
+				state7: 0,
+			});
+		}
+		pending &&
+			getAdminSchedule({ search_date: params.date }).then((res) => {
+				setSchedules(res.data);
+				setFirstRendering(false);
+			});
+	}, [pending]);
+
+	// useEffect(() => {
+	// 	reRender();
+	// }, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
 			setPending(false);
@@ -110,11 +150,13 @@ export default function Schedules() {
 		}
 	}, [schedules]);
 
-	useState(() => {
+	useEffect(() => {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
-		getAdminSchedule({ search_date: params.date }, setSchedules);
+		// getAdminSchedule({ search_date: selectDate }).then((res) => {
+		// 	setSchedules(res.data);
+		// });
 		setPending(true);
 	};
 
@@ -125,164 +167,186 @@ export default function Schedules() {
 									</div>
 								</div> */
 	useEffect(() => {
-		if (!pending && schedules && schedules.data) {
-			let tag = true;
-			for (const key in schedules.data) {
-				if (schedules.data.hasOwnProperty(key)) {
-					const element = schedules.data[key];
-					element.forEach((v) => {
-						v.schedules.forEach((schedule) => {
-							if (tag) {
-								document.getElementById("date").innerText = moment(
-									schedule.sch_start_date
-								).format("YYYY년 MM월 DD일");
-								tag = false;
-							}
-							let td = document.getElementById(
-								`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
-							);
-							let div = document.createElement("div");
-							if (
-								schedule.un_permission_count === 0 &&
-								schedule.reservated_count === 0
-							) {
-								div.className = "state_box state7";
-								setCountOfState({ ...countOfstate, state7: ++countOfstate.state7 });
-							} else {
-								if (new Date(schedule.sch_end_date) > new Date(today)) {
-									// 스케줄 시작 전
-									if (
-										schedule.reservated_count > 0 &&
-										schedule.un_permission_count === 0
-									) {
-										div.className = "state_box state2";
-										setCountOfState({
-											...countOfstate,
-											state2: ++countOfstate.state2,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									} else if (schedule.reservated_count > 0) {
-										div.className = "state_box state1";
-										setCountOfState({
-											...countOfstate,
-											state1: ++countOfstate.state1,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.un_permission_count} / `;
-										let span = document.createElement("span");
-										span.innerText = `${schedule.reservated_count}`;
-										p.appendChild(span);
-										div.appendChild(p);
-									}
-								} else {
-									// 스케줄 완료 후
-									if (schedule.sch_state_of_permission) {
-										div.className = "state_box state6";
-										setCountOfState({
-											...countOfstate,
-											state6: ++countOfstate.state6,
-										});
-									} else if (schedule.sch_state_of_result_input) {
-										div.className = "state_box state5";
-										setCountOfState({
-											...countOfstate,
-											state5: ++countOfstate.state5,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									} else {
-										div.className = "state_box state3";
-										setCountOfState({
-											...countOfstate,
-											state3: ++countOfstate.state3,
-										});
-										let p = document.createElement("p");
-										p.innerText = `${schedule.reservated_count}`;
-										div.appendChild(p);
-									}
+		if (schedules && schedules.data) {
+			if (!pending) {
+				let tag = true;
+				for (const key in schedules.data) {
+					if (schedules.data.hasOwnProperty(key)) {
+						const element = schedules.data[key];
+						element.forEach((v) => {
+							v.schedules.forEach((schedule) => {
+								if (tag) {
+									document.getElementById("date").innerText = moment(
+										selectDate
+									).format("YYYY년 MM월 DD일");
+									tag = false;
 								}
-							}
-							div.addEventListener("click", () => {
+								let td = document.getElementById(
+									`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
+								);
+								let div = document.createElement("div");
 								if (
-									div.className === "state_box state2" ||
-									div.className === "state_box state1"
+									schedule.un_permission_count === 0 &&
+									schedule.reservated_count === 0
 								) {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "ShowList",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-								} else if (div.className === "state_box state3") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "InsertResult",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
-								} else if (div.className === "state_box state5") {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "PermissionScheduleResult",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
+									div.className = "state_box state7";
+									setCountOfState({
+										...countOfstate,
+										state7: ++countOfstate.state7,
 									});
 								} else {
-									setSelectedSchedule({
-										sch_id: schedule.sch_id,
-										component: "ShowList",
-										std_for_id: v.std_for_id,
-										std_for_name: v.std_for_name,
-										sch_end_date: schedule.sch_end_date,
-										sch_start_date: schedule.sch_start_date,
-									});
+									if (new Date(schedule.sch_end_date) > new Date(today)) {
+										// 스케줄 시작 전
+										if (
+											schedule.reservated_count > 0 &&
+											schedule.un_permission_count === 0
+										) {
+											div.className = "state_box state2";
+											setCountOfState({
+												...countOfstate,
+												state2: ++countOfstate.state2,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										} else if (schedule.reservated_count > 0) {
+											div.className = "state_box state1";
+											setCountOfState({
+												...countOfstate,
+												state1: ++countOfstate.state1,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.un_permission_count} / `;
+											let span = document.createElement("span");
+											span.innerText = `${schedule.reservated_count}`;
+											p.appendChild(span);
+											div.appendChild(p);
+										}
+									} else {
+										// 스케줄 완료 후
+										if (schedule.sch_state_of_permission) {
+											div.className = "state_box state6";
+											setCountOfState({
+												...countOfstate,
+												state6: ++countOfstate.state6,
+											});
+										} else if (schedule.sch_state_of_result_input) {
+											div.className = "state_box state5";
+											setCountOfState({
+												...countOfstate,
+												state5: ++countOfstate.state5,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										} else {
+											div.className = "state_box state3";
+											setCountOfState({
+												...countOfstate,
+												state3: ++countOfstate.state3,
+											});
+											let p = document.createElement("p");
+											p.innerText = `${schedule.reservated_count}`;
+											div.appendChild(p);
+										}
+									}
 								}
-								scheduleOpen();
-							});
-							// 삭제버튼
-							let deleteBtn = document.createElement("div");
-							let area = document.createElement("div");
-							let btn = document.createElement("div");
-							deleteBtn.className = "hover_btn sch hover_off";
-							area.className = "area";
-							btn.className = "lightGray";
-							btn.innerText = "삭제";
-							area.appendChild(btn);
-							deleteBtn.appendChild(area);
-							div.addEventListener("mouseover", () => {
-								deleteBtn.classList.remove("hover_off");
-							});
-							div.addEventListener("mouseout", () => {
-								deleteBtn.classList.add("hover_off");
-							});
-							deleteBtn.addEventListener("click", () => {
-								setSelectedSchedule({
-									sch_id: schedule.sch_id,
-									component: "Delete",
-									std_for_id: v.std_for_id,
-									std_for_name: v.std_for_name,
-									sch_end_date: schedule.sch_end_date,
-									sch_start_date: schedule.sch_start_date,
+								function clickListner() {
+									if (
+										div.className === "state_box state2" ||
+										div.className === "state_box state1"
+									) {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className === "state_box state3") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className === "state_box state5") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "PermissionScheduleResult",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (div.className !== "state_box state6") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									}
+								}
+								function addListner(div) {
+									div.addEventListener("click", clickListner);
+								}
+								addListner(div);
+								// 삭제버튼
+								let deleteBtn = document.createElement("div");
+								let area = document.createElement("div");
+								let btn = document.createElement("div");
+								deleteBtn.className = "hover_btn sch hover_off";
+								area.className = "area";
+								btn.className = "lightGray";
+								btn.innerText = "삭제";
+								area.appendChild(btn);
+								deleteBtn.appendChild(area);
+								div.addEventListener("mouseover", () => {
+									deleteBtn.classList.remove("hover_off");
 								});
-								scheduleOpen();
+								div.addEventListener("mouseout", () => {
+									deleteBtn.classList.add("hover_off");
+								});
+								btn.addEventListener("mouseover", (e) => {
+									div.removeEventListener("click", clickListner);
+								});
+								btn.addEventListener("mouseout", () => {
+									addListner(div);
+								});
+								btn.addEventListener("click", (e) => {
+									if (e.target.innerText === "삭제") {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "Delete",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+									}
+									setTimeout(scheduleOpen, 500);
+									// scheduleOpen();
+								});
+								div.appendChild(deleteBtn);
+								td.appendChild(div);
+								console.log(td);
 							});
-							td.appendChild(div);
-							div.appendChild(deleteBtn);
 						});
-					});
+					}
 				}
 			}
 		}
-	}, [pending]);
+	}, [schedules, pending]);
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -420,10 +484,12 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
 
-								<th scope="row" rowSpan={countOfEng + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									영어
-								</th>
+								{schedules && schedules.data && schedules.data.English.length > 0 && (
+									<th scope="row" rowSpan={countOfEng + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										영어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.English.map((v) => {
@@ -442,10 +508,13 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfJp + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									일본어
-								</th>
+								{schedules && schedules.data && schedules.data.Japanese.length > 0 && (
+									<th scope="row" rowSpan={countOfJp + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										일본어
+									</th>
+								)}
+
 								{schedules &&
 									schedules.data &&
 									schedules.data.Japanese.map((v) => {
@@ -464,10 +533,12 @@ export default function Schedules() {
 											</tr>
 										);
 									})}
-								<th scope="row" rowSpan={countOfCh + 1}>
-									{/* rowSpan = 해당 언어 학생 수 */}
-									중국어
-								</th>
+								{schedules && schedules.data && schedules.data.Chinese.length > 0 && (
+									<th scope="row" rowSpan={countOfCh + 1}>
+										{/* rowSpan = 해당 언어 학생 수 */}
+										중국어
+									</th>
+								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.Chinese.map((v) => {
@@ -493,10 +564,7 @@ export default function Schedules() {
 					)}
 				</div>
 
-				<div className="table_btn">
-					<div>개별 입력</div>
-					<div>CSV 입력</div>
-				</div>
+				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (

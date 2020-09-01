@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
-	getAdminScheduleUnaproved,
-	patchAdminScheduleAprovel,
-} from "../../../modules/hooks/useAxios";
+	getAdminScheduleUnapproved,
+	patchAdminScheduleApproval,
+} from "../../../api/admin/schedule";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 
@@ -13,7 +13,9 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnaproved(date, setData);
+		getAdminScheduleUnapproved(date).then((res) => {
+			setData(res.data);
+		});
 		return reRender;
 	}, []);
 	useEffect(() => {
@@ -180,11 +182,13 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 									absent.push(v.std_kor_id);
 								}
 							});
-							patchAdminScheduleAprovel(
-								data.data[selectIndex].sch_id,
-								{ absent, attendance },
-								setPending
-							);
+							patchAdminScheduleApproval(data.data[selectIndex].sch_id, {
+								absent,
+								attendance,
+							}).then((res) => {
+								setPending(true);
+								alert(res.message);
+							});
 						}}
 					>
 						승인
