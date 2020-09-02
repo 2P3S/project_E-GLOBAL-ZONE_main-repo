@@ -43,6 +43,8 @@ class ReservationController extends Controller
     private const _STD_FOR_RES_RESULT_FAILURE = "스케줄 출석 결과 입력에 실패하였습니다.";
     private const _STD_FOR_RES_RESULT_COMPLETED = "이미 결과 입력이 완료되어 수정 불가능합니다.";
 
+    private const _STD_KOR_RES_INDEX_SUCCESS = "예약한 스케줄 조회에 성공하였습니다. ";
+
 
     private $schedule;
     private $reservation;
@@ -257,9 +259,7 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // TODO (적용완료) std_kor_id 미들웨어로 부터 받아오기
         $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
-        // $std_kor_id = $request->std_kor_id;
 
         // <<-- 해당 스케줄 정원 최대 예약 가능 횟수 비교
         $std_kor_res_count = Reservation::where('res_sch', $sch_id['sch_id'])->count();
@@ -305,7 +305,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 해당 일자에 대한 예약 조회
+     * 한국인학생 - 해당 일자에 대한 예약 조회 ( 미사용중 )
      * api/korean/reservation
      *
      * @param Request $request
@@ -338,6 +338,31 @@ class ReservationController extends Controller
     }
 
     /**
+     * 한국인학생 - 해당 요일 기준 진행중인 예약 조회
+     *
+     */
+    public function std_kor_show_res_prgrs(Request $request, Preference $preference_instance): JsonResponse
+    {
+        // <<-- 환경설정 변수
+        $setting_value = $preference_instance->getPreference();
+        $res_start_period = $setting_value->res_start_period;
+        // -->>
+
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+
+        /* 예약 가능 최대 기준 검색가능한 날짜 */
+        $prgs_end_date = date("Y-m-d", strtotime("+{$res_start_period} days"));
+
+        $std_prgs_res_data = Reservation::select()
+            ->join('schedules as sch', 'res_sch', 'sch_id')
+            ->where('res_std_kor', $std_kor_id)
+            ->whereDate('sch.sch_end_date', '<=', $prgs_end_date)
+            ->get();
+
+        return self::response_json(self::_STD_KOR_RES_INDEX_SUCCESS, 200, $std_prgs_res_data);
+    }
+
+    /**
      * 한국인학생 - 학기별 미팅 목록 결과 조회
      *
      * @param Request $request
@@ -345,12 +370,9 @@ class ReservationController extends Controller
      */
     public function std_kor_show_res_by_sect(Request $request): JsonResponse
     {
-        //TODO (적용완료) std_kor_id 미들웨어로 부터 받아오기.
-
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'search_month' => 'required|integer|distinct|min:1|max:12',
-            'std_kor_id' => 'required|integer'
         ];
 
         // <<-- Request 유효성 검사
