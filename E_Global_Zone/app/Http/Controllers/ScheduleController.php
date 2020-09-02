@@ -234,7 +234,7 @@ class ScheduleController extends Controller
 
         // <<--이미 학기가 시작 된 경우 에러 반환.
         $now_date = strtotime("Now");
-        if($now_date >= $sect_start_date) {
+        if ($now_date >= $sect_start_date) {
             return self::response_json(self::_SCHEDULE_RES_STORE_SECT_STARTED, 422);
         }
         // -->>
@@ -560,15 +560,10 @@ class ScheduleController extends Controller
             // $schedule['end_img_url'] =
             //     $this->resultImage->get_img($schedule['end_img_url']);
 
-            // base64 - 이미지 주소 매핑
             $schedule['start_img_url'] =
                 $this->resultImage->get_base64_img($schedule['start_img_url']);
             $schedule['end_img_url'] =
                 $this->resultImage->get_base64_img($schedule['end_img_url']);
-            // $schedule['original_source'] =  Storage::download($schedule['start_img_url']);
-            // $schedule['data'] =base64_decode(file_get_contents($schedule['end_img_url']));
-            // $original_source =  Storage::download($schedule['start_img_url']);
-            // $schedule['a'] =  base64_encode($original_source);
         }
 
         return response()->json([

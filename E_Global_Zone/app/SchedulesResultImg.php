@@ -62,8 +62,9 @@ class SchedulesResultImg extends Model
 
     public function get_base64_img($img_name)
     {
+        $data = Storage::get('public/' . $img_name);
         $type = pathinfo('storage/' . $img_name, PATHINFO_EXTENSION);
-        $data = file_get_contents('storage/' . $img_name);
+
         return 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 }
