@@ -21,6 +21,7 @@ class ScheduleController extends Controller
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
     private const _SCHEDULE_RES_STORE_FAILURE = "스케줄 등록에 실패하였습니다.";
+    private const _SCHEDULE_RES_STORE_SECT_STARTED = "학기가 시작된 이후부터는 스케줄 등록이 불가능합니다. 개별 입력을 이용해주세요.";
 
     private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
     private const _SCHEDULE_RES_DELETE_FAILURE = "해당 학기에 등록된 스케줄이 없습니다.";
@@ -230,6 +231,14 @@ class ScheduleController extends Controller
         if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
 
         $sect_start_date = strtotime($sect->sect_start_date);
+
+        // <<--이미 학기가 시작 된 경우 에러 반환.
+        $now_date = strtotime("Now");
+        if($now_date >= $sect_start_date) {
+            return self::response_json(self::_SCHEDULE_RES_STORE_SECT_STARTED, 422);
+        }
+        // -->>
+
         $sect_start_date = date("Y-m-d", $sect_start_date);
         $sect_end_date = strtotime($sect->sect_end_date);
         $sect_end_date = date("Y-m-d", $sect_end_date);
