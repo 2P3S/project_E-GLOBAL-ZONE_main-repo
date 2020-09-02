@@ -11,6 +11,7 @@ use App\Section;
 use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
@@ -143,7 +144,6 @@ class ScheduleController extends Controller
      */
     public function std_for_show_sch_by_date(Request $request): JsonResponse
     {
-        // TODO (적용완료) std_for_id 미들웨어로 부터 받아오기.
         $rules = [
             'start_date' => 'required|date',
             'end_date' => 'required|date',
@@ -545,11 +545,21 @@ class ScheduleController extends Controller
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
 
-            // 이미지 주소 매핑
+            // // 이미지 주소 매핑
+            // $schedule['start_img_url'] =
+            //     $this->resultImage->get_img($schedule['start_img_url']);
+            // $schedule['end_img_url'] =
+            //     $this->resultImage->get_img($schedule['end_img_url']);
+
+            // base64 - 이미지 주소 매핑
             $schedule['start_img_url'] =
-                $this->resultImage->get_img($schedule['start_img_url']);
+                $this->resultImage->get_base64_img($schedule['start_img_url']);
             $schedule['end_img_url'] =
-                $this->resultImage->get_img($schedule['end_img_url']);
+                $this->resultImage->get_base64_img($schedule['end_img_url']);
+            // $schedule['original_source'] =  Storage::download($schedule['start_img_url']);
+            // $schedule['data'] =base64_decode(file_get_contents($schedule['end_img_url']));
+            // $original_source =  Storage::download($schedule['start_img_url']);
+            // $schedule['a'] =  base64_encode($original_source);
         }
 
         return response()->json([
@@ -614,7 +624,7 @@ class ScheduleController extends Controller
 
         // 해당 스케줄이 대한 한국인 학생 활동 참여 횟수 업데이트
         Student_korean::whereIn('std_kor_id', $update_attendance_id_list)
-                ->increment('std_kor_num_of_attendance', 1);
+            ->increment('std_kor_num_of_attendance', 1);
 
         return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
