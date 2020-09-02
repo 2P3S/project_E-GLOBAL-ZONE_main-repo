@@ -71,6 +71,7 @@ export default function Foreigner() {
 	const [toggle, setToggle] = useState(true);
 	const {
 		isOpen: contactIsOpen,
+
 		handleOpen: handleOpenForContact,
 		handleClose: handleCloseForContact,
 	} = useModal();
