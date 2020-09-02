@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class KoreanController extends Controller
 {
-    /*
-     * [Refactoring]
-     * TODO RESPONSE 수정
-     * TODO validator 수정
-     * TODO 접근 가능 범위 수정
-     * TODO 한국인 유학생 -> 학번 validation 수정 min, max, unique
-     */
     // indexApproval
     private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
     private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";

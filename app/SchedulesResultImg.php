@@ -33,12 +33,10 @@ class SchedulesResultImg extends Model
      */
     public function store_result_img_url(
         array $store_data
-    ): JsonResponse
-    {
+    ): JsonResponse {
         try {
             self::create($store_data);
-        } catch
-        (QueryException $queryException) {
+        } catch (QueryException $queryException) {
             switch ($queryException->getCode()) {
                 case 23000:
                     return
@@ -60,5 +58,12 @@ class SchedulesResultImg extends Model
     {
         $img_url = 'http://' . request()->getHttpHost() . Storage::url('public/' . $img_name);       /* 이미지 URL */
         return $img_url;
+    }
+
+    public function get_base64_img($img_name)
+    {
+        $type = pathinfo('storage/' . $img_name, PATHINFO_EXTENSION);
+        $data = file_get_contents('storage/' . $img_name);
+        return 'data:image/' . $type . ';base64,' . base64_encode($data);
     }
 }
