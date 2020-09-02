@@ -33,13 +33,10 @@ const NON_ATTENDANCE = "미참석";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function Item({id ,language, name, time, status, zoomPw, zoomId}) {
+export default function Item({id, language, name, time, status, zoomPw, zoomId}) {
 
     const history = useHistory();
 
-    const application = useClick(()=>{
-        history.push(`schedule/${id}`)
-    });
 
     const setStatus = (status) => {
         if (typeof status === "boolean") {
@@ -83,11 +80,11 @@ export default function Item({id ,language, name, time, status, zoomPw, zoomId})
                     <li className="eng">{scheduleInfo.time.map((e) => e)} </li>
                 </ul>
                 {
-                    status === "reserved"? <ul>
-                        <li>
-                            {/*줌 아이디 : {zoomId}*/}
-                        </li>
-                    </ul>:
+                    status === "reserved" ? <ul>
+                            <li>
+                                {/*줌 아이디 : {zoomId}*/}
+                            </li>
+                        </ul> :
                         <></>
                 }
                 {((status) => {
@@ -102,9 +99,10 @@ export default function Item({id ,language, name, time, status, zoomPw, zoomId})
                 })(status)}
                 {((status) => {
                     if (typeof status !== "boolean") {
-                        return <span>{status==="reserved"? `${scheduleInfo.status}` :`${scheduleInfo.status}`}</span>
+                        return <span>{status === "reserved" ? `${scheduleInfo.status}` : `${scheduleInfo.status}`}</span>
                     } else {
-                        return status ? <span ref={application}>예약</span> : <span>예약 불가능</span>;
+                        return status ? <span onClick={() => history.push(`schedule/${id}`)}>예약</span> :
+                            <span>예약 불가능</span>;
                     }
                 })(status)}
             </div>
