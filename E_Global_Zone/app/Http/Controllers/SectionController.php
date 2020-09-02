@@ -78,8 +78,6 @@ class SectionController extends Controller
      */
     public function std_kor_attendanced_index(Request $request): JsonResponse
     {
-        //TODO (적용완료) std_kor_id 제거
-        // $std_kor_id = $request->std_kor_id;
         $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
 
         $attendanced_section_data = Reservation::select(DB::raw('count(*) as res_count'), 'sect_id', 'sect_name', 'sect_start_date', 'sect_end_date')
