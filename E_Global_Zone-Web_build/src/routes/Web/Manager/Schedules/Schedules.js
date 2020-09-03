@@ -189,7 +189,7 @@ export default function Schedules() {
 									schedule.un_permission_count === 0 &&
 									schedule.reservated_count === 0
 								) {
-									if (moment(schedule.sch_end_date) > moment(today)) {
+									if (moment(schedule.sch_end_date) > moment(Date.now())) {
 										div.className = "state_box state7";
 										setCountOfState({
 											...countOfstate,
@@ -295,15 +295,17 @@ export default function Schedules() {
 										});
 										scheduleOpen();
 									} else if (div.className !== "state_box state6") {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "ShowList",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										scheduleOpen();
+										if (div.innerText !== "종료") {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "ShowList",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+											scheduleOpen();
+										}
 									}
 								}
 								function addListner(div) {
@@ -320,35 +322,38 @@ export default function Schedules() {
 								btn.innerText = "삭제";
 								area.appendChild(btn);
 								deleteBtn.appendChild(area);
-								div.addEventListener("mouseover", () => {
-									deleteBtn.classList.remove("hover_off");
-								});
-								div.addEventListener("mouseout", () => {
-									deleteBtn.classList.add("hover_off");
-								});
-								btn.addEventListener("mouseover", (e) => {
-									div.removeEventListener("click", clickListner);
-								});
-								btn.addEventListener("mouseout", () => {
-									addListner(div);
-								});
-								btn.addEventListener("click", (e) => {
-									if (e.target.innerText === "삭제") {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "Delete",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-									}
-									setTimeout(scheduleOpen, 500);
-									// scheduleOpen();
-								});
-								div.appendChild(deleteBtn);
+
+								if (div.innerText !== "종료") {
+									div.addEventListener("mouseover", () => {
+										deleteBtn.classList.remove("hover_off");
+									});
+									div.addEventListener("mouseout", () => {
+										deleteBtn.classList.add("hover_off");
+									});
+									btn.addEventListener("mouseover", (e) => {
+										div.removeEventListener("click", clickListner);
+									});
+									btn.addEventListener("mouseout", () => {
+										addListner(div);
+									});
+									btn.addEventListener("click", (e) => {
+										if (e.target.innerText === "삭제") {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "Delete",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+										}
+										setTimeout(scheduleOpen, 500);
+										// scheduleOpen();
+									});
+									div.appendChild(deleteBtn);
+								}
+
 								td.appendChild(div);
-								console.log(td);
 							});
 						});
 					}
