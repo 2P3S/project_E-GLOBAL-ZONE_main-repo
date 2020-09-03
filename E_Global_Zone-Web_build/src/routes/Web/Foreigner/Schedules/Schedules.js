@@ -278,10 +278,8 @@ export default function Schedules() {
 		}
 		if (typeof value === "object") {
 			let p = document.createElement("p");
-			p.innerText = `
-            신청한 학생 : ${value[0]}명
-            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명
-            `;
+			p.innerText = `신청한 학생 : ${value[0]}명
+            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명`;
 			div.appendChild(p);
 		} else {
 			let p = document.createElement("p");
@@ -290,8 +288,7 @@ export default function Schedules() {
 					p.innerText = `${value}명 예약 완료`;
 					break;
 				case STATE_DONE:
-					p.innerText = `
-                    참가 학생 : ${value}명
+					p.innerText = `참가 학생 : ${value}명
                     [결과 미입력]
                     `;
 					break;
@@ -299,7 +296,10 @@ export default function Schedules() {
 					p.innerText = `결과 입력 완료`;
 					break;
 				case STATE_NOTHING:
-					p.innerText = `예약 없음`;
+					console.log(sch_start_date);
+					Date.now() > new Date(sch_end_date)
+						? (p.innerText = `종료`)
+						: (p.innerText = `예약 없음`);
 					break;
 			}
 			div.appendChild(p);
@@ -326,7 +326,6 @@ export default function Schedules() {
 					case 1:
 						td.id = `monday${i}`;
 						monday.forEach((v) => {
-							console.log(v);
 							if (v.index[0] === i) {
 								if (v.index[1] === 1) {
 									if (v.state === STATE_PENDING) {
@@ -445,14 +444,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -464,14 +467,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -491,14 +498,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -510,14 +521,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -537,14 +552,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -556,14 +575,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
