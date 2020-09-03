@@ -5,10 +5,10 @@ import { useParams, useHistory } from "react-router-dom";
 // 	getAdminSection,
 // 	postAdminSchedule,
 // 	deleteAdminSchedule,
-// 	getAdminForeignerInfo,
+// 	getAdminForeigner,
 // } from "../../../../modules/hooks/useAxios";
 
-import { getAdminForeignerInfo, getAdminForeignerWork } from "../../../../api/admin/foreigner";
+import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
 import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
 import { getAdminSection } from "../../../../api/admin/section";
 
@@ -117,7 +117,7 @@ export default function Section(props) {
 			setForList(res.data);
 		});
 		getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
-		getAdminForeignerInfo({ foreigners: [params["std_for_id"]] }).then((res) =>
+		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
 			setForName(res.data)
 		);
 		buildTable();
@@ -132,7 +132,7 @@ export default function Section(props) {
 	}, [forList]);
 
 	useEffect(() => {
-		getAdminForeignerInfo({ foreigners: [params["std_for_id"]] }).then((res) =>
+		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
 			setForName(res.data)
 		);
 	}, [params]);

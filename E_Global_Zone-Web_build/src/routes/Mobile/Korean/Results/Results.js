@@ -17,39 +17,33 @@ export default function Results() {
 	const today = useSelector(selectToday);
 	const [data, setData] = useState();
 	const [sect, setSect] = useState();
+	const [pending, setPending] = useState(false);
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectId, setSelectSectId] = useState();
+	const [selectMonth, setSelectMonth] = useState(moment(today));
+
 	useEffect(() => {
 		// getKoreanReservationResult(5,8,1321704, setData);
 		// getKoreanSection(user.id, setSect);
-		getKoreanSection().then((res) => setSect(res.data));
+		getKoreanSection().then((res) => {
+			setSect(res.data.data);
+			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
+			setPending(true);
+		});
 	}, []);
+
 	useEffect(() => {
-		console.log(sect);
-		if (typeof sect === "object") {
-			setSelectSect(sect[0]);
-		}
-	}, [sect]);
-	useEffect(() => {
-		console.log(selectSect);
-		if (selectSect) {
-			getKoreanReservationResult(selectSect.sect_id, moment(today).format("M")).then((res) =>
-				setData(res.data)
-			);
-		}
-	}, [selectSect]);
-	useEffect(() => {
-		console.log(data);
-	});
+		pending &&
+			selectSect &&
+			getKoreanReservationResult(selectSect.sect_id, selectMonth.format("M")).then((res) => {
+				setData(res.data);
+				setPending(false);
+			});
+	}, [pending]);
 
 	const handleChange = (e) => {
-		// getKoreanReservationResult(e.target.value, moment(today).format("M"), user.id, setData);
-		sect.map((v) => {
-			console.log(v);
-			if (e.target.value == v.sect_id) {
-				setSelectSect(v);
-			}
-		});
+		setSelectSect(e.target.value);
+		setPending(true);
 		window.easydropdown.all();
 	};
 
@@ -61,7 +55,7 @@ export default function Results() {
 					<p>
 						<span className="name">{user.name}</span> 학생의
 						<br />
-						글로벌 포인트 현황
+						학기별 글로벌 존 이용 횟수
 					</p>
 					<div className="result">
 						{/*<span className="rank">상위 10%</span>*/}
@@ -71,7 +65,7 @@ export default function Results() {
 				</div>
 
 				<select name="" id="" className="mt50" onChange={handleChange}>
-					{typeof sect === "object" && sect.length > 0 ? (
+					{sect && sect.length > 0 ? (
 						sect.map((v) => {
 							return <option value={v.sect_id}>{v.sect_name}</option>;
 						})
@@ -82,12 +76,22 @@ export default function Results() {
 
 				<div className="history_wrap">
 					<div className="month_move">
-						<p>2020년 7월</p>
+						<p>{selectMonth.format("YYYY년 MM월")}</p>
 						<div className="arrow">
-							<div>
+							<div
+								onClick={() => {
+									setSelectMonth(moment(selectMonth).subtract(1, "M"));
+									setPending(true);
+								}}
+							>
 								<img src="/global/mobile/img/month_move_prev.gif" alt="이전 달" />
 							</div>
-							<div>
+							<div
+								onClick={() => {
+									setSelectMonth(moment(selectMonth).add(1, "M"));
+									setPending(true);
+								}}
+							>
 								<img src="/global/mobile/img/month_move_next.gif" alt="다음 달" />
 							</div>
 						</div>
@@ -105,7 +109,7 @@ export default function Results() {
 							</tr>
 						</thead>
 						<tbody>
-							{typeof data === "object" &&
+							{typeof data === "object" && data.data.length > 0 ? (
 								data.data.map((v) => {
 									return (
 										<tr>
@@ -113,7 +117,13 @@ export default function Results() {
 											<td>{v.std_for_name}</td>
 										</tr>
 									);
-								})}
+								})
+							) : (
+								<tr>
+									<td>-</td>
+									<td>진행 일정이 없습니다.</td>
+								</tr>
+							)}
 						</tbody>
 					</table>
 				</div>

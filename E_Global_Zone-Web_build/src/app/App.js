@@ -29,7 +29,7 @@ const App = () => {
 			dispatch(setDept(data));
 		}
 	}, [data]);
-	return <>{dept && <Routes />}</>;
+	return <>{dept ? <Routes /> : <>서버 오류입니다. 관리자에게 문의하십시오.</>}</>;
 };
 
 export default App;
