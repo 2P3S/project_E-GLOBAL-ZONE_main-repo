@@ -15,6 +15,7 @@ import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
+import Loader from "../../../../components/common/Loader";
 
 /**
  * Manager :: 스케줄 조회
@@ -476,7 +477,6 @@ export default function Schedules() {
 					<li className="ico06">[관리자 승인 완료]</li>
 				</ul>
 			</div>
-
 			<div className="wrap">
 				<ul className="sch_time">
 					<li>9AM</li>
@@ -585,7 +585,7 @@ export default function Schedules() {
 							</tbody>
 						</table>
 					) : (
-						<>???</>
+						<Loader />
 					)}
 				</div>
 
