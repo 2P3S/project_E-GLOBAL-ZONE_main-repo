@@ -15,8 +15,8 @@ import { getAdminSection } from "../../../../api/admin/section";
 import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
+import Loader from "../../../../components/common/Loader";
 
-let i = 0;
 export default function Section(props) {
 	const params = useParams();
 	const history = useHistory();
@@ -26,15 +26,77 @@ export default function Section(props) {
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
 	const [forName, setForName] = useState();
-	const [schedule, setSchedule] = useState();
+	const [scheduleList, setScheduleList] = useState({ 월: [], 화: [], 수: [], 목: [], 금: [] });
 	const { isOpen, handleOpen, handleClose } = useModal();
+	const {
+		isOpen: isOpenForLoader,
+		handleOpen: handleOpenForLoader,
+		handleClose: handleCloseForLoader,
+	} = useModal();
 
 	const timeArray = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 	const dayArray = ["월", "화", "수", "목", "금"];
 
 	const closure = (function () {
-		let scheduleObject = { 월: [], 화: [], 수: [], 목: [], 금: [] };
+		let obj = { 월: [], 화: [], 수: [], 목: [], 금: [] };
+		let toggle = false;
+		let startDay = 0;
+		let endDay = 0;
+		let startTime = 0;
+		let endTime = 0;
 		return new (function () {
+			this.toggle = function () {
+				toggle = !toggle;
+				return toggle;
+			};
+
+			this.dragStart = function (e) {
+				startDay = parseInt(e.target.id.split("-")[0]);
+				startTime = parseInt(e.target.id.split("-")[1]);
+				// alert(e.target.id.split("-")[0] + `-` + e.target.id.split("-")[1]);
+				// alert();
+			};
+			this.dragEnd = function (e) {
+				endDay = parseInt(e.target.id.split("-")[0]);
+				endTime = parseInt(e.target.id.split("-")[1]);
+				// alert(`${startDay}-${startTime}~${endDay}-${endTime}`);
+				// alert();
+				for (let i = startDay; i <= endDay; i++) {
+					let lastTime = i === endDay ? endTime : 17;
+					for (let j = i === startDay ? startTime : 9; j <= lastTime; j++) {
+						let dayOfSch = "";
+						switch (i) {
+							case 0:
+								dayOfSch = "월";
+								break;
+							case 1:
+								dayOfSch = "화";
+								break;
+							case 2:
+								dayOfSch = "수";
+								break;
+							case 3:
+								dayOfSch = "목";
+								break;
+							case 4:
+								dayOfSch = "금";
+								break;
+						}
+						let schedule = document.createElement("div");
+						schedule.className = "time_area";
+						schedule.style.zIndex = -9999;
+						let day = new Object();
+						Object.defineProperty(day, `${dayOfSch}`, {
+							value: [j],
+							enumerable: true,
+						});
+						obj = deepmerge(obj, day);
+						//<div className="time_area">
+						document.getElementById(`${i}-${j}`).appendChild(schedule);
+					}
+					setScheduleList(obj);
+				}
+			};
 			this.handleCreate = function (e) {
 				let schedule = document.createElement("div");
 				schedule.className = "time_area";
@@ -45,54 +107,48 @@ export default function Section(props) {
 					value: [parseInt(e.target.id.slice(2, 5))],
 					enumerable: true,
 				});
-				i++;
+
 				console.log(day);
-				scheduleObject = deepmerge(scheduleObject, day);
-				setSchedule(scheduleObject);
+				// scheduleObject = deepmerge(scheduleObject, day);
+				// setSchedule(scheduleObject);
 				//<div className="time_area">
 				e.target.appendChild(schedule);
 				console.log(e.target);
 				e.target.removeEventListener("click", closure.handleCreate);
 				e.target.addEventListener("click", closure.handleRemove);
 			};
-			this.handleRemove = function (e) {
-				console.log(e.target.id);
-				let findTarget = parseInt(e.target.id.slice(2, 5));
-				let arrayTarget = scheduleObject[`${e.target.id.slice(0, 1)}`];
-				let index = arrayTarget.findIndex((e) => {
-					return e === findTarget;
-				});
-				if (index > -1) {
-					arrayTarget.splice(index, 1);
-				}
-				console.log(arrayTarget);
+			// this.handleRemove = function (e) {
+			// 	console.log(e.target.id);
+			// 	let findTarget = parseInt(e.target.id.slice(2, 5));
+			// 	let arrayTarget = scheduleObject[`${e.target.id.slice(0, 1)}`];
+			// 	let index = arrayTarget.findIndex((e) => {
+			// 		return e === findTarget;
+			// 	});
+			// 	if (index > -1) {
+			// 		arrayTarget.splice(index, 1);
+			// 	}
+			// 	console.log(arrayTarget);
 
-				e.target.innerHTML = "";
-				e.target.removeEventListener("click", closure.handleRemove);
-				e.target.addEventListener("click", closure.handleCreate);
-			};
-			this.getScheduleObject = () => {
-				console.log(JSON.parse(JSON.stringify(scheduleObject))); // 빈객체
-			};
-
-			this.checkScheduleObject = () => {
-				console.log(scheduleObject); // 빈객체
-			};
+			// 	e.target.innerHTML = "";
+			// 	e.target.removeEventListener("click", closure.handleRemove);
+			// 	e.target.addEventListener("click", closure.handleCreate);
+			// };
 		})();
 	})();
 
 	const buildTable = () => {
 		let tbody = document.getElementById("tbody");
 		tbody.innerHTML = "";
-		dayArray.forEach((day) => {
+		dayArray.forEach((day, index) => {
 			let tr = document.createElement("tr");
 			let td = document.createElement("td");
 			td.innerText = day;
 			tr.appendChild(td);
 			timeArray.forEach((time) => {
 				let td = document.createElement("td");
-				td.addEventListener("click", closure.handleCreate);
-				td.id = `${day}-${time}`;
+				td.addEventListener("mousedown", closure.dragStart);
+				td.addEventListener("mouseup", closure.dragEnd);
+				td.id = `${index}-${time}`;
 				tr.appendChild(td);
 			});
 			tbody.appendChild(tr);
@@ -103,16 +159,17 @@ export default function Section(props) {
 		let data = {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
-			schedule: schedule,
+			schedule: scheduleList,
 			ecept_date: [],
 		};
+
 		postAdminSchedule(data).then((res) => setIsDone(true));
 
 		handleOpen();
 	}
 
 	useEffect(() => {
-		console.log(params["sect_id"]);
+		handleOpenForLoader();
 		getAdminForeignerWork(params["sect_id"]).then((res) => {
 			setForList(res.data);
 		});
@@ -120,21 +177,22 @@ export default function Section(props) {
 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
 			setForName(res.data)
 		);
+
 		buildTable();
 	}, []);
 	useEffect(() => {
 		if (forList && forList.data) {
-			console.log(forList);
+			handleCloseForLoader();
 			setForList(forList.data);
-		} else {
-			console.log(forList);
 		}
 	}, [forList]);
 
 	useEffect(() => {
-		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
-			setForName(res.data)
-		);
+		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
+			setForName(res.data);
+			console.log(scheduleList);
+			buildTable();
+		});
 	}, [params]);
 
 	useEffect(() => {
@@ -273,159 +331,17 @@ export default function Section(props) {
 								<th scope="col">3</th>
 								<th scope="col">4</th>
 								<th scope="col">5</th>
-								{/* <th scope="col">6</th> */}
 							</tr>
 						</thead>
 						<tbody id="tbody"></tbody>
-						{/* <tbody>
-							<tr>
-								<td>월</td>
-								<td></td>
-
-								<td>
-									<div className="time_area">
-										<p>10:00 ~ 12:00</p>
-									</div>
-								</td>
-								<td>
-									<div className="time_area"></div>
-								</td>
-								<td>
-									<div className="time_area">
-										<div className="time_del">
-											<img
-												src="/global/img/time_del_btn.gif"
-												alt="선택 시간 삭제"
-											/>
-										</div>
-									</div>
-								</td>
-
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>화</td>
-								<td></td>
-								<td>
-									<div className="time_area">
-										<p>10:00 ~ 12:00</p>
-									</div>
-								</td>
-								<td>
-									<div className="time_area"></div>
-								</td>
-								<td>
-									<div className="time_area">
-										<div className="time_del">
-											<img
-												src="/global/img/time_del_btn.gif"
-												alt="선택 시간 삭제"
-											/>
-										</div>
-									</div>
-								</td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>수</td>
-								<td></td>
-								<td>
-									<div className="time_area">
-										<p>10:00 ~ 12:00</p>
-									</div>
-								</td>
-								<td>
-									<div className="time_area"></div>
-								</td>
-								<td>
-									<div className="time_area">
-										<div className="time_del">
-											<img
-												src="/global/img/time_del_btn.gif"
-												alt="선택 시간 삭제"
-											/>
-										</div>
-									</div>
-								</td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>목</td>
-								<td></td>
-								<td>
-									<div className="time_area">
-										<p>10:00 ~ 12:00</p>
-									</div>
-								</td>
-								<td>
-									<div className="time_area"></div>
-								</td>
-								<td>
-									<div className="time_area">
-										<div className="time_del">
-											<img
-												src="/global/img/time_del_btn.gif"
-												alt="선택 시간 삭제"
-											/>
-										</div>
-									</div>
-								</td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>금</td>
-								<td></td>
-								<td>
-									<div className="time_area">
-										<p>10:00 ~ 12:00</p>
-									</div>
-								</td>
-								<td>
-									<div className="time_area"></div>
-								</td>
-								<td>
-									<div className="time_area">
-										<div className="time_del">
-											<img
-												src="/global/img/time_del_btn.gif"
-												alt="선택 시간 삭제"
-											/>
-										</div>
-									</div>
-								</td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</tbody> */}
 					</table>
 				</div>
 			</div>
+			<Modal isOpen={isOpenForLoader}>
+				<Loader />
+			</Modal>
 			<Modal isOpen={isOpen}>
-				<div>로딩중~~~~</div>
+				<Loader />
 			</Modal>
 			{/* <div className="table_btn mb40">
 				<div>업로드</div>

@@ -134,12 +134,6 @@ export default function Foreigner() {
 	};
 
 	useEffect(() => {
-		if (params.sect_id && params.sect_id === "now") {
-			alert("test");
-		}
-	}, [params]);
-
-	useEffect(() => {
 		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
 			setSectOfYear(res.data);
 			history.push(`/students/${res.data.data[0].sect_id}/foreigner`);
