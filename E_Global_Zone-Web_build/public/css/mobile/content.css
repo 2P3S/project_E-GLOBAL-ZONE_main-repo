@@ -469,6 +469,20 @@ body {
     font-weight: 600;
 }
 
+/* 회원가입 시 정보 추가입력 */
+.join_add_wrap {}
+.join_add_wrap .input_area {width:100%; box-sizing:border-box; padding:160px 40px 40px 40px;  border:1px solid #ddd; border-radius:10px; font-size:14px; background:url(/global/img/join_ico.gif) no-repeat center 45px;}
+.join_add_wrap .input_area .box {text-align:left; margin-bottom:10px;}
+.join_add_wrap .input_area .box label {display:inline-block; color:#373a44;font-weight: 600;margin-bottom:4px;}
+.join_add_wrap .input_area input,
+.join_add_wrap .input_area button,
+.join_add_wrap .input_area .edd-root {width:100%; margin:0; height:45px; border:1px solid #cacaca; border-radius:7px; padding:0 15px; margin-bottom:7px; color:#373a44; font-size:13px; font-weight:600;}
+.join_add_wrap .input_area .edd-value {height:45px; line-height:45px;}
+.join_add_wrap .input_area input:-moz-read-only { /* For Firefox */ background-color:#f1f1f1; color:#666;}
+.join_add_wrap .input_area input:read-only {background-color:#f1f1f1; color:#666;}
+.join_add_wrap .input_area input[type="text"]::placeholder {font-size:13px; color:#999; font-weight:600;}
+.join_add_wrap .input_area button { color:#fff; background:#2050e6; border:none; padding:0; border-radius:7px; margin-top:10px; font-weight:600;}
+
 /**************** 기본정의 ***************/
 /* TAB */
 .tab {

@@ -269,7 +269,9 @@ export default function Foreigner() {
 								<table className="student_manage_table">
 									<colgroup>
 										<col width="5%" />
-										<col width="7%" span="3" />
+										<col width="7%" />
+										<col width="9%" />
+										<col width="7%" />
 										<col width="7%" />
 										<col width="13%" />
 										<col width="7%" />
