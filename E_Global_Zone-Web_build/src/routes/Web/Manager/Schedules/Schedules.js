@@ -189,11 +189,20 @@ export default function Schedules() {
 									schedule.un_permission_count === 0 &&
 									schedule.reservated_count === 0
 								) {
-									div.className = "state_box state7";
-									setCountOfState({
-										...countOfstate,
-										state7: ++countOfstate.state7,
-									});
+									if (moment(schedule.sch_end_date) > moment(today)) {
+										div.className = "state_box state7";
+										setCountOfState({
+											...countOfstate,
+											state7: ++countOfstate.state7,
+										});
+									} else {
+										div.className = "state_box state7";
+										setCountOfState({
+											...countOfstate,
+											state7: ++countOfstate.state7,
+										});
+										div.innerText = "종료";
+									}
 								} else {
 									if (new Date(schedule.sch_end_date) > new Date(today)) {
 										// 스케줄 시작 전
@@ -354,7 +363,10 @@ export default function Schedules() {
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
-				<div style={{ position: "absolute", zIndex: "9999" }}>
+				<div
+					style={{ position: "absolute", zIndex: "9999" }}
+					onMouseLeave={() => setCalIsOpen(false)}
+				>
 					{calIsOpen && (
 						<ModalCalendar
 							id="calendar"
