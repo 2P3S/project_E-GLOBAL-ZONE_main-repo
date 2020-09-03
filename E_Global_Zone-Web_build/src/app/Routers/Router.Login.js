@@ -20,7 +20,7 @@ export const LoginRouter = () => {
 
 			<Route exact path="/:userClass/password" component={ResetPassword} />
 
-			<Route exact path="/korean/sign-up" component={SignUp} />
+			<Route exact path="/korean/signup" component={SignUp} />
 
 			<Route path="/" component={isMobile ? MobileLogin : KoreanLogin} />
 		</Switch>

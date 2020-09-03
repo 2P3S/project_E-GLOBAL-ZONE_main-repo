@@ -2,23 +2,19 @@ import React, { useEffect, useState, useMemo } from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
-import deepmerge from "deepmerge";
 
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-// import { getAdminSchedule, deleteAdminScheduleSome } from "../../../../modules/hooks/useAxios";
-
 import { getAdminSchedule } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
-import conf from "../../../../conf/conf";
+
 import ShowList from "../../../../components/common/modal/ShowList";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
-import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 
 /**
  * Manager :: 스케줄 조회
@@ -185,18 +181,19 @@ export default function Schedules() {
 									`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
 								);
 								let div = document.createElement("div");
+								div.classList.add("state_box");
 								if (
 									schedule.un_permission_count === 0 &&
 									schedule.reservated_count === 0
 								) {
 									if (moment(schedule.sch_end_date) > moment(Date.now())) {
-										div.className = "state_box state7";
+										div.classList.add("state7");
 										setCountOfState({
 											...countOfstate,
 											state7: ++countOfstate.state7,
 										});
 									} else {
-										div.className = "state_box state7";
+										div.classList.add("state7");
 										setCountOfState({
 											...countOfstate,
 											state7: ++countOfstate.state7,
@@ -204,13 +201,13 @@ export default function Schedules() {
 										div.innerText = "종료";
 									}
 								} else {
-									if (new Date(schedule.sch_end_date) > new Date(today)) {
+									if (new Date(schedule.sch_end_date) > new Date(Date.now())) {
 										// 스케줄 시작 전
 										if (
 											schedule.reservated_count > 0 &&
 											schedule.un_permission_count === 0
 										) {
-											div.className = "state_box state2";
+											div.classList.add("state2");
 											setCountOfState({
 												...countOfstate,
 												state2: ++countOfstate.state2,
@@ -219,7 +216,7 @@ export default function Schedules() {
 											p.innerText = `${schedule.reservated_count}`;
 											div.appendChild(p);
 										} else if (schedule.reservated_count > 0) {
-											div.className = "state_box state1";
+											div.classList.add("state1");
 											setCountOfState({
 												...countOfstate,
 												state1: ++countOfstate.state1,
@@ -234,13 +231,13 @@ export default function Schedules() {
 									} else {
 										// 스케줄 완료 후
 										if (schedule.sch_state_of_permission) {
-											div.className = "state_box state6";
+											div.classList.add("state6");
 											setCountOfState({
 												...countOfstate,
 												state6: ++countOfstate.state6,
 											});
 										} else if (schedule.sch_state_of_result_input) {
-											div.className = "state_box state5";
+											div.classList.add("state5");
 											setCountOfState({
 												...countOfstate,
 												state5: ++countOfstate.state5,
@@ -249,7 +246,7 @@ export default function Schedules() {
 											p.innerText = `${schedule.reservated_count}`;
 											div.appendChild(p);
 										} else {
-											div.className = "state_box state3";
+											div.classList.add("state3");
 											setCountOfState({
 												...countOfstate,
 												state3: ++countOfstate.state3,
@@ -262,8 +259,8 @@ export default function Schedules() {
 								}
 								function clickListner() {
 									if (
-										div.className === "state_box state2" ||
-										div.className === "state_box state1"
+										div.classList.contains("state2") ||
+										div.classList.contains("state1")
 									) {
 										setSelectedSchedule({
 											sch_id: schedule.sch_id,
@@ -274,7 +271,7 @@ export default function Schedules() {
 											sch_start_date: schedule.sch_start_date,
 										});
 										scheduleOpen();
-									} else if (div.className === "state_box state3") {
+									} else if (div.classList.contains("state3")) {
 										setSelectedSchedule({
 											sch_id: schedule.sch_id,
 											component: "",
@@ -283,8 +280,8 @@ export default function Schedules() {
 											sch_end_date: schedule.sch_end_date,
 											sch_start_date: schedule.sch_start_date,
 										});
-										scheduleOpen();
-									} else if (div.className === "state_box state5") {
+										// scheduleOpen();
+									} else if (div.classList.contains("state5")) {
 										setSelectedSchedule({
 											sch_id: schedule.sch_id,
 											component: "PermissionScheduleResult",
@@ -294,22 +291,36 @@ export default function Schedules() {
 											sch_start_date: schedule.sch_start_date,
 										});
 										scheduleOpen();
-									} else if (div.className !== "state_box state6") {
-										if (div.innerText !== "종료") {
-											setSelectedSchedule({
-												sch_id: schedule.sch_id,
-												component: "ShowList",
-												std_for_id: v.std_for_id,
-												std_for_name: v.std_for_name,
-												sch_end_date: schedule.sch_end_date,
-												sch_start_date: schedule.sch_start_date,
-											});
-											scheduleOpen();
-										}
+									} else if (div.classList.contains("state6")) {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
+									} else if (
+										div.classList.contains("state7") &&
+										!div.classList.contains("done")
+									) {
+										setSelectedSchedule({
+											sch_id: schedule.sch_id,
+											component: "ShowList",
+											std_for_id: v.std_for_id,
+											std_for_name: v.std_for_name,
+											sch_end_date: schedule.sch_end_date,
+											sch_start_date: schedule.sch_start_date,
+										});
+										scheduleOpen();
 									}
 								}
 								function addListner(div) {
 									div.addEventListener("click", clickListner);
+								}
+								if (moment(schedule.sch_end_date) < moment(today)) {
+									div.classList.add("done");
 								}
 								addListner(div);
 								// 삭제버튼
@@ -322,8 +333,8 @@ export default function Schedules() {
 								btn.innerText = "삭제";
 								area.appendChild(btn);
 								deleteBtn.appendChild(area);
-
-								if (div.innerText !== "종료") {
+								console.log(div.classList);
+								if (!div.classList.contains("done")) {
 									div.addEventListener("mouseover", () => {
 										deleteBtn.classList.remove("hover_off");
 									});
