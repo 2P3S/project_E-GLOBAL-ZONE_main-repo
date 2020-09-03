@@ -305,10 +305,11 @@ export default function Schedules() {
 								let deleteBtn = document.createElement("div");
 								let area = document.createElement("div");
 								let btn = document.createElement("div");
-								deleteBtn.className = "hover_btn sch hover_off";
+								deleteBtn.className = "sch_hover_btn top hover_off"; {/* class="top" 위에서 뜸 / class="bottom" 밑에서 뜸*/}
 								area.className = "area";
 								btn.className = "lightGray";
 								btn.innerText = "삭제";
+
 								area.appendChild(btn);
 								deleteBtn.appendChild(area);
 								div.addEventListener("mouseover", () => {
@@ -465,7 +466,7 @@ export default function Schedules() {
 					<li>5PM</li>
 					<li>6PM</li>
 				</ul>
-				<div className="scroll_area pt40">
+				<div className="scroll_area">
 					{!pending ? (
 						<table className="sch_table">
 							<colgroup>

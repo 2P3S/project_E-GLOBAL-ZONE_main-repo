@@ -400,23 +400,28 @@ export default function Settings() {
 							<span>일 이내</span>
 						</div>
 					</div>
-
-					<div className="btn_area right">
-						<div
-							className="bbtn darkGray"
-							onClick={handleOpenForInsertForeignerStudent}
-						>
-							유학생 등록
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
-							학기 기간 설정
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
-							학기 기간 조회
-						</div>
-					</div>
 				</div>
 			</div>
+			<div className="table_btn left">
+				<div
+					className="darkGray"
+					onClick={handleOpenForInsertForeignerStudent}
+				>
+					유학생 등록
+				</div>
+				<div className="darkGray" onClick={handleOpenForCreatSectIsOpen}>
+					학기 기간 설정
+				</div>
+				<div className="darkGray" onClick={handleOpenForGetSectIsOpen}>
+					학기 기간 조회
+				</div>
+				{/* LeeGuSeul GitHub ::
+				pop_department_regist.php 학과등록*/}
+				<div className="darkGray" onClick={handleOpenForGetSectIsOpen}>
+					학과등록
+				</div>
+			</div>
+
 			<div className="table_btn mb40">
 				<div
 					onClick={() => {
