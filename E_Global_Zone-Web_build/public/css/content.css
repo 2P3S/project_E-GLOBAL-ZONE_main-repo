@@ -1077,6 +1077,25 @@ table.student_manage_table td:first-child {
 	margin-bottom: 20px;
 }
 
+.search_student .right_wrap .reset_btn {
+	position: absolute;
+	right: 75px;
+	top: 5px;
+	cursor: pointer;
+	display: inline-block;
+	border-radius: 5px;
+	padding: 7px 19px;
+	color: #3a3f97;
+	border: 1px solid #3a3f97;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.search_student .right_wrap .reset_btn:hover {
+	background: #3a3f97;
+	color: #fff;
+	transition-duration: 0.3s;
+}
 .search_student .right_wrap .save_btn {
 	position: absolute;
 	right: 0;

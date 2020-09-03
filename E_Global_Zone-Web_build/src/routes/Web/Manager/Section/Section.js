@@ -26,7 +26,7 @@ export default function Section(props) {
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
 	const [forName, setForName] = useState();
-	const [scheduleList, setScheduleList] = useState({ 월: [], 화: [], 수: [], 목: [], 금: [] });
+
 	const { isOpen, handleOpen, handleClose } = useModal();
 	const {
 		isOpen: isOpenForLoader,
@@ -38,7 +38,6 @@ export default function Section(props) {
 	const dayArray = ["월", "화", "수", "목", "금"];
 
 	const closure = (function () {
-		let obj = { 월: [], 화: [], 수: [], 목: [], 금: [] };
 		let toggle = false;
 		let startDay = 0;
 		let endDay = 0;
@@ -49,90 +48,26 @@ export default function Section(props) {
 				toggle = !toggle;
 				return toggle;
 			};
-
 			this.dragStart = function (e) {
 				startDay = parseInt(e.target.id.split("-")[0]);
 				startTime = parseInt(e.target.id.split("-")[1]);
-				// alert(e.target.id.split("-")[0] + `-` + e.target.id.split("-")[1]);
-				// alert();
 			};
 			this.dragEnd = function (e) {
 				endDay = parseInt(e.target.id.split("-")[0]);
 				endTime = parseInt(e.target.id.split("-")[1]);
-				// alert(`${startDay}-${startTime}~${endDay}-${endTime}`);
-				// alert();
 				for (let i = startDay; i <= endDay; i++) {
 					let lastTime = i === endDay ? endTime : 17;
 					for (let j = i === startDay ? startTime : 9; j <= lastTime; j++) {
-						let dayOfSch = "";
-						switch (i) {
-							case 0:
-								dayOfSch = "월";
-								break;
-							case 1:
-								dayOfSch = "화";
-								break;
-							case 2:
-								dayOfSch = "수";
-								break;
-							case 3:
-								dayOfSch = "목";
-								break;
-							case 4:
-								dayOfSch = "금";
-								break;
-						}
 						let schedule = document.createElement("div");
 						schedule.className = "time_area";
 						schedule.style.zIndex = -9999;
-						let day = new Object();
-						Object.defineProperty(day, `${dayOfSch}`, {
-							value: [j],
-							enumerable: true,
-						});
-						obj = deepmerge(obj, day);
-						//<div className="time_area">
-						document.getElementById(`${i}-${j}`).appendChild(schedule);
+						let parent = document.getElementById(`${i}-${j}`);
+						parent.childNodes.length !== 0
+							? parent.removeChild(parent.childNodes[0])
+							: parent.appendChild(schedule);
 					}
-					setScheduleList(obj);
 				}
 			};
-			this.handleCreate = function (e) {
-				let schedule = document.createElement("div");
-				schedule.className = "time_area";
-				schedule.style.zIndex = -9999;
-
-				let day = new Object();
-				Object.defineProperty(day, e.target.id.slice(0, 1), {
-					value: [parseInt(e.target.id.slice(2, 5))],
-					enumerable: true,
-				});
-
-				console.log(day);
-				// scheduleObject = deepmerge(scheduleObject, day);
-				// setSchedule(scheduleObject);
-				//<div className="time_area">
-				e.target.appendChild(schedule);
-				console.log(e.target);
-				e.target.removeEventListener("click", closure.handleCreate);
-				e.target.addEventListener("click", closure.handleRemove);
-			};
-			// this.handleRemove = function (e) {
-			// 	console.log(e.target.id);
-			// 	let findTarget = parseInt(e.target.id.slice(2, 5));
-			// 	let arrayTarget = scheduleObject[`${e.target.id.slice(0, 1)}`];
-			// 	let index = arrayTarget.findIndex((e) => {
-			// 		return e === findTarget;
-			// 	});
-			// 	if (index > -1) {
-			// 		arrayTarget.splice(index, 1);
-			// 	}
-			// 	console.log(arrayTarget);
-
-			// 	e.target.innerHTML = "";
-			// 	e.target.removeEventListener("click", closure.handleRemove);
-			// 	e.target.addEventListener("click", closure.handleCreate);
-			// };
 		})();
 	})();
 
@@ -156,13 +91,24 @@ export default function Section(props) {
 	};
 
 	function handleOnClick() {
+		let schedule = { 월: [], 화: [], 수: [], 목: [], 금: [] };
+		console.log(Object.keys(schedule));
+		Object.keys(schedule).forEach((v, i) => {
+			for (let j = 9; j <= 17; j++) {
+				let day = document.getElementById(`${i}-${j}`);
+				if (day.hasChildNodes()) {
+					schedule[v].push(j);
+				}
+			}
+		});
+
 		let data = {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
-			schedule: scheduleList,
+			schedule: schedule,
 			ecept_date: [],
 		};
-
+		console.log(schedule);
 		postAdminSchedule(data).then((res) => setIsDone(true));
 
 		handleOpen();
@@ -190,7 +136,6 @@ export default function Section(props) {
 	useEffect(() => {
 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
 			setForName(res.data);
-			console.log(scheduleList);
 			buildTable();
 		});
 	}, [params]);
@@ -304,6 +249,9 @@ export default function Section(props) {
 					<p className="tit">
 						[{forName && forName.data && forName.data[0].std_for_name}] 스케줄 등록
 					</p>
+					<div className="reset_btn" onClick={buildTable}>
+						초기화
+					</div>
 					<div className="save_btn" onClick={handleOnClick}>
 						저장
 					</div>
@@ -343,9 +291,6 @@ export default function Section(props) {
 			<Modal isOpen={isOpen}>
 				<Loader />
 			</Modal>
-			{/* <div className="table_btn mb40">
-				<div>업로드</div>
-			</div> */}
 		</div>
 	);
 }

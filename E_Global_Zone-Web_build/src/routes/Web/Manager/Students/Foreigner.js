@@ -598,7 +598,7 @@ export default function Foreigner() {
 																	Object.values(
 																		value.work_time
 																	).map((v) => (sum += v));
-																	return sum;
+																	return sum * 60;
 																})()}
 																분
 															</td>
