@@ -45,7 +45,6 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 		} else {
 			postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => {
 				setIsDone(true);
-				alert(res.data.message);
 			});
 		}
 	};

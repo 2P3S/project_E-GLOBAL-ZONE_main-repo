@@ -131,7 +131,7 @@ export default function CreateSection({
 												sect_start_date: startDate,
 												sect_end_date: endDate,
 											}).then((res) => {
-												alert(res.data.message);
+												// alert(res.data.message);
 												setIsDone(true);
 											});
 									  }
@@ -141,7 +141,7 @@ export default function CreateSection({
 												currentSect
 											).then((res) => {
 												setIsDone(true);
-												alert(res.data.message);
+												// alert(res.data.message);
 											});
 									  }
 							}

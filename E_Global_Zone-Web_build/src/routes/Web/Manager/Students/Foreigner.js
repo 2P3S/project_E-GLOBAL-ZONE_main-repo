@@ -161,7 +161,7 @@ export default function Foreigner() {
 	}, [selectSect]);
 
 	useEffect(() => {
-		if (dataSet && dataSet.hasOwnProperty("data")) {
+		if (dataSet) {
 			setLoading(false);
 		}
 	}, [dataSet]);
@@ -262,9 +262,7 @@ export default function Foreigner() {
 				</div>
 				<div className="wrap">
 					{!loading ? (
-						dataSet &&
-						dataSet.data &&
-						dataSet.data.length > 0 && (
+						dataSet && dataSet.data && dataSet.data.length > 0 ? (
 							<div className="scroll_area">
 								<table className="student_manage_table">
 									<colgroup>
@@ -622,6 +620,8 @@ export default function Foreigner() {
 									</tbody>
 								</table>
 							</div>
+						) : (
+							<>해당 학기에 등록 된 학생이 없습니다.</>
 						)
 					) : (
 						<Loader />
@@ -694,7 +694,7 @@ export default function Foreigner() {
 			</div>
 		</div>
 	) : (
-		<></>
+		<Loader />
 	);
 }
 
