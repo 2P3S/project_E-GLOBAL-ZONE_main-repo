@@ -124,26 +124,28 @@ export default function CreateSection({
 						<div
 							className="btn"
 							onClick={
-								mode
-									? () => {
-											postAdminSection({
-												sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
-												sect_start_date: startDate,
-												sect_end_date: endDate,
-											}).then((res) => {
-												// alert(res.data.message);
-												setIsDone(true);
-											});
-									  }
-									: () => {
-											patchAdminSection(
-												currentSect.sect_id,
-												currentSect
-											).then((res) => {
-												setIsDone(true);
-												// alert(res.data.message);
-											});
-									  }
+								moment(startDate) > moment(Date.now())
+									? mode
+										? () => {
+												postAdminSection({
+													sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
+													sect_start_date: startDate,
+													sect_end_date: endDate,
+												}).then((res) => {
+													// alert(res.data.message);
+													setIsDone(true);
+												});
+										  }
+										: () => {
+												patchAdminSection(
+													currentSect.sect_id,
+													currentSect
+												).then((res) => {
+													setIsDone(true);
+													// alert(res.data.message);
+												});
+										  }
+									: () => alert("이미 시작 된 학기입니다.")
 							}
 						>
 							{mode ? "저장" : "수정"}

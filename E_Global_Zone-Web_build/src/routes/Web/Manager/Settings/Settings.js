@@ -37,6 +37,34 @@ export default function Settings() {
 	const handleChange = (key, value) => {
 		setPostSettings({ ...postSettings, [key]: parseInt(value) });
 	};
+	const handleChangeMeet = () => {
+		let meet = document.getElementById("time_input_meet");
+		let rest = document.getElementById("time_input_rest");
+		if (meet.value < 30 && meet.value >= 0) {
+			rest.value = 30 - meet.value;
+		} else {
+			meet.value = 0;
+		}
+		setPostSettings({
+			...postSettings,
+			once_meet_time: parseInt(meet.value),
+			once_rest_time: parseInt(rest.value),
+		});
+	};
+	const handleChangeRest = () => {
+		let meet = document.getElementById("time_input_meet");
+		let rest = document.getElementById("time_input_rest");
+		if (rest.value < 30 && rest.value >= 0) {
+			meet.value = 30 - rest.value;
+		} else {
+			rest.value = 0;
+		}
+		setPostSettings({
+			...postSettings,
+			once_meet_time: parseInt(meet.value),
+			once_rest_time: parseInt(rest.value),
+		});
+	};
 
 	const reRender = () => {
 		getAdminSetting().then((res) => setSettings(res.data));
@@ -50,13 +78,6 @@ export default function Settings() {
 			setPostSettings(settings.result);
 		}
 	}, [settings]);
-	useEffect(() => {
-		if (postSettings && postSettings.once_meet_time + postSettings.once_rest_time > 30) {
-			document.getElementById("time_input1").value = 0;
-			document.getElementById("time_input2").value = 0;
-			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 });
-		}
-	}, [postSettings]);
 	useEffect(() => {
 		window.easydropdown.all();
 	});
@@ -232,15 +253,8 @@ export default function Settings() {
 									<input
 										type="number"
 										defaultValue={settings.result.once_meet_time}
-										onChange={(e) => {
-											if (e.target.value < 0) {
-												alert("양의 정수 값을 입력해주세요.");
-												e.target.value = 0;
-												return;
-											}
-											handleChange(`once_meet_time`, e.target.value);
-										}}
-										id="time_input1"
+										onChange={handleChangeMeet}
+										id="time_input_meet"
 									/>
 									<span>분</span>
 								</div>
@@ -253,15 +267,8 @@ export default function Settings() {
 									<input
 										type="number"
 										defaultValue={settings.result.once_rest_time}
-										onChange={(e) => {
-											if (e.target.value < 0) {
-												alert("양의 정수 값을 입력해주세요.");
-												e.target.value = 0;
-												return;
-											}
-											handleChange(`once_rest_time`, e.target.value);
-										}}
-										id="time_input2"
+										onChange={handleChangeRest}
+										id="time_input_rest"
 									/>
 									<span>분</span>
 								</div>

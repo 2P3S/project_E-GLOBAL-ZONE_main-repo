@@ -101,14 +101,12 @@ export default function Schedules() {
 		});
 	}, []);
 	useMemo(() => {
-		// console.log(params);
 		if (!firstRendering) {
 			history.push(`/schedules/${_selectDate}`);
 			setSelectDate(_selectDate);
 		}
 	}, [_selectDate]);
 	useEffect(() => {
-		// console.log(selectDate);
 		setPending(true);
 	}, [selectDate]);
 
@@ -333,7 +331,6 @@ export default function Schedules() {
 								btn.innerText = "삭제";
 								area.appendChild(btn);
 								deleteBtn.appendChild(area);
-								console.log(div.classList);
 								if (!div.classList.contains("done")) {
 									div.addEventListener("mouseover", () => {
 										deleteBtn.classList.remove("hover_off");
