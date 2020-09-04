@@ -33,7 +33,7 @@ export function ManagerRouter() {
 					{/* term => 학기 */}
 
 					<Route exact path="/students/:page/korean" component={Students} />
-					<Route exact path="/students/:term/foreigner" component={Foreigner} />
+					<Route exact path="/students/:sect_id/foreigner" component={Foreigner} />
 					{/* category => foreigner, Korean */}
 
 					<Route path="/settings" component={Settings} />
