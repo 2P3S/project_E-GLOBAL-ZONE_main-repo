@@ -33,6 +33,10 @@ class Reservation extends Model
      */
     protected $guarded = [];
 
+    public function schedule() {
+        return $this->belongsTo(Schedule::class, 'res_sch');
+    }
+
     /**
      * 오늘 기준 한국인 학생의 예약 목록을 조회
      * (한명 / 여러명의 가능)
