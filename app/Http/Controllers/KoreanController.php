@@ -238,9 +238,6 @@ class KoreanController extends Controller
      */
     public function destroyAccount(Student_korean $std_kor_id): JsonResponse
     {
-        // $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
-        // Student_korean::id($std_kor_id)->delete();
-        // TODO 제한 학생 테이블, 예약 테이블 연관성 때문에 다 지워야 한다. 이게 맞을까?
         $has_restricted_korean = Restricted_student_korean::where('restrict_std_kor', $std_kor_id['std_kor_id']);
         $has_reservation_korean = Reservation::where('res_std_kor', $std_kor_id['std_kor_id']);
 
