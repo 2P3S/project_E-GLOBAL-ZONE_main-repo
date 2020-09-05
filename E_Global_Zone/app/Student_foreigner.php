@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Config;
 use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /**
@@ -121,5 +124,52 @@ class Student_foreigner extends Authenticatable
             ->whereNotIn('student_foreigners.std_for_id', $work_std_for_id)
             ->orderBy('student_foreigners.std_for_lang')
             ->get();
+    }
+
+    // 선택한 유학생의 연락처 정보를 조회
+    public function get_std_for_contacts
+    (
+        array $std_for_list
+    ): JsonResponse
+    {
+        $data_std_for = null;
+        $select_column = [
+            'student_foreigners.std_for_id',
+            'student_foreigners.std_for_name',
+            'contact.std_for_phone',
+            'contact.std_for_mail',
+            'contact.std_for_zoom_id'
+        ];
+
+        // <<-- foreach 제거 -> wherein 으로 변경
+        // 학생 정보 저장
+//        foreach ($std_for_list as $std_for_id) {
+//            // 학번 기준 검색
+//            $search_result =
+//                self::select($select_column)
+//                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+//                    ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
+//
+//            // 검색 결과 저장
+//            if ($search_result) {
+//                $data_std_for[] = $search_result;
+//            }
+//        }
+        // -->>
+
+        $data_std_for =
+            self::select($select_column)
+                ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+                ->whereIn('student_foreigners.std_for_id', $std_for_list)->get();
+
+        if (empty($data_std_for)) {
+            return
+                Controller::response_json_error(Config::get('constants.kor.std_for_contacts.index.no_value'));
+        }
+
+        return
+            Controller::response_json(
+                Config::get('constants.kor.std_for_contacts.index.success'), 200, (object)$data_std_for
+            );
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Schedule;
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
 use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 
 class ForeignerController extends Controller
@@ -47,7 +47,6 @@ class ForeignerController extends Controller
     private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
     private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
 
-    private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
     private const _STD_FOR_RESET_SUCCESS = " 비밀번호 초기화가 성공하였습니다.";
@@ -65,11 +64,11 @@ class ForeignerController extends Controller
     private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
 
 
-    private $schedule;
+    private $std_for;
 
     public function __construct()
     {
-        $this->schedule = new Schedule();
+        $this->std_for = new Student_foreigner();
     }
 
     /**
@@ -87,45 +86,17 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request,
-            $rules,
-            self::_STD_FOR_SHOW_FAILURE
+            $request, $rules, Config::get('constants.kor.std_for_contacts.index.failure')
         );
 
         if (is_object($validated_result)) {
             return $validated_result;
         }
 
-        $req_std_for_id = $request->input('foreigners');
-
-        $select_column = [
-            'student_foreigners.std_for_id',
-            'student_foreigners.std_for_name',
-            'contact.std_for_phone',
-            'contact.std_for_mail',
-            'contact.std_for_zoom_id'
-        ];
-
-        $data_std_for = [];
-
-        // 학생 정보 저장
-        foreach ($req_std_for_id as $std_for_id) {
-            // 학번 기준 검색
-            $search_result =
-                Student_foreigner::select($select_column)
-                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-                    ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
-
-            // 검색 결과 저장
-            if ($search_result) {
-                $data_std_for[] = $search_result;
-            }
-        }
-
-        return response()->json([
-            'message' => self::_STD_FOR_SHOW_SUCCESS,
-            'data' => $data_std_for,
-        ], 200);
+        $req_std_for_list = $request->input('foreigners');
+        return
+            $this->std_for->get_std_for_contacts($req_std_for_list);
+        // Student_foreigner 모델로 분리
     }
 
     /**
@@ -144,9 +115,7 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request,
-            $rules,
-            self::_STD_FOR_STORE_FAILURE
+            $request, $rules, self::_STD_FOR_STORE_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -237,7 +206,7 @@ class ForeignerController extends Controller
         // 계정 생성
         Student_foreigner::create([
             'std_for_id' => $request->input('std_for_id'),
-            'password' => Hash::make(self::_STD_FOR_INIT_PASSWORD),
+            'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
             'std_for_dept' => $request->input('std_for_dept'),
             'std_for_name' => $request->input('std_for_name'),
             'std_for_lang' => $request->input('std_for_lang'),
@@ -286,7 +255,7 @@ class ForeignerController extends Controller
             ]);
         } else {
             $std_for_id->update([
-                'password' => Hash::make(self::_STD_FOR_INIT_PASSWORD),
+                'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
             ]);
         }
 
@@ -303,7 +272,8 @@ class ForeignerController extends Controller
     public function destroyAccount(
         Request $request,
         Student_foreigner $std_for_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
