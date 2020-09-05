@@ -9,7 +9,8 @@ import Modal from "../../../../components/common/modal/Modal";
 import useModal from "../../../../modules/hooks/useModal";
 import ShowList from "../../../../components/common/modal/ShowList";
 import InsertResult from "../../../../components/common/modal/InsertResult";
-import FormData from "form-data";
+import Loader from "../../../../components/common/Loader";
+
 import { getForeignerSchedule } from "../../../../api/foreigner/schedule";
 
 const STATE_PENDING = "pending";
@@ -201,10 +202,12 @@ export default function Schedules() {
 	const [scheduleData, setScheduleData] = useState();
 	const { isOpen, handleClose, handleOpen } = useModal();
 	const [modal, setModal] = useState(<></>);
+	const [pending, setPending] = useState(false);
 	const reRender = () => {
 		getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
 			setData(res.data);
 		});
+		setPending(false);
 	};
 
 	const getWeekStart = (currentDay) => {
@@ -602,27 +605,24 @@ export default function Schedules() {
 
 	useEffect(() => {
 		window.easydropdown.all();
+		setPending(true);
 		getWeekStart(moment(today));
 	}, []);
 	useEffect(() => {
+		// setPending(true);
 		getWeekStart(moment(selectedDate));
+		// if (weekStartDate !== undefined) reRender();
 	}, [selectedDate]);
 	useEffect(() => {
 		if (weekStartDate !== undefined) {
+			setPending(true);
 			setWeek(makeWeek(weekStartDate));
-			// getForeignerSchedule(user.id, weekEndDate, weekStartDate, setData);
-			getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
-				setData(res.data);
-			});
-		}
-		if (scheduleData) {
-			console.log(scheduleData);
+			reRender();
 		}
 	}, [weekStartDate]);
 
 	useEffect(() => {
 		if (data) {
-			console.log(data);
 			setScheduleData(new WeekData(data.data, today));
 		}
 	}, [data]);
@@ -815,6 +815,9 @@ export default function Schedules() {
 			</div>
 			<Modal isOpen={isOpen} handleClose={handleOpen}>
 				{modal}
+			</Modal>
+			<Modal isOpen={pending}>
+				<Loader />
 			</Modal>
 		</div>
 	);
