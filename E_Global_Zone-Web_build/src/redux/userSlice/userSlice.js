@@ -15,8 +15,8 @@ export const userSlice = createSlice({
 	initialState: {
 		isLogin: window.localStorage.getItem("global-zone-isLogin"),
 		user: {
-			id: window.localStorage.getItem("gloabl-zone-loginId")
-				? window.localStorage.getItem("gloabl-zone-loginId")
+			id: window.localStorage.getItem("global-zone-loginId")
+				? window.localStorage.getItem("global-zone-loginId")
 				: "",
 			userClass: window.localStorage.getItem("global-zone-userClass")
 				? window.localStorage.getItem("global-zone-userClass")
