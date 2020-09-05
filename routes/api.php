@@ -32,7 +32,7 @@ Route::middleware('auth.multi')->group(static function () {
 
             /* 학기별 유학생 관리 */
             Route::prefix('work')->group(function () {
-                 /** 학기별 전체 유학생 정보 조회 */
+                /** 학기별 전체 유학생 정보 조회 */
                 Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
                 /** 학기별 유학생 등록 */

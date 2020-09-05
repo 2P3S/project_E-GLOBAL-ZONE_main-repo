@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'uri' => [
+        'main' => 'http://www.94soon.net',
+        'admin' => 'http://www.94soon.net/admin',
+        'reset' => 'http://www.94soon.net/api/reset',
+    ],
+    'initial_password' => [
+        'admin' => 'oicyju5630!',
+        'foreigner' => '1q2w3e4r!'
+    ],
     'kor' => [
         'dept' => [
             'index' => [
@@ -32,6 +41,13 @@ return [
             'index' => [
                 'success' => '의 미등록 유학생 목록 조회에 성공하였습니다.',
                 'failure' => '미등록 유학생 목록 조회에 실패하였습니다.',
+            ]
+        ],
+        'std_for_contacts' => [
+            'index' => [
+                'success' => '선택한 유학생에 대한 연락처 정보 조회에 성공하였습니다.',
+                'failure' => '유학생 연락처 정보 조회에 실패하였습니다.',
+                'no_value' => '선택한 유학생에 대한 연락처 정보가 없습니다.'
             ]
         ]
 

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
+use Illuminate\Support\Facades\Config;
 use Socialite;
 use App\Student_korean;
 use App\Admin;
 use App\Model\Authenticator;
 use App\Student_foreigner;
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +16,7 @@ class LoginController extends Controller
 {
     private const _LOGIN_FAILURE = "로그인에 실패하였습니다.";
     private const _AUTH_FAILURE = "G-Suite 계정이 아닙니다.";
-    private const _ACCESS_FAILURE   = "회원 가입 후 이용 가능합니다.";
+    private const _ACCESS_FAILURE = "회원 가입 후 이용 가능합니다.";
     private const _AUTH_NO_PERMISSION = "관리자 승인 후 서비스 이용이 가능합니다.";
     private const _AUTH_HAS_RESTRICT = "이용제한 학생으로 사용할 수 없습니다.";
 
@@ -26,17 +25,19 @@ class LoginController extends Controller
     private const _LOGOUT_SUCCESS = "로그아웃되었습니다.";
     private const _PASSWORD_CHANGE_REQUIRE = "초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.";
 
-    private const _ADMIN_INIT_PASSWORD = "oicyju5630!";
-    private const _STD_FOR_INIT_PASSWORD = "1q2w3e4r!";
-
     /**
      * @var Authenticator
      */
     private $authenticator;
+    private $initial_password;
 
     public function __construct(Authenticator $authenticator)
     {
         $this->authenticator = $authenticator;
+        $this->initial_password = [
+            'admins' => Config::get('constants.initial_password.admin'),
+            'foreigners' => Config::get('constants.initial_password.foreigner'),
+        ];
     }
 
     /**
@@ -49,7 +50,8 @@ class LoginController extends Controller
     private function login_authenticator(
         Request $request,
         string $key
-    ): ?array {
+    ): ?array
+    {
         $credentials = array_values($request->only($key, 'password', 'provider'));
         $credentials[] = $key;
 
@@ -57,13 +59,8 @@ class LoginController extends Controller
             return null;
         }
 
-        $initial_password = [
-            'admins' => self::_ADMIN_INIT_PASSWORD,
-            'foreigners' => self::_STD_FOR_INIT_PASSWORD
-        ];
-
         $token = '';
-        $is_login_init_password = $initial_password[$credentials[2]] === $credentials[1];
+        $is_login_init_password = $this->initial_password[$credentials[2]] === $credentials[1];
         $token = $user->createToken(ucfirst($credentials[2]) . ' Token')->accessToken;
 
         return [
@@ -104,13 +101,22 @@ class LoginController extends Controller
         }
         // -->>
 
+        $provider = $request->input('provider');
+        $uri = "";
+        if ($provider === 'admins') {
+            $uri = Config::get('constants.uri.admin');
+        } else {
+            $uri = Config::get('constants.uri.main');
+        }
+
         // <<-- 초기 비밀번호 로그인 시
         if ($admin['flag']) {
             $data = [
-                'provider' => $request->input('provider'),
+                'provider' => $provider,
                 'account' => $admin['info']['account'],
                 'name' => $admin['info']['name'],
-                'token' => $admin['token']
+                'token' => $admin['token'],
+                'uri' => $uri
             ];
             return view('password_update', $data);
         }
@@ -154,8 +160,7 @@ class LoginController extends Controller
                 return response()->json([
                     'message' => self::_AUTH_FAILURE,
                 ], 422);
-            }
-            // 회원가입을 하지 않은 경우
+            } // 회원가입을 하지 않은 경우
             else if (empty($std_kor_info)) {
                 return response()->json([
                     'message' => self::_ACCESS_FAILURE,
@@ -170,14 +175,12 @@ class LoginController extends Controller
                 return response()->json([
                     'message' => self::_AUTH_NO_PERMISSION,
                 ], 203);
-            }
-            // 이용 제한 학생인 경우
+            } // 이용 제한 학생인 경우
             else if ($is_kor_state_of_restricted) {
                 return response()->json([
                     'message' => self::_AUTH_HAS_RESTRICT,
                 ], 203);
-            }
-            // 회원인 경우 로그인 성공과 함께 회원정보 전달
+            } // 회원인 경우 로그인 성공과 함께 회원정보 전달
             else {
                 return response()->json([
                     'message' => $std_kor_info['std_kor_name'] . self::_LOGIN_SUCCESS,
@@ -262,7 +265,8 @@ class LoginController extends Controller
     public function request_user_data(
         Request $request,
         bool $is_response_json = true
-    ) {
+    )
+    {
         $user_data = $request->user($request->input('guard'));
 
         if (!$is_response_json) {
@@ -275,7 +279,8 @@ class LoginController extends Controller
 
     public function remeber_token(
         array $request
-    ) {
+    )
+    {
         $provider = $request['provider'];
         $users = [
             'admins' => new Admin(),
@@ -288,7 +293,8 @@ class LoginController extends Controller
     public function update_password_url(
         array $request,
         string $expire_time
-    ) {
+    )
+    {
         $is_possible_password = $this->validate_password($request, $expire_time);
 
         $provider = $request['provider'];
@@ -316,11 +322,8 @@ class LoginController extends Controller
     private function validate_password(
         array $request,
         string $expire_time
-    ): bool {
-        $initial_password = [
-            'admins' => self::_ADMIN_INIT_PASSWORD,
-            'foreigners' => self::_STD_FOR_INIT_PASSWORD
-        ];
+    ): bool
+    {
 
         $provider = $request['provider'];
         $password = trim($request['password']);
@@ -328,11 +331,12 @@ class LoginController extends Controller
 
         $is_possible_provider = $provider === 'admins' || $provider === 'foreigners';
         $is_initial_password =
-            $initial_password[$provider] === $password ||
-            $initial_password[$provider] === $password_confirmation;
+            $this->initial_password[$provider] === $password ||
+            $this->initial_password[$provider] === $password_confirmation;
         $is_password_confirm = $password === $password_confirmation;
 
-        $pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
+        $pattern = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/";
+//        $pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
         $is_possible_password = preg_match($pattern, $password);
 
         return
