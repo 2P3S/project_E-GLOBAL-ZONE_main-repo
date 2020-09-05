@@ -21,6 +21,7 @@ class SectionController extends Controller
 
     private const _SECTION_UPDATE_RES_SUCCESS = "학기 정보 변경에 성공하였습니다.";
     private const _SECTION_UPDATE_RES_FAILURE = "학기 정보 변경에 실패하였습니다.";
+    private const _SECTION_UPDATE_RES_FAILURE_OVER_DATE = "해당 학기가 시작하여 변경할 수 없습니다.";
 
     private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
     private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
@@ -140,7 +141,14 @@ class SectionController extends Controller
      */
     public function update(Request $request, Section $sect_id): JsonResponse
     {
-        // TODO 학기가 시작하면 변경 X
+        // 학기 시작 날짜 검사.
+        $sect_start_date = strtotime($sect_id['sect_start_date']);
+        $now_date = strtotime("Now");
+
+        if ($sect_start_date < $now_date) {
+            return self::response_json_error(self::_SECTION_UPDATE_RES_FAILURE_OVER_DATE);
+        }
+
         $rules = [
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date|after_or_equal:sect_start_date',
