@@ -13,6 +13,7 @@ use SMartins\PassportMultiauth\HasMultiAuthApiTokens;
 
 /**
  * @method static select(array $select_column)
+ * @method static create(array $std_for_data)
  */
 class Student_foreigner extends Authenticatable
 {
@@ -66,7 +67,6 @@ class Student_foreigner extends Authenticatable
         }
         return $ran_num;
     }
-
 
     public function get_user_info(
         array $request
@@ -171,5 +171,32 @@ class Student_foreigner extends Authenticatable
             Controller::response_json(
                 Config::get('constants.kor.std_for_contacts.index.success'), 200, (object)$data_std_for
             );
+    }
+
+    public function store_std_for_info(
+        array $std_for_data
+    ): ?self
+    {
+        $std_for = null;
+        try {
+            $std_for = self::create($std_for_data);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $std_for;
+    }
+
+    public function destroy_std_for(
+        self $std_for
+    ): bool
+    {
+        try {
+            $std_for->delete();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 }
