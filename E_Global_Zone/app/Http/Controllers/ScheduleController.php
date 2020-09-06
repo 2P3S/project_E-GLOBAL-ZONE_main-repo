@@ -477,8 +477,6 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        SchedulesResultImg::where('sch_id', $sch_id['sch_id'])->delete();
-        Reservation::where('res_sch', $sch_id['sch_id'])->delete();
         $sch_id->delete();
 
         return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);

@@ -23,7 +23,8 @@ class CreateSchedulesResultImgsTable extends Migration
 
             $table->foreign('sch_id')
                 ->references('sch_id')
-                ->on('schedules');
+                ->on('schedules')
+                ->onDelete('cascade');
         });
     }
 

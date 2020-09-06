@@ -129,7 +129,6 @@ class ForeignerController extends Controller
 
         if (!$is_create_success) {
             $this->std_for->destroy_std_for($std_for);
-            $this->std_for_contact->destroy_std_for_contact($std_for_contact);
 
             $message = Config::get('constants.kor.std_for.store.failure');
             return self::response_json_error($message);
@@ -195,16 +194,8 @@ class ForeignerController extends Controller
         }
         // -->>
 
-        $is_delete_success = false;
-
-        try {
-            // 계정, 연락처 정보 삭제
-            $is_delete_success = $std_for_id->delete() &&
-                $this->std_for_contact->get_std_for_contact($std_for_id)->delete();
-        } catch (\Exception $e) {
-            $message = Config::get('constants.kor.std_for.destroy.failure');
-            return self::response_json_error($message);
-        }
+        // 계정, 연락처 정보 삭제
+        $is_delete_success = $this->std_for->destroy_std_for($std_for_id);
 
         if (!$is_delete_success) {
             $message = Config::get('constants.kor.std_for.destroy.failure');
