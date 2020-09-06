@@ -33,7 +33,7 @@ class GoogleAuth
             // 헤더에 토큰이 없는 경우
             return response()->json([
                 'message' => self::_ACCESS_ERROR,
-            ], 422);
+            ], 401);
 
         try {
             $std_kor_user = Socialite::driver('google')->userFromToken($header_token);
@@ -67,7 +67,7 @@ class GoogleAuth
             // 토큰이 만료 된 경우
             return response()->json([
                 'message' => self::_AUTH_FAILURE,
-            ], 422);
+            ], 401);
         }
 
         return $next($request);
