@@ -221,6 +221,7 @@ body {
 	font-size: 14px;
 	text-align: center;
 	cursor:pointer;
+	/**/
 }
 
 .login_wrap .login_input .submit:hover {
