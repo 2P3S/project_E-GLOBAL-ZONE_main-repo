@@ -17,7 +17,7 @@ class CreateStudentForeignersContactsTable extends Migration
             $table->unsignedBigInteger('std_for_id');
             $table->string('std_for_phone')->unique();
             $table->string('std_for_mail')->unique();
-            $table->string('std_for_zoom_id')->unique();
+            $table->unsignedBigInteger('std_for_zoom_id')->unique();
             $table->timestamps();
 
             /* 기본키 설정 */
