@@ -136,7 +136,7 @@ export default function ShowList({
 												key={`${v.std_kor_id}`}
 											>
 												<option value={true} selected={permission}>
-													승인
+													동의
 												</option>
 
 												<option
@@ -146,7 +146,7 @@ export default function ShowList({
 														user.userClass !== conf.userClass.MANAGER
 													}
 												>
-													미승인
+													미동의
 												</option>
 											</select>
 										</div>
@@ -187,7 +187,7 @@ export default function ShowList({
 
 			<div className="btn_area">
 				<div className="bbtn white left" onClick={handlePermissionAll}>
-					일괄승인
+					일괄동의
 				</div>
 				<div className="right">
 					<div
