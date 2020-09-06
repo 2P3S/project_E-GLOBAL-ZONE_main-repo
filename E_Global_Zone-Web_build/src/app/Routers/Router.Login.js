@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 import Login, { KoreanLogin, MobileLogin, AdminLogin } from "../../routes/Login/Login";
 import SignUp from "../../routes/Login/SignUp";
@@ -10,6 +10,20 @@ import ResetPassword from "../../routes/Login/ResetPassword";
  * @constructor
  */
 export const LoginRouter = () => {
+	useEffect(() => {
+		let link = document.getElementById("content");
+		if (isMobile) {
+			link.innerHTML = "";
+			link.rel = "stylesheet";
+			link.href = "/css/mobile/content.css";
+			document.head.appendChild(link);
+		} else {
+			link.innerHTML = "";
+			link.rel = "stylesheet";
+			link.href = "/css/content.css";
+			document.head.appendChild(link);
+		}
+	}, []);
 	return (
 		<Switch>
 			{/*<Redirect exact path="/" to={`/student`} />*/}
