@@ -2,476 +2,414 @@
 
 a,
 a:link {
-    text-decoration: none;
+	text-decoration: none;
 }
-
 a:hover,
 a:active,
 a:focus {
-    text-decoration: none;
+	text-decoration: none;
 }
-
 input[type="text"] {
-    -webkit-border-radius: 5px;
-    -webkit-appearance: none;
+	-webkit-border-radius: 5px;
+	-webkit-appearance: none;
 }
-
 input[type="button"] {
-    -webkit-border-radius: 5px;
-    -webkit-appearance: none;
+	-webkit-border-radius: 5px;
+	-webkit-appearance: none;
 }
-
 input[type="image"] {
-    -webkit-border-radius: 5px;
-    -webkit-appearance: none;
+	-webkit-border-radius: 5px;
+	-webkit-appearance: none;
 }
-
 input[type="submit"] {
-    -webkit-border-radius: 5px;
-    -webkit-appearance: none;
+	-webkit-border-radius: 5px;
+	-webkit-appearance: none;
 }
-
 input[type="password"] {
-    -webkit-border-radius: 5px;
-    -webkit-appearance: none;
+	-webkit-border-radius: 5px;
+	-webkit-appearance: none;
 }
-
 body {
-    min-width: 320px;
-    margin: 0 auto;
-    min-height: 100%;
-    border: 1px solid #ddd;
-    font-family: "Noto Sans KR", sans-serif;
+	min-width: 320px;
+	margin: 0 auto;
+	min-height: 100%;
+	border: 1px solid #ddd;
+	font-family: "Noto Sans KR", sans-serif;
 }
 
 /**************** mhead ***************/
 .mhead {
-    overflow: hidden;
-    width: 100%;
-    height: 70px;
-    padding: 0 30px;
-    box-sizing: border-box;
-    border-bottom: 1px solid #e6e6e6;
+	overflow: hidden;
+	width: 100%;
+	height: 70px;
+	padding: 0 30px;
+	box-sizing: border-box;
+	border-bottom: 1px solid #e6e6e6;
 }
-
 .mhead .logo {
-    float: left;
-    margin-top: 17px;
+	float: left;
+	margin-top: 17px;
 }
-
 .mhead .login {
-    float: right;
-    margin-top: 24px;
+	float: right;
+	margin-top: 24px;
 }
-
 .mhead .logo a,
 .mhead .login a {
-    display: inline-block;
+	display: inline-block;
 }
 
 /**************** mfooter ***************/
 .mfooter {
-    width: 100%;
-    padding: 25px 0;
-    border-top: 1px solid #e6e6e6;
+	width: 100%;
+	padding: 25px 0;
+	border-top: 1px solid #e6e6e6;
 }
-
 .mfooter p {
-    font-size: 12px;
-    text-align: center;
-    color: #afafaf;
-    line-height: 150%;
+	font-size: 12px;
+	text-align: center;
+	color: #afafaf;
+	line-height: 150%;
 }
-
 .mfooter p span {
-    display: block;
-    font-family: "Lato", sans-serif;
-    font-weight: 600;
+	display: block;
+	font-family: "Lato", sans-serif;
+	font-weight: 600;
 }
 
 /**************** wrap ***************/
 .wrap {
-    width: 100%;
-    padding: 40px 35px;
-    box-sizing: border-box;
+	width: 100%;
+	padding: 40px 35px;
+	box-sizing: border-box;
 }
 
 .mhead,
 .mfooter,
 .wrap {
-    max-width: 600px;
-    margin: 0 auto;
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 /* 로그인 */
 .wrap.mobile_login {
-    padding: 260px 0 100px 0;
-    background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
-    text-align: center;
+	padding: 260px 0 100px 0;
+	background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
+	text-align: center;
 }
-
 .mobile_login div {
-    display: inline-block;
-    width: 270px;
-    height: 45px;
-    line-height: 45px;
-    font-size: 13px;
-    color: #6a7d97;
-    font-weight: 600;
-    border-radius: 100px;
-    background: #dce5f1;
+	display: inline-block;
+	width: 270px;
+	height: 45px;
+	line-height: 45px;
+	font-size: 13px;
+	color: #6a7d97;
+	font-weight: 600;
+	border-radius: 100px;
+	background: #dce5f1;
 }
-
 .mobile_login p {
-    font-size: 12px;
-    color: #9eadc4;
-    margin-top: 10px;
+	font-size: 12px;
+	color: #9eadc4;
+	margin-top: 10px;
 }
 
 /*예약조회*/
 .calandar {
-    width: 100%;
-    text-align: center;
-    margin: 50px 0;
-    border-radius: 10px;
+	width: 100%;
+	text-align: center;
+	margin: 50px 0;
+	border-radius: 10px;
 }
-
 .calandar img {
-    width: 100%;
+	width: 100%;
 }
-
 .reservation_boxs {
-    width: 100%;
+	width: 100%;
 }
-
 .reservation_boxs .box {
-    overflow: hidden;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    width: 100%;
-    height: 80px;
-    font-size: 13px;
-    padding: 0 8px 0 25px;
-    box-sizing: border-box;
-    font-weight: 600;
-    color: #fff;
+	overflow: hidden;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	width: 100%;
+	height: 80px;
+	font-size: 13px;
+	padding: 0 8px 0 25px;
+	box-sizing: border-box;
+	font-weight: 600;
+	color: #fff;
 }
 
 .reserv_info {
-    font-size: 13px;
-    padding: 15px 0;
-    background: #f5f5f5;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    text-align: center;
+	font-size: 13px;
+	padding: 15px 0;
+	background: #f5f5f5;
+	border: 1px solid #e0e0e0;
+	border-radius: 10px;
+	text-align: center;
 }
-
 .reservation_boxs .box.puple {
-    background: #4d4cac url(/global/mobile/img/box_check_ico.gif) no-repeat 90% center;
+	background: #4d4cac url(/global/mobile/img/box_check_ico.gif) no-repeat 90% center;
 }
-
 .reservation_boxs .box.blue {
-    background: #659cff;
+	background: #659cff;
 }
-
 .reservation_boxs .box.pink {
-    background: #ff808b;
+	background: #ff808b;
 }
-
 .reservation_boxs ul {
-    float: left;
-    margin-top: 21px;
+	float: left;
+	margin-top: 21px;
 }
-
 .reservation_boxs ul li.eng {
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 800;
-    font-size: 13px;
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 800;
+	font-size: 13px;
 }
-
 .reservation_boxs .box span {
-    float: right;
-    height: 64px;
-    line-height: 64px;
-    width: 100px;
-    margin-top: 8px;
-    text-align: center;
-    background: #222;
-    border-radius: 5px;
+	float: right;
+	height: 64px;
+	line-height: 64px;
+	width: 100px;
+	margin-top: 8px;
+	text-align: center;
+	background: #222;
+	border-radius: 5px;
 }
-
 .reservation_boxs .box.puple span {
-    background: #4241a4;
-    width: 130px;
+	background: #4241a4;
+	width: 130px;
 }
-
 .reservation_boxs .box.blue span {
-    background: #5e87fe;
+	background: #5e87fe;
 }
-
 .reservation_boxs .box.pink span {
-    background: #fa6e7a;
+	background: #fa6e7a;
 }
-
 .reservation_boxs .box a {
-    float: right;
-    margin-top: 15px;
-    width: 35px;
-    padding: 20px 0;
-    text-align: center;
+	float: right;
+	margin-top: 15px;
+	width: 35px;
+	padding: 20px 0;
+	text-align: center;
 }
 
 /* 예약신청 */
 .apply_tit {
-    width: 100%;
-    display: inline-block;
-    margin-bottom: 10px;
+	width: 100%;
+	display: inline-block;
+	margin-bottom: 10px;
 }
-
 .apply_tit h3 {
-    float: left;
-    font-size: 23px;
-    color: #000;
+	float: left;
+	font-size: 23px;
+	color: #000;
 }
-
 .apply_tit p {
-    float: right;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.05em;
+	float: right;
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: -0.05em;
 }
-
 .apply_tit p span {
-    font-size: 26px;
-    color: #f29a00;
-    font-family: "Lato", sans-serif;
-    font-weight: 900;
+	font-size: 26px;
+	color: #f29a00;
+	font-family: "Lato", sans-serif;
+	font-weight: 900;
 }
-
 .input_box {
-    width: 100%;
-    margin-bottom: 15px;
+	width: 100%;
+	margin-bottom: 15px;
 }
-
 .input_box p {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 5px;
+	font-weight: 600;
+	font-size: 14px;
+	margin-bottom: 5px;
 }
-
 .input_box input,
 .input_box textarea {
-    width: 100%;
-    padding: 0 20px;
-    font-family: "Noto Sans KR", sans-serif;
-    color: #1c233d;
-    background: #f5f5f6;
-    border: 1px solid #bcbfc7;
-    font-weight: 600;
-    border-radius: 5px;
-    box-sizing: border-box;
+	width: 100%;
+	padding: 0 20px;
+	font-family: "Noto Sans KR", sans-serif;
+	color: #1c233d;
+	background: #f5f5f6;
+	border: 1px solid #bcbfc7;
+	font-weight: 600;
+	border-radius: 5px;
+	box-sizing: border-box;
 }
-
 .input_box input {
-    height: 50px;
+	height: 50px;
 }
-
 .input_box textarea {
-    resize: none;
-    padding: 20px;
-    height: 150px;
-    font-size: 13px;
-    color: #6a6a6a;
-    line-height: 23px;
-    font-weight: 500;
+	resize: none;
+	padding: 20px;
+	height: 150px;
+	font-size: 13px;
+	color: #6a6a6a;
+	line-height: 23px;
+	font-weight: 500;
 }
 
 /* 스케줄 조회 */
 .sch_tab {
-    width: 100%;
+	width: 100%;
 }
-
 .sch_tab {
-    overflow: hidden;
-    clear: both;
-    width: 100%;
+	overflow: hidden;
+	clear: both;
+	width: 100%;
 }
-
 .sch_tab li {
-    float: left;
-    margin-right: -1px;
-    width: 25%;
+	float: left;
+	margin-right: -1px;
+	width: 25%;
 }
-
 .sch_tab li div {
-    display: block;
-    padding: 15px 0;
-    color: #1d1f24;
-    font-size: 13px;
-    text-align: center;
-    border: 1px solid #e5e5e5;
-    background: #fff;
-    font-weight: 600;
-    border-radius: 5px 5px 0 0;
+	display: block;
+	padding: 15px 0;
+	color: #1d1f24;
+	font-size: 13px;
+	text-align: center;
+	border: 1px solid #e5e5e5;
+	background: #fff;
+	font-weight: 600;
+	border-radius: 5px 5px 0 0;
 }
-
 .sch_tab li div.on {
-    position: relative;
-    border: 1px solid #e5e5e5;
-    border-bottom: 1px solid #f5f5f6;
-    background: #f5f5f6;
-    z-index: 1;
+	position: relative;
+	border: 1px solid #e5e5e5;
+	border-bottom: 1px solid #f5f5f6;
+	background: #f5f5f6;
+	z-index: 1;
 }
-
 .sch_tab li div.eng {
-    background: #fff url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
+	background: #fff url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
 }
-
 .sch_tab li div.jp {
-    background: #fff url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
+	background: #fff url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
 }
-
 .sch_tab li div.ch {
-    background: #fff url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
+	background: #fff url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
 }
-
 /* 예약조회 BOX와 동일 */
 .reservation_boxs.tab_wrap {
-    width: 99%;
-    padding: 25px 25px 15px 25px;
-    background: #f5f5f6;
-    box-sizing: border-box;
-    border: 1px solid #e5e5e5;
-    border-top: none;
+	width: 99%;
+	padding: 25px 25px 15px 25px;
+	background: #f5f5f6;
+	box-sizing: border-box;
+	border: 1px solid #e5e5e5;
+	border-top: none;
 }
-
 .reservation_boxs.tab_wrap a.box {
-    display: block;
-    background-image: none;
-    font-size: 12px;
-    padding: 0 8px 0 18px;
+	display: block;
+	background-image: none;
+	font-size: 12px;
+	padding: 0 8px 0 18px;
 }
-
 .reservation_boxs.tab_wrap a.box span {
-    width: 90px;
+	width: 90px;
 }
 
 /* 결과 관리 */
 .wrap.mobile_result {
-    font-weight: 600;
+	font-weight: 600;
 }
-
 .wrap.mobile_result p.tit {
-    font-size: 25px;
-    color: #1d1f24;
-    letter-spacing: -0.05em;
-    margin-top: 35px;
+	font-size: 25px;
+	color: #1d1f24;
+	letter-spacing: -0.05em;
+	margin-top: 35px;
 }
-
 .wrap.mobile_result .point_info {
-    margin-top: 20px;
+	margin-top: 20px;
 }
-
 .wrap.mobile_result .point_info p {
-    display: inline-block;
-    font-size: 17px;
-    line-height: 24px;
+	display: inline-block;
+	font-size: 17px;
+	line-height: 24px;
 }
-
 .wrap.mobile_result .point_info p span.name {
-    color: #4d4cac;
+	color: #4d4cac;
 }
-
 .wrap.mobile_result .point_info .result {
-    float: right;
-    margin-top: -14px;
-    font-size: 55px;
-    font-family: "Lato", sans-serif;
-    font-weight: 900;
-    letter-spacing: 2px;
+	float: right;
+	margin-top: -14px;
+	font-size: 55px;
+	font-family: "Lato", sans-serif;
+	font-weight: 900;
+	letter-spacing: 2px;
 }
-
 .wrap.mobile_result .point_info .result span.rank {
-    background: #2bd259;
-    color: #fff;
-    font-size: 12px;
-    padding: 4px 7px;
-    border-radius: 5px;
-    margin-right: 10px;
-    letter-spacing: 0;
+	background: #2bd259;
+	color: #fff;
+	font-size: 12px;
+	padding: 4px 7px;
+	border-radius: 5px;
+	margin-right: 10px;
+	letter-spacing: 0;
 }
-
 .wrap.mobile_result .point_info .result span.times {
-    font-size: 20px;
-    font-weight: 600;
+	font-size: 20px;
+	font-weight: 600;
 }
-
 .history_wrap {
-    width: 100%;
-    margin-top: 10px;
+	width: 100%;
+	margin-top: 10px;
 }
-
 .history_wrap .month_move {
-    overflow: hidden;
-    width: 100%;
-    padding: 0 20px;
-    height: 55px;
-    line-height: 55px;
-    background: #373a44;
-    color: #fff;
-    box-sizing: border-box;
-    border-radius: 5px 5px 0 0;
+	overflow: hidden;
+	width: 100%;
+	padding: 0 20px;
+	height: 55px;
+	line-height: 55px;
+	background: #373a44;
+	color: #fff;
+	box-sizing: border-box;
+	border-radius: 5px 5px 0 0;
 }
-
 .history_wrap .month_move p {
-    float: left;
-    font-size: 15px;
+	float: left;
+	font-size: 15px;
 }
-
 .history_wrap .month_move .arrow {
-    float: right;
+	float: right;
 }
-
 .history_wrap .month_move .arrow div {
-    display: inline-block;
-    width: 20px;
-    /* padding: 10px 0; */
-    text-align: center;
+	display: inline-block;
+	width: 20px;
+	/* padding: 10px 0; */
+	text-align: center;
 }
-
 .history_wrap table {
-    width: 100%; /*border-collapse:collapse;*/
-    color: #373a44;
-    font-size: 12px;
-    border: 1px solid #bcbfc7;
-    border-top: none;
-    border-radius: 0 0 5px 5px;
+	width: 100%; /*border-collapse:collapse;*/
+	color: #373a44;
+	font-size: 12px;
+	border: 1px solid #bcbfc7;
+	border-top: none;
+	border-radius: 0 0 5px 5px;
 }
-
 .history_wrap table th,
 .history_wrap table td {
-    padding: 15px 0;
-    text-align: center;
-    border-bottom: 1px solid #e8e8e8;
+	padding: 15px 0;
+	text-align: center;
+	border-bottom: 1px solid #e8e8e8;
 }
-
 .history_wrap table tr:last-child td {
-    border-bottom: none;
+	border-bottom: none;
 }
-
 .history_wrap table thead th {
-    font-weight: 600;
-    border-bottom: 1px solid #e8e8e8;
+	font-weight: 600;
+	border-bottom: 1px solid #e8e8e8;
 }
-
 .history_wrap table tbody td.score {
-    color: #2bd259;
-    font-weight: 600;
+	color: #2bd259;
+	font-weight: 600;
 }
 
 /* 회원가입 시 정보 추가입력 */
 .join_add_wrap {}
-.join_add_wrap .input_area {width:100%; box-sizing:border-box; padding:160px 40px 40px 40px;  border:1px solid #ddd; border-radius:10px; font-size:14px; background:url(/global/img/join_ico.gif) no-repeat center 45px;}
+.join_add_wrap .input_area {width:100%; box-sizing:border-box; padding:160px 40px 40px 40px; border:1px solid #ddd; border-radius:10px; font-size:14px; background:url(/global/img/join_ico.gif) no-repeat center 45px;}
 .join_add_wrap .input_area .box {text-align:left; margin-bottom:10px;}
 .join_add_wrap .input_area .box label {display:inline-block; color:#373a44;font-weight: 600;margin-bottom:4px;}
 .join_add_wrap .input_area input,
@@ -486,151 +424,133 @@ body {
 /**************** 기본정의 ***************/
 /* TAB */
 .tab {
-    width: 100%;
+	width: 100%;
 }
-
 .tab {
-    display: inline-block;
-    clear: both;
-    width: 100%;
+	display: inline-block;
+	clear: both;
+	width: 100%;
 }
-
 .tab li {
-    float: left;
-    margin-right: -1px;
-    width: 50%;
+	float: left;
+	margin-right: -1px;
+	width: 50%;
 }
-
 .tab li a {
-    display: block;
-    padding: 15px 0;
-    color: #222;
-    font-size: 13px;
-    text-align: center;
-    border: 1px solid #222;
-    background: #fff;
-    font-weight: 600;
+	display: block;
+	padding: 15px 0;
+	color: #222;
+	font-size: 13px;
+	text-align: center;
+	border: 1px solid #222;
+	background: #fff;
+	font-weight: 600;
 }
-
 .tab li a.on {
-    position: relative;
-    color: #fff;
-    border: 1px solid #222;
-    background: #222;
-    z-index: 1;
+	position: relative;
+	color: #fff;
+	border: 1px solid #222;
+	background: #222;
+	z-index: 1;
 }
-
 .tab li:first-child a {
-    border-radius: 5px 0 0 5px;
+	border-radius: 5px 0 0 5px;
 }
-
 .tab li:last-child a {
-    border-radius: 0 5px 5px 0px;
+	border-radius: 0 5px 5px 0px;
 }
-
 .tab.no2 li {
-    width: 50%;
+	width: 50%;
 }
-
 .tab.no3 li {
-    width: 33.2%;
+	width: 33.2%;
 }
-
 .tab.no4 li {
-    width: 25%;
+	width: 25%;
 }
-
 .tab.no5 li {
-    width: 20%;
+	width: 20%;
 }
 
 /* SELECT */
 select {
-    padding: 0 25px 0 15px;
-    height: 42px;
-    line-height: 42px;
-    border: 1px solid #bcbfc7;
-    background: #f1f1f1 url(/global/mobile/img/select_arrow.gif) no-repeat 90% 50%;
-    border-radius: 5px;
-    font-size: 13px;
-    color: #1d1f24;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+	padding: 0 25px 0 15px;
+	height: 42px;
+	line-height: 42px;
+	border: 1px solid #bcbfc7;
+	background: #f1f1f1 url(/global/mobile/img/select_arrow.gif) no-repeat 90% 50%;
+	border-radius: 5px;
+	font-size: 13px;
+	color: #1d1f24;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
-
 select::-ms-expand {
-    display: none;
+	display: none;
 }
 
 /* BUTTON */
 .btn_wrap {
-    width: 100%;
-    text-align: center;
-    margin-top: 40px;
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
 }
-
 .btn_wrap div {
-    display: inline-block;
-    width: 200px;
-    height: 60px;
-    line-height: 60px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-    background: #4d4cac;
-    border-radius: 5px;
+	display: inline-block;
+	width: 200px;
+	height: 60px;
+	line-height: 60px;
+	color: #fff;
+	font-weight: 600;
+	font-size: 14px;
+	background: #4d4cac;
+	border-radius: 5px;
 }
 
 /* CHECK BOX */
 .agree {
-    position: relative;
+	position: relative;
 }
-
 .agree .all_agree input[type="checkbox"] {
-    display: none;
+	display: none;
 }
-
 .agree .all_agree input[type="checkbox"] + label {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background: #e3e4ea;
-    cursor: pointer;
-    border-radius: 3px;
-    float: left;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background: #e3e4ea;
+	cursor: pointer;
+	border-radius: 3px;
+	float: left;
 }
-
 .agree .all_agree:after {
-    display: block;
-    clear: both;
-    content: "";
+	display: block;
+	clear: both;
+	content: "";
 }
-
 .agree .all_agree input[type="checkbox"]:checked + label {
-    background: url(/global/mobile/img/checkBox_ico.png) #4d4cac no-repeat center/12px 10px;
-    float: left;
+	background: url(/global/mobile/img/checkBox_ico.png) #4d4cac no-repeat center/12px 10px;
+	float: left;
 }
-
 .agree .all_agree input[type="checkbox"] + label span {
-    position: absolute;
-    top: 0;
-    left: 30px;
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #6a6a6a;
+	position: absolute;
+	top: 0;
+	left: 30px;
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	color: #6a6a6a;
 }
 
 /********************모바일********************/
 @media (max-width: 400px) {
-    .mfooter p {
-        color: #525252;
-        word-break: keep-all;
-    }
-
-    .mfooter p span {
-        display: inline;
-        color: #aaa;
-    }
+	.mfooter p {
+		color: #525252;
+		word-break: keep-all;
+	}
+	.mfooter p span {
+		display: inline;
+		color: #aaa;
+	}
 }

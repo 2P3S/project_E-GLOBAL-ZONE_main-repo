@@ -367,8 +367,6 @@ export default function Settings() {
                         <span>{postSettings.once_limit_period}일간</span> 이용제한 <br/>
                         <span>{postSettings.max_absent}회</span> 이상 결석 시, 해당 학기 이용 제한
                     </div>
-
-<<<<<<< HEAD
 					<div className="input">
 						<div className="select_tit">
 							<span className="bold">유학생 결과입력</span>
@@ -447,79 +445,4 @@ export default function Settings() {
 	) : (
 		<>Loading</>
 	);
-=======
-                    <div className="input">
-                        <div className="select_tit">
-                            <span className="bold">유학생 결과입력</span>
-                        </div>
-                        <div className="select_input">
-                            <select
-                                name="catgo1"
-                                className="dropdown"
-                                onChange={(e) => {
-                                    handleChange(`result_input_deadline`, e.target.value);
-                                }}
-                            >
-                                {array.map((v) => {
-                                    return (
-                                        <option
-                                            id={`day-${v}`}
-                                            selected={
-                                                settings &&
-                                                settings.result.result_input_deadline === v
-                                                    ? true
-                                                    : false
-                                            }
-                                        >
-                                            {v}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                            <span>일 이내</span>
-                        </div>
-                    </div>
-
-                    <div className="btn_area right">
-                        <div
-                            className="bbtn darkGray"
-                            onClick={handleOpenForInsertForeignerStudent}
-                        >
-                            유학생 등록
-                        </div>
-                        <div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
-                            학기 기간 설정
-                        </div>
-                        <div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
-                            학기 기간 조회
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="table_btn mb40">
-                <div
-                    onClick={() => {
-                        postAdminSetting(postSettings);
-                    }}
-                >
-                    저장
-                </div>
-            </div>
-            <Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
-                <CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen}/>
-            </Modal>
-            <Modal isOpen={getSectIsOpen} handleClose={handleCloseForGetSectIsOpen}>
-                <GetSections handleClose={handleCloseForGetSectIsOpen}/>
-            </Modal>
-            <Modal
-                isOpen={isOpenForInsertForeignerStudent}
-                handleClose={handleCloseForInsertForeignerStudent}
-            >
-                <InsertForeignerStudent handleClose={handleCloseForInsertForeignerStudent}/>
-            </Modal>
-        </div>
-    ) : (
-        <>Loading</>
-    );
->>>>>>> 09c2ce9b4741471357c2cc7209a3324cb4a884a5
 }

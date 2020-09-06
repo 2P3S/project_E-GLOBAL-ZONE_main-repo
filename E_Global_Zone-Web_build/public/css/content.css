@@ -211,6 +211,11 @@ body {
 	border-radius: 9px;
 	font-size: 14px;
 	text-align: center;
+	cursor:pointer;
+}
+
+.login_wrap .login_input .submit:hover {
+	background:#1a48d3;
 }
 
 /* 로그인 - 한국인 학생 */

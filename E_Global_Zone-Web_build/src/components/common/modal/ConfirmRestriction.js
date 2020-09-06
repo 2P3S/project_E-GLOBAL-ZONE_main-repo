@@ -48,7 +48,6 @@ export default function ConfirmRestriction({std_kor_id, std_kor_name, handleClos
         }
     }, [pending]);
 
-<<<<<<< HEAD
 	useEffect(() => {
 		return reRender;
 	}, []);
@@ -71,28 +70,6 @@ export default function ConfirmRestriction({std_kor_id, std_kor_name, handleClos
 				{select ? <label>이용 제한<input type="text" defaultValue={date} onChange={handleChange} />일 설정</label> : <></>}
 				<textarea name="" id="restrict_reason" cols="20" rows="4" />
 			</div>
-=======
-    useEffect(() => {
-        return reRender;
-    }, []);
-    return (
-        <div className="popup restriction">
-            <p className="tit">이용 제한 등록</p>
-            <div className="btn_area">
-                <div className={`bbtn ${select ? "mint" : "gray"}`} onClick={handleClick}>
-                    날짜로 제한 하기
-                </div>
-                <div className={`bbtn ${select ? "gray" : "mint"}`} onClick={handleClick}>
-                    현재 학기 제한하기
-                </div>
-            </div>
-            {select ? <input type="text" defaultValue={date} onChange={handleChange}/> : <></>}
-
-            <p className="txt">
-                {std_kor_name} 학생의 <span>이용 제한 사유</span>를 입력해주세요.
-            </p>
-            <textarea name="" id="restrict_reason" cols="20" rows="4"/>
->>>>>>> 09c2ce9b4741471357c2cc7209a3324cb4a884a5
 
             <div className="btn_area">
                 <div className="bbtn mint" onClick={handleConfirm}>
