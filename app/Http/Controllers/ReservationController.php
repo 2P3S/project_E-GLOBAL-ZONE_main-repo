@@ -346,7 +346,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 해당 일자에 대한 예약 조회 ( 미사용중 )
+     * 한국인학생 - 해당 일자에 대한 예약 조회 ( 미사용 )
      * api/korean/reservation
      *
      * @param Request $request
@@ -379,30 +379,17 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 해당 요일 기준 진행중인 예약 조회
+     * 한국인학생 - 해당 날짜 기준 진행중인 예약 조회
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function std_kor_show_res_prgrs(Request $request, Preference $preference_instance): JsonResponse
+    public function std_kor_show_res_prgrs(Request $request): JsonResponse
     {
-        // <<-- 환경설정 변수
-        $setting_value = $preference_instance->getPreference();
-        $res_start_period = $setting_value->res_start_period;
-        // -->>
-
         $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
 
-        /* 예약 가능 최대 기준 검색가능한 날짜 */
-        $prgs_end_date = date("Y-m-d", strtotime("+{$res_start_period} days"));
-
-        $std_prgs_res_data = Reservation::select()
-            ->join('schedules as sch', 'res_sch', 'sch_id')
-            ->where('res_std_kor', $std_kor_id)
-            ->whereDate('sch.sch_end_date', '<=', $prgs_end_date)
-            ->get();
-
-        return self::response_json(self::_STD_KOR_RES_INDEX_SUCCESS, 200, $std_prgs_res_data);
+        // 유학생 출석 결과 입력 여부가 안된 모든 예약 반환.
+        return $this->reservation->get_std_kor_res_by_permission($std_kor_id);
     }
 
     /**
@@ -437,7 +424,6 @@ class ReservationController extends Controller
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->where('schedules.sch_sect', $request->sect_id)
             ->where('res_std_kor', $std_kor_id)
-            // ->where('res_std_kor', $request->std_kor_id)
             ->whereMonth('schedules.sch_start_date', $request->search_month)
             ->where('res_state_of_attendance', true)
             ->get();

@@ -213,8 +213,8 @@ Route::middleware('auth.korean')->group(function () {
 
         /* 예약 관련 */
         Route::prefix('reservation')->group(function () {
-            /** 해당 일자에 대한 예약 조회 */
-            Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
+            /** 해당 날짜 기준 진행중인 예약 조회 */
+            Route::get('', 'ReservationController@std_kor_show_res_prgrs')->name('reservations.show');
 
             /** 예약 신청 */
             Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');
