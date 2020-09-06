@@ -16,7 +16,7 @@ class SettingController extends Controller
     public function index()
     {
         return response()->json([
-            'message' => 'Setting Value 조회',
+            'message' => '환경변수를 조회합니다.',
             'result' => Setting::orderBy('setting_date', 'DESC')->get()->first(),
         ], 200);
     }
@@ -54,7 +54,7 @@ class SettingController extends Controller
         $create_setting = Setting::create($request);
 
         return response()->json([
-            'message' => 'Setting Value 등록 완료',
+            'message' => '환경변수 저장 완료',
             'result' => $create_setting,
         ], 201);
     }

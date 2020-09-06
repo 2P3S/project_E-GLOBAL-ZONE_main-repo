@@ -28,7 +28,8 @@ class CreateReservationsTable extends Migration
 
             $table->foreign('res_sch')
                 ->references('sch_id')
-                ->on('schedules');
+                ->on('schedules')
+                ->onDelete('cascade');
         });
     }
 

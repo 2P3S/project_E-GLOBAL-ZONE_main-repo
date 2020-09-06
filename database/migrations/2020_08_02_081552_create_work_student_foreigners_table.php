@@ -21,7 +21,8 @@ class CreateWorkStudentForeignersTable extends Migration
             /* 외래키 설정 */
             $table->foreign('work_std_for')
                 ->references('std_for_id')
-                ->on('student_foreigners');
+                ->on('student_foreigners')
+                ->onDelete('cascade');
 
             $table->foreign('work_sect')
                 ->references('sect_id')
