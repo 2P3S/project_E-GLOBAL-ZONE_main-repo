@@ -30,6 +30,7 @@ export default function Results() {
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
 			setPending(true);
 		});
+		window.easydropdown.all();
 	}, []);
 
 	useEffect(() => {
