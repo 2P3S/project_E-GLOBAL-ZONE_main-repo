@@ -18,7 +18,6 @@ class KoreanController extends Controller
     private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";
     private const _STD_KOR_APR_INDEX_FAILURE = "가입 승인 대기중인 한국인 학생이 없습니다.";
     private const _STD_KOR_IS_ALREADY_REGISTERED = "이미 존재하는 학생의 정보입니다.";
-    private const _STD_KOR_RGS_MAIL_FAILURE = "G - Suite 계정만 가입 가능합니다.";
 
     // updateApproval
     private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
@@ -35,9 +34,11 @@ class KoreanController extends Controller
     private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
 
     private $restricted;
+    private $std_kor;
 
     public function __construct()
     {
+        $this->std_kor = new Student_korean();
         $this->restricted = new Restricted_student_korean();
     }
 
@@ -190,45 +191,41 @@ class KoreanController extends Controller
      */
     public function registerAccount(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
+        // <<-- Google 에서 이메일 요청.
+        $std_kor_user = Socialite::driver('google')->userFromToken($request->header('Authorization'));
+        $request['std_kor_mail'] = $std_kor_user['email'];
+        // -->>
+
+        $rules = [
             'std_kor_id' => 'required|integer|unique:student_koreans,std_kor_id|distinct|min:1000000|max:9999999',
             'std_kor_dept' => 'required|integer',
             'std_kor_name' => 'required|string|min:2',
-            'std_kor_phone' => 'required|string|unique:student_koreans,std_kor_phone|min:13',
-        ]);
+            'std_kor_phone' => 'required|phone_number|unique:student_koreans,std_kor_phone',
+            'std_kor_mail' => 'required:g_suite_mail|unique:student_koreans,std_kor_mail'
+        ];
 
-        $std_kor_user = Socialite::driver('google')->userFromToken($request->header('Authorization'));
-        $std_kor_mail = $std_kor_user['email'];
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_KOR_RGS_FAILURE
+        );
 
-        $parse_email = explode('@', $std_kor_mail)[1];
-        $check_email = strcmp($parse_email, 'g.yju.ac.kr');
-
-        if ($validator->fails() || $check_email) {
-            return response()->json([
-                'message' => $check_email ? self::_STD_KOR_RGS_MAIL_FAILURE : $validator->errors(),
-            ], 422);
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
 
-        // 중복 회원 검사
-        $is_registered_korean = Student_korean::where('std_kor_mail', $std_kor_mail)
-            ->orWhere('std_kor_id', $request->input('std_kor_id'))
-            ->count() > 0;
-
-        if ($is_registered_korean) {
-            return self::response_json(self::_STD_KOR_IS_ALREADY_REGISTERED, 422);
-        }
         // 새로운 회원인 경우 계정 생성
-        else {
-            Student_korean::create([
-                'std_kor_id' => $request->input('std_kor_id'),
-                'std_kor_dept' => $request->input('std_kor_dept'),
-                'std_kor_name' => $request->input('std_kor_name'),
-                'std_kor_phone' => $request->input('std_kor_phone'),
-                'std_kor_mail' => $std_kor_mail,
-            ]);
+        $std_kor_data = [
+            'std_kor_id' => $request->input('std_kor_id'),
+            'std_kor_dept' => $request->input('std_kor_dept'),
+            'std_kor_name' => $request->input('std_kor_name'),
+            'std_kor_phone' => $request->input('std_kor_phone'),
+            'std_kor_mail' => $request->input('std_kor_mail'),
+        ];
 
-            return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
-        }
+        $this->std_kor->store_std_kor_info($std_kor_data);
+
+        return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
     }
 
     /**
@@ -238,12 +235,6 @@ class KoreanController extends Controller
      */
     public function destroyAccount(Student_korean $std_kor_id): JsonResponse
     {
-        $has_restricted_korean = Restricted_student_korean::where('restrict_std_kor', $std_kor_id['std_kor_id']);
-        $has_reservation_korean = Reservation::where('res_std_kor', $std_kor_id['std_kor_id']);
-
-        if($has_reservation_korean) $has_restricted_korean->delete();
-        if($has_reservation_korean) $has_reservation_korean->delete();
-
         $std_kor_id->delete();
 
         return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);

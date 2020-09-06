@@ -25,7 +25,8 @@ class CreateRestrictedStudentKoreansTable extends Migration
             /* 외래키 설정 */
             $table->foreign('restrict_std_kor')
                 ->references('std_kor_id')
-                ->on('student_koreans');
+                ->on('student_koreans')
+                ->onDelete('cascade');
         });
     }
 
