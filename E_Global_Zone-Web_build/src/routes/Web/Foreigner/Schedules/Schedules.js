@@ -299,7 +299,6 @@ export default function Schedules() {
 					p.innerText = `결과 입력 완료`;
 					break;
 				case STATE_NOTHING:
-					console.log(sch_start_date);
 					Date.now() > new Date(sch_end_date)
 						? (p.innerText = `종료`)
 						: (p.innerText = `예약 없음`);
@@ -310,7 +309,6 @@ export default function Schedules() {
 		td.appendChild(div);
 	};
 	const buildTable = (scheduleData) => {
-		console.log(scheduleData);
 		const { monday, tuesday, wednesday, thursday, friday } = scheduleData;
 		const tbody = document.getElementById("tbody");
 		tbody.innerText = "";
@@ -611,15 +609,18 @@ export default function Schedules() {
 	useEffect(() => {
 		// setPending(true);
 		getWeekStart(moment(selectedDate));
-		// if (weekStartDate !== undefined) reRender();
+		setPending(true);
 	}, [selectedDate]);
 	useEffect(() => {
 		if (weekStartDate !== undefined) {
 			setPending(true);
 			setWeek(makeWeek(weekStartDate));
-			reRender();
 		}
 	}, [weekStartDate]);
+
+	useEffect(() => {
+		pending && reRender();
+	}, [pending]);
 
 	useEffect(() => {
 		if (data) {
@@ -676,7 +677,7 @@ export default function Schedules() {
 
 				<div className="week_wrap">
 					<ul className="day_week">
-						{week ? (
+						{!pending ? (
 							<>
 								<li>
 									일
@@ -765,27 +766,7 @@ export default function Schedules() {
 							</>
 						) : (
 							<>
-								<li>
-									일<span>12</span>
-								</li>
-								<li>
-									월<span className="today">13</span>
-								</li>
-								<li>
-									화<span>14</span>
-								</li>
-								<li>
-									수<span>15</span>
-								</li>
-								<li>
-									목<span>16</span>
-								</li>
-								<li>
-									금<span>17</span>
-								</li>
-								<li>
-									토<span>18</span>
-								</li>
+								<Loader />
 							</>
 						)}
 					</ul>
@@ -815,9 +796,6 @@ export default function Schedules() {
 			</div>
 			<Modal isOpen={isOpen} handleClose={handleOpen}>
 				{modal}
-			</Modal>
-			<Modal isOpen={pending}>
-				<Loader />
 			</Modal>
 		</div>
 	);
