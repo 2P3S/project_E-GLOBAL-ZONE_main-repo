@@ -131,6 +131,8 @@ export default function Foreigner() {
 				}
 			});
 		}
+
+		setDataSet({ ...dataSet, data: searchData });
 	};
 
 	useEffect(() => {
@@ -165,12 +167,6 @@ export default function Foreigner() {
 			setLoading(false);
 		}
 	}, [dataSet]);
-
-	useEffect(() => {
-		if (isSearchMode) {
-			alert(isSearchMode);
-		}
-	}, [isSearchMode]);
 
 	useEffect(() => {
 		if (!setLoading) {

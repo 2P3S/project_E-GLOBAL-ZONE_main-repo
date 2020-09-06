@@ -103,7 +103,7 @@ export default function Schedules() {
 	}, []);
 	useMemo(() => {
 		if (!firstRendering) {
-			history.push(`/schedules/${_selectDate}`);
+			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		}
 	}, [_selectDate]);
@@ -113,7 +113,6 @@ export default function Schedules() {
 
 	useEffect(() => {
 		if (pending) {
-			document.getElementById("date").innerText = "로딩중";
 			setCountOfState({
 				state1: 0,
 				state2: 0,
@@ -149,9 +148,6 @@ export default function Schedules() {
 		// if (typeof selectedSchedule === "object") scheduleOpen();
 	}, [selectedSchedule]);
 	const reRender = () => {
-		// getAdminSchedule({ search_date: selectDate }).then((res) => {
-		// 	setSchedules(res.data);
-		// });
 		setPending(true);
 	};
 
@@ -163,210 +159,228 @@ export default function Schedules() {
 								</div> */
 	useEffect(() => {
 		if (schedules && schedules.data) {
-			if (!pending) {
-				let tag = true;
-				for (const key in schedules.data) {
-					if (schedules.data.hasOwnProperty(key)) {
-						const element = schedules.data[key];
-						element.forEach((v) => {
-							v.schedules.forEach((schedule) => {
-								if (tag) {
-									document.getElementById("date").innerText = moment(
-										selectDate
-									).format("YYYY년 MM월 DD일");
-									tag = false;
-								}
-								let td = document.getElementById(
-									`${v.std_for_id}_${moment(schedule.sch_start_date).format("h")}`
-								);
-								let div = document.createElement("div");
-								div.classList.add("state_box");
-								if (
-									schedule.un_permission_count === 0 &&
-									schedule.reservated_count === 0
-								) {
-									if (moment(schedule.sch_end_date) > moment(Date.now())) {
-										div.classList.add("state7");
-										setCountOfState({
-											...countOfstate,
-											state7: ++countOfstate.state7,
-										});
-									} else {
-										div.classList.add("state7");
-										setCountOfState({
-											...countOfstate,
-											state7: ++countOfstate.state7,
-										});
-										div.innerText = "종료";
+			if (!pending && schedules.data) {
+				let noData = true;
+				Object.values(schedules.data).forEach((v) => {
+					v.length > 0 && (noData = false);
+				});
+				if (!noData) {
+					let tag = true;
+					for (const key in schedules.data) {
+						if (schedules.data.hasOwnProperty(key)) {
+							const element = schedules.data[key];
+							element.forEach((v) => {
+								v.schedules.forEach((schedule) => {
+									if (tag) {
+										document.getElementById("date").innerText = moment(
+											selectDate
+										).format("YYYY년 MM월 DD일");
+										tag = false;
 									}
-								} else {
-									if (new Date(schedule.sch_end_date) > new Date(Date.now())) {
-										// 스케줄 시작 전
-										if (
-											schedule.reservated_count > 0 &&
-											schedule.un_permission_count === 0
-										) {
-											div.classList.add("state2");
-											setCountOfState({
-												...countOfstate,
-												state2: ++countOfstate.state2,
-											});
-											let p = document.createElement("p");
-											p.innerText = `${schedule.reservated_count}`;
-											div.appendChild(p);
-										} else if (schedule.reservated_count > 0) {
-											div.classList.add("state1");
-											setCountOfState({
-												...countOfstate,
-												state1: ++countOfstate.state1,
-											});
-											let p = document.createElement("p");
-											p.innerText = `${schedule.un_permission_count} / `;
-											let span = document.createElement("span");
-											span.innerText = `${schedule.reservated_count}`;
-											p.appendChild(span);
-											div.appendChild(p);
-										}
-									} else {
-										// 스케줄 완료 후
-										if (schedule.sch_state_of_permission) {
-											div.classList.add("state6");
-											setCountOfState({
-												...countOfstate,
-												state6: ++countOfstate.state6,
-											});
-										} else if (schedule.sch_state_of_result_input) {
-											div.classList.add("state5");
-											setCountOfState({
-												...countOfstate,
-												state5: ++countOfstate.state5,
-											});
-											let p = document.createElement("p");
-											p.innerText = `${schedule.reservated_count}`;
-											div.appendChild(p);
-										} else {
-											div.classList.add("state3");
-											setCountOfState({
-												...countOfstate,
-												state3: ++countOfstate.state3,
-											});
-											let p = document.createElement("p");
-											p.innerText = `${schedule.reservated_count}`;
-											div.appendChild(p);
-										}
-									}
-								}
-								function clickListner() {
+									let td = document.getElementById(
+										`${v.std_for_id}_${moment(schedule.sch_start_date).format(
+											"h"
+										)}`
+									);
+									let div = document.createElement("div");
+									div.classList.add("state_box");
 									if (
-										div.classList.contains("state2") ||
-										div.classList.contains("state1")
+										schedule.un_permission_count === 0 &&
+										schedule.reservated_count === 0
 									) {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "ShowList",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										scheduleOpen();
-									} else if (div.classList.contains("state3")) {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										// scheduleOpen();
-									} else if (div.classList.contains("state5")) {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "PermissionScheduleResult",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										scheduleOpen();
-									} else if (div.classList.contains("state6")) {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "ShowList",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										scheduleOpen();
-									} else if (
-										div.classList.contains("state7") &&
-										!div.classList.contains("done")
-									) {
-										setSelectedSchedule({
-											sch_id: schedule.sch_id,
-											component: "ShowList",
-											std_for_id: v.std_for_id,
-											std_for_name: v.std_for_name,
-											sch_end_date: schedule.sch_end_date,
-											sch_start_date: schedule.sch_start_date,
-										});
-										scheduleOpen();
+										if (moment(schedule.sch_end_date) > moment(Date.now())) {
+											div.classList.add("state7");
+											setCountOfState({
+												...countOfstate,
+												state7: ++countOfstate.state7,
+											});
+										} else {
+											div.classList.add("state7");
+											setCountOfState({
+												...countOfstate,
+												state7: ++countOfstate.state7,
+											});
+											/*********************************
+											 * 종료 아이콘 추가 예정
+											 *********************************/
+											// div.style.visibility = "hidden";
+											div.innerText = "종료";
+										}
+									} else {
+										if (
+											new Date(schedule.sch_end_date) > new Date(Date.now())
+										) {
+											// 스케줄 시작 전
+											if (
+												schedule.reservated_count > 0 &&
+												schedule.un_permission_count === 0
+											) {
+												div.classList.add("state2");
+												setCountOfState({
+													...countOfstate,
+													state2: ++countOfstate.state2,
+												});
+												let p = document.createElement("p");
+												p.innerText = `${schedule.reservated_count}`;
+												div.appendChild(p);
+											} else if (schedule.reservated_count > 0) {
+												div.classList.add("state1");
+												setCountOfState({
+													...countOfstate,
+													state1: ++countOfstate.state1,
+												});
+												let p = document.createElement("p");
+												p.innerText = `${schedule.un_permission_count} / `;
+												let span = document.createElement("span");
+												span.innerText = `${schedule.reservated_count}`;
+												p.appendChild(span);
+												div.appendChild(p);
+											}
+										} else {
+											// 스케줄 완료 후
+											if (schedule.sch_state_of_permission) {
+												div.classList.add("state6");
+												setCountOfState({
+													...countOfstate,
+													state6: ++countOfstate.state6,
+												});
+											} else if (schedule.sch_state_of_result_input) {
+												div.classList.add("state5");
+												setCountOfState({
+													...countOfstate,
+													state5: ++countOfstate.state5,
+												});
+												let p = document.createElement("p");
+												p.innerText = `${schedule.reservated_count}`;
+												div.appendChild(p);
+											} else {
+												div.classList.add("state3");
+												setCountOfState({
+													...countOfstate,
+													state3: ++countOfstate.state3,
+												});
+												let p = document.createElement("p");
+												p.innerText = `${schedule.reservated_count}`;
+												div.appendChild(p);
+											}
+										}
 									}
-								}
-								function addListner(div) {
-									div.addEventListener("click", clickListner);
-								}
-								if (moment(schedule.sch_end_date) < moment(today)) {
-									div.classList.add("done");
-								}
-								addListner(div);
-								// 삭제버튼
-								let deleteBtn = document.createElement("div");
-								let area = document.createElement("div");
-								let btn = document.createElement("div");
-								deleteBtn.className = "hover_btn sch hover_off";
-								area.className = "area";
-								btn.className = "lightGray";
-								btn.innerText = "삭제";
-								area.appendChild(btn);
-								deleteBtn.appendChild(area);
-								if (!div.classList.contains("done")) {
-									div.addEventListener("mouseover", () => {
-										deleteBtn.classList.remove("hover_off");
-									});
-									div.addEventListener("mouseout", () => {
-										deleteBtn.classList.add("hover_off");
-									});
-									btn.addEventListener("mouseover", (e) => {
-										div.removeEventListener("click", clickListner);
-									});
-									btn.addEventListener("mouseout", () => {
-										addListner(div);
-									});
-									btn.addEventListener("click", (e) => {
-										if (e.target.innerText === "삭제") {
+									function clickListner() {
+										if (
+											div.classList.contains("state2") ||
+											div.classList.contains("state1")
+										) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "Delete",
+												component: "ShowList",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
 												sch_start_date: schedule.sch_start_date,
 											});
+											scheduleOpen();
+										} else if (div.classList.contains("state3")) {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+											// scheduleOpen();
+										} else if (div.classList.contains("state5")) {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "PermissionScheduleResult",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+											scheduleOpen();
+										} else if (div.classList.contains("state6")) {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "ShowList",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+											scheduleOpen();
+										} else if (
+											div.classList.contains("state7") &&
+											!div.classList.contains("done")
+										) {
+											setSelectedSchedule({
+												sch_id: schedule.sch_id,
+												component: "ShowList",
+												std_for_id: v.std_for_id,
+												std_for_name: v.std_for_name,
+												sch_end_date: schedule.sch_end_date,
+												sch_start_date: schedule.sch_start_date,
+											});
+											scheduleOpen();
 										}
-										setTimeout(scheduleOpen, 500);
-										// scheduleOpen();
-									});
-									div.appendChild(deleteBtn);
-								}
+									}
+									function addListner(div) {
+										div.addEventListener("click", clickListner);
+									}
+									if (moment(schedule.sch_end_date) < moment(today)) {
+										div.classList.add("done");
+									}
+									addListner(div);
+									// 삭제버튼
+									let deleteBtn = document.createElement("div");
+									let area = document.createElement("div");
+									let btn = document.createElement("div");
+									deleteBtn.className = "hover_btn sch hover_off";
+									area.className = "area";
+									btn.className = "lightGray";
+									btn.innerText = "삭제";
+									area.appendChild(btn);
+									deleteBtn.appendChild(area);
+									if (!div.classList.contains("done")) {
+										div.addEventListener("mouseover", () => {
+											deleteBtn.classList.remove("hover_off");
+										});
+										div.addEventListener("mouseout", () => {
+											deleteBtn.classList.add("hover_off");
+										});
+										btn.addEventListener("mouseover", (e) => {
+											div.removeEventListener("click", clickListner);
+										});
+										btn.addEventListener("mouseout", () => {
+											addListner(div);
+										});
+										btn.addEventListener("click", (e) => {
+											if (e.target.innerText === "삭제") {
+												setSelectedSchedule({
+													sch_id: schedule.sch_id,
+													component: "Delete",
+													std_for_id: v.std_for_id,
+													std_for_name: v.std_for_name,
+													sch_end_date: schedule.sch_end_date,
+													sch_start_date: schedule.sch_start_date,
+												});
+											}
+											setTimeout(scheduleOpen, 500);
+											// scheduleOpen();
+										});
+										div.appendChild(deleteBtn);
+									}
 
-								td.appendChild(div);
+									td.appendChild(div);
+								});
 							});
-						});
+						}
 					}
 				}
+			} else {
+				document.getElementById("date").innerText = moment(selectDate).format(
+					"YYYY년 MM월 DD일"
+				);
 			}
 		}
 	}, [schedules, pending]);
@@ -508,7 +522,11 @@ export default function Schedules() {
                                 state6 :: [관리자 승인 완료]
                                 state7 :: 예약없음 
                             --> */}
-
+								{countOfCh === 0 && countOfEng === 0 && countOfJp === 0 && (
+									<th style={{ height: "50px", backgroundColor: "#888" }}>
+										데이터가 없습니다.
+									</th>
+								)}
 								{schedules && schedules.data && schedules.data.English.length > 0 && (
 									<th scope="row" rowSpan={countOfEng + 1}>
 										{/* rowSpan = 해당 언어 학생 수 */}
@@ -585,7 +603,9 @@ export default function Schedules() {
 							</tbody>
 						</table>
 					) : (
-						<Loader />
+						<div>
+							<Loader />
+						</div>
 					)}
 				</div>
 

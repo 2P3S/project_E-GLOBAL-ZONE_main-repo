@@ -2837,3 +2837,47 @@ ul.tab.no5 li {
 	font-weight: 600;
 	color: #1c233d;
 }
+/* 예약 삭제 모달*/
+.modal_notice {
+	padding: 20px 145px 20px 30px;
+	position: relative;
+	text-align: left;
+}
+
+.modal_notice p {
+	font-size: 15px;
+	line-height: 28px;
+}
+
+.modal_notice p span {
+	font-weight: 600;
+}
+
+.modal_notice p span.name {
+	text-decoration: underline;
+	color: #000;
+}
+
+.modal_notice p span.date {
+	text-decoration: underline;
+	display: inline-block;
+	background: #e8e1ff;
+	color: #6e4bdd;
+	border-radius: 5px;
+	padding: 1px 9px;
+	margin-right: 2px;
+}
+
+.modal_notice button {
+	position: absolute;
+	background: #373a44;
+	color: #fff;
+	border: none;
+	padding: 15px;
+	right: 25px;
+	top: 26px;
+	font-size: 12px;
+	font-weight: 600;
+	border-radius: 5px;
+	cursor: pointer;
+}
