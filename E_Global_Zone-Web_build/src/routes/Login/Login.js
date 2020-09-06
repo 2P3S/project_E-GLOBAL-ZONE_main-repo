@@ -12,6 +12,7 @@ import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
 import { postAdminLogin } from "../../api/admin";
+import { handleEnterKey } from "../../modules/handleEnterKey";
 
 const Login = () => {
 	const id = useRef();
@@ -68,8 +69,15 @@ const Login = () => {
 				<p className="tit">Login</p>
 				<LoginHeader />
 				<div className="login_input">
-					<input type="text" name="id" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="id"
+						placeholder="학번을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
@@ -163,6 +171,10 @@ export const KoreanLogin = () => {
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
+						// window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						// window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						// window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						// window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
 						history.push("/");
 					} else if (response.status === 203) {
@@ -170,11 +182,12 @@ export const KoreanLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => console.log(e));
+				.catch((e) => window.localStorage.clear());
 		}
 	};
 	const onFailure = (e) => {
 		console.log(e);
+		window.localStorage.clear();
 	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
@@ -240,9 +253,6 @@ function LoginHeader() {
 }
 
 export function AdminLogin() {
-	const dispatch = useDispatch();
-	const login = useSelector(logIn);
-	const history = useHistory();
 	const id = useRef();
 	const pw = useRef();
 
@@ -250,16 +260,12 @@ export function AdminLogin() {
 	const [pending, setPending] = useState(false);
 
 	useEffect(() => {
-		console.log(pending, data);
 		if (pending) {
 			if (data) {
 				if (data.data && data.data.token) {
 					window.localStorage.setItem("global-zone-admin-token", data.data.token);
-					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
-					window.localStorage.setItem(
-						"global-zone-loginName",
-						data.data.info.std_for_name
-					);
+					window.localStorage.setItem("global-zone-loginId", data.data.info.account);
+					window.localStorage.setItem("global-zone-loginName", data.data.info.name);
 					window.localStorage.setItem("global-zone-userClass", conf.userClass.MANAGER);
 					window.localStorage.setItem("global-zone-isLogin", true);
 
@@ -277,7 +283,6 @@ export function AdminLogin() {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
-		console.log("login", idValue, pwValue);
 		// postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
 		postAdminLogin({ account: idValue, password: pwValue }).then((res) => {
 			setPending(true);
@@ -293,8 +298,15 @@ export function AdminLogin() {
 			<div className="login_wrap">
 				<p className="tit">관리자 계정 로그인</p>
 				<div className="login_input">
-					<input type="text" name="adminId" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="adminId"
+						placeholder="관리자 계정을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
