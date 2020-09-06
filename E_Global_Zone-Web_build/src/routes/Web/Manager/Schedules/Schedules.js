@@ -197,7 +197,7 @@ export default function Schedules() {
 											...countOfstate,
 											state7: ++countOfstate.state7,
 										});
-										div.innerText = "종료";
+										div.innerText = "끝남";
 									}
 								} else {
 									if (new Date(schedule.sch_end_date) > new Date(Date.now())) {

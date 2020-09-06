@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 import { postAdminForeignerAccount } from "../../../api/admin/foreigner";
 import { useHistory } from "react-router-dom";
+import { handleEnterKey } from "../../../modules/handleEnterKey";
 
 const InsertForeignerStudent = ({ handleClose }) => {
 	const [state, setState] = useState(false);
@@ -18,21 +19,27 @@ const InsertForeignerStudent = ({ handleClose }) => {
 	 */
 	const handleSave = () => {
 		let array = [];
+		let validator = false;
 		document.getElementsByName("std_info").forEach((v) => {
+			if (v.value === "" && validator === false) {
+				alert("값을 입력해주세요");
+				validator = true;
+			}
 			array.push(v.value);
 		});
-		postAdminForeignerAccount({
-			std_for_lang: array[0],
-			std_for_country: array[1],
-			std_for_id: array[2],
-			std_for_name: array[3],
-			std_for_dept: array[4],
-			std_for_phone: array[5],
-			std_for_mail: array[6],
-			std_for_zoom_id: array[7],
-		}).then((res) => {
-			setState(res.data);
-		});
+		!validator &&
+			postAdminForeignerAccount({
+				std_for_lang: array[0],
+				std_for_country: array[1],
+				std_for_id: array[2],
+				std_for_name: array[3],
+				std_for_dept: array[4],
+				std_for_phone: array[5],
+				std_for_mail: array[6],
+				std_for_zoom_id: array[7],
+			}).then((res) => {
+				setState(res.data);
+			});
 	};
 
 	useEffect(() => {
@@ -69,10 +76,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									type="text"
 									id="std_for_country"
 									name="std_info"
-									onKeyPress={(e) => {
-										console.log(e.keyCode);
-										e.target.value = e.target.value;
-									}}
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
 									onChange={(e) => {
 										console.log(e.target.value);
 									}}
@@ -80,11 +84,21 @@ const InsertForeignerStudent = ({ handleClose }) => {
 							</td>
 							<td>
 								<p>학번</p>
-								<input type="text" id="std_for_id" name="std_info" />
+								<input
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
+									type="text"
+									id="std_for_id"
+									name="std_info"
+								/>
 							</td>
 							<td>
 								<p>이름</p>
-								<input type="text" id="std_for_name" name="std_info" />
+								<input
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
+									type="text"
+									id="std_for_name"
+									name="std_info"
+								/>
 							</td>
 						</tr>
 						<tr>
@@ -107,15 +121,30 @@ const InsertForeignerStudent = ({ handleClose }) => {
 							</td>
 							<td>
 								<p>연락처</p>
-								<input type="text" id="std_for_phone" name="std_info" />
+								<input
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
+									type="text"
+									id="std_for_phone"
+									name="std_info"
+								/>
 							</td>
 							<td>
 								<p>이메일</p>
-								<input type="text" id="std_for_mail" name="std_info" />
+								<input
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
+									type="text"
+									id="std_for_mail"
+									name="std_info"
+								/>
 							</td>
 							<td>
 								<p>ZoomID</p>
-								<input type="text" id="std_for_zoom_id" name="std_info" />
+								<input
+									onKeyUp={(e) => handleEnterKey(e, handleSave)}
+									type="text"
+									id="std_for_zoom_id"
+									name="std_info"
+								/>
 							</td>
 						</tr>
 					</tbody>
