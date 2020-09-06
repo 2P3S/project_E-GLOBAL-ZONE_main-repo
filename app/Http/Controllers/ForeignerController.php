@@ -92,9 +92,9 @@ class ForeignerController extends Controller
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
-            'std_for_phone' => 'required|string|unique:student_foreigners_contacts,std_for_phone|regex:/^\d{3}-\d{3,4}-\d{4}$/i',                  /* (주의) 유학생중 휴대폰이 없는 학생도 많다 */
-            'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail|regex:/^.+@.+$/i',
-            'std_for_zoom_id' => 'required|numeric|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
+            'std_for_phone' => 'required|phone_number|unique:student_foreigners_contacts,std_for_phone',
+            'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
+            'std_for_zoom_id' => 'required|integer|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
             'guard' => 'required|string|in:admin'
         ];
 
