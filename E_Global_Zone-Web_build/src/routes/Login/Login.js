@@ -159,7 +159,7 @@ export const KoreanLogin = () => {
 		window.localStorage.clear();
 		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
