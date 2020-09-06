@@ -3,12 +3,9 @@ import Routes from "./Routes";
 
 import { setDept, selectDept, setSelectDate } from "../redux/confSlice/confSlice";
 import { useDispatch, useSelector } from "react-redux";
-import dotenv from "dotenv";
-import conf from "../conf/conf";
+
 import { useHistory, useParams } from "react-router-dom";
 import { getDepartment } from "../api/axios";
-
-dotenv.config();
 
 /**
  * React App

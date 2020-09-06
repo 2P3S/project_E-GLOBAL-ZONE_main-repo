@@ -164,7 +164,6 @@ export default function Schedules() {
 				Object.values(schedules.data).forEach((v) => {
 					v.length > 0 && (noData = false);
 				});
-				console.log(noData);
 				if (!noData) {
 					let tag = true;
 					for (const key in schedules.data) {
@@ -201,7 +200,11 @@ export default function Schedules() {
 												...countOfstate,
 												state7: ++countOfstate.state7,
 											});
-											div.innerText = "끝남";
+											/*********************************
+											 * 종료 아이콘 추가 예정
+											 *********************************/
+											// div.style.visibility = "hidden";
+											div.innerText = "종료";
 										}
 									} else {
 										if (
