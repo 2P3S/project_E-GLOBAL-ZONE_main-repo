@@ -12,6 +12,7 @@ import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
 import { postAdminLogin } from "../../api/admin";
+import { handleEnterKey } from "../../modules/handleEnterKey";
 
 const Login = () => {
 	const id = useRef();
@@ -68,8 +69,15 @@ const Login = () => {
 				<p className="tit">Login</p>
 				<LoginHeader />
 				<div className="login_input">
-					<input type="text" name="id" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="id"
+						placeholder="학번을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
@@ -290,8 +298,15 @@ export function AdminLogin() {
 			<div className="login_wrap">
 				<p className="tit">관리자 계정 로그인</p>
 				<div className="login_input">
-					<input type="text" name="adminId" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="adminId"
+						placeholder="관리자 계정을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
