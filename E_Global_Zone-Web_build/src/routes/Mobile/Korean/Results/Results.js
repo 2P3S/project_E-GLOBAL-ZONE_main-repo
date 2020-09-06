@@ -50,8 +50,8 @@ export default function Results() {
 
 	return (
 		<div>
-			<div className="wrap mobile_result">
-				<p className="tit">{selectSect && selectSect.sect_name}</p>
+			<div className="wrap mobile_result bg">
+				{/* <p className="tit">{selectSect && selectSect.sect_name}</p> */}
 				<div className="point_info">
 					<p>
 						<span className="name">{user.name}</span> 학생의
