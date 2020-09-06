@@ -9,7 +9,8 @@ import Modal from "../../../../components/common/modal/Modal";
 import useModal from "../../../../modules/hooks/useModal";
 import ShowList from "../../../../components/common/modal/ShowList";
 import InsertResult from "../../../../components/common/modal/InsertResult";
-import FormData from "form-data";
+import Loader from "../../../../components/common/Loader";
+
 import { getForeignerSchedule } from "../../../../api/foreigner/schedule";
 
 const STATE_PENDING = "pending";
@@ -201,10 +202,12 @@ export default function Schedules() {
 	const [scheduleData, setScheduleData] = useState();
 	const { isOpen, handleClose, handleOpen } = useModal();
 	const [modal, setModal] = useState(<></>);
+	const [pending, setPending] = useState(false);
 	const reRender = () => {
 		getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
 			setData(res.data);
 		});
+		setPending(false);
 	};
 
 	const getWeekStart = (currentDay) => {
@@ -278,10 +281,8 @@ export default function Schedules() {
 		}
 		if (typeof value === "object") {
 			let p = document.createElement("p");
-			p.innerText = `
-            신청한 학생 : ${value[0]}명
-            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명
-            `;
+			p.innerText = `신청한 학생 : ${value[0]}명
+            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명`;
 			div.appendChild(p);
 		} else {
 			let p = document.createElement("p");
@@ -290,8 +291,7 @@ export default function Schedules() {
 					p.innerText = `${value}명 예약 완료`;
 					break;
 				case STATE_DONE:
-					p.innerText = `
-                    참가 학생 : ${value}명
+					p.innerText = `참가 학생 : ${value}명
                     [결과 미입력]
                     `;
 					break;
@@ -299,7 +299,9 @@ export default function Schedules() {
 					p.innerText = `결과 입력 완료`;
 					break;
 				case STATE_NOTHING:
-					p.innerText = `예약 없음`;
+					Date.now() > new Date(sch_end_date)
+						? (p.innerText = `종료`)
+						: (p.innerText = `예약 없음`);
 					break;
 			}
 			div.appendChild(p);
@@ -307,7 +309,6 @@ export default function Schedules() {
 		td.appendChild(div);
 	};
 	const buildTable = (scheduleData) => {
-		console.log(scheduleData);
 		const { monday, tuesday, wednesday, thursday, friday } = scheduleData;
 		const tbody = document.getElementById("tbody");
 		tbody.innerText = "";
@@ -326,7 +327,6 @@ export default function Schedules() {
 					case 1:
 						td.id = `monday${i}`;
 						monday.forEach((v) => {
-							console.log(v);
 							if (v.index[0] === i) {
 								if (v.index[1] === 1) {
 									if (v.state === STATE_PENDING) {
@@ -445,14 +445,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -464,14 +468,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -491,14 +499,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -510,14 +522,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -537,14 +553,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								} else {
@@ -556,14 +576,18 @@ export default function Schedules() {
 												v.reservated_count.toString(),
 												v.un_permission_count.toString(),
 											],
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									} else {
 										buildDiv(
 											td,
 											v.state,
 											v.reservated_count.toString(),
-											v.sch_id
+											v.sch_id,
+											v.sch_start_date,
+											v.sch_end_date
 										);
 									}
 								}
@@ -579,27 +603,27 @@ export default function Schedules() {
 
 	useEffect(() => {
 		window.easydropdown.all();
+		setPending(true);
 		getWeekStart(moment(today));
 	}, []);
 	useEffect(() => {
+		// setPending(true);
 		getWeekStart(moment(selectedDate));
+		setPending(true);
 	}, [selectedDate]);
 	useEffect(() => {
 		if (weekStartDate !== undefined) {
+			setPending(true);
 			setWeek(makeWeek(weekStartDate));
-			// getForeignerSchedule(user.id, weekEndDate, weekStartDate, setData);
-			getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
-				setData(res.data);
-			});
-		}
-		if (scheduleData) {
-			console.log(scheduleData);
 		}
 	}, [weekStartDate]);
 
 	useEffect(() => {
+		pending && reRender();
+	}, [pending]);
+
+	useEffect(() => {
 		if (data) {
-			console.log(data);
 			setScheduleData(new WeekData(data.data, today));
 		}
 	}, [data]);
@@ -653,7 +677,7 @@ export default function Schedules() {
 
 				<div className="week_wrap">
 					<ul className="day_week">
-						{week ? (
+						{!pending ? (
 							<>
 								<li>
 									일
@@ -742,27 +766,7 @@ export default function Schedules() {
 							</>
 						) : (
 							<>
-								<li>
-									일<span>12</span>
-								</li>
-								<li>
-									월<span className="today">13</span>
-								</li>
-								<li>
-									화<span>14</span>
-								</li>
-								<li>
-									수<span>15</span>
-								</li>
-								<li>
-									목<span>16</span>
-								</li>
-								<li>
-									금<span>17</span>
-								</li>
-								<li>
-									토<span>18</span>
-								</li>
+								<Loader />
 							</>
 						)}
 					</ul>

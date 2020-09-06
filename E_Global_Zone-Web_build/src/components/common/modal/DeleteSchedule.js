@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {deleteAdminScheduleSome} from "../../../api/admin/schedule";
+import React, { useEffect, useState } from "react";
+import { deleteAdminScheduleSome } from "../../../api/admin/schedule";
 // import { deleteAdminScheduleSome } from "../../../modules/hooks/useAxios";
 
 export default function DeleteSchedule({
@@ -20,7 +20,9 @@ export default function DeleteSchedule({
 		<>
 			<div className="modal_notice">
 				<p>
-					<span className="name">{std_for_name}</span>학생의<br /><span className="date">{sch_start_date}</span>
+					<span className="name">{std_for_name}</span>학생의
+					<br />
+					<span className="date">{sch_start_date}</span>
 					일정을 삭제하시겠습니까?
 				</p>
 				<button
