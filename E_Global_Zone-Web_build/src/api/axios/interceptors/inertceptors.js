@@ -73,3 +73,29 @@ export function setLoginInterceptors(instance, provider) {
 	);
 	return instance;
 }
+
+export function setRestDateInterceptors(instance, serviceKey) {
+	instance.interceptors.request.use(
+		function (config) {
+			if (serviceKey) {
+				config.params = {
+					serviceKey,
+					_type: "json",
+					...config.params,
+				};
+				config.headers = { "Access-Control-Allow-Origin": "*" };
+				return config;
+			}
+		},
+		function (error) {
+			error.response.data.message && alert(error.response.data.message);
+			return Promise.reject(error);
+		}
+	);
+	instance.interceptors.response.use(function (response) {
+		response.headers = { ...response.headers, "Access-Control-Allow-Origin": "*" };
+		response.set({ "access-control-allow-origin": "*" });
+		return response;
+	});
+	return instance;
+}

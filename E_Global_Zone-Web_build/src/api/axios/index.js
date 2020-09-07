@@ -1,5 +1,9 @@
 import axios from "axios";
-import { setInterceptors, setLoginInterceptors } from "./interceptors/inertceptors";
+import {
+	setInterceptors,
+	setLoginInterceptors,
+	setRestDateInterceptors,
+} from "./interceptors/inertceptors";
 
 // 엑시오스 기본 함수
 function createDefaultInstance() {
@@ -12,6 +16,9 @@ function createDefaultInstance() {
 function createInstanceGuard(url, guard = false) {
 	const instance = axios.create({
 		baseURL: `${process.env.REACT_APP_BASE_URL}${url}`,
+		headers: {
+			"Access-Control-Allow-Origin": "*",
+		},
 	});
 
 	return setInterceptors(instance, guard ? guard : url);
@@ -32,7 +39,14 @@ function createInstanceLogin(provider) {
 	return setLoginInterceptors(instance, `${provider}s`);
 }
 
-const instance = createDefaultInstance();
+function createRestDate(serviceKey) {
+	const instance = axios.create({
+		baseURL: `http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo`,
+	});
+	return setRestDateInterceptors(instance, serviceKey);
+}
+
+export const instance = createDefaultInstance();
 export const admin = createInstanceGuard("admin");
 export const foreigner = createInstanceGuard("foreigner");
 export const korean = createInstanceGuardKorean("korean");
@@ -47,3 +61,8 @@ export const adminLogin = createInstanceLogin("admin");
 
 // commons
 export const getDepartment = () => instance.get("department");
+
+export const getRestDate = (solYear, solMonth) =>
+	createRestDate(process.env.REACT_APP_REST_DATE_SERVICE_KEY).get("", {
+		params: { solYear, solMonth },
+	});
