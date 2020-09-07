@@ -21,6 +21,7 @@ class ScheduleController extends Controller
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
     private const _SCHEDULE_RES_STORE_FAILURE = "스케줄 등록에 실패하였습니다.";
+    private const _SCHEDULE_RES_STORE_SECT_STARTED = "학기가 시작된 이후부터는 스케줄 등록이 불가능합니다. 개별 입력을 이용해주세요.";
 
     private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
     private const _SCHEDULE_RES_DELETE_FAILURE = "해당 학기에 등록된 스케줄이 없습니다.";
@@ -230,6 +231,14 @@ class ScheduleController extends Controller
         if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
 
         $sect_start_date = strtotime($sect->sect_start_date);
+
+        // <<--이미 학기가 시작 된 경우 에러 반환.
+        $now_date = strtotime("Now");
+        if ($now_date >= $sect_start_date) {
+            return self::response_json(self::_SCHEDULE_RES_STORE_SECT_STARTED, 422);
+        }
+        // -->>
+
         $sect_start_date = date("Y-m-d", $sect_start_date);
         $sect_end_date = strtotime($sect->sect_end_date);
         $sect_end_date = date("Y-m-d", $sect_end_date);
@@ -468,8 +477,6 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        SchedulesResultImg::where('sch_id', $sch_id['sch_id'])->delete();
-        Reservation::where('res_sch', $sch_id['sch_id'])->delete();
         $sch_id->delete();
 
         return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
@@ -551,15 +558,10 @@ class ScheduleController extends Controller
             // $schedule['end_img_url'] =
             //     $this->resultImage->get_img($schedule['end_img_url']);
 
-            // base64 - 이미지 주소 매핑
             $schedule['start_img_url'] =
                 $this->resultImage->get_base64_img($schedule['start_img_url']);
             $schedule['end_img_url'] =
                 $this->resultImage->get_base64_img($schedule['end_img_url']);
-            // $schedule['original_source'] =  Storage::download($schedule['start_img_url']);
-            // $schedule['data'] =base64_decode(file_get_contents($schedule['end_img_url']));
-            // $original_source =  Storage::download($schedule['start_img_url']);
-            // $schedule['a'] =  base64_encode($original_source);
         }
 
         return response()->json([

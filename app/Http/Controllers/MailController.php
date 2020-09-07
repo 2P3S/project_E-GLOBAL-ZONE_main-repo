@@ -19,9 +19,6 @@ class MailController extends Controller
     private const _MAIL_SEND_FAILURE = "비밀번호 초기화 메일 전송을 실패하였습니다.";
     private const _EFFECTIVE_TIME = 1;
     private const _DATETIME_FORMAT = "Y-m-d H:i:s";
-    private const _ADMIN_INIT_PASSWORD = "oicyju5630!";
-    private const _REQUEST_URL = "http://www.94soon.net/api/reset";
-
 
     /**
      * 관리자 비밀번호 이메일 초기화 요청
@@ -36,7 +33,7 @@ class MailController extends Controller
             "reset_request_time" => date(self::_DATETIME_FORMAT),
             "reset_expire_time" => date(self::_DATETIME_FORMAT, strtotime("+{$effective_time} minutes")),
             "effective_time" => $effective_time,
-            "request_url" => self::_REQUEST_URL
+            "request_url" => Config::get('constants.uri.reset')
         ];
 
         $admin->update([
@@ -76,7 +73,7 @@ class MailController extends Controller
         $is_reset_availability = $reset_expire_time >= $current_time;
         if ($is_reset_availability) {
             $admin->update([
-                "password" => Hash::make(self::_ADMIN_INIT_PASSWORD)
+                "password" => Hash::make(Config::get('constants.initial_password.admin'))
             ]);
         }
 
