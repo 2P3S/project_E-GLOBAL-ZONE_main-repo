@@ -116,10 +116,10 @@
         }
     </style>
     <script>
-        function go_main_page(message) {
+        function go_main_page(message, target_uri) {
             alert(message);
             // TODO URL 수정필요
-            location.href = "http://www.94soon.net";
+            location.href = target_uri;
         }
     </script>
     <title>E Global Zone 비밀번호 변경</title>
@@ -137,7 +137,7 @@
 
 @if (isset(
     $_SESSION['provider'], $_SESSION['account'], $_SESSION['token'], $_SESSION['ran_num'],
-    $_POST['password'], $_POST['password_confirmation'], $login_controller
+    $_POST['password'], $_POST['password_confirmation'], $_POST['uri'], $login_controller
 ))
     @php
         $is_password_update_success = $login_controller
@@ -145,15 +145,18 @@
 
         echo "<h1>비밀번호 변경 중입니다.</h1>";
 
-        if ($is_password_update_success) {
-            echo "비밀번호 변경을 성공하였습니다.<br>다시 로그인해주세요.";
-            echo "<a href='http://www.94soon.net'>메인페이지로 이동</a>";
-            echo "<script>go_main_page(`비밀번호 변경을 성공하였습니다.\n다시 로그인해주세요.`)</script>";
-        } else {
-            echo "비밀번호 변경을 실패하였습니다.<br>다시 로그인해주세요.";
-            echo "<a href='http://www.94soon.net'>메인페이지로 이동</a>";
-            echo "<script>go_main_page(`비밀번호 변경을 실패하였습니다.`)</script>";
-        }
+        $target_uri = $_POST['uri'];
+        $result_message = $is_password_update_success ?
+                        '비밀번호 변경을 성공하였습니다.' :
+                        '비밀번호 변경을 실패하였습니다.';
+        $append_message = '다시 로그인해주세요.';
+
+        echo "{$result_message}<br>{$append_message}";
+        echo "<a href='{$target_uri}'>메인페이지로 이동</a>";
+        echo "
+            <script>
+                go_main_page(`{$result_message}\n{$append_message}`, '{$target_uri}')
+            </script>";
     @endphp
 
 @elseif (
@@ -163,7 +166,7 @@
     )
 )
     <?php
-    if (isset($account, $provider, $name, $token, $login_controller)) {
+    if (isset($account, $provider, $name, $token, $login_controller, $uri)) {
         $request = [
             'account' => $account,
             'provider' => $provider,
@@ -205,7 +208,8 @@
                         <input type="password" name="password" placeholder="Password" required>
                         <input type="password" name="password_confirmation" placeholder="Password 확인"
                                required>
-                        <p class="info"><span>대/소문자, 숫자 및 특수문자</span> 조합으로 <span>8자 이상</span> 반드시 입력해 주십시오.</p>
+                        <input type="hidden" name="uri" value="<?=$uri?>">
+                        <p class="info"><span>숫자, 문자, 특수문자</span> 조합으로 <span>8자 이상</span> 반드시 입력해 주십시오.</p>
 
                         <button type="submit">비밀번호 변경</button>
                     </form>

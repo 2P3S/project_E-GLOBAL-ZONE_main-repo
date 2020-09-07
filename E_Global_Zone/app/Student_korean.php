@@ -23,4 +23,17 @@ class Student_korean extends Model
      * @var array
      */
     protected $guarded = [];
+
+    public function store_std_kor_info(
+        array $std_kor_data
+    ): ?self {
+        $std_kor = null;
+        try {
+            $std_kor = self::create($std_kor_data);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $std_kor;
+    }
 }

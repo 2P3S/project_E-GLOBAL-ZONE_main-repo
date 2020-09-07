@@ -32,20 +32,20 @@ Route::middleware('auth.multi')->group(static function () {
 
             /* 학기별 유학생 관리 */
             Route::prefix('work')->group(function () {
-                 /** 학기별 전체 유학생 정보 조회 */
+                /** 학기별 전체 유학생 정보 조회 */
                 Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
                 /** 학기별 유학생 등록 */
-                Route::post('', 'ForeignerController@store')->name('foreigners.store');
+                Route::post('{sect_id}', 'WorkStudentForeignerController@store')->name('foreigners.store');
 
                 /** 학기별 유학생 삭제 */
-                Route::delete('{work_list_id}', 'ForeignerController@destroy')->name('foreigners.destroy');
+                Route::delete('{work_list_id}', 'WorkStudentForeignerController@destroy')->name('foreigners.destroy');
             });
 
             /* 유학생 계정 관리 */
             Route::prefix('account')->group(function () {
                 /** 유학생 계정 생성 (회원가입) */
-                Route::post('', 'ForeignerController@registerAccount')->name('foreigners.registerAccount');
+                Route::post('', 'ForeignerController@store')->name('foreigners.registerAccount');
 
                 /** 유학생 비밀번호 변경 */
                 Route::patch('{std_for_id}', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
@@ -213,8 +213,8 @@ Route::middleware('auth.korean')->group(function () {
 
         /* 예약 관련 */
         Route::prefix('reservation')->group(function () {
-            /** 해당 일자에 대한 예약 조회 */
-            Route::get('', 'ReservationController@std_kor_show_res_by_date')->name('reservations.show');
+            /** 해당 날짜 기준 진행중인 예약 조회 */
+            Route::get('', 'ReservationController@std_kor_show_res_prgrs')->name('reservations.show');
 
             /** 예약 신청 */
             Route::post('{sch_id}', 'ReservationController@std_kor_store_res')->name('reservations.store');

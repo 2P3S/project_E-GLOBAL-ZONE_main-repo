@@ -7,6 +7,7 @@ use App\Section;
 use App\Student_foreigner;
 use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
 class WorkStudentForeignerController extends Controller
@@ -126,6 +127,103 @@ class WorkStudentForeignerController extends Controller
         return self::response_json(
             $message, 200, $not_work_std_for_list
         );
+    }
+
+
+    // 000 유학생이 등록되었습니다.
+    // 000 유학생 등록에 실패하였습니다.
+    private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
+    private const _SECT_STD_FOR_EACH_STORE_SUCCESS = " 근로유학생 목록에 등록되었습니다.";
+    // 000 학번의 학생의 데이터가 중복입니다.
+    private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
+
+    /**
+     * 학기별 유학생 등록
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    // TODO 알고리즘 수정 필요
+    public function store(
+        Request $request,
+        Section $sect_id
+    ): JsonResponse
+    {
+        /*
+         * 성공 시, 출력 메세지
+         *  -> 0000 학기의 근로유학생 목록 추가에 성공하였습니다.
+         * $message = $sect_id['sect_name'] . Config::get('constants.kor.work_std_for.store.success');
+         *
+         * 실패 시, 출력 메세지
+         *  -> 근로유학생 목록 추가에 실패하였습니다.
+         * $message = Config::get('constants.kor.work_std_for.store.failure');
+        */
+        $rules = [
+            'foreigners' => 'required|array',
+            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+//            'sect_id' => 'required|integer|distinct|min:0|max:100',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request, $rules, self::_STD_FOR_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $std_for_list = $request->input('foreigners');
+        $req_sect_id = $sect_id['sect_id'];
+
+        // 학생 정보 저장
+        foreach ($std_for_list as $foreigner_id) {
+            // 존재하는 유학생인지 검사
+            if (!Student_foreigner::find($foreigner_id)) {
+                continue;
+            }
+
+            // 이미 해당 학기에 등록한 학생인 경우
+            $isDuplicatedStudent = Work_student_foreigner::where('work_std_for', $foreigner_id)
+                ->where('work_sect', $req_sect_id)
+                ->count();
+
+            if ($isDuplicatedStudent) {
+                return self::response_json(self::_STD_FOR_DUPLICATED_DATA, 422);
+            }
+
+            Work_student_foreigner::create([
+                'work_std_for' => $foreigner_id,
+                'work_sect' => $req_sect_id
+            ]);
+        }
+
+        return self::response_json(self::_SECT_STD_FOR_EACH_STORE_SUCCESS, 201);
+    }
+
+
+    /**
+     * 학기별 유학생 수정 (=삭제)
+     *
+     * @param Request $request
+     * @param Work_student_foreigner $work_list_id
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function destroy(
+        Request $request,
+        Work_student_foreigner $work_list_id
+    ): JsonResponse
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        return $this->work_std_for->remove_sect_work_std_for($work_list_id);
     }
 
     private function response_json_time(

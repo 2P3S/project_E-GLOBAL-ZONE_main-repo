@@ -2,9 +2,12 @@
 
 namespace App;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @method static select(array $select_column)
@@ -62,5 +65,21 @@ class Work_student_foreigner extends Model
         $sect_id = $section['sect_id'];
         return self::select(['work_std_for'])
             ->where('work_sect', $sect_id)->get();
+    }
+
+    // 해당 섹션에 등록된 근로 유학생을 목록에서 삭제
+    public function remove_sect_work_std_for(
+        Work_student_foreigner $work_std_for
+    ): JsonResponse
+    {
+        try {
+            $work_std_for->delete();
+        } catch (\Exception $e) {
+            $message = Config::get('constants.kor.work_std_for.destroy.failure');
+            return Controller::response_json_error($message);
+        }
+
+        $message = Config::get('constants.kor.work_std_for.destroy.success');
+        return Controller::response_json($message, 200);
     }
 }

@@ -22,6 +22,7 @@ class ReservationController extends Controller
      * TODO 관리자가 예약 신청, 승인
      */
     private const _STD_KOR_RES_STORE_OVER = "1일 최대 스케줄 예약 횟수를 초과하였습니다.";
+    private const _STD_KOR_RES_STORE_SAME_TIME = "같은 시간대의 스케줄은 예약이 불가능합니다.";
     private const _STD_KOR_RES_STORE_OVER_PEOPLE = "해당 스케줄은 정원 초과로 예약에 실패하였습니다.";
     private const _STD_KOR_RES_STORE_DUPLICATE = "이미 예약한 스케줄입니다.";
     private const _STD_KOR_RES_STORE_IMPOSSIBILITY = "예약 불가능한 스케줄입니다.";
@@ -32,6 +33,7 @@ class ReservationController extends Controller
 
     private const _STD_KOR_RES_DELETE_SUCCESS = "예약한 스케줄이 삭제되었습니다.";
     private const _STD_KOR_RES_DELETE_FAILURE = "예약한 스케줄 삭제에 실패하였습니다.";
+    private const _STD_KOR_RES_DELETE_OVER_DATE = "예약 취소 가능 일자를 초과했습니다.";
 
     private const _STD_KOR_RESULT_SUCCESS = " 학기별 미팅 목록 조회에 성공하였습니다.";
     private const _STD_KOR_RESULT_FAILURE = " 학기별 미팅 목록 조회에 실패하였습니다.";
@@ -62,24 +64,51 @@ class ReservationController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function std_kor_destroy_res(Request $request, Reservation $res_id): JsonResponse
+    public function std_kor_destroy_res(Request $request, Reservation $res_id, Preference $preference_instance): JsonResponse
     {
-        try {
-            // 해당 예약의 한국인 학생 인증.
-            $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
-            $is_alright_korean = $res_id->where('res_std_kor', $std_kor_id)->count() != 1;
-            if (!$is_alright_korean) {
-                throw new Exception('err');
-            }
 
-            $res_id->delete();
-        } catch (Exception $e) {
+        // 해당 예약의 한국인 학생 인증.
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+
+        $is_unauthenticated = $res_id['res_std_kor'] != $std_kor_id;
+
+        if ($is_unauthenticated)
             return
-                self::response_json(self::_STD_KOR_RES_DELETE_FAILURE, 202);
-        }
+                self::response_json_error(self::_STD_KOR_RES_DELETE_FAILURE);
 
-        return
-            self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
+        // <<-- 환경변수 설정
+        $setting_value = $preference_instance->getPreference();
+        $res_start_period = $setting_value->res_start_period - 1;
+        // -->>
+
+        $schedule = $res_id->schedule;
+
+        // <<-- 예약 취소 일자 비교
+        $current_date_string = date("Y-m-d", time());
+        $cancellable_date_string = date("Y-m-d", strtotime($schedule['sch_start_date']));
+
+        $current_date = strtotime($current_date_string);
+        $cancellable_date = strtotime($cancellable_date_string . "-{$res_start_period} day");
+
+        $is_cancellable_date = $current_date <= $cancellable_date ? true : false;
+        // -->>
+
+        /**
+         * 삭제 불가능한 조건.
+         *
+         * 1) 이미 진행중인 예약인 경우
+         * 2) 종료된 예약인 경우
+         * 3) 예약 취소 일자를 넘긴 경우
+         */
+
+        if (!$is_cancellable_date) {
+            return
+                self::response_json_error(self::_STD_KOR_RES_DELETE_OVER_DATE);
+        } else {
+            $res_id->delete();
+
+            return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
+        }
     }
 
     /**
@@ -272,8 +301,20 @@ class ReservationController extends Controller
         // -->>
 
         // <<-- 기존 예약 횟수 및 하루 최대 예약 횟수 비교
-        $std_kor_res_count = $this->reservation->get_std_kor_res_by_today([$std_kor_id])->count();
-        $is_over_max_res_per_day = $std_kor_res_count >= $setting_value->max_res_per_day;
+        $std_kor_res = $this->reservation->get_std_kor_res_by_today([$std_kor_id]);
+
+        // 동시간대 예약등록 여부 파악.
+        $res_start_time = strtotime($sch_id['sch_start_date']);
+
+        foreach ($std_kor_res as $res) {
+            if (strtotime($res['sch_start_date']) == $res_start_time) {
+                return
+                    self::response_json(self::_STD_KOR_RES_STORE_SAME_TIME, 202);
+            }
+        }
+
+        // 최대 예약 횟수가 넘어간 경우
+        $is_over_max_res_per_day = $std_kor_res->count() >= $setting_value->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
             return
@@ -305,7 +346,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 해당 일자에 대한 예약 조회 ( 미사용중 )
+     * 한국인학생 - 해당 일자에 대한 예약 조회 ( 미사용 )
      * api/korean/reservation
      *
      * @param Request $request
@@ -338,28 +379,17 @@ class ReservationController extends Controller
     }
 
     /**
-     * 한국인학생 - 해당 요일 기준 진행중인 예약 조회
+     * 한국인학생 - 해당 날짜 기준 진행중인 예약 조회
      *
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function std_kor_show_res_prgrs(Request $request, Preference $preference_instance): JsonResponse
+    public function std_kor_show_res_prgrs(Request $request): JsonResponse
     {
-        // <<-- 환경설정 변수
-        $setting_value = $preference_instance->getPreference();
-        $res_start_period = $setting_value->res_start_period;
-        // -->>
-
         $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
 
-        /* 예약 가능 최대 기준 검색가능한 날짜 */
-        $prgs_end_date = date("Y-m-d", strtotime("+{$res_start_period} days"));
-
-        $std_prgs_res_data = Reservation::select()
-            ->join('schedules as sch', 'res_sch', 'sch_id')
-            ->where('res_std_kor', $std_kor_id)
-            ->whereDate('sch.sch_end_date', '<=', $prgs_end_date)
-            ->get();
-
-        return self::response_json(self::_STD_KOR_RES_INDEX_SUCCESS, 200, $std_prgs_res_data);
+        // 유학생 출석 결과 입력 여부가 안된 모든 예약 반환.
+        return $this->reservation->get_std_kor_res_by_permission($std_kor_id);
     }
 
     /**
@@ -394,7 +424,6 @@ class ReservationController extends Controller
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
             ->where('schedules.sch_sect', $request->sect_id)
             ->where('res_std_kor', $std_kor_id)
-            // ->where('res_std_kor', $request->std_kor_id)
             ->whereMonth('schedules.sch_start_date', $request->search_month)
             ->where('res_state_of_attendance', true)
             ->get();
