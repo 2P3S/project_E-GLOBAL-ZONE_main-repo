@@ -19,6 +19,12 @@ export function ManagerRouter() {
 	const today = useSelector(selectToday);
 	useEffect(() => {
 		window.easydropdown.all();
+
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
 	}, []);
 	return (
 		<>
@@ -52,6 +58,13 @@ export function ManagerRouter() {
  * @constructor
  */
 export function ForeignerRouter() {
+	useEffect(() => {
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
+	}, []);
 	return (
 		<>
 			<Header /> {/* 유학생용 헤더로 대체해야함 */}

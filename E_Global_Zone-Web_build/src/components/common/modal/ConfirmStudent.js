@@ -59,6 +59,9 @@ export default function ConfirmStudent({handleClose, reRender}) {
             </div>
             <div className="scroll_area">
                 <table className="pop_table">
+                    <colgroup>
+                        <col width="10%" />
+                    </colgroup>
                     <thead>
                     <tr>
                         <th scope="col">

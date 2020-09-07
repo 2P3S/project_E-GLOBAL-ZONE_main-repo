@@ -40,6 +40,7 @@ body {
 	min-width: 320px;
 	margin: 0 auto;
 	min-height: 100%;
+	border: 1px solid #ddd;
 	font-family: "Noto Sans KR", sans-serif;
 }
 
@@ -59,17 +60,7 @@ body {
 
 .mhead .login {
 	float: right;
-	margin-top:10px;
-}
-
-.mhead .login button {
-	box-shadow:none !important;
-	line-height:35px;
-}
-
-.mhead .login div {
-	margin-right:0 !important;
-	display:inline-grid;
+	margin-top: 24px;
 }
 
 .mhead .logo a,
@@ -108,6 +99,13 @@ body {
 .wrap.bg {
 	background: #eef1f6;
 	margin-top: -11px;
+}
+
+.mhead,
+.mfooter,
+.wrap {
+	max-width: 600px;
+	margin: 0 auto;
 }
 
 /* 로그인 */
@@ -151,15 +149,6 @@ body {
 	width: 100%;
 }
 
-.all .calendar .day.selected {
-	background:#182f9e;
-	-webkit-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	-moz-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	position: relative;
-	z-index: 1;
-}
-
 .reservation_boxs .box {
 	overflow: hidden;
 	margin-bottom: 10px;
@@ -199,24 +188,8 @@ body {
 	background: #ff808b;
 }
 
-.reservation_boxs .box.deepBlue {
+.reservation_boxs .box.blue {
 	background-color: #182f9e;
-}
-
-.reservation_boxs .box.yellow {
-	background-color: #ffb52e;
-}
-
-.reservation_boxs .box.mint {
-	background-color: #30cc98;
-}
-
-.reservation_boxs .box.form {
-	background:#182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 95% center;
-}
-
-.reservation_boxs .box.form ul li {
-	font-size:14px;
 }
 
 .reservation_boxs ul {
@@ -263,17 +236,6 @@ body {
 
 .reservation_boxs .box.pink div {
 	background: #fa6e7a;
-}
-.reservation_boxs .box.deepBlue div {
-	background-color: #14257a;
-}
-
-.reservation_boxs .box.yellow div {
-	background-color: #ce8d15;
-}
-
-.reservation_boxs .box.mint div {
-	background-color: #16a173;
 }
 
 .reservation_boxs .box a {
@@ -362,18 +324,19 @@ body {
 	background: #182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat right center;
 }
 /* 스케줄 조회 */
+.sch_tab {
+	width: 100%;
+}
 
 .sch_tab {
 	overflow: hidden;
 	clear: both;
 	width: 100%;
-	border: 1px solid #e5e5e5;
-	border-bottom:none;
-	border-radius: 5px 5px 0 0;
 }
 
 .sch_tab li {
 	float: left;
+	margin-right: -1px;
 	width: 25%;
 }
 
@@ -383,49 +346,40 @@ body {
 	color: #1d1f24;
 	font-size: 13px;
 	text-align: center;
-	border-left: 1px solid #e5e5e5;
-	border-bottom: 1px solid #e5e5e5;
+	border: 1px solid #e5e5e5;
 	background: #fff;
 	font-weight: 600;
-	/* border-radius: 5px 5px 0 0; */
-}
-
-.sch_tab li:first-child div {
-	border-left:none;
-}
-
-.sch_tab li div.eng {
-	background:url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
-}
-
-.sch_tab li div.jp {
-	background:url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
-}
-
-.sch_tab li div.ch {
-	background:url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
+	border-radius: 5px 5px 0 0;
 }
 
 .sch_tab li div.on {
 	position: relative;
-	/* border: 1px solid #e5e5e5; */
+	border: 1px solid #e5e5e5;
 	border-bottom: 1px solid #f5f5f6;
-	background-color: #f5f5f6;
+	background: #f5f5f6;
 	z-index: 1;
+}
+
+.sch_tab li div.eng {
+	background: #fff url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
+}
+
+.sch_tab li div.jp {
+	background: #fff url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
+}
+
+.sch_tab li div.ch {
+	background: #fff url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
 }
 
 /* 예약조회 BOX와 동일 */
 .reservation_boxs.tab_wrap {
-	width: 100%;
+	width: 99%;
+	padding: 25px 25px 15px 25px;
 	background: #f5f5f6;
+	box-sizing: border-box;
 	border: 1px solid #e5e5e5;
 	border-top: none;
-	margin: 0 auto;
-}
-
-.reservation_boxs.tab_wrap .tab_list {
-	padding:25px 25px 15px 25px;
-	box-sizing: border-box;
 }
 
 /* 결과 관리 */
@@ -441,36 +395,26 @@ body {
 }
 
 .wrap.mobile_result .point_info {
-	border-radius: 10px;
-	width:100%;
-	padding: 15px 20px;
-	background: #182f9e;
-	box-sizing:border-box;
+	margin-top: 20px;
 }
 
 .wrap.mobile_result .point_info p {
 	display: inline-block;
-	font-size: 14px;
-	line-height: 20px;
-	color: #fff;
-	font-weight: 400;
-	letter-spacing: -0.01em;
+	font-size: 17px;
+	line-height: 24px;
 }
 
 .wrap.mobile_result .point_info p span.name {
-	color: #ffcc76;
-	font-weight: 600;
-	text-decoration: underline;
+	color: #4d4cac;
 }
 
 .wrap.mobile_result .point_info .result {
 	float: right;
-	margin-top: -10px;
-	font-size: 50px;
+	margin-top: -14px;
+	font-size: 55px;
 	font-family: "Lato", sans-serif;
 	font-weight: 900;
 	letter-spacing: 2px;
-	color: #40dcae;
 }
 
 .wrap.mobile_result .point_info .result span.rank {
@@ -484,22 +428,13 @@ body {
 }
 
 .wrap.mobile_result .point_info .result span.times {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 600;
-	color: #fff;
-}
-
-.wrap.mobile_result .edd-root {
-	margin-left:0;
-	border-radius:5px;
-	margin-top:25px;
-	background:#fff;
-	border:1px solid #d2dae9;
 }
 
 .history_wrap {
 	width: 100%;
-	background:#fff;
+	margin-top: 10px;
 }
 
 .history_wrap .month_move {
@@ -516,7 +451,7 @@ body {
 
 .history_wrap .month_move p {
 	float: left;
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .history_wrap .month_move .arrow {
@@ -880,7 +815,23 @@ select::-ms-expand {
 	font-weight: 600;
 	color: #6a6a6a;
 }
+/********************웹********************/
+@media (min-width: 500px) {
+	body {
+		background: #eaeff3;
+	}
 
+	.mhead,
+	.wrapper,
+	.mfooter {
+		width: 500px;
+		margin: 0 auto;
+		background: #fff;
+		-webkit-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+		-moz-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+		box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+	}
+}
 /* 로딩중 */
 .popup.loading {
 	width: 150px;
@@ -895,45 +846,4 @@ select::-ms-expand {
 	font-family: "Lato", sans-serif;
 	font-weight: 600;
 	color: #1c233d;
-}
-
-/********************모바일********************/
-@media(max-width:350px){
-	.mhead {padding: 0 15px;}
-	.mhead .logo {margin-top:23px;}
-	.mhead .logo img {width:80%;}
-	.mfooter p {color:#adadad;}
-	.mfooter p span {display:inline; color:#ccc;}
-}
-
-/********************모바일********************/
-@media(max-width:500px){
-	.all {width:100%; transition-duration:0.3s;}
-}
-
-
-
-/********************웹********************/
-@media (min-width: 500px) {
-	body {
-		background: #eaeff3;
-	}
-
-	.all {
-		width: 500px;
-		margin: 0 auto;
-		background: #fff;
-		-webkit-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
-		-moz-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
-		box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
-	}
-
-	.calendar {
-		margin:0 0 40px 0;
-	}
-
-	.calendar .day.selected, .calendar .day.today, .calendar .day:hover {
-		border-radius: 10px;
-	}
-
 }

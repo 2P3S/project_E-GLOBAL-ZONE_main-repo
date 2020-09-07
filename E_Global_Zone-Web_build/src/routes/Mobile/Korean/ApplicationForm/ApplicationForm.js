@@ -25,7 +25,7 @@ export default function ApplicationForm() {
     }, []);
 
     return data ? (
-        <div className="wrap">
+        <div className="wrap bg">
             <div className="apply_tit">
                 <h3 className="tit">예약신청</h3>
                 <p>
@@ -34,7 +34,7 @@ export default function ApplicationForm() {
             </div>
 
             <div className="reservation_boxs mb30">
-                <div className="box blue">
+                <div className="box deepBlue form">
                     <ul>
                         <li>{`[${data.std_for_lang}] ${data.std_for_name}`}</li>
                         <li className="eng">{data.sch_time}</li>
