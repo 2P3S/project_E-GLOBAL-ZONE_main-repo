@@ -43,12 +43,12 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 		if (array.length === 0) {
 			alert("아무도 체크하지 않았습니다.");
 		} else {
-			postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => {
-				setIsDone(true);
-			});
-			// postAdminForeignerWork(sect_id, { foreigners: array }).then((res) => {
+			// postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => {
 			// 	setIsDone(true);
 			// });
+			postAdminForeignerWork(sect_id, { foreigners: array }).then((res) => {
+				setIsDone(true);
+			});
 		}
 	};
 	useEffect(() => {
