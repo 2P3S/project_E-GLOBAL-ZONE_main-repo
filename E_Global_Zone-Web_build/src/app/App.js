@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useHistory, useParams } from "react-router-dom";
 import { getDepartment } from "../api/axios";
+import { isMobile } from "react-device-detect";
 
 /**
  * React App
@@ -16,11 +17,11 @@ const App = () => {
 	const [data, setData] = useState();
 	const dispatch = useDispatch();
 	const dept = useSelector(selectDept);
-	const history = useHistory();
+
 	useEffect(() => {
 		getDepartment().then((res) => setData(res.data));
-		console.log(history);
 	}, []);
+
 	useEffect(() => {
 		if (data && data.data) {
 			dispatch(setDept(data));
