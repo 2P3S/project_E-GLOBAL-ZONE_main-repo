@@ -6,11 +6,13 @@ import useModal from "../../../modules/hooks/useModal";
 import { useSelector } from "react-redux";
 import { selectSelectDate } from "../../../redux/confSlice/confSlice";
 import { postAdminScheduleSome } from "../../../api/admin/schedule";
+import { getRestDate } from "../../../api/axios";
 
 export default function CreateSchedule({ sect_id, std_for_list, handleClose, reRender }) {
 	const selectDate = useSelector(selectSelectDate);
 	useEffect(() => {
 		getAdminSection({});
+		getRestDate(2020, `05`).then((res) => console.log(res));
 		return reRender;
 	}, []);
 	useEffect(() => window.easydropdown.all());

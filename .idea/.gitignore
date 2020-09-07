@@ -8,3 +8,5 @@
 /ZeppelinRemoteNotebooks/
 # Editor-based HTTP Client requests
 /httpRequests/
+/E_Global_Zone-Web_build/.env
+.env

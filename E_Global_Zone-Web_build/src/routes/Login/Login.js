@@ -11,7 +11,7 @@ import { isMobile } from "react-device-detect";
 import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
-import { postAdminLogin } from "../../api/admin";
+import { postAdminLogin, postReset } from "../../api/admin";
 import { handleEnterKey } from "../../modules/handleEnterKey";
 
 const Login = () => {
@@ -159,7 +159,7 @@ export const KoreanLogin = () => {
 		window.localStorage.clear();
 		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
@@ -279,6 +279,10 @@ export function AdminLogin() {
 		return;
 	}, [pending, data]);
 
+	const handleReset = () => {
+		postReset().then((res) => console.log(res));
+	};
+
 	const handleLogin = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
@@ -315,6 +319,7 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						로그인
 					</div>
+					<button onClick={handleReset}>비밀번호 초기화</button>
 				</div>
 			</div>
 		</div>

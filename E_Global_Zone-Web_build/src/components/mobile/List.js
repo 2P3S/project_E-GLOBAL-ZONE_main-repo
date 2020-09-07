@@ -22,24 +22,26 @@ export default function List({tabView, data}) {
     const toDay = useSelector(selectToday);
     return tabView ? (
         <div className="reservation_boxs tab_wrap">
-            {data &&
-            data.data &&
-            data.data.map((item) => {
-                return (
-                    <>
-                        <Item
-                            id={item.sch_id}
-                            language={item.std_for_lang}
-                            name={item.std_for_name}
-                            time={[
-                                item.sch_start_date.substr(10, 9),
-                                item.sch_end_date.substr(10, 9),
-                            ]}
-                            status={item.sch_res_available}
-                        />
-                    </>
-                );
-            })}
+            <div className="tab_list">
+                {data &&
+                data.data &&
+                data.data.map((item) => {
+                    return (
+                        <>
+                            <Item
+                                id={item.sch_id}
+                                language={item.std_for_lang}
+                                name={item.std_for_name}
+                                time={[
+                                    item.sch_start_date.substr(10, 9),
+                                    item.sch_end_date.substr(10, 9),
+                                ]}
+                                status={item.sch_res_available}
+                            />
+                        </>
+                    );
+                })}
+            </div>
         </div>
     ) : (
         <div className="reservation_boxs">
