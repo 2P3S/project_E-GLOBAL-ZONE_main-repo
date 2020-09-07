@@ -199,7 +199,7 @@ body {
 	background: #ff808b;
 }
 
-.reservation_boxs .box.deppBlue {
+.reservation_boxs .box.deepBlue {
 	background-color: #182f9e;
 }
 
@@ -209,6 +209,14 @@ body {
 
 .reservation_boxs .box.mint {
 	background-color: #30cc98;
+}
+
+.reservation_boxs .box.form {
+	background:#182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 95% center;
+}
+
+.reservation_boxs .box.form ul li {
+	font-size:14px;
 }
 
 .reservation_boxs ul {
@@ -256,7 +264,7 @@ body {
 .reservation_boxs .box.pink div {
 	background: #fa6e7a;
 }
-.reservation_boxs .box.deppBlue div {
+.reservation_boxs .box.deepBlue div {
 	background-color: #14257a;
 }
 
@@ -897,6 +905,12 @@ select::-ms-expand {
 	.mfooter p {color:#adadad;}
 	.mfooter p span {display:inline; color:#ccc;}
 }
+
+/********************모바일********************/
+@media(max-width:500px){
+	.all {width:100%; transition-duration:0.3s;}
+}
+
 
 
 /********************웹********************/
