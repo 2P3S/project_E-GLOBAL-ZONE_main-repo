@@ -25,6 +25,7 @@ class SectionController extends Controller
 
     private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
     private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
+    private const _SECTION_DELETE_RES_FAILURE_OVER_DATE = "해당 학기가 시작하여 삭제할 수 없습니다.";
 
     private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS1 = "현재까지 참석한 학기 정보를 반환합니다.";
     private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS2 = "참석한 미팅이 없습니다.";
@@ -184,6 +185,14 @@ class SectionController extends Controller
             return $is_admin;
         }
         // -->>
+
+        // 학기 시작 날짜 검사.
+        $sect_start_date = strtotime($sect_id['sect_start_date']);
+        $now_date = strtotime("Now");
+
+        if ($sect_start_date < $now_date) {
+            return self::response_json_error(self::_SECTION_DELETE_RES_FAILURE_OVER_DATE);
+        }
 
         try {
             $sect_id->delete();

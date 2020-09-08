@@ -26,7 +26,8 @@ class CreateWorkStudentForeignersTable extends Migration
 
             $table->foreign('work_sect')
                 ->references('sect_id')
-                ->on('sections');
+                ->on('sections')
+                ->onDelete('cascade');
         });
     }
 
