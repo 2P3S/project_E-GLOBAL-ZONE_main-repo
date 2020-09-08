@@ -26,7 +26,8 @@ class CreateSchedulesTable extends Migration
             /* 외래키 설정 */
             $table->foreign('sch_sect')
                 ->references('sect_id')
-                ->on('sections');
+                ->on('sections')
+                ->onDelete('cascade');
 
             $table->foreign('sch_std_for')
                 ->references('std_for_id')
