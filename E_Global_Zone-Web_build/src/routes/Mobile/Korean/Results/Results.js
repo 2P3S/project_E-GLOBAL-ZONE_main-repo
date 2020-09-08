@@ -29,8 +29,9 @@ export default function Results() {
 			setSect(res.data.data);
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
 			setPending(true);
+			window.easydropdown.all();
 		});
-		window.easydropdown.all();
+		// window.easydropdown.all();
 	}, []);
 
 	useEffect(() => {
@@ -41,11 +42,13 @@ export default function Results() {
 				setPending(false);
 			});
 	}, [pending]);
+	useEffect(() => {
+		console.log(sect);
+	});
 
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 		setPending(true);
-		window.easydropdown.all();
 	};
 
 	return (
@@ -66,7 +69,7 @@ export default function Results() {
 				</div>
 
 				<select name="" id="" className="mt50" onChange={handleChange}>
-					{sect && sect.length > 0 ? (
+					{sect && sect ? (
 						sect.map((v) => {
 							return <option value={v.sect_id}>{v.sect_name}</option>;
 						})
