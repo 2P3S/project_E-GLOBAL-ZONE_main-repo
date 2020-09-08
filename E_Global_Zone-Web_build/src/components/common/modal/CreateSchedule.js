@@ -59,8 +59,7 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 			let date = document.createElement("td");
 			date.innerText = _data[i].date;
 			let time = document.createElement("td");
-			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).format("h:mm")}~
-			 		${moment(`1996-02-27 ${_data[i].endTime}:00`).format("h:mm")}`;
+			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).format("h:mm")} ~ ${moment(`1996-02-27 ${_data[i].endTime}:00`).format("h:mm")}`;
 			let name = document.createElement("td");
 			name.innerText = _data[i].std_for_name;
 			let button = document.createElement("td");

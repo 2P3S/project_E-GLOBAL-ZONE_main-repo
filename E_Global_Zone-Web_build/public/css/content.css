@@ -374,7 +374,7 @@ table.sch_table tbody td:first-child {
 
 /* state4 :: [결과 입력 완료] */
 .state_box.state4 {
-	background: #6e4bdd url(/global/img/state4_ico.gif) no-repeat center 50%;
+	background: #43269e url(/global/img/state4_ico.gif) no-repeat center 50%;
 }
 
 /* state5 :: [관리자 미승인] 출석 학생 */
@@ -388,7 +388,7 @@ table.sch_table tbody td:first-child {
 
 /* state6 :: [관리자 승인 완료] */
 .state_box.state6 {
-	background: #43269e url(/global/img/state6_ico.gif) no-repeat center 50%;
+	background: #6e4bdd url(/global/img/state6_ico.gif) no-repeat center 50%;
 }
 
 /* state7 :: 예약없음 */
@@ -757,6 +757,11 @@ table.student_manage_table td {
 	padding: 12px 0;
 }
 
+table.student_manage_table td.name:hover {
+	text-decoration:underline;
+	color: #6e4bdd;
+}
+
 table.student_manage_table td .favor,
 table.student_manage_table td .restriction {
 	cursor: pointer;
@@ -1025,7 +1030,24 @@ table.student_manage_table td:first-child {
 
 .set_wrap .setting .sch_box {
 	height: 113px;
-	padding: 55px 45px;
+	padding: 45px 45px 70px 45px;
+}
+
+.set_wrap .setting .sch_box .warning_txt {
+	position:absolute;
+	left: 45px;
+	bottom: 35px;
+	font-size:13px;
+	min-height:21px;
+	line-height:21px;
+	padding-left: 30px;
+	background: url(/global/img/setting_warning_ico.gif) no-repeat left 50%;
+	font-weight:500;
+}
+
+.set_wrap .setting .sch_box .warning_txt span {
+	color:#E2574C;
+	font-weight:600;
 }
 
 .set_wrap p.tit {
@@ -1033,7 +1055,7 @@ table.student_manage_table td:first-child {
 	color: #373a44;
 	font-weight: 600;
 	padding-left: 35px;
-	margin-bottom: 25px;
+	margin-bottom: 20px;
 }
 
 .set_wrap p.tit.ico01 {
@@ -1227,19 +1249,43 @@ table.student_manage_table td:first-child {
 	margin-bottom: 20px;
 }
 
-.search_student .right_wrap .save_btn {
+.search_student .right_wrap .section_btn {
 	position: absolute;
 	right: 0;
 	top: 5px;
+}
+
+.search_student .right_wrap .section_btn .btn {
 	cursor: pointer;
 	display: inline-block;
 	border-radius: 5px;
 	padding: 7px 19px;
-	color: #3a3f97;
-	border: 1px solid #3a3f97;
 	font-size: 12px;
 	font-weight: 600;
+	margin-left:7px;
 }
+
+.search_student .right_wrap .section_btn .btn.save {
+	color: #3a3f97;
+	border: 1px solid #3a3f97;
+}
+.search_student .right_wrap .section_btn .btn.save:hover {
+	background:#3a3f97;
+	color:#fff;
+	transition-duration: 0.3s;
+}
+
+.search_student .right_wrap .section_btn .btn.reset {
+	color: #373a44;
+	border: 1px solid #373a44;
+}
+
+.search_student .right_wrap .section_btn .btn.reset:hover {
+	background:#373a44;
+	color:#fff;
+	transition-duration: 0.3s;
+}
+
 
 .search_student .right_wrap .save_btn:hover {
 	background: #3a3f97;
@@ -1610,13 +1656,25 @@ table.work_time thead th {
 }
 
 .popup.restriction p.tit {
-	margin-bottom:7px;
+	margin-bottom: 0px;
 }
 
 .popup.restriction p.txt {
 	font-size: 16px;
 	letter-spacing: -1px;
+	margin-bottom: 20px;
+}
+
+.popup.restriction p.date {
+	font-size: 15px;
 	margin-bottom: 10px;
+	font-family: "Lato", sans-serif;
+	font-weight:600;
+	color: #0e9284;
+	padding: 5px 15px;
+	background: #d4f5f1;
+	display: inline-block;
+	border-radius: 5px;
 }
 
 .popup.restriction p.txt span {
@@ -1665,7 +1723,7 @@ table.work_time thead th {
 }
 
 .popup.restriction .date_input input[type="text"] {
-	width: 20px;
+	width: 35px;
 	height: 35px;
 	line-height: 35px;
 	border: 1px solid #e0e0e0;
@@ -1736,7 +1794,12 @@ table.pop_table2 {
 table.pop_table2 th,
 table.pop_table2 td {
 	border-bottom: 1px solid #d5d5db;
-	padding: 12px 0;
+	line-height:0;
+}
+
+table.pop_table2 td img {
+	padding:12px 0;
+	cursor: pointer;
 }
 
 /* 변경 필요 */
@@ -1795,6 +1858,7 @@ table.pop_table3 td {
 .popup.sch .select_area .area .date {
 	padding: 0 0 0 45px;
 	background: #f5f5f6 url(/global/img/date_select_ico.gif) no-repeat 15px 50%;
+	cursor:pointer;
 }
 
 .popup.sch .select_area .area .edd-root {
@@ -1806,9 +1870,10 @@ table.pop_table3 td {
 .popup.sch .select_area .area .edd-arrow,
 .popup.sch .select_area .area .edd-arrow::before {
 	right: 7px;
+	top: calc(50% - 10px);
 }
 
-.popup.sch .select_area .area span {
+.popup.sch .select_area .area > span {
 	height: 53px;
 	line-height: 53px;
 	margin: 0 4px;
@@ -2467,12 +2532,48 @@ ul.img_file li p.file_name:hover {
 	padding: 0 0 0 15px;
 	background: #fff url(/global/img/date_select_ico.gif) no-repeat 90% 50%;
 }
+.setting_btn_wrap {
+	width:100%;
+	display:inline-block;
+	margin-bottom:50px;
+	text-align:left;
+}
+.setting_btn_wrap div {
+	cursor: pointer;
+	display: inline-block;
+	text-align: center;
+	border: 1px solid #373a44;
+	border-radius: 3px;
+	font-size: 12px;
+	color: #373a44;
+	min-width: 115px;
+	height: 35px;
+	line-height: 35px;
+	font-weight: 600;
+	margin-left: 5px;
+}
+
+.setting_btn_wrap div.gray {
+	background:#373a44;
+	color:#fff;
+	border:1px solid #373a44;
+}
+
+.setting_btn_wrap div.save {
+	float:right;
+	padding-left: 18px;
+	background: #fff url(/global/img/setting_save_btn.png) no-repeat 38px 50%;
+}
+.setting_btn_wrap div.save:hover {
+	background-color:#f5f5f5;
+}
 
 
 /* 신청학생 명단보기 - 학생추가 */
 .popup.student_plus {
 	width:400px;
 	display:inline-block;
+	min-height: 20px;
 }
 .popup.student_plus .top_tit {
 	width:100%;
@@ -2511,6 +2612,7 @@ ul.img_file li p.file_name:hover {
 	background:#f7f7f9;
 	border:1px solid #e8e8ee;
 	border-radius: 10px;
+	min-height: 30px;
 }
 
 .popup.student_plus .student_plus_list div {
@@ -2670,6 +2772,39 @@ ul.img_file li p.file_name:hover {
 	font-weight: 600;
 	border-radius: 5px;
 	cursor:pointer;
+}
+
+/* 삭제하시겠습니까 */
+.del_modal {
+	padding: 30px 40px;
+	text-align: center;
+	display: inline-block;
+}
+
+.del_modal h1 {
+	font-size: 16px;
+	margin-bottom: 25px;
+	padding-top: 47px;
+	background: #fff url(/global/img/del_modal_ico.gif) no-repeat center top;
+}
+
+.del_modal button {
+	cursor: pointer;
+	display: inline-block;
+	padding: 0 15px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 5px;
+	font-size: 13px;
+	color: #fff;
+	font-weight: 600;
+	margin: 0 3px;
+	background:#373a44;
+	border: none;
+}
+
+.del_modal button.ok {
+	background:#e2574c;
 }
 
 /********************* DEFAULT *********************/

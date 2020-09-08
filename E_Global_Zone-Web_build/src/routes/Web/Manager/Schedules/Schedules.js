@@ -484,7 +484,7 @@ export default function Schedules() {
 				</ul>
 				<ul>
 					<li className="ico03">[결과 미입력] 출석 학생</li>
-					<li className="ico04">[결과 입력 완료]</li>
+					{/* <li className="ico04">[결과 입력 완료]</li> 2020-09-09 삭제 */}
 				</ul>
 				<ul>
 					<li className="ico05">[관리자 미승인] 출석 학생</li>

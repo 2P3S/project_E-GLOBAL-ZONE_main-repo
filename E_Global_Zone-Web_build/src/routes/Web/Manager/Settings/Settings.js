@@ -274,6 +274,7 @@ export default function Settings() {
 								</div>
 							</div>
 						</div>
+						<p class="warning_txt">학기 시작 중에는 변경이 <span>불가</span>합니다.</p>
 					</div>
 				</div>
 
@@ -408,24 +409,23 @@ export default function Settings() {
 						</div>
 					</div>
 
-					<div className="btn_area right">
-						<div
-							className="bbtn darkGray"
-							onClick={handleOpenForInsertForeignerStudent}
-						>
-							유학생 등록
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
-							학기 기간 설정
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
-							학기 기간 조회
-						</div>
-					</div>
+					
 				</div>
 			</div>
-			<div className="table_btn mb40">
-				<div
+			<div className="setting_btn_wrap">
+				<div className="gray"
+					onClick={handleOpenForInsertForeignerStudent}
+				>
+					유학생 등록
+				</div>
+				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
+					학기 기간 설정
+				</div>
+				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
+					학기 기간 조회
+				</div>
+
+				<div className="save"
 					onClick={() => {
 						postAdminSetting(postSettings);
 					}}
@@ -433,6 +433,7 @@ export default function Settings() {
 					저장
 				</div>
 			</div>
+			
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
 			</Modal>

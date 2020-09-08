@@ -249,11 +249,13 @@ export default function Section(props) {
 					<p className="tit">
 						[{forName && forName.data && forName.data[0].std_for_name}] 스케줄 등록
 					</p>
-					<div className="reset_btn" onClick={buildTable}>
-						초기화
-					</div>
-					<div className="save_btn" onClick={handleOnClick}>
-						저장
+					<div className="section_btn">
+						<div className="reset btn" onClick={buildTable}>
+							초기화
+						</div>
+						<div className="save btn" onClick={handleOnClick}>
+							저장
+						</div>
 					</div>
 					<table className="work_time">
 						<colgroup>
