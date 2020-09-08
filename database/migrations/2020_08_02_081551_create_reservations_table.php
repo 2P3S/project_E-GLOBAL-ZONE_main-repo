@@ -30,6 +30,7 @@ class CreateReservationsTable extends Migration
                 ->references('sch_id')
                 ->on('schedules')
                 ->onDelete('cascade');
+                //TODO onUpdate 속성도 있고.. null 처리도 있고.. 그냥 두는것도 있고.. 알아보겠습니다.
         });
     }
 

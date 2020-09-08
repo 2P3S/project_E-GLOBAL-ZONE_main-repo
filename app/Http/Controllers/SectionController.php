@@ -55,14 +55,12 @@ class SectionController extends Controller
             return $validated_result;
         }
 
-        $section_data = Section::whereYear('sect_start_date', $year)->get();
-
-        if (!empty($request->name)) {
-            $section_data =  Section::where('sect_name', $request->name)->get()->first();
-        } else if (!empty($request->sect_id)) {
-            $section_data =  Section::find($request->sect_id);
+        if (!empty($request->input('name'))) {
+            $section_data =  Section::where('sect_name', $request->input('name'))->get()->first();
+        } else if (!empty($request->input('sect_id'))) {
+            $section_data =  Section::find($request->input('sect_id'));
         } else {
-            $section_data =  Section::whereYear('sect_start_date', $year)->get();
+            $section_data =  Section::whereYear('sect_start_date', $request->input('year'))->orderBy('sect_start_date', 'DESC')->get();
             // 학기별 등록 유학생 학생 인원수 추가.
             foreach ($section_data as $section) {
                 $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
