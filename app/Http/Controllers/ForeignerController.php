@@ -66,7 +66,9 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, Config::get('constants.kor.std_for_contacts.index.failure')
+            $request,
+            $rules,
+            Config::get('constants.kor.std_for_contacts.index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -99,7 +101,9 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_STORE_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_STORE_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -153,7 +157,9 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_RESET_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_RESET_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -184,8 +190,7 @@ class ForeignerController extends Controller
     public function destroyAccount(
         Request $request,
         Student_foreigner $std_for_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
@@ -193,6 +198,9 @@ class ForeignerController extends Controller
             return $is_admin;
         }
         // -->>
+
+        // 유학생 이름 백업
+        $std_for_name = $std_for_id['std_for_name'];
 
         // 계정, 연락처 정보 삭제
         $is_delete_success = $this->std_for->destroy_std_for($std_for_id);
@@ -202,7 +210,7 @@ class ForeignerController extends Controller
             return self::response_json_error($message);
         }
 
-        $message = Config::get('constants.kor.std_for.destroy.success.failure');
+        $message = $std_for_name . Config::get('constants.kor.std_for.destroy.success');
         return self::response_json($message, 200);
     }
 
@@ -221,7 +229,9 @@ class ForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_FAVORITE_FAILURE
+            $request,
+            $rules,
+            self::_STD_FOR_FAVORITE_FAILURE
         );
 
         if (is_object($validated_result)) {

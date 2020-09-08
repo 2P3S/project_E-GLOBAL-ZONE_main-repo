@@ -16,7 +16,7 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->bigIncrements('res_id');
             $table->unsignedBigInteger('res_sch');
-            $table->unsignedBigInteger('res_std_kor');
+            $table->unsignedBigInteger('res_std_kor')->nullable();
             $table->unsignedTinyInteger('res_state_of_permission')->default(false);
             $table->unsignedTinyInteger('res_state_of_attendance')->default(false);
             $table->timestamps();
@@ -24,13 +24,13 @@ class CreateReservationsTable extends Migration
             /* 외래키 설정 */
             $table->foreign('res_std_kor')
                 ->references('std_kor_id')
-                ->on('student_koreans');
+                ->on('student_koreans')
+                ->onDelete('SET NULL');
 
             $table->foreign('res_sch')
                 ->references('sch_id')
                 ->on('schedules')
                 ->onDelete('cascade');
-                //TODO onUpdate 속성도 있고.. null 처리도 있고.. 그냥 두는것도 있고.. 알아보겠습니다.
         });
     }
 
