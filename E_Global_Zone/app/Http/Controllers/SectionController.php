@@ -49,8 +49,6 @@ class SectionController extends Controller
             self::_SECTION_SEARCH_RES_FAILURE
         );
 
-        $year = $request->year;
-
         if (is_object($validated_result)) {
             return $validated_result;
         }
