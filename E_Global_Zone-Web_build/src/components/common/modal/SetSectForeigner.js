@@ -6,11 +6,13 @@ import { selectDept } from "../../../redux/confSlice/confSlice";
 export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 	const dept = useSelector(selectDept);
 	const [forList, setForList] = useState();
+	const [defaultList, setDefaultList] = useState();
 	const [isDone, setIsDone] = useState(false);
 	const [pending, setPending] = useState(false);
 	useEffect(() => {
 		getAdminForeignerNoWork(sect_id).then((res) => {
 			setForList(res.data.data);
+			setDefaultList(res.data.data);
 			setPending(true);
 		});
 		return reRender;
@@ -28,7 +30,6 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 	useEffect(() => {
 		if (pending) {
 			setPending(true);
-			console.log(forList);
 		}
 	}, [pending]);
 
@@ -43,12 +44,12 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 		if (array.length === 0) {
 			alert("아무도 체크하지 않았습니다.");
 		} else {
-			postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => {
-				setIsDone(true);
-			});
-			// postAdminForeignerWork(sect_id, { foreigners: array }).then((res) => {
+			// postAdminForeignerWork({ sect_id, foreigners: array }).then((res) => {
 			// 	setIsDone(true);
 			// });
+			postAdminForeignerWork(sect_id, { foreigners: array }).then((res) => {
+				setIsDone(true);
+			});
 		}
 	};
 	useEffect(() => {
@@ -56,13 +57,29 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 			handleClose();
 		}
 	}, [isDone]);
+	const handleSearch = (e) => {
+		const term = e.target.value;
+		let array = [];
+		if (term === "") {
+			setForList(defaultList);
+			console.log("blank");
+		} else {
+			defaultList.forEach((v) => {
+				if (v.std_for_name.match(term)) {
+					array.push(v);
+				}
+			});
+			setForList(array);
+		}
+	};
 
 	return (
 		<div className="popup regist">
 			<p className="tit">유학생 등록</p>
 
 			<div className="search_box">
-				<input type="text" />
+				<input type="text" id="term" onChange={handleSearch} />
+
 				<button>검색</button>
 			</div>
 

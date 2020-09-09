@@ -5,7 +5,7 @@ import { setDept, selectDept, setSelectDate } from "../redux/confSlice/confSlice
 import { useDispatch, useSelector } from "react-redux";
 
 import { useHistory, useParams } from "react-router-dom";
-import { getDepartment } from "../api/axios";
+import { getDepartment, getRestDate } from "../api/axios";
 import { isMobile } from "react-device-detect";
 
 /**

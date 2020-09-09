@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
  * @param {callback} onClick - callback function
  * @returns {React.MutableRefObject<undefined>}
  */
-export default (onClick) => {
+export default function (onClick) {
 	if (typeof onClick !== "function") {
 		return;
 	}
@@ -23,4 +23,4 @@ export default (onClick) => {
 		};
 	}, []);
 	return element;
-};
+}

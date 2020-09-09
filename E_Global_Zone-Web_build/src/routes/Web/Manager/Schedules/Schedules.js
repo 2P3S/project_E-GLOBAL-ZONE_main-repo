@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import moment from "moment";
-import { useSelector } from "react-redux";
-import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
+import { useSelector, useDispatch } from "react-redux";
+import {
+	selectSelectDate,
+	selectToday,
+	setSelectDate as _setSelectDate,
+} from "../../../../redux/confSlice/confSlice";
 
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
@@ -11,7 +15,7 @@ import { getAdminSchedule } from "../../../../api/admin/schedule";
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 
 import ShowList from "../../../../components/common/modal/ShowList";
-import { useHistory, useParams, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
@@ -25,6 +29,7 @@ import Loader from "../../../../components/common/Loader";
 export default function Schedules() {
 	const params = useParams();
 
+	const dispatch = useDispatch();
 	const history = useHistory();
 	const today = useSelector(selectToday);
 	const _selectDate = useSelector(selectSelectDate);
@@ -105,6 +110,10 @@ export default function Schedules() {
 		if (!firstRendering) {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
+		} else {
+			if (_selectDate !== today) {
+				dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
+			}
 		}
 	}, [_selectDate]);
 	useEffect(() => {
@@ -130,9 +139,6 @@ export default function Schedules() {
 			});
 	}, [pending]);
 
-	// useEffect(() => {
-	// 	reRender();
-	// }, [params]);
 	useEffect(() => {
 		if (schedules && schedules.message === "스케줄 목록 조회에 성공하였습니다.") {
 			setPending(false);
@@ -144,19 +150,10 @@ export default function Schedules() {
 		}
 	}, [schedules]);
 
-	useEffect(() => {
-		// if (typeof selectedSchedule === "object") scheduleOpen();
-	}, [selectedSchedule]);
 	const reRender = () => {
 		setPending(true);
 	};
 
-	/*  ********[마우스 오버 삭제 버튼 예시]********		
-								<div class="hover_btn sch">
-									<div class="area">
-										<div class="lightGray">삭제</div>
-									</div>
-								</div> */
 	useEffect(() => {
 		if (schedules && schedules.data) {
 			if (!pending && schedules.data) {
@@ -335,7 +332,11 @@ export default function Schedules() {
 									let deleteBtn = document.createElement("div");
 									let area = document.createElement("div");
 									let btn = document.createElement("div");
-									deleteBtn.className = "hover_btn sch hover_off";
+									deleteBtn.className =
+										document.getElementById("tbody").children[1] ===
+										td.parentElement
+											? "sch_hover_btn bottom hover_off"
+											: "sch_hover_btn top hover_off";
 									area.className = "area";
 									btn.className = "lightGray";
 									btn.innerText = "삭제";
@@ -370,7 +371,6 @@ export default function Schedules() {
 										});
 										div.appendChild(deleteBtn);
 									}
-
 									td.appendChild(div);
 								});
 							});
@@ -411,7 +411,7 @@ export default function Schedules() {
 					<div className="check_box">
 						<div className="check_box_input all">
 							<input type="checkbox" id="allCheck" name="checkBox" value="checkAll" />
-							<label for="allCheck"></label>
+							<label htmlFor="allCheck"></label>
 						</div>
 					</div>
 					<div className="check_box">
@@ -422,7 +422,7 @@ export default function Schedules() {
 								name="checkBox"
 								value="state1"
 							/>
-							<label for="no_app_reservation">
+							<label htmlFor="no_app_reservation">
 								<span>
 									예약 미승인{" "}
 									<span className="blue">
@@ -437,7 +437,7 @@ export default function Schedules() {
 					<div className="check_box">
 						<div className="check_box_input">
 							<input type="checkbox" id="not_result" name="checkBox" value="state3" />
-							<label for="not_result">
+							<label htmlFor="not_result">
 								<span>
 									결과 미입력 <span className="mint">{countOfstate.state3}</span>
 									건
@@ -454,7 +454,7 @@ export default function Schedules() {
 								name="checkBox"
 								value="state5"
 							/>
-							<label for="no_app_result">
+							<label htmlFor="no_app_result">
 								<span>
 									결과 미승인{" "}
 									<span className="yellow">{countOfstate.state5}</span>건
@@ -466,7 +466,7 @@ export default function Schedules() {
 					<div className="check_box">
 						<div className="check_box_input">
 							<input type="checkbox" id="ok_result" name="checkBox" value="state6" />
-							<label for="ok_result">
+							<label htmlFor="ok_result">
 								<span>
 									결과 입력완료{" "}
 									<span className="puple">{countOfstate.state6}</span>건
@@ -512,7 +512,7 @@ export default function Schedules() {
 								<col width="12%" />
 								<col width="9%" span="9" />
 							</colgroup>
-							<tbody>
+							<tbody id="tbody">
 								{/* <!--  
                                 state1 :: [예약현황] 미승인 / 총 신청 학생
                                 state2 :: [예약 승인 완료] 
@@ -528,16 +528,18 @@ export default function Schedules() {
 									</th>
 								)}
 								{schedules && schedules.data && schedules.data.English.length > 0 && (
-									<th scope="row" rowSpan={countOfEng + 1}>
-										{/* rowSpan = 해당 언어 학생 수 */}
-										영어
-									</th>
+									<tr>
+										<th scope="row" rowSpan={countOfEng + 1}>
+											{/* rowSpan = 해당 언어 학생 수 */}
+											영어
+										</th>
+									</tr>
 								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.English.map((v) => {
 										return (
-											<tr>
+											<tr key={`${v.std_for_id}`}>
 												<td>{v.std_for_name}</td>
 												<td id={`${v.std_for_id}_9`}></td>
 												<td id={`${v.std_for_id}_10`}></td>
@@ -552,17 +554,19 @@ export default function Schedules() {
 										);
 									})}
 								{schedules && schedules.data && schedules.data.Japanese.length > 0 && (
-									<th scope="row" rowSpan={countOfJp + 1}>
-										{/* rowSpan = 해당 언어 학생 수 */}
-										일본어
-									</th>
+									<tr>
+										<th scope="row" rowSpan={countOfJp + 1}>
+											{/* rowSpan = 해당 언어 학생 수 */}
+											일본어
+										</th>
+									</tr>
 								)}
 
 								{schedules &&
 									schedules.data &&
 									schedules.data.Japanese.map((v) => {
 										return (
-											<tr>
+											<tr key={`${v.std_for_id}`}>
 												<td>{v.std_for_name}</td>
 												<td id={`${v.std_for_id}_9`}></td>
 												<td id={`${v.std_for_id}_10`}></td>
@@ -577,16 +581,18 @@ export default function Schedules() {
 										);
 									})}
 								{schedules && schedules.data && schedules.data.Chinese.length > 0 && (
-									<th scope="row" rowSpan={countOfCh + 1}>
-										{/* rowSpan = 해당 언어 학생 수 */}
-										중국어
-									</th>
+									<tr>
+										<th scope="row" rowSpan={countOfCh + 1}>
+											{/* rowSpan = 해당 언어 학생 수 */}
+											중국어
+										</th>
+									</tr>
 								)}
 								{schedules &&
 									schedules.data &&
 									schedules.data.Chinese.map((v) => {
 										return (
-											<tr>
+											<tr key={`${v.std_for_id}`}>
 												<td>{v.std_for_name}</td>
 												<td id={`${v.std_for_id}_9`}></td>
 												<td id={`${v.std_for_id}_10`}></td>

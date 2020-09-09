@@ -11,7 +11,7 @@ import { isMobile } from "react-device-detect";
 import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
-import { postAdminLogin } from "../../api/admin";
+import { postAdminLogin, postReset } from "../../api/admin";
 import { handleEnterKey } from "../../modules/handleEnterKey";
 
 const Login = () => {
@@ -217,7 +217,7 @@ export const KoreanLogin = () => {
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						// isSignedIn={true}
+						isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
@@ -279,6 +279,10 @@ export function AdminLogin() {
 		return;
 	}, [pending, data]);
 
+	const handleReset = () => {
+		postReset().then((res) => console.log(res));
+	};
+
 	const handleLogin = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
@@ -315,6 +319,7 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						로그인
 					</div>
+					<button onClick={handleReset}>비밀번호 초기화</button>
 				</div>
 			</div>
 		</div>

@@ -240,6 +240,8 @@ export default function Settings() {
 								{postSettings.once_meet_time + postSettings.once_rest_time}분
 							</span>
 							으로 자동계산됩니다.
+							<br />
+							설정 이후에 생성되는 스케줄부터 적용됩니다.
 						</p>
 						<div className="input_area">
 							<div className="input">
