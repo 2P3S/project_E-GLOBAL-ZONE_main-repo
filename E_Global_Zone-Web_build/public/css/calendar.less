@@ -157,6 +157,9 @@ html {
 			background: #2050e6;
 			color: @white;
 		}
+		&.schedule {
+			background: #2051e684;
+		}
 	}
 
 	.cir {
@@ -167,11 +170,11 @@ html {
 
 /******************** Modal Calendar ********************/
 .calendar.modal {
-	position:absolute;
-	left:210px;
-	top:5px;
-	width:260px;
-	padding:14px;
+	position: absolute;
+	left: 210px;
+	top: 5px;
+	width: 260px;
+	padding: 14px;
 	border-radius: 10px;
 	-webkit-box-shadow: 6px 6px 25px -2px rgba(55, 58, 68, 0.42);
 	-moz-box-shadow: 6px 6px 25px -2px rgba(55, 58, 68, 0.42);
@@ -179,31 +182,30 @@ html {
 }
 
 .calendar.modal header .month-display {
-	border-bottom:1px solid #ddd;
-	margin-bottom:5px;
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 5px;
 }
 
 .calendar.modal .day.selected {
-	background:#34bcad;
+	background: #34bcad;
 }
 
 .calendar.modal .day {
-	height:37px;
+	height: 37px;
 }
 
 /********************모바일********************/
-@media (max-width:960px) {
+@media (max-width: 960px) {
 	.calendar .day {
-		padding:2% 0;
+		padding: 2% 0;
 	}
-	
 }
 
 /********************웹********************/
-@media(min-width:960px){
+@media (min-width: 960px) {
 	.calendar .day.selected,
 	.calendar .day.today,
 	.calendar .day:hover {
-		border-radius:100%;
+		border-radius: 100%;
 	}
 }
