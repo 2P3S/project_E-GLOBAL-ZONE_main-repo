@@ -38,7 +38,7 @@ const ConfirmUnrestriction = ({
             <p className="txt">
                 {std_kor_name} 학생의 <span>이용 제한</span>을 해제하시겠습니까?
             </p>
-            <p>
+            <p className="date">
                 {std_stricted_info.restrict_start_date} ~ {std_stricted_info.restrict_end_date}
             </p>
             <textarea
