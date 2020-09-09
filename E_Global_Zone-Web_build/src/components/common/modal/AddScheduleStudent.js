@@ -43,10 +43,7 @@ export default function AddScheduleStudent({
 	}, []);
 
 	useEffect(() => {
-		console.log(data);
-	}, [data]);
-	useEffect(() => {
-		console.log(result);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(result);
 		if (result && result.status === 201) {
 			alert(result.data.message);
 			handleClose();

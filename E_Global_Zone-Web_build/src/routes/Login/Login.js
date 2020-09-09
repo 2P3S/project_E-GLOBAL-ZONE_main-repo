@@ -53,7 +53,6 @@ const Login = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
-		console.log("login", idValue, pwValue);
 		postForeignerLogin({ std_for_id: idValue, password: pwValue }).then((res) => {
 			setPending(true);
 			res.status === 200 && setData(res.data);
@@ -97,18 +96,15 @@ export const MobileLogin = () => {
 	const history = useHistory();
 	const onSuccess = (res) => {
 		window.localStorage.clear();
-		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
-			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
 						history.push("/korean/signup", { email: res.profileObj.email });
 					} else if (response.status === 200) {
-						console.log(response);
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
@@ -122,9 +118,7 @@ export const MobileLogin = () => {
 				.catch((e) => alert(e.res.data.message));
 		}
 	};
-	const onFailure = (e) => {
-		console.log(e);
-	};
+	const onFailure = (e) => {};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
 	}, []);
@@ -157,7 +151,6 @@ export const KoreanLogin = () => {
 	const history = useHistory();
 	const onSuccess = (res) => {
 		window.localStorage.clear();
-		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
@@ -167,7 +160,6 @@ export const KoreanLogin = () => {
 					if (response.status === 202) {
 						history.push("/korean/signup", { email: res.profileObj.email });
 					} else if (response.status === 200) {
-						console.log(response);
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
@@ -186,7 +178,6 @@ export const KoreanLogin = () => {
 		}
 	};
 	const onFailure = (e) => {
-		console.log(e);
 		window.localStorage.clear();
 	};
 	useEffect(() => {
@@ -280,7 +271,7 @@ export function AdminLogin() {
 	}, [pending, data]);
 
 	const handleReset = () => {
-		postReset().then((res) => console.log(res));
+		postReset().then((res) => process.env.REACT_APP_DEVELOP_MODE && console.log(res));
 	};
 
 	const handleLogin = () => {

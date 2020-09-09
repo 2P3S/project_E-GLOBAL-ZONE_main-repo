@@ -192,10 +192,6 @@ export default function Students() {
 	}, [resData, dept]);
 
 	useEffect(() => {
-		console.log(params);
-	}, [params]);
-
-	useEffect(() => {
 		if (pending) {
 			getAdminKorean({ page: params.page, orderby: orderBy[orderIndex] }).then((res) => {
 				setResData(res.data);
@@ -329,11 +325,11 @@ export default function Students() {
 												이름 : ${v.name}
 											`) === true
 												) {
-													deleteAdminKoreanAccount(v.std_id)
-														.then((res) => {
+													deleteAdminKoreanAccount(v.std_id).then(
+														(res) => {
 															setPending(true);
-														})
-														.catch((e) => console.log(e));
+														}
+													);
 												}
 											}}
 										>

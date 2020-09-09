@@ -136,7 +136,6 @@ const Week = (props) => {
 	}
 
 	useEffect(() => {
-		console.log(props);
 		return () => {
 			props.setState(moment(selected).format("YYYY-MM-DD"));
 		};
@@ -156,7 +155,6 @@ const Week = (props) => {
 				selected={selected}
 				select={() => {
 					select(day);
-					console.log(day.date._d);
 					dispatch(setSelectDate(parseDate(day.date._d)));
 				}}
 				handleClose={handleClose}

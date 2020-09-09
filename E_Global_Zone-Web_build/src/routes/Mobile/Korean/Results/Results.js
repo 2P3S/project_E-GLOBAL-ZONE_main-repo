@@ -42,9 +42,6 @@ export default function Results() {
 				setPending(false);
 			});
 	}, [pending]);
-	useEffect(() => {
-		console.log(sect);
-	});
 
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);

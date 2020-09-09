@@ -52,13 +52,11 @@ export default function ShowList({
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
-			console.log(data.data);
 			let array = [];
 			data.data.forEach((v) => {
 				array.push(v.std_kor_id);
 			});
 			setStudentList(array);
-			console.log(data);
 		}
 		window.easydropdown.all();
 	}, [data]);
@@ -196,9 +194,6 @@ export default function ShowList({
 							let permission_std_kor_id_list = [];
 							let not_permission_std_kor_id_list = [];
 							data.data.map((v) => {
-								console.log(
-									typeof document.getElementById(`${v.std_kor_id}`).value
-								);
 								if (document.getElementById(`${v.std_kor_id}`).value === "true") {
 									permission_std_kor_id_list.push(v.std_kor_id);
 								} else {

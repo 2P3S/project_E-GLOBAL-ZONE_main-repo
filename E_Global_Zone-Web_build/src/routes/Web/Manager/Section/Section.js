@@ -92,7 +92,6 @@ export default function Section(props) {
 
 	function handleOnClick() {
 		let schedule = { 월: [], 화: [], 수: [], 목: [], 금: [] };
-		console.log(Object.keys(schedule));
 		Object.keys(schedule).forEach((v, i) => {
 			for (let j = 9; j <= 17; j++) {
 				let day = document.getElementById(`${i}-${j}`);
@@ -108,7 +107,6 @@ export default function Section(props) {
 			schedule: schedule,
 			ecept_date: [],
 		};
-		console.log(schedule);
 		postAdminSchedule(data).then((res) => setIsDone(true));
 
 		handleOpen();

@@ -112,7 +112,6 @@ export default function Foreigner() {
 		let searchData = [];
 		setIsSearchMode(true);
 		if (searchFor) {
-			console.log(term, searchFor);
 			defaultData.data.forEach((v) => {
 				switch (searchFor) {
 					case "std_for_name":
@@ -170,21 +169,14 @@ export default function Foreigner() {
 
 	useEffect(() => {
 		if (!setLoading) {
-			console.log(dataSet);
 			if (dataSet && dataSet.time) {
 				let array = [];
 				let i = moment(dataSet.time.sect_start_date);
-				console.log(
-					selectSect,
-					moment(dataSet.time.sect_start_date).format("YYYY-MM-DD"),
-					moment(dataSet.time.sect_ent_date).format("YYYY-MM-DD")
-				);
+
 				while (i.diff(moment(dataSet.time.sect_ent_data), "M") !== 0) {
-					console.log(i.add(1, "m"), moment(dataSet.time.sect_ent_data));
 					moment(dataSet.time.sect_end_date).diff(i);
 					i.add(1, "M");
 
-					console.log(i);
 					array.push(`${i.format("MM")}월`);
 				}
 
@@ -210,7 +202,7 @@ export default function Foreigner() {
 
 	const sort = (sortBy) => {
 		setDataSet({ ...dataSet, data: [] }); // reset
-		console.log(sortBy, document.getElementById(sortBy).value);
+
 		if (toggle) {
 			setDataSet({
 				...dataSet,
@@ -528,7 +520,8 @@ export default function Foreigner() {
 																</div>
 															</td>
 															<td>{value.std_for_id}</td>
-															<td className="name"
+															<td
+																className="name"
 																onMouseOver={() => {
 																	document.getElementById(
 																		`hover_btn_${index}`

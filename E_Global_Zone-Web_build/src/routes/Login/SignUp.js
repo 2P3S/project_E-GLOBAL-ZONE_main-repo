@@ -12,7 +12,6 @@ export default function SignUp() {
 	const [std_kor_dept, set_std_kor_dept] = useState(1);
 
 	useEffect(() => {
-		console.log(dept);
 		if (!Array.isArray(dept) && window.localStorage.getItem("global-zone-korean-token")) {
 			history.push("/");
 		}
@@ -22,7 +21,6 @@ export default function SignUp() {
 		const std_kor_id = document.getElementById("std_kor_id").value;
 		const std_kor_name = document.getElementById("std_kor_name").value;
 		const std_kor_phone = document.getElementById("std_kor_phone").value;
-		console.log(std_kor_id, std_kor_dept, std_kor_name, std_kor_phone);
 		if (isNaN(parseInt(std_kor_id))) {
 			alert("학번은 숫자를 입력하셔야 합니다.");
 			return false;
