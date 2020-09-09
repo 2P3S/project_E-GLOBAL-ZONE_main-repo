@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import validator from "validator";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 import { postAdminForeignerAccount } from "../../../api/admin/foreigner";
@@ -8,7 +9,39 @@ import { handleEnterKey } from "../../../modules/handleEnterKey";
 const InsertForeignerStudent = ({ handleClose }) => {
 	const [state, setState] = useState(false);
 	const history = useHistory();
-
+	const specialChar = [
+		"@",
+		"#",
+		"$",
+		"%",
+		"^",
+		"&",
+		"*",
+		"(",
+		")",
+		"_",
+		"?",
+		">",
+		"<",
+		"/",
+		",",
+		".",
+		"~",
+		"!",
+		'"',
+		"₩",
+		"`",
+		";",
+		":",
+		"\\[",
+		"\\]",
+		"\\{",
+		"\\}",
+		"\\",
+		"|",
+		"=",
+		"-",
+	];
 	const departmentList = useSelector(selectDept);
 
 	const handleChange = (e) => {
@@ -19,19 +52,21 @@ const InsertForeignerStudent = ({ handleClose }) => {
 	 */
 	const handleSave = () => {
 		let array = [];
-		let validator = false;
+		let _validator = false;
+
 		document.getElementsByName("std_info").forEach((v) => {
-			if (v.value === "" && validator === false) {
+			if (v.value === "" && _validator === false) {
 				alert("값을 입력해주세요");
-				validator = true;
+				_validator = true;
+			} else {
+				array.push(validator.unescape(v.value));
 			}
-			array.push(v.value);
 		});
-		!validator &&
+		!_validator &&
 			postAdminForeignerAccount({
 				std_for_lang: array[0],
 				std_for_country: array[1],
-				std_for_id: array[2],
+				std_for_id: parseInt(array[2]),
 				std_for_name: array[3],
 				std_for_dept: array[4],
 				std_for_phone: array[5],
@@ -78,7 +113,10 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									name="std_info"
 									onKeyUp={(e) => handleEnterKey(e, handleSave)}
 									onChange={(e) => {
-										console.log(e.target.value);
+										e.target.value = validator.blacklist(
+											e.target.value,
+											specialChar
+										);
 									}}
 								/>
 							</td>
@@ -89,6 +127,15 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									type="text"
 									id="std_for_id"
 									name="std_info"
+									onChange={(e) => {
+										if (validator.isNumeric(e.target.value)) {
+											e.target.value = validator.isLength(e.target.value, 8)
+												? ""
+												: e.target.value;
+										} else {
+											e.target.value = "";
+										}
+									}}
 								/>
 							</td>
 							<td>
@@ -98,6 +145,12 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									type="text"
 									id="std_for_name"
 									name="std_info"
+									onChange={(e) => {
+										e.target.value = validator.blacklist(
+											e.target.value,
+											specialChar
+										);
+									}}
 								/>
 							</td>
 						</tr>
@@ -126,6 +179,20 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									type="text"
 									id="std_for_phone"
 									name="std_info"
+									onChange={(e) => {
+										if (
+											validator.isMobilePhone(e.target.value, "ko-KR") &&
+											validator.isNumeric(e.target.value) &&
+											validator.isLength(e.target.value, 11)
+										) {
+											let first = e.target.value.substr(0, 3);
+											let second = e.target.value.substr(3, 4);
+											let third = e.target.value.substr(7, 4);
+											e.target.value = `${first}-${second}-${third}`;
+										} else if (validator.isLength(e.target.value, 14)) {
+											e.target.value = "";
+										}
+									}}
 								/>
 							</td>
 							<td>
@@ -144,6 +211,11 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									type="text"
 									id="std_for_zoom_id"
 									name="std_info"
+									onChange={(e) => {
+										if (validator.isLength(e.target.value, 11)) {
+											e.target.value = "";
+										}
+									}}
 								/>
 							</td>
 						</tr>

@@ -528,7 +528,7 @@ export default function Foreigner() {
 																</div>
 															</td>
 															<td>{value.std_for_id}</td>
-															<td
+															<td className="name"
 																onMouseOver={() => {
 																	document.getElementById(
 																		`hover_btn_${index}`

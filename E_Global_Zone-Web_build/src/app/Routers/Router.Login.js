@@ -36,7 +36,8 @@ export const LoginRouter = () => {
 
 			<Route exact path="/korean/signup" component={SignUp} />
 
-			<Route path="/" component={isMobile ? MobileLogin : KoreanLogin} />
+			<Redirect path="/" to="/student" />
+			{/* <Route path="/" component={isMobile ? MobileLogin : KoreanLogin} /> */}
 		</Switch>
 	);
 };
