@@ -20,10 +20,5 @@ export default function Schedules() {
 		});
 	}, []);
 
-	return (
-		<>
-			<Calendar />
-			{pending && <TabView list={data} />}
-		</>
-	);
+	return <></>;
 }

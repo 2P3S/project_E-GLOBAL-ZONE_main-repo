@@ -8,6 +8,7 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"axios": "0.18",
+		"d3-array": "^2.7.1",
 		"deepmerge": "^4.2.2",
 		"dotenv": "^8.2.0",
 		"form-data": "^3.0.0",
