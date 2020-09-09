@@ -226,7 +226,8 @@ class LoginController extends Controller
         }
         // -->>
 
-        $token = $foreigner['token'];
+        $provider = $request->input('provider');
+        $uri = Config::get('constants.uri.main');
 
         // <<-- 초기 비밀번호로 로그인 시
         if ($foreigner['flag']) {
@@ -234,7 +235,8 @@ class LoginController extends Controller
                 'provider' => $request->input('provider'),
                 'account' => $foreigner['info']['std_for_id'],
                 'name' => $foreigner['info']['std_for_name'],
-                'token' => $foreigner['token']
+                'token' => $foreigner['token'],
+                'uri' => $uri
             ];
             return view('password_update', $data);
         }
