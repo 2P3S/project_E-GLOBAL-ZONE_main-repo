@@ -23,18 +23,27 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 	} = useModal();
 	const _startTime = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 	const _endTiem = [10, 11, 12, 13, 14, 15, 16, 17, 18];
-	const [startTime, setStartTime] = useState(_startTime[0]);
-	const [endTime, setEndTime] = useState(_endTiem[0]);
 	const [std_for_id, set_std_for_id] = useState(std_for_list[0].std_for_id);
 	const [std_for_name, set_std_for_name] = useState(std_for_list[0].std_for_name);
 	const [data, setData] = useState({ sect_id, schedule: [] });
 
 	const handleAdd = () => {
 		let times = [];
-		for (let i = parseInt(startTime); i < endTime; i++) {
+		for (
+			let i = parseInt(document.getElementById("startTimeBox").value);
+			i < parseInt(document.getElementById("endTimeBox").value);
+			i++
+		) {
 			times.push(i);
 		}
-		console.log(std_for_id, times, selectDate, std_for_name, startTime, endTime);
+		console.log(
+			std_for_id,
+			times,
+			selectDate,
+			std_for_name,
+			document.getElementById("startTimeBox").value,
+			document.getElementById("endTimeBox").value
+		);
 		setData({
 			...data,
 			schedule: [
@@ -44,8 +53,8 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 					times,
 					date: selectDate,
 					std_for_name,
-					startTime,
-					endTime,
+					startTime: document.getElementById("startTimeBox").value,
+					endTime: document.getElementById("endTimeBox").value,
 				},
 			],
 		});
@@ -61,8 +70,8 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 			let date = document.createElement("td");
 			date.innerText = _data[i].date;
 			let time = document.createElement("td");
-			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).format("h:mm")}~
-			 		${moment(`1996-02-27 ${_data[i].endTime}:00`).format("h:mm")}`;
+			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).hour()}:00~
+			 		${moment(`1996-02-27 ${_data[i].endTime}:00`).hour()}:00`;
 			let name = document.createElement("td");
 			name.innerText = _data[i].std_for_name;
 			let button = document.createElement("td");
@@ -113,36 +122,44 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 					<p>시간 선택</p>
 					<select
 						name="catgo1"
+						id="startTimeBox"
 						className="dropdown"
 						onChange={(e) => {
-							setStartTime(e.target.value);
+							document.getElementById("endTimeBox").options.selectedIndex =
+								e.target.options.selectedIndex;
 						}}
 					>
 						{_startTime.map((v) => {
 							return (
-								<option value={v}>
-									{v >= 12
-										? `오후 ${moment(`2020-09-1 ${v}:00`).format("h:mm")}`
-										: `오전 ${moment(`2020-09-1 ${v}:00`).format("h:mm")}`}
-								</option>
+								<option value={v}>{`${moment(
+									`2020-09-1 ${v}:00`
+								).hours()}:00`}</option>
 							);
 						})}
 					</select>
 					<span>-</span>
 					<select
 						name="catgo1"
+						id="endTimeBox"
 						className="dropdown"
 						onChange={(e) => {
-							setEndTime(e.target.value);
+							if (
+								parseInt(e.target.value) <=
+								parseInt(document.getElementById("startTimeBox").value)
+							) {
+								alert(
+									document.getElementById("startTimeBox").value,
+									e.target.value
+								);
+								e.target.options.selectedIndex = e.target.options.length - 1;
+							}
 						}}
 					>
 						{_endTiem.map((v) => {
 							return (
-								<option value={v}>
-									{v >= 12
-										? `오후 ${moment(`2020-09-1 ${v}:00`).format("h:mm")}`
-										: `오전 ${moment(`2020-09-1 ${v}:00`).format("h:mm")}`}
-								</option>
+								<option value={v}>{`${moment(
+									`2020-09-1 ${v}:00`
+								).hour()}:00`}</option>
 							);
 						})}
 					</select>
