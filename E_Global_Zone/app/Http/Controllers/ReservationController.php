@@ -400,6 +400,8 @@ class ReservationController extends Controller
      */
     public function std_kor_show_res_by_sect(Request $request): JsonResponse
     {
+        //TODO 랭킹 순위 비교하기.
+
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'search_month' => 'required|integer|distinct|min:1|max:12',

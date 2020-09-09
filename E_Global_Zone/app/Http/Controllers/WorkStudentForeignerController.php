@@ -161,7 +161,6 @@ class WorkStudentForeignerController extends Controller
         $rules = [
             'foreigners' => 'required|array',
             'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
-//            'sect_id' => 'required|integer|distinct|min:0|max:100',
             'guard' => 'required|string|in:admin'
         ];
 
