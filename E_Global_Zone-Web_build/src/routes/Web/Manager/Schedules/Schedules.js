@@ -20,6 +20,7 @@ import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 import Loader from "../../../../components/common/Loader";
+import ShowResult from "../../../../components/common/modal/ShowResult";
 
 /**
  * Manager :: 스케줄 조회
@@ -287,13 +288,13 @@ export default function Schedules() {
 										} else if (div.classList.contains("state3")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "",
+												component: "ShowList",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
 												sch_start_date: schedule.sch_start_date,
 											});
-											// scheduleOpen();
+											scheduleOpen();
 										} else if (div.classList.contains("state5")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
@@ -307,7 +308,7 @@ export default function Schedules() {
 										} else if (div.classList.contains("state6")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "ShowList",
+												component: "ShowResult",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
@@ -652,6 +653,16 @@ export default function Schedules() {
 					<PermissionScheduleResult
 						handleClose={scheduleClose}
 						date={params.date}
+						reRender={reRender}
+					/>
+				) : selectedSchedule.component === "ShowResult" ? (
+					<ShowResult
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
+						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+						std_for_id={selectedSchedule && selectedSchedule.std_for_id}
+						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
+						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
+						handleClose={scheduleClose}
 						reRender={reRender}
 					/>
 				) : (
