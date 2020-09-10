@@ -13,7 +13,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnapproved(date).then((res) => {
+		getAdminScheduleUnapproved(date, false).then((res) => {
 			setData(res.data);
 		});
 		return reRender;

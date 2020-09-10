@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-	getAdminScheduleUnapproved,
-	patchAdminScheduleApproval,
-} from "../../../api/admin/schedule";
+import { getAdminScheduleUnapproved } from "../../../api/admin/schedule";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 
@@ -13,7 +10,7 @@ export default function ShowResult({ date, handleClose, reRender = () => {} }) {
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnapproved(date).then((res) => {
+		getAdminScheduleUnapproved(date, true).then((res) => {
 			setData(res.data);
 		});
 		return reRender;
