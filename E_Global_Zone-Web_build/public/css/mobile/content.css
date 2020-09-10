@@ -59,17 +59,17 @@ body {
 
 .mhead .login {
 	float: right;
-	margin-top:10px;
+	margin-top: 10px;
 }
 
 .mhead .login button {
-	box-shadow:none !important;
-	line-height:35px;
+	box-shadow: none !important;
+	line-height: 35px;
 }
 
 .mhead .login div {
-	margin-right:0 !important;
-	display:inline-grid;
+	margin-right: 0 !important;
+	display: inline-grid;
 }
 
 .mhead .logo a,
@@ -152,7 +152,7 @@ body {
 }
 
 .all .calendar .day.selected {
-	background:#182f9e;
+	background: #182f9e;
 	-webkit-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
 	-moz-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
 	box-shadow: 2px 2px 8px 0px rgb(169 174 192);
@@ -212,11 +212,11 @@ body {
 }
 
 .reservation_boxs .box.form {
-	background:#182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 95% center;
+	background: #182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 95% center;
 }
 
 .reservation_boxs .box.form ul li {
-	font-size:14px;
+	font-size: 14px;
 }
 
 .reservation_boxs ul {
@@ -368,7 +368,7 @@ body {
 	clear: both;
 	width: 100%;
 	border: 1px solid #e5e5e5;
-	border-bottom:none;
+	border-bottom: none;
 	border-radius: 5px 5px 0 0;
 }
 
@@ -391,19 +391,19 @@ body {
 }
 
 .sch_tab li:first-child div {
-	border-left:none;
+	border-left: none;
 }
 
 .sch_tab li div.eng {
-	background:url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
+	background: url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
 }
 
 .sch_tab li div.jp {
-	background:url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
+	background: url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
 }
 
 .sch_tab li div.ch {
-	background:url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
+	background: url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
 }
 
 .sch_tab li div.on {
@@ -424,7 +424,7 @@ body {
 }
 
 .reservation_boxs.tab_wrap .tab_list {
-	padding:25px 25px 15px 25px;
+	padding: 25px 25px 15px 25px;
 	box-sizing: border-box;
 }
 
@@ -442,10 +442,10 @@ body {
 
 .wrap.mobile_result .point_info {
 	border-radius: 10px;
-	width:100%;
+	width: 100%;
 	padding: 15px 20px;
 	background: #182f9e;
-	box-sizing:border-box;
+	box-sizing: border-box;
 }
 
 .wrap.mobile_result .point_info p {
@@ -490,16 +490,16 @@ body {
 }
 
 .wrap.mobile_result .edd-root {
-	margin-left:0;
-	border-radius:5px;
-	margin-top:25px;
-	background:#fff;
-	border:1px solid #d2dae9;
+	margin-left: 0;
+	border-radius: 5px;
+	margin-top: 25px;
+	background: #fff;
+	border: 1px solid #d2dae9;
 }
 
 .history_wrap {
 	width: 100%;
-	background:#fff;
+	background: #fff;
 }
 
 .history_wrap .month_move {
@@ -753,7 +753,8 @@ body {
 	padding-left: 34px;
 }
 .item:target .subMenu {
-	max-height: 10em;
+	max-height: calc(100em - (20em + 30em));
+	transition: max-height 1s;
 }
 
 /**************** 기본정의 ***************/
@@ -898,20 +899,32 @@ select::-ms-expand {
 }
 
 /********************모바일********************/
-@media(max-width:350px){
-	.mhead {padding: 0 15px;}
-	.mhead .logo {margin-top:23px;}
-	.mhead .logo img {width:80%;}
-	.mfooter p {color:#adadad;}
-	.mfooter p span {display:inline; color:#ccc;}
+@media (max-width: 350px) {
+	.mhead {
+		padding: 0 15px;
+	}
+	.mhead .logo {
+		margin-top: 23px;
+	}
+	.mhead .logo img {
+		width: 80%;
+	}
+	.mfooter p {
+		color: #adadad;
+	}
+	.mfooter p span {
+		display: inline;
+		color: #ccc;
+	}
 }
 
 /********************모바일********************/
-@media(max-width:500px){
-	.all {width:100%; transition-duration:0.3s;}
+@media (max-width: 500px) {
+	.all {
+		width: 100%;
+		transition-duration: 0.3s;
+	}
 }
-
-
 
 /********************웹********************/
 @media (min-width: 500px) {
@@ -929,11 +942,12 @@ select::-ms-expand {
 	}
 
 	.calendar {
-		margin:0 0 40px 0;
+		margin: 0 0 40px 0;
 	}
 
-	.calendar .day.selected, .calendar .day.today, .calendar .day:hover {
+	.calendar .day.selected,
+	.calendar .day.today,
+	.calendar .day:hover {
 		border-radius: 10px;
 	}
-
 }

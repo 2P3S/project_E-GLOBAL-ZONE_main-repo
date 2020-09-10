@@ -112,8 +112,12 @@ export default function Schedules() {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		} else {
-			if (_selectDate !== today) {
-				dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
+			console.log(params.date !== _selectDate);
+			// if (_selectDate !== today) {
+			// 	dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
+			if (params.date !== _selectDate) {
+				let { date } = params;
+				dispatch(_setSelectDate(moment(date).format("YYYY-MM-DD")));
 			}
 		}
 	}, [_selectDate]);
@@ -328,7 +332,9 @@ export default function Schedules() {
 									function addListner(div) {
 										div.addEventListener("click", clickListner);
 									}
-									if (moment(schedule.sch_end_date).isAfter(moment(today))) {
+									if (
+										moment(schedule.sch_end_date).isBefore(moment(Date.now()))
+									) {
 										div.classList.add("done");
 									}
 									addListner(div);
