@@ -140,8 +140,8 @@ Route::middleware('auth.multi')->group(static function () {
             /** 해당 날짜 출석 결과 미입력건 조회 */
             Route::get('uninputed/{date}', 'ScheduleController@indexUninputedList')->name('schedules.indexUninputedList');
 
-            /** 해당 날짜 출석 결과 미승인건 조회 */
-            Route::get('unapproved/{date}', 'ScheduleController@indexUnapprovedList')->name('schedules.indexUnapprovedList');
+            /** 해당 날짜 출석 결과 (승인, 미승인)건 조회 */
+            Route::get('unapproved/{date}', 'ScheduleController@indexApprovedList')->name('schedules.indexApprovedList');
 
             /** 출석 결과 미승인 건 승인 */
             Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
@@ -210,6 +210,9 @@ Route::middleware('auth.korean')->group(function () {
 
         /** 참석한 학기 목록 조회 */
         Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
+
+        /** 등록된 환경변수 조회 */
+        Route::get('setting', 'SettingController@index')->name('settings.index');
 
         /* 예약 관련 */
         Route::prefix('reservation')->group(function () {
