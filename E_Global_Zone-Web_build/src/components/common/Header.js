@@ -28,15 +28,12 @@ export default function Header() {
 		if (password.value !== "" && checkPassword.value !== "") {
 			if (password.value === checkPassword.value) {
 				setIsSame(true);
-				console.log("same");
 			} else {
-				console.log("not same");
 				setIsSame(false);
 			}
 		}
 	};
 	const handleClick = () => {
-		console.log(user);
 		isSame &&
 			patchPassword({
 				password: document.getElementById("_password").value,
@@ -84,9 +81,6 @@ export default function Header() {
 				) : (
 					<ul className="menu">
 						<li>
-							<div onClick={handleOpen}>비밀번호 변경</div>
-						</li>
-						<li>
 							<div
 								onClick={() => {
 									postForeignerLogout().then(() => {
@@ -99,24 +93,6 @@ export default function Header() {
 								로그아웃
 							</div>
 						</li>
-						<Modal isOpen={isOpen} handleClose={handleClose}>
-							<div>
-								<p>비밀번호 변경 할거냐</p>
-								<input
-									id="_password"
-									type="password"
-									onChange={handleChange}
-									placeholder="비밀번호"
-								/>
-								<input
-									id="_checkPassword"
-									type="password"
-									onChange={handleChange}
-									placeholder="비밀번호 확인"
-								/>
-								<button onClick={handleClick}>비밀번호 변경</button>
-							</div>
-						</Modal>
 					</ul>
 				)}
 			</div>

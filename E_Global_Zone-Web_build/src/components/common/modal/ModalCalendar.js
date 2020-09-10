@@ -80,7 +80,8 @@ class Calendar extends React.Component {
 
 		return (
 			<span className="month-label">
-				<span className="num">{month.format("YYYY")}</span>년 <span className="num">{month.format("M")}</span>월
+				<span className="num">{month.format("YYYY")}</span>년{" "}
+				<span className="num">{month.format("M")}</span>월
 			</span>
 		);
 	}
@@ -90,17 +91,11 @@ class Calendar extends React.Component {
 			<section className="calendar modal">
 				<header className="header">
 					<div className="month-display row">
-						<span
-							onClick={this.previous}
-							className="arrows prev"
-						>
+						<span onClick={this.previous} className="arrows prev">
 							<img src="/global/img/calender_arrow_prev.gif" alt="지난 달" />
 						</span>
 						{this.renderMonthLabel()}
-						<span
-							onClick={this.next}
-							className="arrows next"
-						>
+						<span onClick={this.next} className="arrows next">
 							<img src="/global/img/calender_arrow_next.gif" alt="다음 달" />
 						</span>
 					</div>
@@ -141,9 +136,8 @@ const Week = (props) => {
 	}
 
 	useEffect(() => {
-		console.log(props);
 		return () => {
-			props.setState(parseDate(selected._d));
+			props.setState(moment(selected).format("YYYY-MM-DD"));
 		};
 	});
 
@@ -161,7 +155,6 @@ const Week = (props) => {
 				selected={selected}
 				select={() => {
 					select(day);
-					console.log(day.date._d);
 					dispatch(setSelectDate(parseDate(day.date._d)));
 				}}
 				handleClose={handleClose}

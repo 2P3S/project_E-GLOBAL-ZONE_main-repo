@@ -32,18 +32,16 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 		}
 		patchAdminKoreanAccount({ approval: array }).then((res) => {
 			setPending(true);
-			alert(res.message);
+			alert(res.data.message);
 		});
 	};
 
 	const handleClick = (e) => {
 		if (e.target.value === "all") {
-			console.log(document.getElementsByName("checkBox"));
 			for (const key in document.getElementsByName("checkBox")) {
 				if (document.getElementsByName("checkBox").hasOwnProperty(key)) {
 					const element = document.getElementsByName("checkBox")[key];
 					element.checked = e.target.checked;
-					console.log(element.value);
 				}
 			}
 		}
@@ -59,6 +57,9 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 			</div>
 			<div className="scroll_area">
 				<table className="pop_table">
+					<colgroup>
+						<col width="10%" />
+					</colgroup>
 					<thead>
 						<tr>
 							<th scope="col">

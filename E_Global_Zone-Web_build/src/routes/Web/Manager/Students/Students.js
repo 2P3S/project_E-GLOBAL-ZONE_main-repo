@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectData, setData } from "../../../../redux/managerSlice/managerSlice";
 import conf from "../../../../conf/conf";
 import { useParams, useHistory } from "react-router-dom";
+import { handleEnterKey } from "../../../../modules/handleEnterKey";
 
 class Student {
 	dept;
@@ -191,10 +192,6 @@ export default function Students() {
 	}, [resData, dept]);
 
 	useEffect(() => {
-		console.log(params);
-	}, [params]);
-
-	useEffect(() => {
 		if (pending) {
 			getAdminKorean({ page: params.page, orderby: orderBy[orderIndex] }).then((res) => {
 				setResData(res.data);
@@ -232,7 +229,7 @@ export default function Students() {
 						<option value="std_kor_id">학번</option>
 						<option value="std_kor_phone">연락처</option>
 					</select>
-					<input type="text" id="term" />
+					<input onKeyUp={(e) => handleEnterKey(e, handleSearch)} type="text" id="term" />
 					<input type="submit" value="검색" onClick={handleSearch} />
 				</div>
 			</div>
@@ -323,16 +320,15 @@ export default function Students() {
 											className="name"
 											onClick={() => {
 												if (
-													window.confirm(`[경고]정말 삭제 하시겠습니까?
-												학번 : ${v.std_id}
-												이름 : ${v.name}
-											`) === true
+													window.confirm(
+														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+													) === true
 												) {
-													deleteAdminKoreanAccount(v.std_id)
-														.then((res) => {
+													deleteAdminKoreanAccount(v.std_id).then(
+														(res) => {
 															setPending(true);
-														})
-														.catch((e) => console.log(e));
+														}
+													);
 												}
 											}}
 										>
@@ -431,13 +427,13 @@ export default function Students() {
 					>
 						신청 승인
 					</div>
-					<div
-						ref={useClick(function () {
-							alert("엑셀 다운");
-						})}
-					>
-						CSV 다운
-					</div>
+					{/*<div*/}
+					{/*	ref={useClick(function () {*/}
+					{/*		alert("엑셀 다운");*/}
+					{/*	})}*/}
+					{/*>*/}
+					{/*	CSV 다운*/}
+					{/*</div>*/}
 				</div>
 			</div>
 			<Modal

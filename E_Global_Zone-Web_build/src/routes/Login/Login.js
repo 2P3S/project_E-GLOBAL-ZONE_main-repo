@@ -1,23 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import useClick from "../../modules/hooks/useClick";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn, setClass } from "../../redux/userSlice/userSlice";
 import { blankValidator } from "../../modules/validator";
 import conf from "../../conf/conf";
 // import { postLoginForeigner } from "../../modules/hooks/useAxios";
 import { postForeignerLogin } from "../../api/foreigner";
-import { GoogleLogin, useGoogleLogin } from "react-google-login";
+import { GoogleLogin } from "react-google-login";
 import { isMobile } from "react-device-detect";
 import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
-import { postAdminLogin } from "../../api/admin";
+import { postAdminLogin, postReset } from "../../api/admin";
+import { handleEnterKey } from "../../modules/handleEnterKey";
 
 const Login = () => {
-	const dispatch = useDispatch();
-	const login = useSelector(logIn);
-	const history = useHistory();
 	const id = useRef();
 	const pw = useRef();
 
@@ -31,12 +28,9 @@ const Login = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(pending, data);
 		if (pending) {
 			if (data) {
-				console.log(data);
 				if (data.data && data.data.token) {
-					alert(data.message);
 					window.localStorage.setItem("global-zone-foreigner-token", data.data.token);
 					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
 					window.localStorage.setItem(
@@ -59,8 +53,6 @@ const Login = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
-		console.log("login", idValue, pwValue);
-		// postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
 		postForeignerLogin({ std_for_id: idValue, password: pwValue }).then((res) => {
 			setPending(true);
 			res.status === 200 && setData(res.data);
@@ -76,8 +68,15 @@ const Login = () => {
 				<p className="tit">Login</p>
 				<LoginHeader />
 				<div className="login_input">
-					<input type="text" name="id" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="id"
+						placeholder="학번을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
@@ -97,18 +96,15 @@ export const MobileLogin = () => {
 	const history = useHistory();
 	const onSuccess = (res) => {
 		window.localStorage.clear();
-		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
-			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
-						history.push("/korean/sign-up", { email: res.profileObj.email });
+						history.push("/korean/signup", { email: res.profileObj.email });
 					} else if (response.status === 200) {
-						console.log(response);
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
@@ -119,12 +115,10 @@ export const MobileLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => alert(e));
+				.catch((e) => alert(e.res.data.message));
 		}
 	};
-	const onFailure = (e) => {
-		console.log(e);
-	};
+	const onFailure = (e) => {};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
 	}, []);
@@ -145,7 +139,7 @@ export const MobileLogin = () => {
 				)}
 				onSuccess={onSuccess}
 				onFailure={onFailure}
-				// isSignedIn={true}
+				isSignedIn={true}
 			/>
 			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
@@ -157,20 +151,22 @@ export const KoreanLogin = () => {
 	const history = useHistory();
 	const onSuccess = (res) => {
 		window.localStorage.clear();
-		console.log(res);
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다ㅠㅠ");
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
-						history.push("/korean/sign-up", { email: res.profileObj.email });
+						history.push("/korean/signup", { email: res.profileObj.email });
 					} else if (response.status === 200) {
-						console.log(response);
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
+						// window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						// window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						// window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						// window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
 						history.push("/");
 					} else if (response.status === 203) {
@@ -178,11 +174,11 @@ export const KoreanLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => console.log(e));
+				.catch((e) => window.localStorage.clear());
 		}
 	};
 	const onFailure = (e) => {
-		console.log(e);
+		window.localStorage.clear();
 	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
@@ -212,7 +208,7 @@ export const KoreanLogin = () => {
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						// isSignedIn={true}
+						isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
@@ -248,9 +244,6 @@ function LoginHeader() {
 }
 
 export function AdminLogin() {
-	const dispatch = useDispatch();
-	const login = useSelector(logIn);
-	const history = useHistory();
 	const id = useRef();
 	const pw = useRef();
 
@@ -258,17 +251,12 @@ export function AdminLogin() {
 	const [pending, setPending] = useState(false);
 
 	useEffect(() => {
-		console.log(pending, data);
 		if (pending) {
 			if (data) {
-				alert(data.message);
 				if (data.data && data.data.token) {
 					window.localStorage.setItem("global-zone-admin-token", data.data.token);
-					window.localStorage.setItem("global-zone-loginId", data.data.info.std_for_id);
-					window.localStorage.setItem(
-						"global-zone-loginName",
-						data.data.info.std_for_name
-					);
+					window.localStorage.setItem("global-zone-loginId", data.data.info.account);
+					window.localStorage.setItem("global-zone-loginName", data.data.info.name);
 					window.localStorage.setItem("global-zone-userClass", conf.userClass.MANAGER);
 					window.localStorage.setItem("global-zone-isLogin", true);
 
@@ -282,11 +270,14 @@ export function AdminLogin() {
 		return;
 	}, [pending, data]);
 
+	const handleReset = () => {
+		postReset().then((res) => process.env.REACT_APP_DEVELOP_MODE && console.log(res));
+	};
+
 	const handleLogin = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
-		console.log("login", idValue, pwValue);
 		// postLoginForeigner({ std_for_id: idValue, password: pwValue }, setData, setPending);
 		postAdminLogin({ account: idValue, password: pwValue }).then((res) => {
 			setPending(true);
@@ -302,8 +293,15 @@ export function AdminLogin() {
 			<div className="login_wrap">
 				<p className="tit">관리자 계정 로그인</p>
 				<div className="login_input">
-					<input type="text" name="adminId" placeholder="학번을 입력해주세요." ref={id} />
 					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
+						type="text"
+						name="adminId"
+						placeholder="관리자 계정을 입력해주세요."
+						ref={id}
+					/>
+					<input
+						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="password"
 						name="password"
 						placeholder="비밀번호를 입력해주세요."
@@ -312,6 +310,7 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						로그인
 					</div>
+					<button onClick={handleReset}>비밀번호 초기화</button>
 				</div>
 			</div>
 		</div>

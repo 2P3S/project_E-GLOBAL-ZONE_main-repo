@@ -9,7 +9,7 @@ export const confSlice = createSlice({
 	name: "conf",
 	initialState: {
 		dept: {},
-		today: parseDate(new Date(Date.now())),
+		today: moment(Date.now()).format("YYYY-MM-DD"),
 		selectDate: moment(new Date(Date.now())).format("YYYY-MM-DD"),
 	},
 	reducers: {
@@ -34,7 +34,7 @@ export const confSlice = createSlice({
 			state.today = parseDate(new Date(Date.now()));
 		},
 		setTodayFuture: (state) => {
-			state.today = parseDate(new Date("2020-12-1"));
+			state.today = parseDate(new Date(Date.now() + 2));
 		},
 	},
 });

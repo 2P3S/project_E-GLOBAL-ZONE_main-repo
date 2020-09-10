@@ -15,20 +15,30 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 			return config;
 		},
 		function (error) {
-			alert(error.response.data.message);
+			error.response.data.message && alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
 
 	instance.interceptors.response.use(
 		function (response) {
-			if (response.status === 201 || response.status === 202) {
-				alert(response.data.message);
+			if (response.status === 201) {
+				response.data.message && alert(response.data.message);
 			}
 			return response;
 		},
 		function (error) {
-			alert(error.response.data.message);
+			const { status } = error.response;
+			const { message } = error.response.data;
+			switch (status) {
+				case 401:
+					alert(message, 401);
+					window.localStorage.clear();
+					break;
+				default:
+					message && alert(message);
+					break;
+			}
 			return Promise.reject(error);
 		}
 	);
@@ -46,20 +56,46 @@ export function setLoginInterceptors(instance, provider) {
 			return config;
 		},
 		function (error) {
-			alert(error.response.data.message);
+			error.response.data.message && alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
 
 	instance.interceptors.response.use(
 		function (response) {
-			alert(response.message);
+			response.data.message && alert(response.data.message);
 			return response;
 		},
 		function (error) {
-			alert(error.response.data.message);
+			error.response.data.message && alert(error.response.data.message);
 			return Promise.reject(error);
 		}
 	);
+	return instance;
+}
+
+export function setRestDateInterceptors(instance, serviceKey) {
+	instance.interceptors.request.use(
+		function (config) {
+			if (serviceKey) {
+				config.params = {
+					serviceKey,
+					_type: "json",
+					...config.params,
+				};
+				config.headers = { "Access-Control-Allow-Origin": "*" };
+				return config;
+			}
+		},
+		function (error) {
+			error.response.data.message && alert(error.response.data.message);
+			return Promise.reject(error);
+		}
+	);
+	instance.interceptors.response.use(function (response) {
+		response.headers = { ...response.headers, "Access-Control-Allow-Origin": "*" };
+		response.set({ "access-control-allow-origin": "*" });
+		return response;
+	});
 	return instance;
 }

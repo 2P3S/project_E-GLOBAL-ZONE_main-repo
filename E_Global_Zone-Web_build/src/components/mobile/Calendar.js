@@ -143,7 +143,7 @@ const Week = (props) => {
 				selected={selected}
 				select={() => {
 					select(day);
-					console.log(day.date._d);
+
 					dispatch(setSelectDate(parseDate(day.date._d)));
 				}}
 			/>
@@ -185,27 +185,5 @@ class Day extends React.Component {
 		);
 	}
 }
-
-// /**
-//  * Calendar <<추가예정>>
-//  * @returns {JSX.Element}
-//  * @constructor
-//  * @todo make Calendar
-//  */
-// export default function Calendar() {
-// 	const selectDate = useSelector(selectSelectDate);
-// 	return (
-// 		<div className="calendar">
-// 			{/*<a href="/reservation/1">*/}
-// 				<div>
-// 					<ReactCalendar
-// 					onChange={date => console.log(date)}
-// 					value={selectDate}
-// 					/>
-// 				</div>
-// 			{/*</a>*/}
-// 		</div>
-// 	);
-// }
 
 export default Calendar;

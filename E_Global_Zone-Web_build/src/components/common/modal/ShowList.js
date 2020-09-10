@@ -52,13 +52,11 @@ export default function ShowList({
 	}, []);
 	useEffect(() => {
 		if (data && data.data) {
-			console.log(data.data);
 			let array = [];
 			data.data.forEach((v) => {
 				array.push(v.std_kor_id);
 			});
 			setStudentList(array);
-			console.log(data);
 		}
 		window.easydropdown.all();
 	}, [data]);
@@ -69,8 +67,15 @@ export default function ShowList({
 	const handleDelete = () => {
 		postAdminScheduleAdd(selectedResId).then((res) => {
 			handleCloseForDelete();
-			alert(res.message);
+			alert(res.data.message);
 		});
+	};
+	const handlePermissionAll = () => {
+		if (data && data.data) {
+			data.data.forEach((v) => {
+				document.getElementById(v.std_kor_id).value = true;
+			});
+		}
 	};
 
 	const reRender = () => {
@@ -129,7 +134,7 @@ export default function ShowList({
 												key={`${v.std_kor_id}`}
 											>
 												<option value={true} selected={permission}>
-													승인
+													동의
 												</option>
 
 												<option
@@ -139,7 +144,7 @@ export default function ShowList({
 														user.userClass !== conf.userClass.MANAGER
 													}
 												>
-													미승인
+													미동의
 												</option>
 											</select>
 										</div>
@@ -179,7 +184,9 @@ export default function ShowList({
 			</div>
 
 			<div className="btn_area">
-				<div className="bbtn white left">일괄승인</div>
+				<div className="bbtn white left" onClick={handlePermissionAll}>
+					일괄동의
+				</div>
 				<div className="right">
 					<div
 						className="bbtn mint"
@@ -187,9 +194,6 @@ export default function ShowList({
 							let permission_std_kor_id_list = [];
 							let not_permission_std_kor_id_list = [];
 							data.data.map((v) => {
-								console.log(
-									typeof document.getElementById(`${v.std_kor_id}`).value
-								);
 								if (document.getElementById(`${v.std_kor_id}`).value === "true") {
 									permission_std_kor_id_list.push(v.std_kor_id);
 								} else {
@@ -202,14 +206,14 @@ export default function ShowList({
 										not_permission_std_kor_id_list,
 								  }).then((res) => {
 										setPending(true);
-										alert(res.message);
+										alert(res.data.message);
 								  })
 								: patchForeignerReservationPermission(sch_id, {
 										permission_std_kor_id_list,
 										not_permission_std_kor_id_list,
 								  }).then((res) => {
 										setPending(true);
-										alert(res.message);
+										alert(res.data.message);
 								  });
 						}}
 					>

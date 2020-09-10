@@ -56,7 +56,7 @@ export default function CreateSection({
 				setEndDate("YYYY-MM-DD");
 			}
 			setIsLoading(false);
-			resData ? console.log(resData) : console.log();
+			resData ? process.env.REACT_APP_DEVELOP_MODE && console.log(resData) : console.log();
 		}
 	}, [resData]);
 
@@ -68,7 +68,7 @@ export default function CreateSection({
 	}, [endDate]);
 
 	useEffect(() => {
-		console.log(selectSect);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(selectSect);
 		getAdminSection({ name: `${selectSect.year}학년도 ${selectSect.sect}학기` }).then((res) =>
 			setResData(res.data)
 		);
@@ -124,26 +124,28 @@ export default function CreateSection({
 						<div
 							className="btn"
 							onClick={
-								mode
-									? () => {
-											postAdminSection({
-												sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
-												sect_start_date: startDate,
-												sect_end_date: endDate,
-											}).then((res) => {
-												alert(res.message);
-												setIsDone(true);
-											});
-									  }
-									: () => {
-											patchAdminSection(
-												currentSect.sect_id,
-												currentSect
-											).then((res) => {
-												setIsDone(true);
-												alert(res.message);
-											});
-									  }
+								moment(startDate) > moment(Date.now())
+									? mode
+										? () => {
+												postAdminSection({
+													sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
+													sect_start_date: startDate,
+													sect_end_date: endDate,
+												}).then((res) => {
+													// alert(res.data.message);
+													setIsDone(true);
+												});
+										  }
+										: () => {
+												patchAdminSection(
+													currentSect.sect_id,
+													currentSect
+												).then((res) => {
+													setIsDone(true);
+													// alert(res.data.message);
+												});
+										  }
+									: () => alert("이미 시작 된 학기입니다.")
 							}
 						>
 							{mode ? "저장" : "수정"}
@@ -177,30 +179,6 @@ export default function CreateSection({
 					<div className="date">{endDate}</div>
 				</div>
 			</div>
-
-			{/* <div className="btn_area right"> << 위치 이동 >>
-				<div
-					className="bbtn darkGray"
-					onClick={
-						mode
-							? () => {
-									postAdminSection(
-										{
-											sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
-											sect_start_date: startDate,
-											sect_end_date: endDate,
-										},
-										setIsDone
-									);
-							  }
-							: () => {
-									patchAdminSection(currentSect.sect_id, currentSect, setIsDone);
-							  }
-					}
-				>
-					{mode ? "저장" : "수정"}
-				</div>
-			</div> */}
 			<Modal isOpen={isOpen} handleClose={handleClose}>
 				<ModalCalendar
 					handleClose={handleClose}

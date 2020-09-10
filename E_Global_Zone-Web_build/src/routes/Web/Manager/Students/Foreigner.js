@@ -24,6 +24,7 @@ import moment from "moment";
 import SetSectForeigner from "../../../../components/common/modal/SetSectForeigner";
 import { useHistory, useParams } from "react-router-dom";
 import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
+import Loader from "../../../../components/common/Loader";
 
 let i = 1601214;
 let j = 0;
@@ -59,7 +60,6 @@ export default function Foreigner() {
 
 	const [loading, setLoading] = useState(true);
 	const [dataSet, setDataSet] = useState();
-	const [data, setData] = useState(mockup.data);
 	const [isSearchMode, setIsSearchMode] = useState(false);
 	const [searchFor, setSearchFor] = useState("std_for_name");
 	const [defaultData, setDefaultData] = useState();
@@ -71,6 +71,7 @@ export default function Foreigner() {
 	const [toggle, setToggle] = useState(true);
 	const {
 		isOpen: contactIsOpen,
+
 		handleOpen: handleOpenForContact,
 		handleClose: handleCloseForContact,
 	} = useModal();
@@ -97,9 +98,10 @@ export default function Foreigner() {
 		});
 	}
 	const reRender = () => {
-		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
-			setSectOfYear(res.data)
-		);
+		getAdminForeignerWork(selectSect).then((res) => {
+			setDataSet(res.data);
+			setDefaultData(res.data);
+		});
 	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
@@ -110,7 +112,6 @@ export default function Foreigner() {
 		let searchData = [];
 		setIsSearchMode(true);
 		if (searchFor) {
-			console.log(term, searchFor);
 			defaultData.data.forEach((v) => {
 				switch (searchFor) {
 					case "std_for_name":
@@ -129,13 +130,15 @@ export default function Foreigner() {
 				}
 			});
 		}
-		setDataSet({ ...setData, data: searchData });
+
+		setDataSet({ ...dataSet, data: searchData });
 	};
 
 	useEffect(() => {
-		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) =>
-			setSectOfYear(res.data)
-		);
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
+			setSectOfYear(res.data);
+			history.push(`/students/${res.data.data[0].sect_id}/foreigner`);
+		});
 	}, []);
 	useEffect(() => {
 		if (sectOfYear && sectOfYear.data) {
@@ -150,39 +153,30 @@ export default function Foreigner() {
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
-		selectSect && getAdminForeignerWork(selectSect).then((res) => setDataSet(res.data));
+		selectSect &&
+			getAdminForeignerWork(selectSect).then((res) => {
+				setDataSet(res.data);
+				setDefaultData(res.data);
+			});
+		history.push(`/students/${selectSect}/foreigner`);
 	}, [selectSect]);
 
 	useEffect(() => {
-		if (dataSet && dataSet.hasOwnProperty("data")) {
+		if (dataSet) {
 			setLoading(false);
-			setData({ ...dataSet });
 		}
 	}, [dataSet]);
 
 	useEffect(() => {
-		if (isSearchMode) {
-			alert(isSearchMode);
-		}
-	}, [isSearchMode]);
-
-	useEffect(() => {
 		if (!setLoading) {
-			console.log(dataSet);
 			if (dataSet && dataSet.time) {
 				let array = [];
 				let i = moment(dataSet.time.sect_start_date);
-				console.log(
-					selectSect,
-					moment(dataSet.time.sect_start_date).format("YYYY-MM-DD"),
-					moment(dataSet.time.sect_ent_date).format("YYYY-MM-DD")
-				);
+
 				while (i.diff(moment(dataSet.time.sect_ent_data), "M") !== 0) {
-					console.log(i.add(1, "m"), moment(dataSet.time.sect_ent_data));
 					moment(dataSet.time.sect_end_date).diff(i);
 					i.add(1, "M");
 
-					console.log(i);
 					array.push(`${i.format("MM")}월`);
 				}
 
@@ -192,7 +186,6 @@ export default function Foreigner() {
 	});
 	useEffect(() => {
 		window.easydropdown.all();
-		console.log(dataSet);
 	});
 
 	const returnDept = (deptId, deptList) => {
@@ -209,7 +202,7 @@ export default function Foreigner() {
 
 	const sort = (sortBy) => {
 		setDataSet({ ...dataSet, data: [] }); // reset
-		console.log(sortBy, document.getElementById(sortBy).value);
+
 		if (toggle) {
 			setDataSet({
 				...dataSet,
@@ -257,9 +250,7 @@ export default function Foreigner() {
 				</div>
 				<div className="wrap">
 					{!loading ? (
-						dataSet &&
-						dataSet.data &&
-						dataSet.data.length > 0 && (
+						dataSet && dataSet.data && dataSet.data.length > 0 ? (
 							<div className="scroll_area">
 								<table className="student_manage_table">
 									<colgroup>
@@ -530,6 +521,7 @@ export default function Foreigner() {
 															</td>
 															<td>{value.std_for_id}</td>
 															<td
+																className="name"
 																onMouseOver={() => {
 																	document.getElementById(
 																		`hover_btn_${index}`
@@ -593,13 +585,13 @@ export default function Foreigner() {
 																	Object.values(
 																		value.work_time
 																	).map((v) => (sum += v));
-																	return sum;
+																	return sum * 60;
 																})()}
 																분
 															</td>
 															{Object.values(value.work_time).map(
 																(v) => {
-																	return <td>{v}분</td>;
+																	return <td>{v * 60}분</td>;
 																}
 															)}
 															<td>
@@ -617,9 +609,11 @@ export default function Foreigner() {
 									</tbody>
 								</table>
 							</div>
+						) : (
+							<>해당 학기에 등록 된 학생이 없습니다.</>
 						)
 					) : (
-						<>데이터가 없습니다.</>
+						<Loader />
 					)}
 
 					<div className="table_btn">
@@ -641,13 +635,12 @@ export default function Foreigner() {
 						>
 							연락처 정보
 						</div>
-						<div onClick={handleOpenForAdd}>등록</div>
+						<div onClick={handleOpenForAdd}>근로 유학생 등록</div>
 						<div
 							onClick={() => {
 								if (dataSet.data && dataSet.data.length > 0) {
 									history.push(
-										`/section/${selectSect}/${dataSet.data[0].std_for_id}`,
-										{ ...setData }
+										`/section/${selectSect}/${dataSet.data[0].std_for_id}`
 									);
 								} else {
 									alert("해당 학기에 등록 된 학생이 없습니다.");
@@ -656,11 +649,15 @@ export default function Foreigner() {
 						>
 							학기 스케줄 등록
 						</div>
-						<div onClick={handleOpenForCreate}>개별 입력</div>
+						<div onClick={handleOpenForCreate}>스케줄 개별 입력</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
-						<SetSectForeigner sect_id={selectSect} handleClose={handleCloseForAdd} />
+						<SetSectForeigner
+							sect_id={selectSect}
+							handleClose={handleCloseForAdd}
+							reRender={reRender}
+						/>
 					</Modal>
 					<Modal isOpen={resetIsOpen} handleClose={handleCloseForReset}>
 						{pending && (
@@ -686,7 +683,7 @@ export default function Foreigner() {
 			</div>
 		</div>
 	) : (
-		<></>
+		<Loader />
 	);
 }
 

@@ -19,6 +19,12 @@ export function ManagerRouter() {
 	const today = useSelector(selectToday);
 	useEffect(() => {
 		window.easydropdown.all();
+
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
 	}, []);
 	return (
 		<>
@@ -33,7 +39,7 @@ export function ManagerRouter() {
 					{/* term => 학기 */}
 
 					<Route exact path="/students/:page/korean" component={Students} />
-					<Route exact path="/students/:term/foreigner" component={Foreigner} />
+					<Route exact path="/students/:sect_id/foreigner" component={Foreigner} />
 					{/* category => foreigner, Korean */}
 
 					<Route path="/settings" component={Settings} />
@@ -52,6 +58,13 @@ export function ManagerRouter() {
  * @constructor
  */
 export function ForeignerRouter() {
+	useEffect(() => {
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
+	}, []);
 	return (
 		<>
 			<Header /> {/* 유학생용 헤더로 대체해야함 */}

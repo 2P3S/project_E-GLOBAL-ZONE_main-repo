@@ -13,9 +13,9 @@ export const postForeignerReservationResult = (sch_id, data, setState) => {
 			ajax.setRequestHeader("content-type", "multipart/form-data");
 		}
 		if (ajax.readyState === 4) {
-			// console.log(ajax.response);
 			if (ajax.status === 201) {
 				setState(true);
+				alert("결과 입력에 성공하였습니다.");
 			}
 		}
 	};

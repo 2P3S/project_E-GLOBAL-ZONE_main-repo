@@ -15,6 +15,7 @@ import { LoginRouter } from "../app/Routers/Router.Login";
 import conf from "../conf/conf";
 import { logOut, setClass } from "../redux/userSlice/userSlice";
 import { setTodayFuture, setTodayToday } from "../redux/confSlice/confSlice";
+import { isMobile } from "react-device-detect";
 
 /**
  * Routes for Routers
@@ -36,13 +37,16 @@ function Routes() {
 					</>
 				) : User.userClass === conf.userClass.FOREIGNER ? (
 					// web
+
 					<ForeignerRouter />
 				) : (
 					// User === "Manager"
+
 					<ManagerRouter />
 				)
 			) : (
 				//notlogin
+
 				<LoginRouter />
 			)}
 			<Route exact path="/reload" component={Fake} />
@@ -55,7 +59,7 @@ const Fake = () => {
 	const params = useParams();
 	const location = useLocation();
 	useEffect(() => {
-		console.log(history, location);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(history, location);
 		history.goBack();
 	}, []);
 	return <></>;

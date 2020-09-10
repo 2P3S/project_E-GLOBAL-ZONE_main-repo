@@ -11,6 +11,7 @@ export const deleteAdminScheduleSome = (sch_id) => admin.delete(`schedule/some/$
 
 export const deleteAdminSchedule = (params) => admin.delete(`/schedule`, { params });
 
-export const getAdminScheduleUnapproved = (date) => admin.get(`schedule/unapproved/${date}`);
+export const getAdminScheduleUnapproved = (date, sch_state_of_permission) =>
+	admin.get(`schedule/unapproved/${date}`, { params: { sch_state_of_permission } });
 export const patchAdminScheduleApproval = (sch_id, data) =>
 	admin.patch(`schedule/approval/${sch_id}`, data);

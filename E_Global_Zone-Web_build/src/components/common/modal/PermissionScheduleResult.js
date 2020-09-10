@@ -13,7 +13,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnapproved(date).then((res) => {
+		getAdminScheduleUnapproved(date, 0).then((res) => {
 			setData(res.data);
 		});
 		return reRender;
@@ -26,7 +26,8 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 			if (data.data.length === 1) {
 				handleClose();
 			}
-			setData({ ...data, data: data.data.splice(selectIndex, 1) });
+			data.data.splice(selectIndex, 1);
+			// setData({ ...data, data: data.data.splice(selectIndex, 1) });
 			setPending(false);
 			setSelectIndex(0);
 		}
@@ -50,22 +51,25 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 						{data &&
 							data.data &&
 							data.data.map((v, index) => {
-								return (
-									<tr
-										key={v.sch_id}
-										onClick={() => {
-											setSelectIndex(index);
-										}}
-										style={{ cursor: "pointer" }}
-									>
-										<td>{index + 1}</td>
-										<td>
-											{v.sch_start_date.substr(0, 16)} ~{" "}
-											{v.sch_end_date.substr(11, 5)}
-										</td>
-										<td>{v.std_for_name}</td>
-									</tr>
-								);
+								if (v.sch_state_of_permission === true) {
+									return;
+								} else
+									return (
+										<tr
+											key={v.sch_id}
+											onClick={() => {
+												setSelectIndex(index);
+											}}
+											style={{ cursor: "pointer" }}
+										>
+											<td>{index + 1}</td>
+											<td>
+												{v.sch_start_date.substr(0, 16)} ~{" "}
+												{v.sch_end_date.substr(11, 5)}
+											</td>
+											<td>{v.std_for_name}</td>
+										</tr>
+									);
 							})}
 					</tbody>
 				</table>
@@ -82,7 +86,9 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 								return (
 									<li>
 										<div className="student">
-											<p className="name">{v.std_kor_name}</p>
+											<p className="name">
+												{v.std_kor_name || "삭제 된 학생"}
+											</p>
 											<select
 												name="catgo"
 												className="dropdown"
@@ -187,13 +193,15 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 								attendance,
 							}).then((res) => {
 								setPending(true);
-								alert(res.message);
+								alert(res.data.message);
 							});
 						}}
 					>
 						승인
 					</div>
-					<div className="bbtn darkGray">닫기</div>
+					<div className="bbtn darkGray" onClick={handleClose}>
+						닫기
+					</div>
 				</div>
 			</div>
 			<Modal isOpen={isOpen} handleClose={handleCloseForImg}>

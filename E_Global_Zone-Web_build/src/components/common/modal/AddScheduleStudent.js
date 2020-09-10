@@ -7,6 +7,7 @@ import { getForeignerReservation } from "../../../api/foreigner/reservation";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";
+import { handleEnterKey } from "../../../modules/handleEnterKey";
 
 export default function AddScheduleStudent({
 	handleClose,
@@ -42,13 +43,9 @@ export default function AddScheduleStudent({
 	}, []);
 
 	useEffect(() => {
-		// alert(data.data);
-		console.log(data);
-	}, [data]);
-	useEffect(() => {
-		console.log(result);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(result);
 		if (result && result.status === 201) {
-			alert(result.message);
+			alert(result.data.message);
 			handleClose();
 		} else if (result && result.status !== 201) {
 			alert("[에러] 이미 추가한 학생입니다.");
@@ -60,7 +57,12 @@ export default function AddScheduleStudent({
 				<div className="top_tit">
 					<p className="tit">학생추가</p>
 					<div className="tsearch_box">
-						<input type="text" placeholder="학생 이름 으로 검색 하기" id="term" />
+						<input
+							onKeyUp={(e) => handleEnterKey(e, handleSearch)}
+							type="text"
+							placeholder="학생 이름 으로 검색 하기"
+							id="term"
+						/>
 						<button onClick={handleSearch}>검색</button>
 					</div>
 				</div>

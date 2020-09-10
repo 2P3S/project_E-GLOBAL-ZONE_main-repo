@@ -4,36 +4,42 @@ a,
 a:link {
 	text-decoration: none;
 }
+
 a:hover,
 a:active,
 a:focus {
 	text-decoration: none;
 }
+
 input[type="text"] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
+
 input[type="button"] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
+
 input[type="image"] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
+
 input[type="submit"] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
+
 input[type="password"] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
+
 body {
 	min-width: 320px;
 	margin: 0 auto;
 	min-height: 100%;
-	border: 1px solid #ddd;
 	font-family: "Noto Sans KR", sans-serif;
 }
 
@@ -44,16 +50,28 @@ body {
 	height: 70px;
 	padding: 0 30px;
 	box-sizing: border-box;
-	border-bottom: 1px solid #e6e6e6;
 }
+
 .mhead .logo {
 	float: left;
 	margin-top: 17px;
 }
+
 .mhead .login {
 	float: right;
-	margin-top: 24px;
+	margin-top: 10px;
 }
+
+.mhead .login button {
+	box-shadow: none !important;
+	line-height: 35px;
+}
+
+.mhead .login div {
+	margin-right: 0 !important;
+	display: inline-grid;
+}
+
 .mhead .logo a,
 .mhead .login a {
 	display: inline-block;
@@ -62,33 +80,34 @@ body {
 /**************** mfooter ***************/
 .mfooter {
 	width: 100%;
-	padding: 25px 0;
+	padding: 25px 20px;
+	box-sizing: border-box;
 	border-top: 1px solid #e6e6e6;
 }
+
 .mfooter p {
 	font-size: 12px;
 	text-align: center;
 	color: #afafaf;
 	line-height: 150%;
 }
+
 .mfooter p span {
 	display: block;
 	font-family: "Lato", sans-serif;
-	font-weight: 600;
+	/* font-weight: 600; */
 }
 
 /**************** wrap ***************/
 .wrap {
 	width: 100%;
-	padding: 40px 35px;
+	padding: 35px 30px;
 	box-sizing: border-box;
 }
 
-.mhead,
-.mfooter,
-.wrap {
-	max-width: 600px;
-	margin: 0 auto;
+.wrap.bg {
+	background: #eef1f6;
+	margin-top: -11px;
 }
 
 /* 로그인 */
@@ -97,6 +116,7 @@ body {
 	background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
 	text-align: center;
 }
+
 .mobile_login div {
 	display: inline-block;
 	width: 270px;
@@ -108,6 +128,7 @@ body {
 	border-radius: 100px;
 	background: #dce5f1;
 }
+
 .mobile_login p {
 	font-size: 12px;
 	color: #9eadc4;
@@ -121,18 +142,30 @@ body {
 	margin: 50px 0;
 	border-radius: 10px;
 }
+
 .calandar img {
 	width: 100%;
 }
+
 .reservation_boxs {
 	width: 100%;
 }
+
+.all .calendar .day.selected {
+	background: #182f9e;
+	-webkit-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
+	-moz-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
+	box-shadow: 2px 2px 8px 0px rgb(169 174 192);
+	position: relative;
+	z-index: 1;
+}
+
 .reservation_boxs .box {
 	overflow: hidden;
 	margin-bottom: 10px;
 	border-radius: 5px;
 	width: 100%;
-	height: 80px;
+	height: 104px;
 	font-size: 13px;
 	padding: 0 8px 0 25px;
 	box-sizing: border-box;
@@ -148,44 +181,101 @@ body {
 	border-radius: 10px;
 	text-align: center;
 }
-.reservation_boxs .box.puple {
-	background: #4d4cac url(/global/mobile/img/box_check_ico.gif) no-repeat 90% center;
+
+.reservation_boxs.tab_wrap .box {
+	display: block;
+	font-size: 11px;
+	padding: 0 20px;
 }
+.reservation_boxs .box.puple {
+	background-color: #4d4cac;
+}
+
 .reservation_boxs .box.blue {
 	background: #659cff;
 }
+
 .reservation_boxs .box.pink {
 	background: #ff808b;
 }
-.reservation_boxs ul {
-	float: left;
-	margin-top: 21px;
+
+.reservation_boxs .box.deepBlue {
+	background-color: #182f9e;
 }
+
+.reservation_boxs .box.yellow {
+	background-color: #ffb52e;
+}
+
+.reservation_boxs .box.mint {
+	background-color: #30cc98;
+}
+
+.reservation_boxs .box.form {
+	background: #182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 95% center;
+}
+
+.reservation_boxs .box.form ul li {
+	font-size: 14px;
+}
+
+.reservation_boxs ul {
+	margin-top: 15px;
+}
+
+.reservation_boxs ul li {
+	font-size: 11px;
+}
+
 .reservation_boxs ul li.eng {
 	font-family: "Titillium Web", sans-serif;
 	font-weight: 800;
-	font-size: 13px;
+	font-size: 12px;
 }
-.reservation_boxs .box span {
-	float: right;
-	height: 64px;
-	line-height: 64px;
-	width: 100px;
-	margin-top: 8px;
+
+.reservation_boxs .box div {
+	height: 32px;
+	line-height: 32px;
+	margin-top: 10px;
 	text-align: center;
 	background: #222;
 	border-radius: 5px;
+	display: block;
+	padding: 0 15px;
+	text-align: left;
 }
-.reservation_boxs .box.puple span {
+
+.reservation_boxs .box div span {
+	float: right;
+	font-family: "Titillium Web", sans-serif;
+	font-weight: 800;
+	padding-left: 20px;
+	background: url(/global/mobile/img/reserv_list_applicant.png) no-repeat left center;
+}
+
+.reservation_boxs .box.puple div {
 	background: #4241a4;
-	width: 130px;
 }
-.reservation_boxs .box.blue span {
+
+.reservation_boxs .box.blue div {
 	background: #5e87fe;
 }
-.reservation_boxs .box.pink span {
+
+.reservation_boxs .box.pink div {
 	background: #fa6e7a;
 }
+.reservation_boxs .box.deepBlue div {
+	background-color: #14257a;
+}
+
+.reservation_boxs .box.yellow div {
+	background-color: #ce8d15;
+}
+
+.reservation_boxs .box.mint div {
+	background-color: #16a173;
+}
+
 .reservation_boxs .box a {
 	float: right;
 	margin-top: 15px;
@@ -200,32 +290,38 @@ body {
 	display: inline-block;
 	margin-bottom: 10px;
 }
+
 .apply_tit h3 {
 	float: left;
 	font-size: 23px;
 	color: #000;
 }
+
 .apply_tit p {
 	float: right;
 	font-size: 15px;
 	font-weight: 600;
 	letter-spacing: -0.05em;
 }
+
 .apply_tit p span {
 	font-size: 26px;
 	color: #f29a00;
 	font-family: "Lato", sans-serif;
 	font-weight: 900;
 }
+
 .input_box {
 	width: 100%;
 	margin-bottom: 15px;
 }
+
 .input_box p {
 	font-weight: 600;
 	font-size: 14px;
 	margin-bottom: 5px;
 }
+
 .input_box input,
 .input_box textarea {
 	width: 100%;
@@ -238,9 +334,11 @@ body {
 	border-radius: 5px;
 	box-sizing: border-box;
 }
+
 .input_box input {
 	height: 50px;
 }
+
 .input_box textarea {
 	resize: none;
 	padding: 20px;
@@ -250,96 +348,131 @@ body {
 	line-height: 23px;
 	font-weight: 500;
 }
-
-/* 스케줄 조회 */
-.sch_tab {
+.reservation_apply .box {
+	overflow: hidden;
+	margin-bottom: 10px;
+	border-radius: 5px;
 	width: 100%;
+	height: 100px;
+	font-size: 13px;
+	padding: 0 8px 0 25px;
+	box-sizing: border-box;
+	font-weight: 600;
+	color: #fff;
+	background: #182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat right center;
 }
+/* 스케줄 조회 */
+
 .sch_tab {
 	overflow: hidden;
 	clear: both;
 	width: 100%;
+	border: 1px solid #e5e5e5;
+	border-bottom: none;
+	border-radius: 5px 5px 0 0;
 }
+
 .sch_tab li {
 	float: left;
-	margin-right: -1px;
 	width: 25%;
 }
+
 .sch_tab li div {
 	display: block;
 	padding: 15px 0;
 	color: #1d1f24;
 	font-size: 13px;
 	text-align: center;
-	border: 1px solid #e5e5e5;
+	border-left: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5;
 	background: #fff;
 	font-weight: 600;
-	border-radius: 5px 5px 0 0;
+	/* border-radius: 5px 5px 0 0; */
 }
+
+.sch_tab li:first-child div {
+	border-left: none;
+}
+
+.sch_tab li div.eng {
+	background: url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
+}
+
+.sch_tab li div.jp {
+	background: url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
+}
+
+.sch_tab li div.ch {
+	background: url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
+}
+
 .sch_tab li div.on {
 	position: relative;
-	border: 1px solid #e5e5e5;
+	/* border: 1px solid #e5e5e5; */
 	border-bottom: 1px solid #f5f5f6;
-	background: #f5f5f6;
+	background-color: #f5f5f6;
 	z-index: 1;
 }
-.sch_tab li div.eng {
-	background: #fff url(/global/mobile/img/sch_tab_eng.gif) no-repeat 90% 7px;
-}
-.sch_tab li div.jp {
-	background: #fff url(/global/mobile/img/sch_tab_jp.gif) no-repeat 90% 7px;
-}
-.sch_tab li div.ch {
-	background: #fff url(/global/mobile/img/sch_tab_ch.gif) no-repeat 90% 7px;
-}
+
 /* 예약조회 BOX와 동일 */
 .reservation_boxs.tab_wrap {
-	width: 99%;
-	padding: 25px 25px 15px 25px;
+	width: 100%;
 	background: #f5f5f6;
-	box-sizing: border-box;
 	border: 1px solid #e5e5e5;
 	border-top: none;
+	margin: 0 auto;
 }
-.reservation_boxs.tab_wrap a.box {
-	display: block;
-	background-image: none;
-	font-size: 12px;
-	padding: 0 8px 0 18px;
-}
-.reservation_boxs.tab_wrap a.box span {
-	width: 90px;
+
+.reservation_boxs.tab_wrap .tab_list {
+	padding: 25px 25px 15px 25px;
+	box-sizing: border-box;
 }
 
 /* 결과 관리 */
 .wrap.mobile_result {
 	font-weight: 600;
 }
+
 .wrap.mobile_result p.tit {
 	font-size: 25px;
 	color: #1d1f24;
 	letter-spacing: -0.05em;
 	margin-top: 35px;
 }
+
 .wrap.mobile_result .point_info {
-	margin-top: 20px;
+	border-radius: 10px;
+	width: 100%;
+	padding: 15px 20px;
+	background: #182f9e;
+	box-sizing: border-box;
 }
+
 .wrap.mobile_result .point_info p {
 	display: inline-block;
-	font-size: 17px;
-	line-height: 24px;
+	font-size: 14px;
+	line-height: 20px;
+	color: #fff;
+	font-weight: 400;
+	letter-spacing: -0.01em;
 }
+
 .wrap.mobile_result .point_info p span.name {
-	color: #4d4cac;
+	color: #ffcc76;
+	font-weight: 600;
+	text-decoration: underline;
 }
+
 .wrap.mobile_result .point_info .result {
 	float: right;
-	margin-top: -14px;
-	font-size: 55px;
+	margin-top: -10px;
+	font-size: 50px;
 	font-family: "Lato", sans-serif;
 	font-weight: 900;
 	letter-spacing: 2px;
+	color: #40dcae;
 }
+
 .wrap.mobile_result .point_info .result span.rank {
 	background: #2bd259;
 	color: #fff;
@@ -349,14 +482,26 @@ body {
 	margin-right: 10px;
 	letter-spacing: 0;
 }
+
 .wrap.mobile_result .point_info .result span.times {
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: 600;
+	color: #fff;
 }
+
+.wrap.mobile_result .edd-root {
+	margin-left: 0;
+	border-radius: 5px;
+	margin-top: 25px;
+	background: #fff;
+	border: 1px solid #d2dae9;
+}
+
 .history_wrap {
 	width: 100%;
-	margin-top: 10px;
+	background: #fff;
 }
+
 .history_wrap .month_move {
 	overflow: hidden;
 	width: 100%;
@@ -368,19 +513,23 @@ body {
 	box-sizing: border-box;
 	border-radius: 5px 5px 0 0;
 }
+
 .history_wrap .month_move p {
 	float: left;
-	font-size: 15px;
+	font-size: 14px;
 }
+
 .history_wrap .month_move .arrow {
 	float: right;
 }
+
 .history_wrap .month_move .arrow div {
 	display: inline-block;
 	width: 20px;
 	/* padding: 10px 0; */
 	text-align: center;
 }
+
 .history_wrap table {
 	width: 100%; /*border-collapse:collapse;*/
 	color: #373a44;
@@ -389,72 +538,269 @@ body {
 	border-top: none;
 	border-radius: 0 0 5px 5px;
 }
+
 .history_wrap table th,
 .history_wrap table td {
 	padding: 15px 0;
 	text-align: center;
 	border-bottom: 1px solid #e8e8e8;
 }
+
 .history_wrap table tr:last-child td {
 	border-bottom: none;
 }
+
 .history_wrap table thead th {
 	font-weight: 600;
 	border-bottom: 1px solid #e8e8e8;
 }
+
 .history_wrap table tbody td.score {
 	color: #2bd259;
 	font-weight: 600;
 }
 
+/* 회원가입 시 정보 추가입력 */
+.join_add_wrap {
+}
+.join_add_wrap .input_area {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 160px 40px 40px 40px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	font-size: 14px;
+	background: url(/global/img/join_ico.gif) no-repeat center 45px;
+}
+.join_add_wrap .input_area .box {
+	text-align: left;
+	margin-bottom: 10px;
+}
+.join_add_wrap .input_area .box label {
+	display: inline-block;
+	color: #373a44;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+.join_add_wrap .input_area input,
+.join_add_wrap .input_area button,
+.join_add_wrap .input_area .edd-root {
+	width: 100%;
+	margin: 0;
+	height: 45px;
+	border: 1px solid #cacaca;
+	border-radius: 7px;
+	padding: 0 15px;
+	margin-bottom: 7px;
+	color: #373a44;
+	font-size: 13px;
+	font-weight: 600;
+}
+.join_add_wrap .input_area .edd-value {
+	height: 45px;
+	line-height: 45px;
+}
+.join_add_wrap .input_area input:-moz-read-only {
+	/* For Firefox */
+	background-color: #f1f1f1;
+	color: #666;
+}
+.join_add_wrap .input_area input:read-only {
+	background-color: #f1f1f1;
+	color: #666;
+}
+.join_add_wrap .input_area input[type="text"]::placeholder {
+	font-size: 13px;
+	color: #999;
+	font-weight: 600;
+}
+.join_add_wrap .input_area button {
+	color: #fff;
+	background: #2050e6;
+	border: none;
+	padding: 0;
+	border-radius: 7px;
+	margin-top: 10px;
+	font-weight: 600;
+}
+
+/* 예약 조회 신규 */
+.reserv_status {
+	width: 100%;
+}
+.reserv_status p.tit {
+	font-size: 16px;
+	color: #182f9e;
+	font-weight: 600;
+}
+.reserv_status ul {
+	width: 100%;
+	margin-top: 10px;
+	display: inline-block;
+	background: #182f9e;
+	border-radius: 10px;
+	padding: 15px 0;
+	box-sizing: border-box;
+}
+.reserv_status ul li {
+	float: left;
+	width: 33.3%;
+	text-align: center;
+	color: #9facec;
+	font-size: 13px;
+	background: url(/global/mobile/img/reserv_status_bar.gif) no-repeat left 50%;
+}
+.reserv_status ul li:first-child {
+	background: none;
+}
+.reserv_status ul li span {
+	display: block;
+	font-family: "Lato", sans-serif;
+	color: #fff;
+	font-weight: 600;
+	font-size: 22px;
+	margin-bottom: 3px;
+}
+.reserv_status ul li.yellow span {
+	color: #ffdc40;
+}
+/* 예약 조회 신규 - 아코디언 메뉴*/
+.reserv_list p.tit {
+	font-size: 16px;
+	color: #182f9e;
+	font-weight: 600;
+	margin: 30px 0 10px 0;
+}
+.mainMenu {
+	width: 100%;
+	display: block;
+	border-radius: 10px;
+	overflow: hidden;
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(106, 127, 183, 0.14);
+	-moz-box-shadow: 0px 0px 10px 0px rgba(106, 127, 183, 0.14);
+	box-shadow: 0px 0px 10px 0px rgba(106, 127, 183, 0.14);
+}
+.mainMenu .item {
+	overflow: hidden;
+}
+.mainMenu .btn {
+	display: block;
+	padding: 20px 20px 20px 80px;
+	color: #373a44;
+	position: relative;
+	font-size: 14px;
+	font-weight: 600;
+	border-bottom: 1px solid #d4def0;
+}
+.mainMenu .btn:last-child {
+	border-bottom: none;
+}
+.mainMenu .item.status01 > a {
+	background: #fff url(/global/mobile/img/reserv_list_status01.gif) no-repeat 30px 50%;
+}
+.mainMenu .item.status02 > a {
+	background: #fff url(/global/mobile/img/reserv_list_status02.gif) no-repeat 30px 50%;
+}
+.mainMenu .item.status03 > a {
+	background: #fff url(/global/mobile/img/reserv_list_status03.gif) no-repeat 30px 50%;
+}
+.mainMenu .item a span {
+	width: 100%;
+	min-height: 27px;
+	line-height: 27px;
+	display: inline-block;
+	background: url(/global/mobile/img/reserv_list_arrow.png) no-repeat 95% 0px;
+}
+.subMenu {
+	background: #e0e8ef;
+	overflow: hidden;
+	transition: max-height 0.7s;
+	max-height: 0;
+}
+.subMenu div {
+	width: 100%;
+	display: inline-block;
+	padding: 15px 20px;
+	font-weight: 600;
+	box-sizing: border-box;
+	color: #394c7f;
+	font-size: 13px;
+	border-bottom: 1px solid #bfcce4;
+	position: relative;
+}
+.subMenu div:last-child {
+	border-bottom: none;
+}
+.subMenu div .left {
+	float: left;
+	font-size: 12px;
+}
+.subMenu div .left span {
+	display: block;
+	font-family: "Lato", sans-serif;
+	font-weight: 800;
+}
+.subMenu div .right {
+	float: right;
+	background: #fff;
+	border-radius: 5px;
+	font-size: 12px;
+	padding: 10px 12px;
+}
+.subMenu div .right.zoom_info {
+	cursor: pointer;
+	background: #fff url(/global/mobile/img/zoom_ico.gif) no-repeat 8px 50%;
+	padding-left: 34px;
+}
+.item:target .subMenu {
+	max-height: calc(100em - (20em + 30em));
+	transition: max-height 1s;
+}
+
 /**************** 기본정의 ***************/
 /* TAB */
-.tab {
+.mtab {
 	width: 100%;
+	padding-bottom: 11px;
+	background: url(/global/mobile/img/tab_shadow.png) no-repeat center bottom;
 }
-.tab {
-	display: inline-block;
+.mtab ul {
+	overflow: hidden;
 	clear: both;
 	width: 100%;
+	background: #fff;
 }
-.tab li {
+.mtab ul li {
 	float: left;
 	margin-right: -1px;
 	width: 50%;
 }
-.tab li a {
+.mtab ul li a {
 	display: block;
-	padding: 15px 0;
-	color: #222;
-	font-size: 13px;
+	padding: 10px 0;
+	color: #c8c8c8;
+	font-size: 12px;
 	text-align: center;
-	border: 1px solid #222;
-	background: #fff;
 	font-weight: 600;
 }
-.tab li a.on {
+.mtab ul li a.on {
 	position: relative;
-	color: #fff;
-	border: 1px solid #222;
-	background: #222;
+	color: #182f9e;
+	border-bottom: 2px solid #182f9e;
 	z-index: 1;
+	display: inline-block;
 }
-.tab li:first-child a {
-	border-radius: 5px 0 0 5px;
-}
-.tab li:last-child a {
-	border-radius: 0 5px 5px 0px;
-}
-.tab.no2 li {
+.mtab .no2 li {
 	width: 50%;
 }
-.tab.no3 li {
+.mtab .no3 li {
 	width: 33.2%;
+	text-align: center;
 }
-.tab.no4 li {
+.mtab .no4 li {
 	width: 25%;
 }
-.tab.no5 li {
+.mtab .no5 li {
 	width: 20%;
 }
 
@@ -472,6 +818,7 @@ select {
 	-moz-appearance: none;
 	appearance: none;
 }
+
 select::-ms-expand {
 	display: none;
 }
@@ -482,6 +829,7 @@ select::-ms-expand {
 	text-align: center;
 	margin-top: 40px;
 }
+
 .btn_wrap div {
 	display: inline-block;
 	width: 200px;
@@ -498,9 +846,11 @@ select::-ms-expand {
 .agree {
 	position: relative;
 }
+
 .agree .all_agree input[type="checkbox"] {
 	display: none;
 }
+
 .agree .all_agree input[type="checkbox"] + label {
 	display: inline-block;
 	width: 20px;
@@ -510,15 +860,18 @@ select::-ms-expand {
 	border-radius: 3px;
 	float: left;
 }
+
 .agree .all_agree:after {
 	display: block;
 	clear: both;
 	content: "";
 }
+
 .agree .all_agree input[type="checkbox"]:checked + label {
 	background: url(/global/mobile/img/checkBox_ico.png) #4d4cac no-repeat center/12px 10px;
 	float: left;
 }
+
 .agree .all_agree input[type="checkbox"] + label span {
 	position: absolute;
 	top: 0;
@@ -529,14 +882,72 @@ select::-ms-expand {
 	color: #6a6a6a;
 }
 
+/* 로딩중 */
+.popup.loading {
+	width: 150px;
+	text-align: center;
+	padding-top: 160px;
+	background: url(/global/img/Loding_ball.gif) no-repeat center 0px;
+	background-size: 110%;
+	margin: 70px auto;
+}
+.popup.loading p {
+	font-size: 17px;
+	font-family: "Lato", sans-serif;
+	font-weight: 600;
+	color: #1c233d;
+}
+
 /********************모바일********************/
-@media (max-width: 400px) {
+@media (max-width: 350px) {
+	.mhead {
+		padding: 0 15px;
+	}
+	.mhead .logo {
+		margin-top: 23px;
+	}
+	.mhead .logo img {
+		width: 80%;
+	}
 	.mfooter p {
-		color: #525252;
-		word-break: keep-all;
+		color: #adadad;
 	}
 	.mfooter p span {
 		display: inline;
-		color: #aaa;
+		color: #ccc;
+	}
+}
+
+/********************모바일********************/
+@media (max-width: 500px) {
+	.all {
+		width: 100%;
+		transition-duration: 0.3s;
+	}
+}
+
+/********************웹********************/
+@media (min-width: 500px) {
+	body {
+		background: #eaeff3;
+	}
+
+	.all {
+		width: 500px;
+		margin: 0 auto;
+		background: #fff;
+		-webkit-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+		-moz-box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+		box-shadow: 0px 1px 13px 0px rgba(164, 168, 195, 0.27);
+	}
+
+	.calendar {
+		margin: 0 0 40px 0;
+	}
+
+	.calendar .day.selected,
+	.calendar .day.today,
+	.calendar .day:hover {
+		border-radius: 10px;
 	}
 }

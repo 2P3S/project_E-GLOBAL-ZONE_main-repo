@@ -7,6 +7,7 @@ import CreateSection from "../../../../components/common/modal/CreateSection";
 import GetSections from "../../../../components/common/modal/GetSections";
 
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+import Loader from "../../../../components/common/Loader";
 
 /**
  * Manager :: 시스템 환경설정
@@ -36,6 +37,34 @@ export default function Settings() {
 	const handleChange = (key, value) => {
 		setPostSettings({ ...postSettings, [key]: parseInt(value) });
 	};
+	const handleChangeMeet = () => {
+		let meet = document.getElementById("time_input_meet");
+		let rest = document.getElementById("time_input_rest");
+		if (meet.value < 30 && meet.value >= 0) {
+			rest.value = 30 - meet.value;
+		} else {
+			meet.value = 0;
+		}
+		setPostSettings({
+			...postSettings,
+			once_meet_time: parseInt(meet.value),
+			once_rest_time: parseInt(rest.value),
+		});
+	};
+	const handleChangeRest = () => {
+		let meet = document.getElementById("time_input_meet");
+		let rest = document.getElementById("time_input_rest");
+		if (rest.value < 30 && rest.value >= 0) {
+			meet.value = 30 - rest.value;
+		} else {
+			rest.value = 0;
+		}
+		setPostSettings({
+			...postSettings,
+			once_meet_time: parseInt(meet.value),
+			once_rest_time: parseInt(rest.value),
+		});
+	};
 
 	const reRender = () => {
 		getAdminSetting().then((res) => setSettings(res.data));
@@ -50,20 +79,11 @@ export default function Settings() {
 		}
 	}, [settings]);
 	useEffect(() => {
-		console.log(postSettings);
-		if (postSettings && postSettings.once_meet_time + postSettings.once_rest_time > 30) {
-			document.getElementById("time_input1").value = 0;
-			document.getElementById("time_input2").value = 0;
-			setPostSettings({ ...postSettings, once_meet_time: 0, once_rest_time: 0 }).then((res) =>
-				alert(res.message)
-			);
-		}
-	}, [postSettings]);
-	useEffect(() => {
 		window.easydropdown.all();
 	});
 
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	let arrayDate = [1, 2, 3, 4, 5, 6, 7];
 	return settings && postSettings ? (
 		<div className="content">
 			<div className="sub_title">
@@ -148,18 +168,24 @@ export default function Settings() {
 							</div>
 							<div className="select_input">
 								<select
+									id="select_res_end_period"
 									name="catgo1"
 									className="dropdown"
 									onChange={(e) => {
 										handleChange(`res_end_period`, e.target.value);
 									}}
 								>
-									{array.map((v) => {
+									{arrayDate.map((v) => {
 										return (
 											<option
 												id={`day-${v}`}
 												selected={
 													settings && settings.result.res_end_period === v
+														? true
+														: false
+												}
+												disabled={
+													settings && settings.result.res_start_period < v
 														? true
 														: false
 												}
@@ -185,19 +211,25 @@ export default function Settings() {
 							</div>
 							<div className="select_input">
 								<select
+									id="select_res_start_period"
 									name="catgo1"
 									className="dropdown"
 									onChange={(e) => {
 										handleChange(`res_start_period`, e.target.value);
 									}}
 								>
-									{array.map((v) => {
+									{arrayDate.map((v) => {
 										return (
 											<option
 												id={`day-${v}`}
 												selected={
 													settings &&
 													settings.result.res_start_period === v
+														? true
+														: false
+												}
+												disabled={
+													settings && settings.result.res_end_period > v
 														? true
 														: false
 												}
@@ -221,6 +253,8 @@ export default function Settings() {
 								{postSettings.once_meet_time + postSettings.once_rest_time}분
 							</span>
 							으로 자동계산됩니다.
+							<br />
+							설정 이후에 생성되는 스케줄부터 적용됩니다.
 						</p>
 						<div className="input_area">
 							<div className="input">
@@ -234,15 +268,8 @@ export default function Settings() {
 									<input
 										type="number"
 										defaultValue={settings.result.once_meet_time}
-										onChange={(e) => {
-											if (e.target.value < 0) {
-												alert("양의 정수 값을 입력해주세요.");
-												e.target.value = 0;
-												return;
-											}
-											handleChange(`once_meet_time`, e.target.value);
-										}}
-										id="time_input1"
+										onChange={handleChangeMeet}
+										id="time_input_meet"
 									/>
 									<span>분</span>
 								</div>
@@ -255,20 +282,16 @@ export default function Settings() {
 									<input
 										type="number"
 										defaultValue={settings.result.once_rest_time}
-										onChange={(e) => {
-											if (e.target.value < 0) {
-												alert("양의 정수 값을 입력해주세요.");
-												e.target.value = 0;
-												return;
-											}
-											handleChange(`once_rest_time`, e.target.value);
-										}}
-										id="time_input2"
+										onChange={handleChangeRest}
+										id="time_input_rest"
 									/>
 									<span>분</span>
 								</div>
 							</div>
 						</div>
+						<p class="warning_txt">
+							학기 시작 중에는 변경이 <span>불가</span>합니다.
+						</p>
 					</div>
 				</div>
 
@@ -402,32 +425,31 @@ export default function Settings() {
 							<span>일 이내</span>
 						</div>
 					</div>
-
-					<div className="btn_area right">
-						<div
-							className="bbtn darkGray"
-							onClick={handleOpenForInsertForeignerStudent}
-						>
-							유학생 등록
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForCreatSectIsOpen}>
-							학기 기간 설정
-						</div>
-						<div className="bbtn darkGray" onClick={handleOpenForGetSectIsOpen}>
-							학기 기간 조회
-						</div>
-					</div>
 				</div>
 			</div>
-			<div className="table_btn mb40">
+			<div className="setting_btn_wrap">
+				<div className="gray" onClick={handleOpenForInsertForeignerStudent}>
+					유학생 등록
+				</div>
+				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
+					학기 기간 설정
+				</div>
+				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
+					학기 기간 조회
+				</div>
+
 				<div
+					className="save"
 					onClick={() => {
-						postAdminSetting(postSettings).then((res) => alert(res.message));
+						postAdminSetting(postSettings).then(() => {
+							window.location.reload(true);
+						});
 					}}
 				>
 					저장
 				</div>
 			</div>
+
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
 			</Modal>
@@ -442,6 +464,8 @@ export default function Settings() {
 			</Modal>
 		</div>
 	) : (
-		<>Loading</>
+		<div className="content">
+			<Loader />
+		</div>
 	);
 }

@@ -9,32 +9,6 @@ import { GoogleLogout } from "react-google-login";
  * @constructor
  */
 export default function Header() {
-	const [pathname, setPathname] = useState(useHistory().location.pathname);
-	let useClicks;
-	const { home, reservation, schedule, result, login } = (useClicks = {
-		home: useClick(() => setPathname("/reservation")),
-		reservation: useClick(() => setPathname("/reservation")),
-		schedule: useClick(() => setPathname("/schedule")),
-		result: useClick(() => setPathname("/result")),
-		login: useClick(() => setPathname("/login")),
-	});
-
-	useEffect(() => {
-		for (const key in useClicks) {
-			if (useClicks.hasOwnProperty(key)) {
-				const element = useClicks[key];
-				try {
-					if (`/${key}` === pathname) {
-						element.current.className = "on";
-					} else {
-						element.current.className = "";
-					}
-				} catch (error) {
-					// console.log(error);
-				}
-			}
-		}
-	}, [pathname]);
 	return (
 		<>
 			<div className="mhead">
@@ -51,34 +25,15 @@ export default function Header() {
 						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 						buttonText="Logout"
 						onLogoutSuccess={(res) => {
+							window.localStorage.clear();
 							window.location.reload(true);
 						}}
-					></GoogleLogout>
+						onFailure={() => {
+							window.localStorage.clear();
+						}}
+					/>
 				</div>
 			</div>
-			{/* {pathname !== "/login" ? (
-				<div className="wrap">
-					<ul className="tab no3">
-						<li>
-							<Link ref={reservation} to="/reservation" className="on">
-								예약 조회
-							</Link>
-						</li>
-						<li>
-							<Link ref={schedule} to="/schedule">
-								스케줄 조회
-							</Link>
-						</li>
-						<li>
-							<Link ref={result} to="/result">
-								결과 관리
-							</Link>
-						</li>
-					</ul>
-				</div>
-			) : (
-				<></>
-			)} */}
 		</>
 	);
 }
