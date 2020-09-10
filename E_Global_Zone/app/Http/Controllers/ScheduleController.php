@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ScheduleController extends Controller
 {
-    private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일자 유학생 스케줄을 반환합니다.";
+    private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일 출석 결과 미승인건을 반환합니다.";
     private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
 
     private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
@@ -490,6 +490,7 @@ class ScheduleController extends Controller
      */
     public function indexUninputedList(Request $request, $date)
     {
+        //TODO 학생이 한명도 없을 경우 처리해야 함.
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
@@ -520,18 +521,27 @@ class ScheduleController extends Controller
     }
 
     /**
-     * 관리자 - 해당 날짜 출석 결과 미승인건 조회
+     * 관리자 - 해당 날짜 출석 결과 조회 ( 승인, 미승인 )
      *
      * @param string $date
      * @return JsonResponse
      */
-    public function indexUnapprovedList(Request $request, $date)
+    public function indexApprovedList(Request $request, $date)
     {
         // <<-- Request 요청 관리자 권한 검사.
-        $is_admin = self::is_admin($request);
+        $rules = [
+            'sch_state_of_permission' => 'required|bool',
+            'guard' => 'required|string|in:admin'
+        ];
 
-        if (is_object($is_admin)) {
-            return $is_admin;
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SCHEDULE_SEARCH_RES_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
         }
         // -->>
 
@@ -540,7 +550,7 @@ class ScheduleController extends Controller
             ->join('schedules_result_imgs as img', 'schedules.sch_id', '=', 'img.sch_id')
             ->whereDate('sch_start_date', $date)
             ->where('sch_state_of_result_input', true)
-            ->where('sch_state_of_permission', false)
+            ->where('sch_state_of_permission', $request->input('sch_state_of_permission'))
             ->get();
 
         foreach ($unapproved_list as $schedule) {
@@ -552,20 +562,16 @@ class ScheduleController extends Controller
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
 
-            // // 이미지 주소 매핑
-            // $schedule['start_img_url'] =
-            //     $this->resultImage->get_img($schedule['start_img_url']);
-            // $schedule['end_img_url'] =
-            //     $this->resultImage->get_img($schedule['end_img_url']);
-
+            // <<-- 이미지 주소 매핑
             $schedule['start_img_url'] =
                 $this->resultImage->get_base64_img($schedule['start_img_url']);
             $schedule['end_img_url'] =
                 $this->resultImage->get_base64_img($schedule['end_img_url']);
+            // -->>
         }
 
         return response()->json([
-            'message' => $date . ' 일 출석 결과 미승인건 조회',
+            'message' => $date . self::_SCHEDULE_SEARCH_RES_SUCCESS,
             'data' => $unapproved_list,
         ], 200);
     }

@@ -16,7 +16,7 @@ class CreateSchedulesTable extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->bigIncrements('sch_id');
             $table->unsignedBigInteger('sch_sect');
-            $table->unsignedBigInteger('sch_std_for');
+            $table->unsignedBigInteger('sch_std_for')->nullable();
             $table->dateTime('sch_start_date');
             $table->dateTime('sch_end_date');
             $table->tinyInteger('sch_state_of_result_input')->default(false);
@@ -26,11 +26,13 @@ class CreateSchedulesTable extends Migration
             /* 외래키 설정 */
             $table->foreign('sch_sect')
                 ->references('sect_id')
-                ->on('sections');
+                ->on('sections')
+                ->onDelete('cascade');
 
             $table->foreign('sch_std_for')
                 ->references('std_for_id')
-                ->on('student_foreigners');
+                ->on('student_foreigners')
+                ->onDelete('SET NULL');
         });
     }
 

@@ -25,6 +25,7 @@ class SectionController extends Controller
 
     private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
     private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
+    private const _SECTION_DELETE_RES_FAILURE_OVER_DATE = "해당 학기가 시작하여 삭제할 수 없습니다.";
 
     private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS1 = "현재까지 참석한 학기 정보를 반환합니다.";
     private const _SECTION_KOR_ATTENDANCED_RES_SUCCESS2 = "참석한 미팅이 없습니다.";
@@ -49,20 +50,16 @@ class SectionController extends Controller
             self::_SECTION_SEARCH_RES_FAILURE
         );
 
-        $year = $request->year;
-
         if (is_object($validated_result)) {
             return $validated_result;
         }
 
-        $section_data = Section::whereYear('sect_start_date', $year)->get();
-
-        if (!empty($request->name)) {
-            $section_data =  Section::where('sect_name', $request->name)->get()->first();
-        } else if (!empty($request->sect_id)) {
-            $section_data =  Section::find($request->sect_id);
+        if (!empty($request->input('name'))) {
+            $section_data =  Section::where('sect_name', $request->input('name'))->get()->first();
+        } else if (!empty($request->input('sect_id'))) {
+            $section_data =  Section::find($request->input('sect_id'));
         } else {
-            $section_data =  Section::whereYear('sect_start_date', $year)->get();
+            $section_data =  Section::whereYear('sect_start_date', $request->input('year'))->orderBy('sect_start_date', 'DESC')->get();
             // 학기별 등록 유학생 학생 인원수 추가.
             foreach ($section_data as $section) {
                 $section['std_for_count'] = Work_student_foreigner::where('work_sect', $section->sect_id)->count();
@@ -188,6 +185,14 @@ class SectionController extends Controller
             return $is_admin;
         }
         // -->>
+
+        // 학기 시작 날짜 검사.
+        $sect_start_date = strtotime($sect_id['sect_start_date']);
+        $now_date = strtotime("Now");
+
+        if ($sect_start_date < $now_date) {
+            return self::response_json_error(self::_SECTION_DELETE_RES_FAILURE_OVER_DATE);
+        }
 
         try {
             $sect_id->delete();
