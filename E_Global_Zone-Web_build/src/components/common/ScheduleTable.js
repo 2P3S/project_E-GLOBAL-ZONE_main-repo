@@ -52,9 +52,6 @@ export default function ScheduleTable({ scheduleList }) {
 	// state5 :: [관리자 미승인] 출석 학생
 	// state6 :: [관리자 승인 완료]
 	// state7 :: 예약없음
-	useEffect(() => {
-		console.log(scheduleList);
-	}, []);
 	const printSchedule = (v) => {
 		if (v) {
 			switch (v.status) {

@@ -24,7 +24,6 @@ const InsertResult = ({
 	const [stdData, setStdData] = useState();
 	const [pending, setPending] = useState(false);
 	const handleInputStartImage = (e) => {
-		console.log(e.target.files);
 		data.append("result_start_img", e.target.files[0]);
 		// data.append("result_end_img", e.target.files[0]);
 		setImgStart(e.target.files[0]);
@@ -37,7 +36,6 @@ const InsertResult = ({
 		data.append("result_end_img", e.target.files[0]);
 		// setImgStart(e.target.files[0]);
 		setImgEnd(e.target.files[0]);
-		console.log(e.target.files);
 		// e.target.value = e.target.files[0]
 		document.getElementById("endImg").value = e.target.files[0].name;
 	};
@@ -61,9 +59,6 @@ const InsertResult = ({
 			data.append(`absent_std_kor_id_list[${index}]`, v);
 		});
 
-		for (const iterator of data.entries()) {
-			console.log(iterator);
-		}
 		postForeignerReservationResult(sch_id, data, setPending);
 	};
 
@@ -77,7 +72,6 @@ const InsertResult = ({
 	}, [pending]);
 	useEffect(() => {
 		window.easydropdown.all();
-		console.log(stdData);
 	});
 	return (
 		<div className="popup list">

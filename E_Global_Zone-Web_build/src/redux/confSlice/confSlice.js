@@ -34,7 +34,7 @@ export const confSlice = createSlice({
 			state.today = parseDate(new Date(Date.now()));
 		},
 		setTodayFuture: (state) => {
-			state.today = parseDate(new Date("2020-12-1"));
+			state.today = parseDate(new Date(Date.now() + 2));
 		},
 	},
 });

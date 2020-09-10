@@ -29,7 +29,7 @@ export const LoginRouter = () => {
 			{/*<Redirect exact path="/" to={`/student`} />*/}
 
 			<Route exact path="/foreigner" component={Login} />
-			<Route exact path="/student" component={KoreanLogin} />
+			<Route exact path="/student" component={isMobile ? MobileLogin : KoreanLogin} />
 			<Route exact path="/admin" component={AdminLogin} />
 
 			<Route exact path="/:userClass/password" component={ResetPassword} />

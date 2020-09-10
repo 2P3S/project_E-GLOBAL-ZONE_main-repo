@@ -15,11 +15,13 @@ import { getAdminSchedule } from "../../../../api/admin/schedule";
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 
 import ShowList from "../../../../components/common/modal/ShowList";
+import ShowListDone from "../../../../components/common/modal/ShowListDone";
 import { useHistory, useParams } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 import Loader from "../../../../components/common/Loader";
+import ShowResult from "../../../../components/common/modal/ShowResult";
 
 /**
  * Manager :: 스케줄 조회
@@ -101,8 +103,9 @@ export default function Schedules() {
 	}, [params]);
 
 	useEffect(() => {
-		document.getElementById("allCheck").checked = true;
+		// document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
+			v.checked = true;
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
@@ -111,13 +114,20 @@ export default function Schedules() {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		} else {
-			if (_selectDate !== today) {
-				dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
+			console.log(params.date !== _selectDate);
+			// if (_selectDate !== today) {
+			// 	dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
+			if (params.date !== _selectDate) {
+				let { date } = params;
+				dispatch(_setSelectDate(moment(date).format("YYYY-MM-DD")));
 			}
 		}
 	}, [_selectDate]);
 	useEffect(() => {
 		setPending(true);
+		document.getElementsByName("checkBox").forEach((v) => {
+			v.checked = true;
+		});
 	}, [selectDate]);
 
 	useEffect(() => {
@@ -279,13 +289,13 @@ export default function Schedules() {
 										} else if (div.classList.contains("state3")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "",
+												component: "ShowListDone",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
 												sch_start_date: schedule.sch_start_date,
 											});
-											// scheduleOpen();
+											scheduleOpen();
 										} else if (div.classList.contains("state5")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
@@ -299,7 +309,7 @@ export default function Schedules() {
 										} else if (div.classList.contains("state6")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "ShowList",
+												component: "ShowResult",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
@@ -324,7 +334,9 @@ export default function Schedules() {
 									function addListner(div) {
 										div.addEventListener("click", clickListner);
 									}
-									if (moment(schedule.sch_end_date) < moment(today)) {
+									if (
+										moment(schedule.sch_end_date).isBefore(moment(Date.now()))
+									) {
 										div.classList.add("done");
 									}
 									addListner(div);
@@ -642,6 +654,23 @@ export default function Schedules() {
 					<PermissionScheduleResult
 						handleClose={scheduleClose}
 						date={params.date}
+						reRender={reRender}
+					/>
+				) : selectedSchedule.component === "ShowResult" ? (
+					<ShowResult
+						handleClose={scheduleClose}
+						date={params.date}
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
+						reRender={reRender}
+					/>
+				) : selectedSchedule.component === "ShowListDone" ? (
+					<ShowListDone
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
+						handleClose={scheduleClose}
+						std_for_id={selectedSchedule && selectedSchedule.std_for_id}
+						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
+						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
 						reRender={reRender}
 					/>
 				) : (

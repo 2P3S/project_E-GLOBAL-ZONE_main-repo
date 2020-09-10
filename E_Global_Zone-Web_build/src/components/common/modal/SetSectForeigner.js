@@ -62,7 +62,6 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 		let array = [];
 		if (term === "") {
 			setForList(defaultList);
-			console.log("blank");
 		} else {
 			defaultList.forEach((v) => {
 				if (v.std_for_name.match(term)) {

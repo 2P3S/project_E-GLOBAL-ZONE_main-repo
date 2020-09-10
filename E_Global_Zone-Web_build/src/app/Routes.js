@@ -59,7 +59,7 @@ const Fake = () => {
 	const params = useParams();
 	const location = useLocation();
 	useEffect(() => {
-		console.log(history, location);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(history, location);
 		history.goBack();
 	}, []);
 	return <></>;

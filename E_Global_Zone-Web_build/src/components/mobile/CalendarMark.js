@@ -144,7 +144,6 @@ const Week = (props) => {
 				selected={selected}
 				select={() => {
 					select(day);
-					console.log(day.date._d);
 					dispatch(setSelectDate(parseDate(day.date._d)));
 				}}
 				dates={dates}
@@ -180,12 +179,10 @@ class Day extends React.Component {
 					sameDate = date;
 				}
 			});
-			console.log(schedule);
 			schedule &&
 				schedule.forEach((v) => {
 					let div = document.getElementById(`schImg-${sameDate.toString()}`);
 					let img = document.createElement("img");
-					console.log(v);
 					img.src =
 						v === "영어"
 							? "/global/mobile/img/sch_tab_eng.gif"
@@ -223,27 +220,5 @@ class Day extends React.Component {
 		);
 	}
 }
-
-// /**
-//  * Calendar <<추가예정>>
-//  * @returns {JSX.Element}
-//  * @constructor
-//  * @todo make Calendar
-//  */
-// export default function Calendar() {
-// 	const selectDate = useSelector(selectSelectDate);
-// 	return (
-// 		<div className="calendar">
-// 			{/*<a href="/reservation/1">*/}
-// 				<div>
-// 					<ReactCalendar
-// 					onChange={date => console.log(date)}
-// 					value={selectDate}
-// 					/>
-// 				</div>
-// 			{/*</a>*/}
-// 		</div>
-// 	);
-// }
 
 export default Calendar;

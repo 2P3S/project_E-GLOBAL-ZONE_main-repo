@@ -12,7 +12,9 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 	const selectDate = useSelector(selectSelectDate);
 	useEffect(() => {
 		getAdminSection({});
-		getRestDate(2020, `05`).then((res) => console.log(res));
+		getRestDate(2020, `05`).then(
+			(res) => process.env.REACT_APP_DEVELOP_MODE && console.log(res)
+		);
 		return reRender;
 	}, []);
 	useEffect(() => window.easydropdown.all());
@@ -36,14 +38,15 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 		) {
 			times.push(i);
 		}
-		console.log(
-			std_for_id,
-			times,
-			selectDate,
-			std_for_name,
-			document.getElementById("startTimeBox").value,
-			document.getElementById("endTimeBox").value
-		);
+		process.env.REACT_APP_DEVELOP_MODE &&
+			console.log(
+				std_for_id,
+				times,
+				selectDate,
+				std_for_name,
+				document.getElementById("startTimeBox").value,
+				document.getElementById("endTimeBox").value
+			);
 		setData({
 			...data,
 			schedule: [

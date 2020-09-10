@@ -45,7 +45,6 @@ export default function Reservation() {
 		let arrayOfPermission = [];
 		if (data && data.data) {
 			data.data.forEach((v) => {
-				console.log(v);
 				if (moment(today).isAfter(moment(v.sch_end_date))) {
 					// 오늘 날짜 이전의 스케줄
 					arrayOfWatingForResult.push(v);
@@ -57,14 +56,10 @@ export default function Reservation() {
 						arrayOfWatingForPermission.push(v);
 					}
 				}
-				console.log(arrayOfWatingForResult);
 			});
 			setDataSet({ arrayOfWatingForPermission, arrayOfPermission, arrayOfWatingForResult });
 		}
 	}, [data]);
-	useEffect(() => {
-		console.log(dataSet);
-	});
 
 	return (
 		<>

@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {
-	getAdminScheduleUnapproved,
-	patchAdminScheduleApproval,
-} from "../../../api/admin/schedule";
+import { getAdminScheduleUnapproved } from "../../../api/admin/schedule";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 
-export default function PermissionScheduleResult({ date, handleClose, reRender = () => {} }) {
+export default function ShowResult({ date, handleClose, reRender = () => {} }) {
 	const [data, setData] = useState();
 	const [pending, setPending] = useState(false);
 	const [selectIndex, setSelectIndex] = useState(0);
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnapproved(date, false).then((res) => {
+		getAdminScheduleUnapproved(date, true).then((res) => {
 			setData(res.data);
 		});
 		return reRender;
@@ -35,7 +32,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 	return (
 		<div className="popup not_attend">
 			<div className="left_wrap">
-				<p className="tit">미승인 출석결과 목록</p>
+				<p className="tit">승인 결과 목록</p>
 				<table className="pop_table3">
 					<colgroup>
 						<col width="15%" />
@@ -51,7 +48,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 						{data &&
 							data.data &&
 							data.data.map((v, index) => {
-								if (v.sch_state_of_permission === true) {
+								if (v.sch_state_of_permission === false) {
 									return;
 								} else
 									return (
@@ -93,6 +90,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 												name="catgo"
 												className="dropdown"
 												id={`${v.std_kor_id}`}
+												disabled={true}
 											>
 												<option
 													value="attendance"
@@ -176,7 +174,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 				</p>
 
 				<div className="btn_area right">
-					<div
+					{/* <div
 						className="bbtn mint"
 						onClick={() => {
 							let absent = [];
@@ -198,7 +196,7 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 						}}
 					>
 						승인
-					</div>
+					</div> */}
 					<div className="bbtn darkGray" onClick={handleClose}>
 						닫기
 					</div>

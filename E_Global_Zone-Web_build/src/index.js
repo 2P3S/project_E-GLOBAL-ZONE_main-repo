@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 
 import dotenv from "dotenv";
 dotenv.config();
-console.log(process.env.REACT_APP_DEVELOP_MODE);
 
 ReactDOM.render(
 	<React.StrictMode>

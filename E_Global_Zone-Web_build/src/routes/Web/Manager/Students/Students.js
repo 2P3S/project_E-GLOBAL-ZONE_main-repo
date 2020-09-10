@@ -192,10 +192,6 @@ export default function Students() {
 	}, [resData, dept]);
 
 	useEffect(() => {
-		console.log(params);
-	}, [params]);
-
-	useEffect(() => {
 		if (pending) {
 			getAdminKorean({ page: params.page, orderby: orderBy[orderIndex] }).then((res) => {
 				setResData(res.data);
@@ -324,16 +320,15 @@ export default function Students() {
 											className="name"
 											onClick={() => {
 												if (
-													window.confirm(`[경고]정말 삭제 하시겠습니까?
-												학번 : ${v.std_id}
-												이름 : ${v.name}
-											`) === true
+													window.confirm(
+														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+													) === true
 												) {
-													deleteAdminKoreanAccount(v.std_id)
-														.then((res) => {
+													deleteAdminKoreanAccount(v.std_id).then(
+														(res) => {
 															setPending(true);
-														})
-														.catch((e) => console.log(e));
+														}
+													);
 												}
 											}}
 										>

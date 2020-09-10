@@ -28,15 +28,12 @@ export default function Header() {
 		if (password.value !== "" && checkPassword.value !== "") {
 			if (password.value === checkPassword.value) {
 				setIsSame(true);
-				console.log("same");
 			} else {
-				console.log("not same");
 				setIsSame(false);
 			}
 		}
 	};
 	const handleClick = () => {
-		console.log(user);
 		isSame &&
 			patchPassword({
 				password: document.getElementById("_password").value,

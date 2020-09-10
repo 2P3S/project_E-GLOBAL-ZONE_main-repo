@@ -56,7 +56,7 @@ export default function CreateSection({
 				setEndDate("YYYY-MM-DD");
 			}
 			setIsLoading(false);
-			resData ? console.log(resData) : console.log();
+			resData ? process.env.REACT_APP_DEVELOP_MODE && console.log(resData) : console.log();
 		}
 	}, [resData]);
 
@@ -68,7 +68,7 @@ export default function CreateSection({
 	}, [endDate]);
 
 	useEffect(() => {
-		console.log(selectSect);
+		process.env.REACT_APP_DEVELOP_MODE && console.log(selectSect);
 		getAdminSection({ name: `${selectSect.year}학년도 ${selectSect.sect}학기` }).then((res) =>
 			setResData(res.data)
 		);

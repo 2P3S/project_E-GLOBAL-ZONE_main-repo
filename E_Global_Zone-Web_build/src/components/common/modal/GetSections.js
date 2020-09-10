@@ -22,9 +22,6 @@ export default function GetSections() {
 		);
 	};
 
-	useEffect(() => {
-		console.log(sectList);
-	}, [sectList]);
 	return (
 		<div className="popup inquiry">
 			<p className="tit">학기 기간 조회</p>
