@@ -10,7 +10,7 @@ export default function ShowResult({ date, handleClose, reRender = () => {} }) {
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
-		getAdminScheduleUnapproved(date, true).then((res) => {
+		getAdminScheduleUnapproved(date, 1).then((res) => {
 			setData(res.data);
 		});
 		return reRender;
