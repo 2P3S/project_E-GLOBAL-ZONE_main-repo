@@ -15,6 +15,7 @@ import { getAdminSchedule } from "../../../../api/admin/schedule";
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 
 import ShowList from "../../../../components/common/modal/ShowList";
+import ShowListDone from "../../../../components/common/modal/ShowListDone";
 import { useHistory, useParams } from "react-router-dom";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
@@ -288,7 +289,7 @@ export default function Schedules() {
 										} else if (div.classList.contains("state3")) {
 											setSelectedSchedule({
 												sch_id: schedule.sch_id,
-												component: "ShowList",
+												component: "ShowListDone",
 												std_for_id: v.std_for_id,
 												std_for_name: v.std_for_name,
 												sch_end_date: schedule.sch_end_date,
@@ -657,12 +658,19 @@ export default function Schedules() {
 					/>
 				) : selectedSchedule.component === "ShowResult" ? (
 					<ShowResult
+						handleClose={scheduleClose}
+						date={params.date}
 						sch_id={selectedSchedule && selectedSchedule.sch_id}
-						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
+						reRender={reRender}
+					/>
+				) : selectedSchedule.component === "ShowListDone" ? (
+					<ShowListDone
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
+						handleClose={scheduleClose}
 						std_for_id={selectedSchedule && selectedSchedule.std_for_id}
+						std_for_name={selectedSchedule && selectedSchedule.std_for_name}
 						sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
 						sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
-						handleClose={scheduleClose}
 						reRender={reRender}
 					/>
 				) : (

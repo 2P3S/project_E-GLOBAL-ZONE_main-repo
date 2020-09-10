@@ -51,22 +51,25 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 						{data &&
 							data.data &&
 							data.data.map((v, index) => {
-								return (
-									<tr
-										key={v.sch_id}
-										onClick={() => {
-											setSelectIndex(index);
-										}}
-										style={{ cursor: "pointer" }}
-									>
-										<td>{index + 1}</td>
-										<td>
-											{v.sch_start_date.substr(0, 16)} ~{" "}
-											{v.sch_end_date.substr(11, 5)}
-										</td>
-										<td>{v.std_for_name}</td>
-									</tr>
-								);
+								if (v.sch_state_of_permission === true) {
+									return;
+								} else
+									return (
+										<tr
+											key={v.sch_id}
+											onClick={() => {
+												setSelectIndex(index);
+											}}
+											style={{ cursor: "pointer" }}
+										>
+											<td>{index + 1}</td>
+											<td>
+												{v.sch_start_date.substr(0, 16)} ~{" "}
+												{v.sch_end_date.substr(11, 5)}
+											</td>
+											<td>{v.std_for_name}</td>
+										</tr>
+									);
 							})}
 					</tbody>
 				</table>
