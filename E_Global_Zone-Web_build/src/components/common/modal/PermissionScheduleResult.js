@@ -26,7 +26,8 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 			if (data.data.length === 1) {
 				handleClose();
 			}
-			setData({ ...data, data: data.data.splice(selectIndex, 1) });
+			data.data.splice(selectIndex, 1);
+			// setData({ ...data, data: data.data.splice(selectIndex, 1) });
 			setPending(false);
 			setSelectIndex(0);
 		}
@@ -82,7 +83,9 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 								return (
 									<li>
 										<div className="student">
-											<p className="name">{v.std_kor_name}</p>
+											<p className="name">
+												{v.std_kor_name || "삭제 된 학생"}
+											</p>
 											<select
 												name="catgo"
 												className="dropdown"
@@ -193,7 +196,9 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 					>
 						승인
 					</div>
-					<div className="bbtn darkGray">닫기</div>
+					<div className="bbtn darkGray" onClick={handleClose}>
+						닫기
+					</div>
 				</div>
 			</div>
 			<Modal isOpen={isOpen} handleClose={handleCloseForImg}>

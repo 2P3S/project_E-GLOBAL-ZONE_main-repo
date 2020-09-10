@@ -101,8 +101,9 @@ export default function Schedules() {
 	}, [params]);
 
 	useEffect(() => {
-		document.getElementById("allCheck").checked = true;
+		// document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
+			v.checked = true;
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
@@ -118,6 +119,9 @@ export default function Schedules() {
 	}, [_selectDate]);
 	useEffect(() => {
 		setPending(true);
+		document.getElementsByName("checkBox").forEach((v) => {
+			v.checked = true;
+		});
 	}, [selectDate]);
 
 	useEffect(() => {
@@ -324,7 +328,7 @@ export default function Schedules() {
 									function addListner(div) {
 										div.addEventListener("click", clickListner);
 									}
-									if (moment(schedule.sch_end_date) < moment(today)) {
+									if (moment(schedule.sch_end_date).isAfter(moment(today))) {
 										div.classList.add("done");
 									}
 									addListner(div);

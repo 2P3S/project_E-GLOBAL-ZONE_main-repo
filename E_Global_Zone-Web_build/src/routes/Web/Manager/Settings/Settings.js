@@ -83,6 +83,7 @@ export default function Settings() {
 	});
 
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+	let arrayDate = [1, 2, 3, 4, 5, 6, 7];
 	return settings && postSettings ? (
 		<div className="content">
 			<div className="sub_title">
@@ -167,18 +168,24 @@ export default function Settings() {
 							</div>
 							<div className="select_input">
 								<select
+									id="select_res_end_period"
 									name="catgo1"
 									className="dropdown"
 									onChange={(e) => {
 										handleChange(`res_end_period`, e.target.value);
 									}}
 								>
-									{array.map((v) => {
+									{arrayDate.map((v) => {
 										return (
 											<option
 												id={`day-${v}`}
 												selected={
 													settings && settings.result.res_end_period === v
+														? true
+														: false
+												}
+												disabled={
+													settings && settings.result.res_start_period < v
 														? true
 														: false
 												}
@@ -204,19 +211,25 @@ export default function Settings() {
 							</div>
 							<div className="select_input">
 								<select
+									id="select_res_start_period"
 									name="catgo1"
 									className="dropdown"
 									onChange={(e) => {
 										handleChange(`res_start_period`, e.target.value);
 									}}
 								>
-									{array.map((v) => {
+									{arrayDate.map((v) => {
 										return (
 											<option
 												id={`day-${v}`}
 												selected={
 													settings &&
 													settings.result.res_start_period === v
+														? true
+														: false
+												}
+												disabled={
+													settings && settings.result.res_end_period > v
 														? true
 														: false
 												}
@@ -276,7 +289,9 @@ export default function Settings() {
 								</div>
 							</div>
 						</div>
-						<p class="warning_txt">학기 시작 중에는 변경이 <span>불가</span>합니다.</p>
+						<p class="warning_txt">
+							학기 시작 중에는 변경이 <span>불가</span>합니다.
+						</p>
 					</div>
 				</div>
 
@@ -410,14 +425,10 @@ export default function Settings() {
 							<span>일 이내</span>
 						</div>
 					</div>
-
-					
 				</div>
 			</div>
 			<div className="setting_btn_wrap">
-				<div className="gray"
-					onClick={handleOpenForInsertForeignerStudent}
-				>
+				<div className="gray" onClick={handleOpenForInsertForeignerStudent}>
 					유학생 등록
 				</div>
 				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
@@ -427,15 +438,18 @@ export default function Settings() {
 					학기 기간 조회
 				</div>
 
-				<div className="save"
+				<div
+					className="save"
 					onClick={() => {
-						postAdminSetting(postSettings);
+						postAdminSetting(postSettings).then(() => {
+							window.location.reload(true);
+						});
 					}}
 				>
 					저장
 				</div>
 			</div>
-			
+
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
 			</Modal>
