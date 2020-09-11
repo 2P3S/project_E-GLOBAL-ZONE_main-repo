@@ -1,19 +1,35 @@
 # e-global-zone
 영진전문대학교 글로벌 존 온라인 예약 시스템
 
+<p align="center">
+    <a href="https://www.yju.ac.kr/" target="_blank">
+        <img src="https://www.yju.ac.kr/sites/kr/masterSkin/kr_JW_MS_K2WT003_M/images/logo/m_h-logo.png" width="400">
+    </a>
+</p>
+<div class="footer__bottom-section__information">
+    <address>대표전화 053-940-5114<span>41527 대구광역시 북구 복현로 35 (복현2동 218) 영진전문대학교</span></address>
+    <p>COPYRIGHT© <strong>YEUNGJIN UNIVERSITY</strong>. <span>All RIGHTS RESERVED.</span></p>
+</div>
+
 ## 목차
 
-[1. 사용자 요구 분석 (2020-07-07)](#사용자-요구-분석)
+[1. 사용자 요구 분석](#사용자-요구-분석)
 
-[2. 스토리 보드 구상 (2020-07-08 ~ 2020-07-00)](#스토리-보드-구상)
+[2. 스토리 보드 구상](#스토리-보드-구상)
 
-[3. Sequence Diagram 작성 (2020-07-29 ~ 2020-07-30)](#Sequence-Diagram-작성)
+[3. Sequence Diagram 작성](#Sequence-Diagram-작성)
 
-[4. DataBase 설계 (2020-07-30 ~ 2020-07-00)](#DataBase-설계)
+[4. DataBase, System architecture 설계](#DataBase-및-System-architecture-설계)
 
-[5. API 설계 (2020-07-30 ~ 2020-07-00)](#API-설계)
+[5. API 설계 및 Component 구성](#API-설계-및-Component-구성)
 
-[6. Component 구성 (2020-07-30 ~ 2020-07-00)](#Component-구성)
+[6. 개발 기간](#개발-기간)
+
+[7. 2차 테스트 진행](#2차-테스트-진행)
+
+[8. 버그 수정 및 검수](#버그-수정-및-검수)
+
+[9. 실 서버 배포 및 베타 오픈(예정)](#실-서버-배포-및-베타-오픈)
 
 ## 사용자 요구 분석
 진행 일시 : 2020-07-07
@@ -100,23 +116,92 @@
 ![sequence_diagram](https://user-images.githubusercontent.com/53788601/89094935-efb79e00-d403-11ea-8645-3499fbf35fe9.png)
 
 
-## DataBase 설계
+## DataBase 및 System architecture 설계
 진행 일시 : 2020-07-30 ~ 08-09
 
-- 모의 DB `.csv` 생성
-- DB 세부 구조 수정
-- Laravel Migrations, Model 정의
-- Entity-Relation Diagram (ERD)
+#### DataBase 설계
+    - 모의 DB `.csv` 생성
+    - DB 세부 구조 수정
+    - Laravel Migrations, Model 정의
+    - Entity-Relation Diagram (ERD)
 ![e-global-zone_DB-ERD 001](https://user-images.githubusercontent.com/53788601/89729135-b7e8d000-da6d-11ea-9ca2-6a353e9adc35.jpeg)
 
-## API 설계
-진행 일시 : 2020-07-30 ~
+#### System architecture
+![E_Global_Zone Setting Manual 001](https://user-images.githubusercontent.com/53788601/92883908-4f19bc80-f44c-11ea-9e75-5e198c34f221.jpeg)
 
-## Component 구성
-진행 일시 : 2020-07-30 ~
 
-## 개발 과정
-진행 일시 : 2020-08-04 ~
+## API 설계 및 Component 구성
+진행 일시 : 2020-07-30 ~ 08-11
 
-#### WEB PAGE 구현
-#### API 구현
+1. 관리자 로그인 API
+2. 시스템 환경설정 API
+3. 관리자 스케줄 API
+4. 유학생 관리 API
+5. 한국인 학생 관리 API
+6. 유학생 로그인 API
+7. 유학생 홈페이지 API
+8. 한국인 학생 로그인 API
+9. 한국인 학생 홈페이지 API
+
+## 개발 기간
+진행 일시 : 2020-08-11 ~ 09-01
+
+#### E Global Zone 서비스 구현
+    - 한국인 학생 예약 신청
+    - 외국인 유학생 스케줄 관리 및 결과 입력 
+    - 관리자 시스템 관리 기능 구현
+    
+#### 테스트 서버 배포 및 1차 테스트 진행
+    - AWS EC2 서버 배포
+    - 주요 기능 모듈 단위 테스트 및 알고리즘 보완
+
+## 2차 테스트 진행
+진행 일시 : 2020-09-02 ~ 09-04
+
+#### 테스트 내용
+- 테스트 참가자
+    - 관리자 : [정재순](https://github.com/JeongJaeSoon)
+    - 한국인 학생 : [조승현](https://github.com/kokomade98), [박중규](https://github.com/JoongQ96), [김창한](https://github.com/KCH97), 권소현, 정경숙, 신동협
+    - 유학생 : [조미향](https://github.com/ChoMihyang), [김범수](https://github.com/KBS10), 이승형, 박시연, 김희수, [이재원](https://github.com/LeeJaeBae), [이구슬](https://github.com/LeeGuSeul)
+- 한국인 학생, 외국인 유학생 역할 분담
+- E Global Zone 서비스 모의 운영 
+- UI / UX 사용성 테스트
+
+#### 테스트 결과 및 피드백 목록 작성
+<img src="https://user-images.githubusercontent.com/53788601/92882535-f990e000-f44a-11ea-9314-64d9897b15d5.png" width="32.8%">
+<img src="https://user-images.githubusercontent.com/53788601/92882232-adde3680-f44a-11ea-868f-e17ac6e245f1.png" width="32.8%">
+<img src="https://user-images.githubusercontent.com/53788601/92882213-a9b21900-f44a-11ea-81cd-40cea916a330.png" width="32.8%">
+
+
+## 버그 수정 및 검수
+진행 일시 : 2020-09-04 ~ 09-11
+
+## 실 서버 배포 및 베타 오픈
+진행 일시 : 2020-09-14(예정)
+
+## developers
+<table>
+    <tr>
+        <td align="center">
+            <a href="https://github.com/JeongJaeSoon">
+                <img src="https://avatars3.githubusercontent.com/u/53788601?s=400&u=88b3d54002a7892a752cea82bb58f707ae6378f0&v=4" width="100px;" alt=""/><br />
+                <sub><b>JaeSoon Jeong</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/LeeGuSeul"><img src="https://avatars0.githubusercontent.com/u/68966131?s=400&u=420c0b5210b1659363262a397faeeec241ee51a8&v=4" width="100px;" alt=""/><br />
+                <sub><b>GuSeul Lee</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/LeeJaeBae"><img src="https://avatars0.githubusercontent.com/u/46444748?s=400&u=10bedd6279c226d3c0a5d12f46bad2038980f804&v=4" width="100px;" alt=""/><br />
+                <sub><b>JaeWon Lee</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/kokomade98"><img src="https://avatars1.githubusercontent.com/u/52916934?s=400&u=98dc80246851616122330b0f96146e6c8f562454&v=4" width="100px;" alt=""/><br />
+                <sub><b>SeungHyun Cho</b></sub>
+            </a>
+        </td>    
+    </tr>
+</table>
