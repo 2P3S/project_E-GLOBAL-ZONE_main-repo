@@ -1,12 +1,13 @@
-# e-global-zone
-영진전문대학교 글로벌 존 온라인 예약 시스템
+# 영진전문대학교 글로벌 존 온라인 예약 시스템
+### YJU E-global-zone
 
 <p align="center">
     <a href="https://www.yju.ac.kr/" target="_blank">
         <img src="https://www.yju.ac.kr/sites/kr/masterSkin/kr_JW_MS_K2WT003_M/images/logo/m_h-logo.png" width="400">
     </a>
 </p>
-<div class="footer__bottom-section__information">
+
+<div>
     <address>대표전화 053-940-5114<span>41527 대구광역시 북구 복현로 35 (복현2동 218) 영진전문대학교</span></address>
     <p>COPYRIGHT© <strong>YEUNGJIN UNIVERSITY</strong>. <span>All RIGHTS RESERVED.</span></p>
 </div>
@@ -168,9 +169,21 @@
 - UI / UX 사용성 테스트
 
 #### 테스트 결과 및 피드백 목록 작성
-<img src="https://user-images.githubusercontent.com/53788601/92882535-f990e000-f44a-11ea-9314-64d9897b15d5.png" width="32.8%">
-<img src="https://user-images.githubusercontent.com/53788601/92882232-adde3680-f44a-11ea-868f-e17ac6e245f1.png" width="32.8%">
-<img src="https://user-images.githubusercontent.com/53788601/92882213-a9b21900-f44a-11ea-81cd-40cea916a330.png" width="32.8%">
+
+<table>
+    <tr>
+        </td>
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882535-f990e000-f44a-11ea-9314-64d9897b15d5.png" width="200px">
+        </td>
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882232-adde3680-f44a-11ea-868f-e17ac6e245f1.png" width="200px">
+        </td>    
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882213-a9b21900-f44a-11ea-81cd-40cea916a330.png" width="200px">
+        </td>    
+    </tr>
+</table>
 
 
 ## 버그 수정 및 검수
