@@ -164,7 +164,7 @@ export default function Section(props) {
 						<input type="submit" value="검색" />
 					</div>
 					<div className="not_enter">
-						<p className="tit">미입력 리스트</p>
+						<p className="tit"><span>미입력 리스트</span></p>
 						<div className="scroll_area">
 							<table>
 								<thead>
@@ -200,7 +200,7 @@ export default function Section(props) {
 					</div>
 
 					<div className="enter">
-						<p className="tit">입력 완료 리스트</p>
+						<p className="tit"><span>입력 완료 리스트</span></p>
 						<div className="scroll_area">
 							<table>
 								<thead>

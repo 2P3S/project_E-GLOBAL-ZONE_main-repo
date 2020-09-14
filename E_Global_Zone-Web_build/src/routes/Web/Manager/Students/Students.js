@@ -165,7 +165,8 @@ export default function Students() {
 					const pagenation = document.getElementById("pagenation");
 					pagenation.innerHTML = "";
 					let first = document.createElement("button");
-					first.innerText = "<<";
+					// first.innerText = "<<";
+					first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 					first.addEventListener("click", () => {
 						history.push(`/students/1/korean`);
 						history.push("/reload");
@@ -181,7 +182,8 @@ export default function Students() {
 						pagenation.appendChild(btn);
 					}
 					let last = document.createElement("button");
-					last.innerText = ">>";
+					// last.innerText = ">>";
+					last.innerHTML += '<img src="/global/img/paging_next_ico.gif" />';
 					pagenation.appendChild(last);
 					last.addEventListener("click", () => {
 						history.push(`/students/${resData.data.last_page}/korean`);

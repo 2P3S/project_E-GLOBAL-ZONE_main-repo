@@ -152,41 +152,80 @@ body {
 
 /* 로그인 */
 .login_wrap {
-	width: 400px;
-	margin: 30px auto;
-	padding: 30px 40px;
-	text-align: left;
+	width: 1200px;
+	margin: 100px auto;
+	text-align: center;
 }
 
 .login_wrap .tit {
-	display: inline-block;
-	padding-right: 15px;
-	font-size: 40px;
-	font-family: "Lato", sans-serif;
-	margin-bottom: 25px;
-	font-weight: 600;
-	color: #373a44;
-	background: url(/global/img/login_tit_ico.gif) no-repeat right 36px;
+	font-size: 43px;
+	font-family: "Roboto", sans-serif;
+	margin-bottom:10px;
+	font-weight: 200;
+	color: #8d8f94;
+}
+
+.login_wrap .tit span {
+	color:#30addc;
+}
+
+.login_wrap .txt {
+ font-size: 14px;
+ color: #787878;
+ margin-bottom: 55px;
 }
 
 /* 로그인 - 유학생 */
 .login_wrap .login_input {
 	position: relative;
-	width: 100%;
+	width: 330px;
 	margin-top: 15px;
 	display: inline-block;
+	text-align: center;
 }
+
+.login_wrap .login_input .pwReset {
+	background:none;
+	border:none;
+	text-decoration:underline;
+	color:#30addc;
+	font-size:12px;
+	letter-spacing: -0.05em;
+	margin-top:5px;
+}
+
+.login_content {width:100%; display:inline-block; background:#fbfafb; height: 100vh;}
+.login_content .head {height:70px; background:#fff; border-bottom:1px solid #f8f7f9; text-align:right;}
+.login_content .head .head_w{width:1200px;margin: 0 auto;/* padding-top: 24px; */}
+.login_content .head .head_w .logo {float:left;margin-top: 19px;}
+.login_content .head ul {display:inline-block;margin-top: 26px;}
+.login_content .head ul li {float:left;font-size:13px;color:#9c9c9c;margin-left: 20px;cursor: pointer;}
+.login_content .head ul li.on {padding-left: 12px;background: url(/global/img/login_tab_on.gif) no-repeat left 50%;color:#30addc;font-weight:600;}
+
 
 .login_wrap .login_input input[type="text"],
 .login_wrap .login_input input[type="password"] {
-	float: left;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	height: 50px;
-	line-height: 50px;
-	width: 250px;
-	padding: 0 12px;
-	margin-top: 5px;
+	border: 1px solid #e0e0e0;
+	border-radius: 100px;
+	height: 55px;
+	line-height: 55px;
+	width: 265px;
+	padding: 0 30px;
+	margin-top: 10px;
+	display: inline-block;
+	background: #fbfafb;
+}
+.login_wrap .login_input input[type="text"]:hover,
+.login_wrap .login_input input[type="password"]:hover {
+	background:#f1f6f6;
+	transition-duration:0.3s;
+	border:1px solid #30addc;
+}
+
+.login_wrap .login_input input[type="text"]::placeholder,
+.login_wrap .login_input input[type="password"]::placeholder {
+	color:#aaa;
+	font-size:13px;
 }
 
 .login_wrap .login_input input[type="text"]:first-child {
@@ -199,49 +238,54 @@ body {
 }
 
 .login_wrap .login_input .submit {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 115px;
-	height: 104px;
-	background: #2050e6;
+	width: 330px;
+	height: 52px;
+	background: #30addc;
 	color: #fff;
-	line-height: 105px;
-	border-radius: 9px;
-	font-size: 14px;
+	line-height: 52px;
+	border-radius: 100px;
+	font-size: 17px;
 	text-align: center;
+	margin-top: 30px;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-weight: 400;
+}
+
+.login_footer {
+    position: absolute;
+    bottom: 5%;
+    text-align: center;
+    width: 1200px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color:#aaa;
+    font-size: 13px;
+    padding-top:25px;
+    border-top: 1px solid #eaeaea;
 }
 
 /* 로그인 - 한국인 학생 */
 .gsuite_login {
 	width: 100%;
 	text-align: center;
-	padding-top: 265px;
-	background: url(/global/img/login_gsuite.jpg) no-repeat center 44px;
+	padding-top: 215px;
+	background: url(/global/img/login_gsuite.png) no-repeat center 5px;
 }
 
 .gsuite_login .btn {
 	cursor: pointer;
 	display: inline-block;
 	padding: 0 145px 0 40px;
-	color: #373a44;
+	color: #737373;
 	font-size: 13px;
-	background: url(/global/img/gsuite_arrow.gif) no-repeat 90% 50%;
+	background: #efefef url(/global/img/gsuite_arrow.gif) no-repeat 90% 50%;
 	font-weight: 600;
 	text-align: left;
-	height: 50px;
-	line-height: 50px;
-	border: 2px solid #cdced0;
+	height: 54px;
+	line-height: 54px;
 	border-radius: 100px;
 }
-
-.gsuite_login .btn:hover {
-	background: #373a44 url(/global/img/gsuite_arrow_on.gif) no-repeat 90% 50%;
-	color: #fff;
-	border: 2px solid #373a44;
-	transition-duration: 0.3s;
-}
-
 .gsuite_login p {
 	font-size: 12px;
 	color: #5c606c;
@@ -729,6 +773,37 @@ table.sch_table tbody tr:hover td:first-child {
 	color: #fff;
 }
 
+#pagenation {
+	/* width:100%; */
+	display:inline-block;
+	text-align:center;
+	margin-top:30px;
+}
+#pagenation button {
+	background:none;
+	border:none;
+	float:left;
+	height:32px;
+	line-height:32px;
+	font-size: 14px;
+	font-weight: 600;
+	color:#666;
+	cursor:pointer;
+	padding:0 5px;
+}
+#pagenation button img {
+	height: 32px;
+	line-height:0;
+}
+#pagenation button.on {
+	color:#ff8421;
+	text-decoration:underline;
+}
+
+#pagenation button:checked {
+	border:none !important;
+	color:none !important;
+}
 /* 스케줄관리 hover button [2020-08-29 추가] 
 .hover_btn.sch {
 	width: 53px;
@@ -1245,12 +1320,13 @@ table.student_manage_table td:first-child {
 	font-weight: 600;
 	letter-spacing: -1px;
 	margin-bottom: 20px;
+	line-height: 125%;
 }
 
 .search_student .right_wrap .section_btn {
 	position: absolute;
 	right: 0;
-	top: 5px;
+	top: 1px;
 }
 
 .search_student .right_wrap .section_btn .btn {
@@ -1335,10 +1411,26 @@ table.student_manage_table td:first-child {
 .search_student .not_enter p.tit,
 .search_student .enter p.tit {
 	font-size: 15px;
-	padding: 15px 25px;
 	font-weight: 600;
 	border-radius: 5px;
 	text-align: left;
+	padding-left: 25px;
+}
+
+.search_student .not_enter p.tit span,
+.search_student .enter p.tit span {
+	padding: 20px 0;
+	width: 100%;
+	height:100%;
+	display:inline-block;
+}
+
+.search_student .not_enter p.tit span {
+	background: url(/global/img/not_enter_ico.gif) no-repeat 67% 9px;
+}
+
+.search_student .enter p.tit span {
+	background: url(/global/img/enter_ico.gif) no-repeat 66% 7px;
 }
 
 .search_student .not_enter p.tit {
@@ -1466,7 +1558,7 @@ table.work_time td {
 }
 table.work_time td {
 	cursor: pointer;
-	height: 65px;
+	height: 99px;
 }
 table.work_time td.time {
 	color: #463fbd;
@@ -1486,8 +1578,8 @@ table.work_time td.time.none {
 table.work_time td .time_area {
 	position: relative;
 	width: 100%;
-	height: 35px;
-	line-height: 35px;
+	height: 40px;
+	line-height: 40px;
 	background: #463fbd;
 	border: 1px solid #463fbd;
 	margin-left: -1px;
@@ -1558,30 +1650,34 @@ table.work_time thead th {
 
 /* /* 회원가입 시 정보 추가입력 mobile로 이동 */
 .join_add_wrap {
+	text-align: center;
 }
 .join_add_wrap .input_area {
-	width: 350px;
+	/* width: 350px; */
 	padding: 160px 40px 40px 40px;
 	margin: 50px auto;
 	border: 1px solid #ddd;
 	border-radius: 10px;
 	font-size: 14px;
 	background: url(/global/img/join_ico.gif) no-repeat center 45px;
+	display: inline-block;
+	/* text-align: center; */
 }
 .join_add_wrap .input_area .box {
 	text-align: left;
 	margin-bottom: 10px;
 }
 .join_add_wrap .input_area .box label {
-	display: inline-block;
+	display: block;
 	color: #373a44;
 	font-weight: 600;
 	margin-bottom: 4px;
 }
 .join_add_wrap .input_area input,
 .join_add_wrap .input_area button,
+.join_add_wrap .input_area select,
 .join_add_wrap .input_area .edd-root {
-	width: 100%;
+	width: 318px;
 	margin: 0;
 	height: 45px;
 	border: 1px solid #cacaca;
@@ -1591,6 +1687,10 @@ table.work_time thead th {
 	color: #373a44;
 	font-size: 13px;
 	font-weight: 600;
+}
+
+.join_add_wrap .input_area select {
+	width:350px;
 }
 .join_add_wrap .input_area .edd-value {
 	height: 45px;
@@ -1617,6 +1717,7 @@ table.work_time thead th {
 	border-radius: 7px;
 	margin-top: 10px;
 	font-weight: 600;
+	width: 100%;
 }
 
 /********************* POPUP *********************/
@@ -1737,8 +1838,10 @@ table.work_time thead th {
 
 .popup.restriction p.txt {
 	font-size: 16px;
-	letter-spacing: -1px;
-	margin-bottom: 20px;
+	/* letter-spacing: -1px; */
+	/* margin-bottom: 20px; */
+	/* border-bottom: 1px solid #ddd; */
+	/* padding-bottom: 30px; */
 }
 
 .popup.restriction p.date {
@@ -1746,11 +1849,12 @@ table.work_time thead th {
 	margin-bottom: 10px;
 	font-family: "Lato", sans-serif;
 	font-weight: 600;
-	color: #0e9284;
+	color: #ffa400;
 	padding: 5px 15px;
-	background: #d4f5f1;
+	background: #fdf0d6;
 	display: inline-block;
 	border-radius: 5px;
+	margin-top: 23px;
 }
 
 .popup.restriction p.txt span {

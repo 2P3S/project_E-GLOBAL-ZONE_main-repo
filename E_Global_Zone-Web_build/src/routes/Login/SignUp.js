@@ -39,9 +39,9 @@ export default function SignUp() {
 	return (
 		<div className="content">
 			<div className="join_add_wrap">
-				<div className="sub_title">
+				{/* <div className="sub_title">
 					<p className="tit">회원정보 추가입력</p>
-				</div>
+				</div> */}
 				<div className="input_area">
 					<div className="box">
 						<label htmlFor="std_kor_id">학번</label>
