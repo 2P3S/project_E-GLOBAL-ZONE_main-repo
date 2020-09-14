@@ -163,7 +163,7 @@
 - 테스트 참가자
     - 관리자 : [정재순](https://github.com/JeongJaeSoon)
     - 한국인 학생 : [조승현](https://github.com/kokomade98), [박중규](https://github.com/JoongQ96), [김창한](https://github.com/KCH97), 권소현, 정경숙, [신동협](https://github.com/go05117)
-    - 유학생 : [조미향](https://github.com/ChoMihyang), [김범수](https://github.com/KBS10), [이승형](https://github.com/Samsam-lee), [박시연](https://github.com/Siyeon-dev), 김희수, [이재원](https://github.com/LeeJaeBae), [이구슬](https://github.com/LeeGuSeul)
+    - 유학생 : [조미향](https://github.com/ChoMihyang), [김범수](https://github.com/KBS10), [이승형](https://github.com/Samsam-lee), [박시연](https://github.com/Siyeon-dev), [김희수](https://github.com/HeesuKim0203), [이재원](https://github.com/LeeJaeBae), [이구슬](https://github.com/LeeGuSeul)
 - 한국인 학생, 외국인 유학생 역할 분담
 - E Global Zone 서비스 모의 운영 
 - UI / UX 사용성 테스트
