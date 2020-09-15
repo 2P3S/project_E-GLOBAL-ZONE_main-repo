@@ -68,6 +68,22 @@ export default function ShowList({
 					{data && data.data ? (
 						<>
 							{data.data.map((v, index) => {
+								if (v === null || v === "null" || typeof v !== "object") {
+									return (
+										<li key={index + "null"}>
+											<div className="student">
+												<p className="name">삭제된 학생</p>
+												<select
+													name={"catgo"}
+													className={"dropdown"}
+													disabled
+												>
+													<option>---</option>
+												</select>
+											</div>
+										</li>
+									);
+								}
 								let permission = v.res_state_of_permission;
 								return (
 									<li key={v.std_kor_id + "index"}>
