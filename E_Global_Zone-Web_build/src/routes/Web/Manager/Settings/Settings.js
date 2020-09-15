@@ -8,6 +8,7 @@ import GetSections from "../../../../components/common/modal/GetSections";
 
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import Loader from "../../../../components/common/Loader";
+import CreateDept from "../../../../components/common/modal/CreateDept";
 
 /**
  * Manager :: 시스템 환경설정
@@ -32,6 +33,11 @@ export default function Settings() {
 		isOpen: isOpenForInsertForeignerStudent,
 		handleOpen: handleOpenForInsertForeignerStudent,
 		handleClose: handleCloseForInsertForeignerStudent,
+	} = useModal();
+	const {
+		isOpen: isOpenForCreateDept,
+		handleOpen: handleOpenForCreateDept,
+		handleClose: handleCloseForCreateDept,
 	} = useModal();
 
 	const handleChange = (key, value) => {
@@ -437,19 +443,24 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
 					학기 기간 조회
 				</div>
+				<div className="gray" onClick={handleOpenForCreateDept}>
+					학과 등록
+				</div>
 
 				<div
 					className="save"
 					onClick={() => {
 						postAdminSetting(postSettings).then(() => {
-							window.location.reload(true);
+							window.location.reload();
 						});
 					}}
 				>
 					저장
 				</div>
 			</div>
-
+			<Modal isOpen={isOpenForCreateDept} handleClose={handleCloseForCreateDept}>
+				<CreateDept handleClose={handleCloseForCreateDept} />
+			</Modal>
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
 			</Modal>

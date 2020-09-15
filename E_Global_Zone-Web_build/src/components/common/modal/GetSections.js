@@ -6,7 +6,7 @@ import Modal from "./Modal";
 import CreateSection from "./CreateSection";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
 
-export default function GetSections() {
+export default function GetSections({ handleClose }) {
 	const [sectList, setSectList] = useState({});
 	const [selectSect, setSelectSect] = useState();
 
@@ -76,7 +76,12 @@ export default function GetSections() {
 																"정말 삭제 하시겠습니까?"
 															)
 														)
-															deleteAdminSection(v.sect_id);
+															deleteAdminSection(v.sect_id).then(
+																(res) => {
+																	alert(res.data.message);
+																	handleClose();
+																}
+															);
 														// handleOpen();
 													}}
 													src="/global/img/enrol_del_btn.gif"
