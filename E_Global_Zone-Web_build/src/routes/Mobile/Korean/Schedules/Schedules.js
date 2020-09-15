@@ -74,51 +74,56 @@ export default function Schedules() {
 						</li>
 					</ul>
 					<div className="reservation_boxs tab_wrap">
-						{data.map((v) => (
-							<div
-								className={
-									"box" +
-									(v.std_for_lang === "영어"
-										? " puple"
-										: v.std_for_lang === "중국어"
-										? " pink"
-										: " blue")
-								}
-								onClick={() => {
-									v.sch_res_available && history.push(`schedule/${v.sch_id}`);
-								}}
-								style={v.sch_res_available && { cursor: "pointer" }}
-							>
-								<ul>
-									<li>
-										[{v.std_for_lang}] {v.std_for_name}
-									</li>
-									<li
-										className={
-											v.std_for_lang === "영어"
-												? "eng"
-												: v.std_for_lang === "중국어"
-												? "cn"
-												: "jp"
-										}
-									>
-										{`${
-											moment(v.sch_start_date).format("m") === "0"
-												? moment(v.sch_start_date).format("M월 D일 h시")
-												: moment(v.sch_start_date).format("M월 D일 h시 m분")
-										} ~ ${
-											moment(v.sch_end_date).format("m") === "0"
-												? moment(v.sch_end_date).format("M월 D일 h시")
-												: moment(v.sch_end_date).format("M월 D일 h시 m분")
-										}`}
-									</li>
-								</ul>
-								<div>
-									{v.sch_res_available ? "예약 가능" : "예약 불가"}{" "}
-									<span>{v.std_res_count}</span>
+						{data &&
+							data.map((v) => (
+								<div
+									className={
+										"box" +
+										(v.std_for_lang === "영어"
+											? " puple"
+											: v.std_for_lang === "중국어"
+											? " pink"
+											: " blue")
+									}
+									onClick={() => {
+										v.sch_res_available && history.push(`schedule/${v.sch_id}`);
+									}}
+									style={v.sch_res_available && { cursor: "pointer" }}
+								>
+									<ul>
+										<li>
+											[{v.std_for_lang}] {v.std_for_name}
+										</li>
+										<li
+											className={
+												v.std_for_lang === "영어"
+													? "eng"
+													: v.std_for_lang === "중국어"
+													? "cn"
+													: "jp"
+											}
+										>
+											{`${
+												moment(v.sch_start_date).format("m") === "0"
+													? moment(v.sch_start_date).format("M월 D일 h시")
+													: moment(v.sch_start_date).format(
+															"M월 D일 h시 m분"
+													  )
+											} ~ ${
+												moment(v.sch_end_date).format("m") === "0"
+													? moment(v.sch_end_date).format("M월 D일 h시")
+													: moment(v.sch_end_date).format(
+															"M월 D일 h시 m분"
+													  )
+											}`}
+										</li>
+									</ul>
+									<div>
+										{v.sch_res_available ? "예약 가능" : "예약 불가"}{" "}
+										<span>{v.std_res_count}</span>
+									</div>
 								</div>
-							</div>
-						))}
+							))}
 					</div>
 				</div>
 			) : (

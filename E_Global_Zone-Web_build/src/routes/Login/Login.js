@@ -99,15 +99,23 @@ export const MobileLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
+			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
-						history.push("/korean/signup", { email: res.profileObj.email });
+						history.push("/korean/signup", {
+							email: res.profileObj.email,
+							name: res.profileObj.name,
+						});
 					} else if (response.status === 200) {
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
+						window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
 						history.push("/");
 					} else if (response.status === 203) {
@@ -115,14 +123,15 @@ export const MobileLogin = () => {
 						window.localStorage.clear();
 					}
 				})
-				.catch((e) => alert(e.res.data.message));
+				.catch((e) => window.localStorage.clear());
 		}
 	};
-	const onFailure = (e) => {};
+	const onFailure = (e) => {
+		window.localStorage.clear();
+	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
 	}, []);
-
 	return (
 		<div className="wrap mobile_login">
 			<GoogleLogin
@@ -139,7 +148,6 @@ export const MobileLogin = () => {
 				)}
 				onSuccess={onSuccess}
 				onFailure={onFailure}
-				isSignedIn={true}
 			/>
 			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
@@ -154,19 +162,23 @@ export const KoreanLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
+			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
-						history.push("/korean/signup", { email: res.profileObj.email });
+						history.push("/korean/signup", {
+							email: res.profileObj.email,
+							name: res.profileObj.name,
+						});
 					} else if (response.status === 200) {
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
-						// window.localStorage.setItem("global-zone-loginId", std_kor_id);
-						// window.localStorage.setItem("global-zone-loginName", std_kor_name);
-						// window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
-						// window.localStorage.setItem("global-zone-isLogin", true);
+						window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
 						history.push("/");
 					} else if (response.status === 203) {
@@ -208,7 +220,7 @@ export const KoreanLogin = () => {
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						isSignedIn={true}
+						// isSignedIn={true}
 					/>
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
@@ -310,7 +322,13 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						로그인
 					</div>
-					<button onClick={handleReset}>비밀번호 초기화</button>
+					<button
+						onClick={() => {
+							if (window.confirm("비밀번호를 초기화 하시겠습니까?")) handleReset();
+						}}
+					>
+						비밀번호 초기화
+					</button>
 				</div>
 			</div>
 		</div>
