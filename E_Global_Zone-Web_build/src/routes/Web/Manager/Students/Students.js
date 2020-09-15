@@ -174,6 +174,9 @@ export default function Students() {
 					for (let i = 0; i < resData.data.last_page; i++) {
 						let btn = document.createElement("button");
 						btn.innerText = i + 1;
+						if (i + 1 == params.page) {
+							btn.classList.add("on");
+						}
 						btn.addEventListener("click", () => {
 							history.push(`/students/${i + 1}/korean`);
 							setPending(true);
