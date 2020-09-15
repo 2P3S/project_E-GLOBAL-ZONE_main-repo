@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
+use App\Student_korean;
 use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -140,6 +141,36 @@ class ForeignerController extends Controller
 
         $message = $request->input('std_for_name') . Config::get('constants.kor.std_for.store.success');
         return self::response_json($message, 201);
+    }
+
+    /**
+     * 유학생 계정 정보 변경
+     */
+    public function update(Student_foreigner $std_for_id, Request $request): JsonResponse
+    {
+        $rules = [
+            'std_for_dept' => 'required|integer',
+            'std_for_name' => 'required|string|min:2',
+            'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
+            'std_for_country' => 'required|string|min:2',
+            'std_for_phone' => 'required|phone_number',
+            'std_for_mail' => 'required|email',
+            'std_for_zoom_id' => 'required|integer|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        // 이메일 OR 메일 중복 검사
+
+
     }
 
     /**
