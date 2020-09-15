@@ -99,7 +99,6 @@ export const MobileLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
-			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
@@ -162,7 +161,6 @@ export const KoreanLogin = () => {
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
 			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
 		} else {
-			console.log(res);
 			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
 			postKoreanLogin()
 				.then((response) => {
