@@ -25,6 +25,7 @@ class ForeignerController extends Controller
     // 000 유학생 등록에 실패하였습니다.
     private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
     private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
+    private const _STD_FOR_UPDATE_SUCCESS = " 유학생 정보 변경에 성공하였습니다.";
 
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
@@ -168,9 +169,35 @@ class ForeignerController extends Controller
             return $validated_result;
         }
 
-        // 이메일 OR 메일 중복 검사
+        // <<-- 이메일 OR 휴대전화 OR 줌 아이디 중복 검사
+        function check_duplicate_value($foreigner_student_data, $std_for_id, $request, $column)
+        {
+            return $foreigner_student_data->whereNotIn($column, $std_for_id[$column])
+                ->where($column, $request->input($column))
+                ->count() > 0;
+        }
 
+        $foreigner_student_data = Student_foreigner::join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id');
 
+        $is_email_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_mail');
+        $is_zoomId_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_zoom_id');
+        $is_phoneNum_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_phone');
+
+        $msg = "";
+
+        if ($is_email_duplicate) $msg = "이메일 정보가 중복입니다.";
+        else if ($is_zoomId_duplicate) $msg = "줌 아이디가 중복입니다.";
+        else if ($is_phoneNum_duplicate) $msg = "휴대폰 번호가 중복입니다.";
+
+        if ($is_email_duplicate || $is_zoomId_duplicate || $is_phoneNum_duplicate)
+            return self::response_json_error($msg);
+        // -->>
+
+        $std_for_id->update([$request]);
+        // TODO 테스트 해보기.
+        // TODO Route -> API 주소 추가.
+
+        return self::response_json(self::_STD_FOR_UPDATE_SUCCESS, 200);
     }
 
     /**
