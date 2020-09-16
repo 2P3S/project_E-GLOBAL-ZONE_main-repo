@@ -53,7 +53,7 @@
         }
 
         .wrapper .content .sub_title p.tit {
-            float: center;
+            float: none;
             line-height: 30px;
             font-size: 23px;
             color: #373a44;
