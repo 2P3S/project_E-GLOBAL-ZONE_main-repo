@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
+use App\Section;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ReservationController extends Controller
@@ -395,16 +397,39 @@ class ReservationController extends Controller
     /**
      * 한국인학생 - 해당 학기 랭킹 조회
      */
-    public function std_kor_show_rank_by_sect(Request $request): JsonResponse
+    public function std_kor_show_rank_by_sect(Section $sect_id, Request $request): JsonResponse
     {
-        //TODO 랭킹 순위 비교하기.
-        /**
-         * SELECT `user_id`, `race_id`, min(`recorded_time`) AS `recorded_time`, `stroke`
-         * FROM `race_history`
-         * WHERE `stroke` = 'fly'
-         * GROUP BY `user_id`
-         * ORDER BY `recorded_time` ASC
-         */
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+
+        $sect_by_reservations = Reservation::select('res_std_kor', DB::raw('count(*) as res_count'))
+            ->join('schedules as sch', 'sch_id', 'res_sch')
+            ->where('sch_sect', $sect_id['sect_id'])
+            ->where('res_state_of_attendance', true)
+            ->groupBy('res_std_kor')
+            ->orderBy('res_count', 'DESC')
+            ->get();
+
+        $msg                = $sect_id['sect_name'] . "학기의 랭킹을 반환합니다.";
+        $search_data        = $sect_by_reservations->where('res_std_kor', $std_kor_id);
+
+        $has_no_reservation = $search_data->count() == 0;
+
+        if ($has_no_reservation)
+            return response()->json([
+                'message' => $msg,
+                'data' => 0,
+            ], 200);
+
+        $number_of_student       = $sect_by_reservations->count();
+        $number_of_rank_by_sect  = $search_data->keys()->first() + 1;
+
+        $rank_by_percent_formula = (int) ($number_of_rank_by_sect / $number_of_student * 100);
+
+
+        return response()->json([
+            'message' => $msg,
+            'data' => $rank_by_percent_formula,
+        ], 200);
     }
 
     /**

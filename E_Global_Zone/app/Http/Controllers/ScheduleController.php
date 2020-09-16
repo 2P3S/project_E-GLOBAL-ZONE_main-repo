@@ -490,7 +490,6 @@ class ScheduleController extends Controller
      */
     public function indexUninputedList(Request $request, $date)
     {
-        //TODO 학생이 한명도 없을 경우 처리해야 함.
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
