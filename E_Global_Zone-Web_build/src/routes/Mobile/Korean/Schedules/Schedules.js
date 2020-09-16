@@ -90,7 +90,7 @@ export default function Schedules() {
 			{!pending ? (
 				<div className="wrap">
 					{calset ? <Loader /> : <Calendar dates={dates} selectedDate={selectedDate} />}
-					<ul className="sch_tab">
+					<ul className="sch_tab" style={{ cursor: "pointer" }}>
 						<li>
 							<div id="allView" name="tabview" className="on" onClick={handleClick}>
 								전체
