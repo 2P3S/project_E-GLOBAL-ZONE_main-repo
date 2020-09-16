@@ -6,9 +6,8 @@ import Loader from "../../../../components/common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
 
-import conf from "../../../../conf/conf";
 import { selectUser } from "../../../../redux/userSlice/userSlice";
-import { getKoreanReservation } from "../../../../api/korean/reservation";
+import { deleteKoreanReservation, getKoreanReservation } from "../../../../api/korean/reservation";
 
 /**
  * Korean :: 예약 조회
@@ -104,7 +103,20 @@ export default function Reservation() {
 														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
-												<div className="reserv_del_btn"><img src="/global/img/reservation_del.gif" alt="예약 삭제 버튼"/></div>
+												<div className="reserv_del_btn">
+													<img
+														onClick={() => {
+															deleteKoreanReservation(v.res_id).then(
+																(res) => {
+																	alert(res.data.message);
+																	window.location.reload();
+																}
+															);
+														}}
+														src="/global/img/reservation_del.gif"
+														alt="예약 삭제 버튼"
+													/>
+												</div>
 												<p className="right">예약 대기</p>
 											</div>
 										))}

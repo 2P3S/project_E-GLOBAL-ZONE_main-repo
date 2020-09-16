@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getAdminForeignerNoWork, postAdminForeignerWork } from "../../../api/admin/foreigner";
+import ModifyForeignerStudent from "./ModifyForeignerStudent";
+import Modal from "./Modal";
+import useModal from "../../../modules/hooks/useModal";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
@@ -8,7 +11,9 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 	const [forList, setForList] = useState();
 	const [defaultList, setDefaultList] = useState();
 	const [isDone, setIsDone] = useState(false);
+	const [currentInfo, setCurrentInfo] = useState();
 	const [pending, setPending] = useState(false);
+	const { isOpen, handleOpen, handleClose: handleCloseForModify } = useModal();
 	useEffect(() => {
 		getAdminForeignerNoWork(sect_id).then((res) => {
 			setForList(res.data.data);
@@ -103,6 +108,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 							<th scope="col">연락처</th>
 							<th scope="col">이메일</th>
 							<th scope="col">ZoomID</th>
+							<th scope="col">수정</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -128,6 +134,16 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 									<td>{v.std_for_phone}</td>
 									<td>{v.std_for_mail}</td>
 									<td>{v.std_for_zoom_id}</td>
+									<td>
+										<img
+											onClick={() => {
+												setCurrentInfo(v);
+												handleOpen();
+											}}
+											src="/global/img/modify_ico.gif"
+											style={{ cursor: "pointer" }}
+										/>
+									</td>
 								</tr>
 							))}
 					</tbody>
@@ -138,6 +154,12 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 					저장
 				</div>
 			</div>
+			<Modal isOpen={isOpen} handleClose={handleCloseForModify}>
+				<ModifyForeignerStudent
+					handleClose={handleCloseForModify}
+					currentInfo={currentInfo}
+				/>
+			</Modal>
 		</div>
 	);
 }

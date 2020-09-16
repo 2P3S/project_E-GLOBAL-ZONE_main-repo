@@ -25,7 +25,11 @@ export default function Schedules() {
 			} else {
 				dispatch(setSelectDate(moment(data[0].sch_start_date).format("YYYY-MM-DD")));
 			}
-			setData(data);
+			setData(
+				group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+					moment(data[0].sch_start_date).format("YYYY-MM-DD")
+				)
+			);
 			setDefaultData(data);
 			let dateSet = group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD"));
 			let dateObj = {};
@@ -42,20 +46,42 @@ export default function Schedules() {
 					}
 				);
 			});
-			console.log(selectedDate);
 
 			setDates(dateObj);
 			setPending(false);
 		});
 	}, []);
 
+	useEffect(() => {
+		if (defaultData) {
+			setData(
+				group(defaultData, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+					selectedDate
+				)
+			);
+			document.getElementsByName("tabview").forEach((v) => v.classList.remove("on"));
+			document.getElementById("allView").className = "on";
+		}
+	}, [selectedDate]);
+
 	const handleClick = (e) => {
 		document.getElementsByName("tabview").forEach((v) => v.classList.remove("on"));
 		e.target.classList.add("on");
 		if (e.target.innerText !== "전체") {
-			setData(group(defaultData, (v) => v.std_for_lang).get(e.target.innerText));
+			setData(
+				group(
+					group(defaultData, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+						selectedDate
+					),
+					(v) => v.std_for_lang
+				).get(e.target.innerText)
+			);
 		} else {
-			setData(defaultData);
+			setData(
+				group(defaultData, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+					selectedDate
+				)
+			);
 		}
 	};
 
@@ -63,10 +89,10 @@ export default function Schedules() {
 		<>
 			{!pending ? (
 				<div className="wrap">
-					{calset ? <Loader /> : <Calendar dates={dates} />}
+					{calset ? <Loader /> : <Calendar dates={dates} selectedDate={selectedDate} />}
 					<ul className="sch_tab">
 						<li>
-							<div name="tabview" className="on" onClick={handleClick}>
+							<div id="allView" name="tabview" className="on" onClick={handleClick}>
 								전체
 							</div>
 						</li>

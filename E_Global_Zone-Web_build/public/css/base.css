@@ -56,7 +56,7 @@ tfoot,
 thead,
 tr,
 th,
-td :not(.password) {
+td {
 	margin: 0;
 	padding: 0;
 	border: 0;
