@@ -8,6 +8,7 @@ import { selectUser } from "../../../../redux/userSlice/userSlice";
 import Modal from "../../../../components/common/modal/Modal";
 import useModal from "../../../../modules/hooks/useModal";
 import ShowList from "../../../../components/common/modal/ShowList";
+import ShowListDone from "../../../../components/common/modal/ShowListDone";
 import InsertResult from "../../../../components/common/modal/InsertResult";
 import Loader from "../../../../components/common/Loader";
 
@@ -273,6 +274,19 @@ export default function Schedules() {
 				break;
 			case STATE_CONFIRM:
 				div.className = "puple";
+				div.addEventListener("click", () => {
+					setModal(
+						<ShowListDone
+							handleClose={handleClose}
+							sch_id={sch_id}
+							sch_start_date={sch_start_date}
+							sch_end_date={sch_end_date}
+							reRender={reRender}
+						/>
+					);
+					handleOpen();
+				});
+				div.style.cursor = "pointer";
 				break;
 			case STATE_NOTHING:
 				div.className = "gray";
