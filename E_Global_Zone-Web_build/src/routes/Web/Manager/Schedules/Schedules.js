@@ -211,7 +211,9 @@ export default function Schedules() {
 											 * 종료 아이콘 추가 예정
 											 *********************************/
 											// div.style.visibility = "hidden";
-											div.innerText = "종료";
+											let close = document.createElement("div");
+											close.className = "close";
+											div.appendChild(close);
 										}
 									} else {
 										if (
@@ -516,7 +518,7 @@ export default function Schedules() {
 					<li>5PM</li>
 					<li>6PM</li>
 				</ul>
-				<div className="scroll_area pt40">
+				<div className="scroll_area">
 					{!pending ? (
 						<table className="sch_table">
 							<colgroup>

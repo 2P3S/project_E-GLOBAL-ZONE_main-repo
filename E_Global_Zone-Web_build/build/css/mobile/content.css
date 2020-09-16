@@ -115,6 +115,7 @@ body {
 	padding: 260px 0 100px 0;
 	background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
 	text-align: center;
+	height: 100vh;
 }
 
 .mobile_login div {
@@ -136,19 +137,19 @@ body {
 }
 
 /*예약조회*/
-.calandar {
+.calendar {
 	width: 100%;
 	text-align: center;
-	margin: 50px 0;
+	margin: 0 0 40px 0;
 	border-radius: 10px;
 }
 
-.calandar img {
-	width: 100%;
-}
 
 .reservation_boxs {
 	width: 100%;
+}
+.all .calendar .day {
+	padding:5% 0;
 }
 
 .all .calendar .day.selected {
@@ -164,13 +165,14 @@ body {
 	overflow: hidden;
 	margin-bottom: 10px;
 	border-radius: 5px;
-	width: 100%;
+	width: 90%;
 	height: 104px;
 	font-size: 13px;
 	padding: 0 8px 0 25px;
 	box-sizing: border-box;
 	font-weight: 600;
 	color: #fff;
+	margin: 0 auto 10px auto;
 }
 
 .reserv_info {
@@ -381,7 +383,7 @@ body {
 	display: block;
 	padding: 15px 0;
 	color: #1d1f24;
-	font-size: 13px;
+	font-size: 12px;
 	text-align: center;
 	border-left: 1px solid #e5e5e5;
 	border-bottom: 1px solid #e5e5e5;
@@ -420,7 +422,9 @@ body {
 	background: #f5f5f6;
 	border: 1px solid #e5e5e5;
 	border-top: none;
-	margin: 0 auto;
+	/* margin: 0 auto; */
+	padding: 25px 0;
+	/* box-sizing: border-box; */
 }
 
 .reservation_boxs.tab_wrap .tab_list {
@@ -444,33 +448,42 @@ body {
 	border-radius: 10px;
 	width: 100%;
 	padding: 15px 20px;
-	background: #182f9e;
+	background: #ffffff;
 	box-sizing: border-box;
+	display: inline-block;
+	-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 1px 1px 8px 0px #d5dcf5;
 }
 
 .wrap.mobile_result .point_info p {
 	display: inline-block;
 	font-size: 14px;
 	line-height: 20px;
-	color: #fff;
+	color: #353e46;
 	font-weight: 400;
 	letter-spacing: -0.01em;
 }
 
 .wrap.mobile_result .point_info p span.name {
-	color: #ffcc76;
+	color: #1c233d;
 	font-weight: 600;
 	text-decoration: underline;
 }
 
 .wrap.mobile_result .point_info .result {
 	float: right;
-	margin-top: -10px;
-	font-size: 50px;
-	font-family: "Lato", sans-serif;
-	font-weight: 900;
+	font-size: 41px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 300;
 	letter-spacing: 2px;
-	color: #40dcae;
+	color: #ffffff;
+	width: 75px;
+	height: 65px;
+	border-radius: 9px;
+	line-height: 65px;
+	text-align: center;
+	background: #5364f7;
 }
 
 .wrap.mobile_result .point_info .result span.rank {
@@ -484,7 +497,7 @@ body {
 }
 
 .wrap.mobile_result .point_info .result span.times {
-	font-size: 18px;
+	font-size: 14px;
 	font-weight: 600;
 	color: #fff;
 }
@@ -567,7 +580,7 @@ body {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 160px 40px 40px 40px;
-	border: 1px solid #ddd;
+	/* border: 1px solid #ddd; */
 	border-radius: 10px;
 	font-size: 14px;
 	background: url(/global/img/join_ico.gif) no-repeat center 45px;
@@ -595,6 +608,7 @@ body {
 	color: #373a44;
 	font-size: 13px;
 	font-weight: 600;
+	box-sizing: border-box;
 }
 .join_add_wrap .input_area .edd-value {
 	height: 45px;
@@ -717,7 +731,7 @@ body {
 	transition: max-height 0.7s;
 	max-height: 0;
 }
-.subMenu div {
+.subMenu > div {
 	width: 100%;
 	display: inline-block;
 	padding: 15px 20px;
@@ -727,6 +741,11 @@ body {
 	font-size: 13px;
 	border-bottom: 1px solid #bfcce4;
 	position: relative;
+}
+
+.subMenu .reserv_del_btn {
+	float:right;
+	margin:10px 0 0 15px;
 }
 .subMenu div:last-child {
 	border-bottom: none;
@@ -817,6 +836,8 @@ select {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	display: block;
+	width: 100%;
 }
 
 select::-ms-expand {

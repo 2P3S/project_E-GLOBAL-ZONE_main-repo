@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../redux/userSlice/userSlice";
 import { selectToday } from "../../../../redux/confSlice/confSlice";
+import Loader from "../../../../components/common/Loader";
 import moment from "moment";
 import { getKoreanSection } from "../../../../api/korean";
 import { getKoreanReservationResult } from "../../../../api/korean/reservation";
@@ -29,7 +30,7 @@ export default function Results() {
 			setSect(res.data.data);
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
 			setPending(true);
-			window.easydropdown.all();
+			// window.easydropdown.all();
 		});
 		// window.easydropdown.all();
 	}, []);
@@ -54,9 +55,8 @@ export default function Results() {
 				{/* <p className="tit">{selectSect && selectSect.sect_name}</p> */}
 				<div className="point_info">
 					<p>
-						<span className="name">{user.name}</span> 학생의
-						<br />
-						학기별 글로벌 존 이용 횟수
+						<div><span className="name">{user.name}</span> 학생의 학기별</div>
+						글로벌 존 이용 횟수
 					</p>
 					<div className="result">
 						{/*<span className="rank">상위 10%</span>*/}
@@ -110,19 +110,26 @@ export default function Results() {
 							</tr>
 						</thead>
 						<tbody>
-							{typeof data === "object" && data.data.length > 0 ? (
-								data.data.map((v) => {
-									return (
-										<tr>
-											<td>{v.sch_start_date.substr(5, 20)}</td>
-											<td>{v.std_for_name}</td>
-										</tr>
-									);
-								})
+							{!pending ? (
+								typeof data === "object" && data.data.length > 0 ? (
+									data.data.map((v) => {
+										return (
+											<tr>
+												<td>{v.sch_start_date.substr(5, 20)}</td>
+												<td>{v.std_for_name}</td>
+											</tr>
+										);
+									})
+								) : (
+									<tr>
+										<td>-</td>
+										<td>진행 일정이 없습니다.</td>
+									</tr>
+								)
 							) : (
 								<tr>
-									<td>-</td>
-									<td>진행 일정이 없습니다.</td>
+									<td></td>
+									<Loader></Loader>
 								</tr>
 							)}
 						</tbody>

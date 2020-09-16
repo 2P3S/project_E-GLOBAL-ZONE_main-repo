@@ -6,9 +6,8 @@ import Loader from "../../../../components/common/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confSlice";
 
-import conf from "../../../../conf/conf";
 import { selectUser } from "../../../../redux/userSlice/userSlice";
-import { getKoreanReservation } from "../../../../api/korean/reservation";
+import { deleteKoreanReservation, getKoreanReservation } from "../../../../api/korean/reservation";
 
 /**
  * Korean :: 예약 조회
@@ -98,10 +97,26 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
+												<div className="reserv_del_btn">
+													<img
+														onClick={() => {
+															deleteKoreanReservation(v.res_id).then(
+																(res) => {
+																	alert(res.data.message);
+																	window.location.reload();
+																}
+															);
+														}}
+														src="/global/img/reservation_del.gif"
+														alt="예약 삭제 버튼"
+													/>
+												</div>
 												<p className="right">예약 대기</p>
 											</div>
 										))}
@@ -118,8 +133,10 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
 												<p
@@ -147,8 +164,10 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
 												<p className="right">결과 대기</p>

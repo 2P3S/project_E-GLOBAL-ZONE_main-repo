@@ -10,7 +10,7 @@ class Calendar extends React.Component {
 
 		this.state = {
 			month: moment(),
-			selected: moment().startOf("day"),
+			selected: moment(props.selectedDate),
 		};
 
 		this.previous = this.previous.bind(this);
@@ -182,6 +182,9 @@ class Day extends React.Component {
 			schedule &&
 				schedule.forEach((v) => {
 					let div = document.getElementById(`schImg-${sameDate.toString()}`);
+					let day = document.getElementById(`sch-${sameDate.toString()}`);
+					day.addEventListener("click", () => this.props.select(day));
+					div.parentElement.classList.add("scheduled");
 					let img = document.createElement("img");
 					img.src =
 						v === "영어"
@@ -208,11 +211,11 @@ class Day extends React.Component {
 			<span
 				key={date.toString()}
 				className={
-					"day" + (isToday ? " today" : "")
-					// (isCurrentMonth ? "" : " different-month") +
-					// (date.isSame(selected) ? " selected" : "")
+					"day" +
+					(isCurrentMonth ? "" : " different-month") +
+					(date.isSame(selected) ? " selected_" : "")
 				}
-				onClick={() => select(day)}
+				id={`sch-${date.toString()}`}
 			>
 				{number}
 				<div id={`schImg-${date.toString()}`} className="calendar_lang_img"></div>

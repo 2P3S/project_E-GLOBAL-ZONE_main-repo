@@ -8,6 +8,7 @@ import GetSections from "../../../../components/common/modal/GetSections";
 
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import Loader from "../../../../components/common/Loader";
+import CreateDept from "../../../../components/common/modal/CreateDept";
 
 /**
  * Manager :: 시스템 환경설정
@@ -32,6 +33,11 @@ export default function Settings() {
 		isOpen: isOpenForInsertForeignerStudent,
 		handleOpen: handleOpenForInsertForeignerStudent,
 		handleClose: handleCloseForInsertForeignerStudent,
+	} = useModal();
+	const {
+		isOpen: isOpenForCreateDept,
+		handleOpen: handleOpenForCreateDept,
+		handleClose: handleCloseForCreateDept,
 	} = useModal();
 
 	const handleChange = (key, value) => {
@@ -253,8 +259,6 @@ export default function Settings() {
 								{postSettings.once_meet_time + postSettings.once_rest_time}분
 							</span>
 							으로 자동계산됩니다.
-							<br />
-							설정 이후에 생성되는 스케줄부터 적용됩니다.
 						</p>
 						<div className="input_area">
 							<div className="input">
@@ -290,7 +294,7 @@ export default function Settings() {
 							</div>
 						</div>
 						<p class="warning_txt">
-							학기 시작 중에는 변경이 <span>불가</span>합니다.
+						설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 <span>변경 불가</span>
 						</p>
 					</div>
 				</div>
@@ -437,19 +441,24 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
 					학기 기간 조회
 				</div>
+				<div className="gray" onClick={handleOpenForCreateDept}>
+					학과 등록
+				</div>
 
 				<div
 					className="save"
 					onClick={() => {
 						postAdminSetting(postSettings).then(() => {
-							window.location.reload(true);
+							window.location.reload();
 						});
 					}}
 				>
 					저장
 				</div>
 			</div>
-
+			<Modal isOpen={isOpenForCreateDept} handleClose={handleCloseForCreateDept}>
+				<CreateDept handleClose={handleCloseForCreateDept} />
+			</Modal>
 			<Modal isOpen={creatSectIsOpen} handleClose={handleCloseForCreatSectIsOpen}>
 				<CreateSection isSetSectMode={true} handleClose={handleCloseForCreatSectIsOpen} />
 			</Modal>

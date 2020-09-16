@@ -165,7 +165,8 @@ export default function Students() {
 					const pagenation = document.getElementById("pagenation");
 					pagenation.innerHTML = "";
 					let first = document.createElement("button");
-					first.innerText = "<<";
+					// first.innerText = "<<";
+					first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 					first.addEventListener("click", () => {
 						history.push(`/students/1/korean`);
 						history.push("/reload");
@@ -174,6 +175,9 @@ export default function Students() {
 					for (let i = 0; i < resData.data.last_page; i++) {
 						let btn = document.createElement("button");
 						btn.innerText = i + 1;
+						if (i + 1 == params.page) {
+							btn.classList.add("on");
+						}
 						btn.addEventListener("click", () => {
 							history.push(`/students/${i + 1}/korean`);
 							setPending(true);
@@ -181,7 +185,8 @@ export default function Students() {
 						pagenation.appendChild(btn);
 					}
 					let last = document.createElement("button");
-					last.innerText = ">>";
+					// last.innerText = ">>";
+					last.innerHTML += '<img src="/global/img/paging_next_ico.gif" />';
 					pagenation.appendChild(last);
 					last.addEventListener("click", () => {
 						history.push(`/students/${resData.data.last_page}/korean`);
@@ -318,19 +323,19 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											onClick={() => {
-												if (
-													window.confirm(
-														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
-													) === true
-												) {
-													deleteAdminKoreanAccount(v.std_id).then(
-														(res) => {
-															setPending(true);
-														}
-													);
-												}
-											}}
+											// onClick={() => {
+											// 	if (
+											// 		window.confirm(
+											// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+											// 		) === true
+											// 	) {
+											// 		deleteAdminKoreanAccount(v.std_id).then(
+											// 			(res) => {
+											// 				setPending(true);
+											// 			}
+											// 		);
+											// 	}
+											// }}
 										>
 											{v.name}
 											{/* <div className="hover_off" id={`hover_btn_${index}`}>

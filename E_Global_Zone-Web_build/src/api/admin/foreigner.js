@@ -5,6 +5,8 @@ function foreigner(url) {
 }
 
 export const postAdminForeignerAccount = (data) => admin.post(foreigner("account"), data);
+export const updateAdminForeignerAccount = (data) =>
+	admin.post(foreigner(`account/update/${data.std_for_id}`), data);
 export const patchAdminForeignerAccount = (std_for_id) =>
 	admin.patch(foreigner(`account/${std_for_id}`));
 

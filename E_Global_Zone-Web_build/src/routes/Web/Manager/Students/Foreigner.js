@@ -69,6 +69,7 @@ export default function Foreigner() {
 	const [contactList, setContactList] = useState([]);
 	const [pending, setPending] = useState(false);
 	const [toggle, setToggle] = useState(true);
+	const [index, setIndex] = useState(0);
 	const {
 		isOpen: contactIsOpen,
 
@@ -137,16 +138,23 @@ export default function Foreigner() {
 	useEffect(() => {
 		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
 			setSectOfYear(res.data);
-			history.push(`/students/${res.data.data[0].sect_id}/foreigner`);
+			let index = 0;
+			res.data.data.forEach((v, index) => {
+				if (moment(Date.now()).isBetween(v.sect_start_date, v.sect_end_date)) {
+					index = index;
+				}
+			});
+			setIndex(index);
+			history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 		});
 	}, []);
 	useEffect(() => {
 		if (sectOfYear && sectOfYear.data) {
-			getAdminForeignerWork(sectOfYear.data[0].sect_id).then((res) => {
+			getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
 				setDataSet(res.data);
 				setDefaultData(res.data);
 			});
-			setSelectSect(sectOfYear.data[0].sect_id);
+			setSelectSect(sectOfYear.data[index].sect_id);
 		}
 	}, [sectOfYear]);
 
@@ -567,9 +575,9 @@ export default function Foreigner() {
 																		>
 																			비밀번호 초기화
 																		</div>
-																		<div className="lightGray">
+																		{/* <div className="lightGray">
 																			삭제
-																		</div>
+																		</div> */}
 																	</div>
 																</div>
 															</td>

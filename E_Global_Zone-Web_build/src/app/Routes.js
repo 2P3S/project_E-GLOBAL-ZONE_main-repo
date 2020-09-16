@@ -28,7 +28,7 @@ function Routes() {
 
 	return (
 		<Router id="router">
-			<Test />
+			{/* <Test /> */}
 			{isLogin ? (
 				User.userClass === conf.userClass.KOREAN ? (
 					//mobile
