@@ -116,6 +116,7 @@ export default function Schedules() {
 						{data && data.length > 0 ? (
 							data.map((v) => (
 								<div
+									key={`${v.sch_id}`}
 									className={
 										"box" +
 										(v.std_for_lang === "영어"
