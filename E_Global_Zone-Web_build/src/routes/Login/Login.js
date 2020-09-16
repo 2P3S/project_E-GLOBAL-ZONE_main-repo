@@ -178,7 +178,8 @@ export const KoreanLogin = () => {
 						window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
 						window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
-						history.push("/");
+						// history.push("/");
+						window.location.replace("/");
 					} else if (response.status === 203) {
 						alert(response.data.message);
 						window.localStorage.clear();

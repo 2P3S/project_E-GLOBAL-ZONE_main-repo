@@ -5,16 +5,26 @@ import { getKoreanSchedule } from "../../../../api/korean";
 import Loader from "../../../../components/common/Loader";
 import Calendar from "../../../../components/mobile/CalendarMark";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSelectDate, setSelectDate } from "../../../../redux/confSlice/confSlice";
 
 export default function Schedules() {
+	const selectedDate = useSelector(selectSelectDate);
+	const dispatch = useDispatch();
 	const [data, setData] = useState();
 	const [defaultData, setDefaultData] = useState();
 	const [dates, setDates] = useState();
+	const [calset, setCalset] = useState(false);
 	const [pending, setPending] = useState(true);
 	const history = useHistory();
 	useEffect(() => {
 		getKoreanSchedule().then((res) => {
 			const { data } = res.data;
+			if (data.length === 0) {
+				alert("조회가능한 스케줄이 없습니다.");
+			} else {
+				dispatch(setSelectDate(moment(data[0].sch_start_date).format("YYYY-MM-DD")));
+			}
 			setData(data);
 			setDefaultData(data);
 			let dateSet = group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD"));
@@ -32,10 +42,13 @@ export default function Schedules() {
 					}
 				);
 			});
+			console.log(selectedDate);
+
 			setDates(dateObj);
 			setPending(false);
 		});
 	}, []);
+
 	const handleClick = (e) => {
 		document.getElementsByName("tabview").forEach((v) => v.classList.remove("on"));
 		e.target.classList.add("on");
@@ -50,7 +63,7 @@ export default function Schedules() {
 		<>
 			{!pending ? (
 				<div className="wrap">
-					<Calendar dates={dates} />
+					{calset ? <Loader /> : <Calendar dates={dates} />}
 					<ul className="sch_tab">
 						<li>
 							<div name="tabview" className="on" onClick={handleClick}>
@@ -74,7 +87,7 @@ export default function Schedules() {
 						</li>
 					</ul>
 					<div className="reservation_boxs tab_wrap">
-						{data &&
+						{data && data.length > 0 ? (
 							data.map((v) => (
 								<div
 									className={
@@ -123,7 +136,12 @@ export default function Schedules() {
 										<span>{v.std_res_count}</span>
 									</div>
 								</div>
-							))}
+							))
+						) : (
+							<div className="box">
+								<p className="no_data">데이터가 없습니다.</p>
+							</div>
+						)}
 					</div>
 				</div>
 			) : (
