@@ -214,6 +214,9 @@ Route::middleware('auth.korean')->group(function () {
         /** 참석한 학기 목록 조회 */
         Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
 
+        /** 해당 학기 랭킹(백분율) 조회 */
+        Route::get('section/rank/{sect_id}', 'ReservationController@std_kor_show_rank_by_sect')->name('reservations.std_kor_show_rank_by_sect');
+
         /** 등록된 환경변수 조회 */
         Route::get('setting', 'SettingController@index')->name('settings.index');
 

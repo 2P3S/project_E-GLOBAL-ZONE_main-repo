@@ -153,7 +153,7 @@ class ForeignerController extends Controller
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
-            // 'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
+            'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
             'std_for_phone' => 'required|phone_number',
             'std_for_mail' => 'required|email',
