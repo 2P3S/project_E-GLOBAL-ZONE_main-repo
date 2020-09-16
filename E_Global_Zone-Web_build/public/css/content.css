@@ -254,7 +254,7 @@ body {
 
 .login_footer {
     position: absolute;
-    bottom: 5%;
+    bottom:3%;
     text-align: center;
     width: 1200px;
     font-family: "Roboto", sans-serif;
@@ -438,6 +438,15 @@ table.sch_table tbody td:first-child {
 .state_box.state7 {
 	background: #e1e1ea;
 	color: #373a44;
+	overflow: hidden;
+}
+
+.state_box.state7 .close {
+	width: 0px;
+	height: 0px;
+	border-bottom: 42px solid #c3cad6;
+	border-right: 55px solid rgba(0,0,0,0);
+	background: #dadfe8;
 }
 
 table.sch_table tbody tr:hover {
@@ -2987,7 +2996,7 @@ ul.img_file li p.file_name:hover {
 	padding-top: 160px;
 	background: url(/global/img/Loding_ball.gif) no-repeat center 0px;
 	background-size: 110%;
-	margin: 70px auto;
+	margin: 0 auto;
 }
 .popup.loading p {
 	font-size: 17px;

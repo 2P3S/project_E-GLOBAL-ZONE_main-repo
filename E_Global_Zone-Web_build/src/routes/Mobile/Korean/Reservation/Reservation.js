@@ -102,6 +102,7 @@ export default function Reservation() {
 														{moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
+												<div className="reserv_del_btn"><img src="/global/img/reservation_del.gif" alt="예약 삭제 버튼"/></div>
 												<p className="right">예약 대기</p>
 											</div>
 										))}

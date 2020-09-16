@@ -54,9 +54,8 @@ export default function Results() {
 				{/* <p className="tit">{selectSect && selectSect.sect_name}</p> */}
 				<div className="point_info">
 					<p>
-						<span className="name">{user.name}</span> 학생의
-						<br />
-						학기별 글로벌 존 이용 횟수
+						<div><span className="name">{user.name}</span> 학생의 학기별</div>
+						글로벌 존 이용 횟수
 					</p>
 					<div className="result">
 						{/*<span className="rank">상위 10%</span>*/}
