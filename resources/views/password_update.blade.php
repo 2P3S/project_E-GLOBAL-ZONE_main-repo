@@ -189,7 +189,7 @@
                 <div class="input_area">
                     <div class="sub_title">
                         <p class="tit">
-                            {{ $name }} 님 안녕하세요!!!<br>
+                            {{ $name }} 님 안녕하세요<br>
                             비밀번호 변경 후 사용해주세요.
                         </p>
                     </div>
