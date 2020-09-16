@@ -114,7 +114,7 @@ class Reservation extends Model
     {
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
-            'sch_start_date', 'sch_end_date',
+            'sch_start_date', 'sch_end_date', 'res_id',
             'res_state_of_permission', 'res_state_of_attendance',
             'for.std_for_id', 'std_for_zoom_id', 'sch_for_zoom_pw'
         ];

@@ -29,7 +29,10 @@ class CreateStudentKoreansTable extends Migration
             $table->primary('std_kor_id');
 
             /* 외래키 설정 */
-            $table->foreign('std_kor_dept')->references('dept_id')->on('departments');
+            $table->foreign('std_kor_dept')
+                ->references('dept_id')
+                ->on('departments')
+                ->onUpdate('cascade');
         });
     }
 
