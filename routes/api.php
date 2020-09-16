@@ -47,6 +47,9 @@ Route::middleware('auth.multi')->group(static function () {
                 /** 유학생 계정 생성 (회원가입) */
                 Route::post('', 'ForeignerController@store')->name('foreigners.registerAccount');
 
+                /** 유학생 계정 정보 변경 */
+                Route::patch('update/{std_for_id}', 'ForeignerController@update')->name('foreigners.update');
+
                 /** 유학생 비밀번호 변경 */
                 Route::patch('{std_for_id}', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
 

@@ -393,6 +393,21 @@ class ReservationController extends Controller
     }
 
     /**
+     * 한국인학생 - 해당 학기 랭킹 조회
+     */
+    public function std_kor_show_rank_by_sect(Request $request): JsonResponse
+    {
+        //TODO 랭킹 순위 비교하기.
+        /**
+         * SELECT `user_id`, `race_id`, min(`recorded_time`) AS `recorded_time`, `stroke`
+         * FROM `race_history`
+         * WHERE `stroke` = 'fly'
+         * GROUP BY `user_id`
+         * ORDER BY `recorded_time` ASC
+         */
+    }
+
+    /**
      * 한국인학생 - 학기별 미팅 목록 결과 조회
      *
      * @param Request $request
@@ -400,8 +415,6 @@ class ReservationController extends Controller
      */
     public function std_kor_show_res_by_sect(Request $request): JsonResponse
     {
-        //TODO 랭킹 순위 비교하기.
-
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'search_month' => 'required|integer|distinct|min:1|max:12',
