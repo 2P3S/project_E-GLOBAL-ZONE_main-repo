@@ -60,13 +60,16 @@ const Login = () => {
 	};
 
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<LoginHeader />
+				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Login</p>
-				<LoginHeader />
+				<p className="tit">Global Zone Service Login</p>
+				<p className="txt"><span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -83,8 +86,11 @@ const Login = () => {
 						ref={pw}
 					/>
 					<div className="submit" onClick={handleLogin}>
-						로그인
+						Login
 					</div>
+				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
 				</div>
 			</div>
 		</div>
@@ -195,13 +201,16 @@ export const KoreanLogin = () => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
 	}, []);
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<LoginHeader />
+				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Login</p>
-				<LoginHeader />
+				<p className="tit">Global Zone Service Login</p>
+				<p className="txt"><span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
 				<div className="gsuite_login">
 					{/* <div className="btn"> */}
 					{/* {" "} */}
@@ -224,6 +233,9 @@ export const KoreanLogin = () => {
 					{/* </div> */}
 					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
+				</div>
 			</div>
 		</div>
 	);
@@ -233,7 +245,7 @@ function LoginHeader() {
 	const history = useHistory();
 	const location = useLocation();
 	return (
-		<ul className="tab no2">
+		<ul>
 			<li
 				className={location.pathname === "/student" && "on"}
 				onClick={() => {
@@ -297,12 +309,16 @@ export function AdminLogin() {
 	};
 
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<LoginHeader />
+				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">관리자 계정 로그인</p>
+				<p className="tit">Global Zone Service <span>Admin Login</span></p>
+				<p className="txt">관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -319,15 +335,14 @@ export function AdminLogin() {
 						ref={pw}
 					/>
 					<div className="submit" onClick={handleLogin}>
-						로그인
+						Login
 					</div>
-					<button
-						onClick={() => {
-							if (window.confirm("비밀번호를 초기화 하시겠습니까?")) handleReset();
-						}}
-					>
-						비밀번호 초기화
-					</button>
+
+					<button onClick={handleReset} className="pwReset">비밀번호를 초기화하시겠습니까?</button>
+				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
+
 				</div>
 			</div>
 		</div>

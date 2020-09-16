@@ -259,8 +259,6 @@ export default function Settings() {
 								{postSettings.once_meet_time + postSettings.once_rest_time}분
 							</span>
 							으로 자동계산됩니다.
-							<br />
-							설정 이후에 생성되는 스케줄부터 적용됩니다.
 						</p>
 						<div className="input_area">
 							<div className="input">
@@ -296,7 +294,7 @@ export default function Settings() {
 							</div>
 						</div>
 						<p class="warning_txt">
-							학기 시작 중에는 변경이 <span>불가</span>합니다.
+						설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 <span>변경 불가</span>
 						</p>
 					</div>
 				</div>

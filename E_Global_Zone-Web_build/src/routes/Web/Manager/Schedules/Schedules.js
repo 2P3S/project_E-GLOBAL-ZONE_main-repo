@@ -516,7 +516,7 @@ export default function Schedules() {
 					<li>5PM</li>
 					<li>6PM</li>
 				</ul>
-				<div className="scroll_area pt40">
+				<div className="scroll_area">
 					{!pending ? (
 						<table className="sch_table">
 							<colgroup>
