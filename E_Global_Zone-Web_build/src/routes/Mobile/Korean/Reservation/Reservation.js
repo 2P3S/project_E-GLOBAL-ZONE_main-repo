@@ -98,8 +98,10 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
 												<div className="reserv_del_btn"><img src="/global/img/reservation_del.gif" alt="예약 삭제 버튼"/></div>
@@ -119,8 +121,10 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
 												<p
@@ -148,8 +152,10 @@ export default function Reservation() {
 												<p className="left">
 													[{v.std_for_lang}] {v.std_for_name}
 													<span>
-														{moment(v.sch_start_date).format("hh:mm")} ~
-														{moment(v.sch_end_date).format("hh:mm")}
+														{moment(v.sch_start_date).format(
+															"MM월 DD일 hh:mm "
+														)}
+														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
 												<p className="right">결과 대기</p>

@@ -182,6 +182,7 @@ class Day extends React.Component {
 			schedule &&
 				schedule.forEach((v) => {
 					let div = document.getElementById(`schImg-${sameDate.toString()}`);
+					div.parentElement.classList.add("scheduled");
 					let img = document.createElement("img");
 					img.src =
 						v === "영어"
@@ -208,9 +209,9 @@ class Day extends React.Component {
 			<span
 				key={date.toString()}
 				className={
-					"day" + (isToday ? " today" : "")
-					// (isCurrentMonth ? "" : " different-month") +
-					// (date.isSame(selected) ? " selected" : "")
+					"day" +
+					(isCurrentMonth ? "" : " different-month") +
+					(date.isSame(selected) ? " selected" : "")
 				}
 				onClick={() => select(day)}
 			>

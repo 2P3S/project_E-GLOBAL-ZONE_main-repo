@@ -192,7 +192,8 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 								absent,
 								attendance,
 							}).then((res) => {
-								setPending(true);
+								// setPending(true);
+								handleClose();
 								alert(res.data.message);
 							});
 						}}
