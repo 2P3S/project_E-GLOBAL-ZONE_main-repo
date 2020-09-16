@@ -27,7 +27,8 @@ class CreateStudentForeignersContactsTable extends Migration
             $table->foreign('std_for_id')
                 ->references('std_for_id')
                 ->on('student_foreigners')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

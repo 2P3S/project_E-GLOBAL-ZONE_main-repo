@@ -32,7 +32,8 @@ class CreateStudentForeignersTable extends Migration
             /* 외래키 설정 */
             $table->foreign('std_for_dept')
                 ->references('dept_id')
-                ->on('departments');
+                ->on('departments')
+                ->onUpdate('cascade');
         });
     }
 

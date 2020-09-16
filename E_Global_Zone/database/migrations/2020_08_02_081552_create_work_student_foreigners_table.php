@@ -22,12 +22,14 @@ class CreateWorkStudentForeignersTable extends Migration
             $table->foreign('work_std_for')
                 ->references('std_for_id')
                 ->on('student_foreigners')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('work_sect')
                 ->references('sect_id')
                 ->on('sections')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

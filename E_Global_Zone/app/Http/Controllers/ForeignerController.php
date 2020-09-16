@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
+use App\Student_korean;
 use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class ForeignerController extends Controller
     // 000 유학생 등록에 실패하였습니다.
     private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
     private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
+    private const _STD_FOR_UPDATE_SUCCESS = " 유학생 정보 변경에 성공하였습니다.";
 
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
@@ -140,6 +142,63 @@ class ForeignerController extends Controller
 
         $message = $request->input('std_for_name') . Config::get('constants.kor.std_for.store.success');
         return self::response_json($message, 201);
+    }
+
+    /**
+     * 유학생 계정 정보 변경
+     */
+    public function update(Student_foreigner $std_for_id, Request $request): JsonResponse
+    {
+        $rules = [
+            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_dept' => 'required|integer',
+            'std_for_name' => 'required|string|min:2',
+            'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
+            'std_for_country' => 'required|string|min:2',
+            'std_for_phone' => 'required|phone_number',
+            'std_for_mail' => 'required|email',
+            'std_for_zoom_id' => 'required|integer|between:1000000000,9999999999',
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_STORE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        // <<-- 이메일 OR 휴대전화 OR 줌 아이디 중복 검사
+        function check_duplicate_value($foreigner_student_data, $std_for_id, $request, $column)
+        {
+            return $foreigner_student_data->whereIn($column, [$request->input($column)])->whereNotIn($column, [$std_for_id[$column]])
+                ->count();
+        }
+
+        $std_for_id = $std_for_id::join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')->get()->first();
+        $foreigner_student_data = Student_foreigner::join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')->get();
+
+        $is_stdForId_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_id');
+        $is_email_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_mail');
+        $is_zoomId_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_zoom_id');
+        $is_phoneNum_duplicate = check_duplicate_value($foreigner_student_data, $std_for_id, $request, 'std_for_phone');
+
+        $msg = "";
+
+        if ($is_email_duplicate) $msg = "이미 등록된 이메일 정보 입니다.";
+        else if ($is_zoomId_duplicate) $msg = "이미 등록된 줌 아이디 입니다.";
+        else if ($is_phoneNum_duplicate) $msg = "이미 등록된 휴대폰 번호 입니다.";
+        else if ($is_stdForId_duplicate) $msg = "이미 등록된 학번 입니다.";
+
+        if ($is_email_duplicate || $is_zoomId_duplicate || $is_phoneNum_duplicate || $is_stdForId_duplicate)
+            return self::response_json($msg, 422);
+        // -->>
+
+        $std_for_id->update($request->all());
+
+        return self::response_json(self::_STD_FOR_UPDATE_SUCCESS, 200);
     }
 
     /**
