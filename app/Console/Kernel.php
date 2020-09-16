@@ -79,6 +79,25 @@ class Kernel extends ConsoleKernel
                 ]);
             }
             // -->>
+
+            // <<-- 이미 지난 스케줄이면서 예약 한국인이 0 명일 경우 자동 관리자 승인 ( 근로 시간 인증 )
+            $search_date = date("Y-m-d", strtotime("-1 days"));
+
+            $deserted_schedules = ScheduleList::whereDate('sch_start_date', '=', $search_date)->get();
+
+            foreach ($deserted_schedules as $schedule) {
+                $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+
+                // 전체 예약 한국인 인원수
+                $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+                if ($reservated_count == 0) {
+                    $schedule->update([
+                        'sch_state_of_permission' => true
+                    ]);
+                }
+            }
+            // -->>
         })->dailyAt('00:00');
     }
 

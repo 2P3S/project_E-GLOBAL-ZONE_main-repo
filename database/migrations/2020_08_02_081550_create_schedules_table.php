@@ -27,12 +27,14 @@ class CreateSchedulesTable extends Migration
             $table->foreign('sch_sect')
                 ->references('sect_id')
                 ->on('sections')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('sch_std_for')
                 ->references('std_for_id')
                 ->on('student_foreigners')
-                ->onDelete('SET NULL');
+                ->onDelete('SET NULL')
+                ->onUpdate('cascade');
         });
     }
 
