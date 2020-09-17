@@ -159,6 +159,7 @@ class Schedule {
 		if (un_permission_count === 0 && reservated_count === 0) {
 			this.state = STATE_NOTHING;
 		} else {
+			console.log(today, sch_end_date, moment(sch_end_date).isAfter(moment(today)));
 			if (moment(sch_end_date).isAfter(moment(today))) {
 				// 스케줄 시작 전
 				if (reservated_count > 0 && un_permission_count === 0) {
