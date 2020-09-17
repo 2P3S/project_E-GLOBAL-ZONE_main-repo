@@ -316,7 +316,7 @@ class ReservationController extends Controller
         }
 
         // 최대 예약 횟수가 넘어간 경우
-        $count_of_reservation = $this->reservation->get_std_kor_res_by_date($std_kor_id, $sch_id['sch_start_date'])->get()->count();
+        $count_of_reservation = $this->reservation->get_std_kor_res_by_date($std_kor_id, $sch_id['sch_start_date'])->count();
         $is_over_max_res_per_day = $count_of_reservation >= $setting_value->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
