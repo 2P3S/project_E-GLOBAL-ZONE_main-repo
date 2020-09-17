@@ -78,13 +78,13 @@ export default function Results() {
 						<div>{selectSect ? selectSect.sect_name : ""}</div>
 					</p>
 					<div className="result">
+						<span className="rank">상위 {sectRank}%</span>
 						<span>{selectSect && selectSect.res_count ? selectSect.res_count : 0}</span>
 						<span className="times">회</span>
-						<span className="rank">상위 {sectRank}%</span>
 					</div>
 				</div>
 
-				<select name="" id="" className="mt50" onChange={handleChange}>
+				<select name="" id="" className="resultSelect" onChange={handleChange}>
 					{sect && sect ? (
 						sect.map((v) => {
 							return <option value={v.sect_id}>{v.sect_name}</option>;
