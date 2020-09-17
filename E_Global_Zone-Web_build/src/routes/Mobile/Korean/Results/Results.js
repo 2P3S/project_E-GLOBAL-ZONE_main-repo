@@ -134,7 +134,9 @@ export default function Results() {
 									data.data.map((v) => {
 										return (
 											<tr>
-												<td>{v.sch_start_date.substr(5, 20)}</td>
+												<td>
+													{moment(v.sch_start_date).format("MM-DD hh:mm")}
+												</td>
 												<td>{v.std_for_name}</td>
 											</tr>
 										);
