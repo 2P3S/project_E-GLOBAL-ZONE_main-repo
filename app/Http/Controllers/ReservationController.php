@@ -92,7 +92,7 @@ class ReservationController extends Controller
         $current_date = strtotime($current_date_string . "-{$res_start_period} day");
         $cancellable_date = strtotime($cancellable_date_string . "-{$res_start_period} day");
 
-        $is_cancellable_date = $current_date >= $cancellable_date ? true : false;
+        $is_cancellable_date = $cancellable_date >= $current_date ? true : false;
         // -->>
 
         /**
