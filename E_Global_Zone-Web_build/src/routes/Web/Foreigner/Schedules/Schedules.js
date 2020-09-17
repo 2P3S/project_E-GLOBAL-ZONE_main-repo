@@ -159,7 +159,7 @@ class Schedule {
 		if (un_permission_count === 0 && reservated_count === 0) {
 			this.state = STATE_NOTHING;
 		} else {
-			if (new Date(sch_end_date) > new Date(today)) {
+			if (moment(sch_end_date).isAfter(moment(today))) {
 				// 스케줄 시작 전
 				if (reservated_count > 0 && un_permission_count === 0) {
 					this.state = STATE_RESERVED;
@@ -192,7 +192,7 @@ export default function Schedules() {
 		}
 		return weeks;
 	};
-	const today = useSelector(selectToday);
+	const today = Date.now();
 	const user = useSelector(selectUser);
 	const selectedDate = useSelector(selectSelectDate);
 	const [currentDate, setCurrentDate] = useState(moment(today));
