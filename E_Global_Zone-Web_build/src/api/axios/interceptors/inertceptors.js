@@ -34,6 +34,7 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 				case 401:
 					alert(message, 401);
 					window.localStorage.clear();
+					window.location.reload();
 					break;
 				default:
 					message && alert(message);
