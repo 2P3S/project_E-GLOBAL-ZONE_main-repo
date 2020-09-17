@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://www.94soon.net',
-        'admin' => 'http://www.94soon.net/admin',
-        'reset' => 'http://www.94soon.net/api/reset',
+        'main' => 'http://210.101.228.177',
+        'admin' => 'http://210.101.228.177/admin',
+        'reset' => 'http://210.101.228.177/api/reset',
     ],
     'initial_password' => [
         'admin' => 'oicyju5630!',
