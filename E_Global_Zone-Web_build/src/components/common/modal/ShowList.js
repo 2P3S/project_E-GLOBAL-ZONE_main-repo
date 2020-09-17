@@ -84,8 +84,8 @@ export default function ShowList({
 
 	const reRender = () => {
 		user.userClass === conf.userClass.MANAGER
-			? getAdminReservation(sch_id).then((res) => _setData(res.data))
-			: getForeignerReservation(sch_id, std_for_id, _setData);
+			? getAdminReservation(sch_id).then((res) => setData(res.data))
+			: getForeignerReservation(sch_id, std_for_id, setData);
 	};
 
 	return (
