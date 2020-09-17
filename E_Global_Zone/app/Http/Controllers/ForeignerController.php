@@ -198,6 +198,13 @@ class ForeignerController extends Controller
 
         $std_for_id->update($request->all());
 
+        Student_foreigners_contact::find($std_for_id)->update([
+            'std_for_id' => $request->input('std_for_id'),
+            'std_for_phone' => $request->input('std_for_phone'),
+            'std_for_mail' => $request->input('std_for_mail'),
+            'std_for_zoom_id' => $request->input('std_for_zoom_id'),
+        ]);
+
         return self::response_json(self::_STD_FOR_UPDATE_SUCCESS, 200);
     }
 

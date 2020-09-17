@@ -129,7 +129,7 @@
 
 @php
     session_start();
-    $expire_time = date("Y-m-d H:i:s", strtotime("+30 seconds"));
+    $expire_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
     $url = "/api/password/update?expire_time=" . "'{$expire_time}'";
 
     $request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
