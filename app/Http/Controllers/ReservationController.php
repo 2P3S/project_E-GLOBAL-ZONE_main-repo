@@ -89,10 +89,10 @@ class ReservationController extends Controller
         $current_date_string = date("Y-m-d", time());
         $cancellable_date_string = date("Y-m-d", strtotime($schedule['sch_start_date']));
 
-        $current_date = strtotime($current_date_string);
+        $current_date = strtotime($current_date_string . "-{$res_start_period} day");
         $cancellable_date = strtotime($cancellable_date_string . "-{$res_start_period} day");
 
-        $is_cancellable_date = $current_date <= $cancellable_date ? true : false;
+        $is_cancellable_date = $cancellable_date >= $current_date ? true : false;
         // -->>
 
         /**
@@ -537,24 +537,19 @@ class ReservationController extends Controller
         Request $request,
         Reservation $res_id
     ): JsonResponse {
-        // <<-- Request 유효성 검사
-        $rules = [
-            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
-            'guard' => 'required|string|in:admin'
-        ];
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
 
-        $validated_result = self::request_validator(
-            $request,
-            $rules,
-            self::_STD_KOR_RES_STORE_FAILURE
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
+        if (is_object($is_admin)) {
+            return $is_admin;
         }
         // -->>
 
-        $res_id->delete();
+        try {
+            $res_id->delete();
+        } catch (Exception $e) {
+            return self::response_json_error(self::_STD_KOR_RES_DELETE_FAILURE);
+        }
 
         return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
     }
