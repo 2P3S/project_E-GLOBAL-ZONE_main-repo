@@ -230,6 +230,12 @@ class LoginController extends Controller
         $provider = $request->input('provider');
         $uri = "";
 
+        if ($provider === 'admins') {
+            $uri = Config::get('constants.uri.admin');
+        } else {
+            $uri = Config::get('constants.uri.main');
+        }
+
         // <<-- 초기 비밀번호로 로그인 시
         if ($foreigner['flag']) {
             $data = [
