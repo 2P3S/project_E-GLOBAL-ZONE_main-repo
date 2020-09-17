@@ -180,6 +180,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 									id="std_for_phone"
 									name="std_info"
 									onChange={(e) => {
+										console.log(e);
 										if (
 											validator.isMobilePhone(e.target.value, "ko-KR") &&
 											validator.isNumeric(e.target.value) &&
