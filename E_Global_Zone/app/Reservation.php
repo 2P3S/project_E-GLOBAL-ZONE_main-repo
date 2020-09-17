@@ -65,7 +65,7 @@ class Reservation extends Model
     }
 
     /**
-     * 한국인 학생 - 특정 날짜 기준 한국인 학생의 예약 목록을 조회 (미사용)
+     * 한국인 학생 - 특정 날짜 기준 한국인 학생의 예약 목록을 조회
      *
      * @param int $std_kor_id
      * @param string $search_date
@@ -74,7 +74,7 @@ class Reservation extends Model
     public function get_std_kor_res_by_date(
         int $std_kor_id,
         string $search_date
-    ): JsonResponse {
+    ): object {
         $lookup_columns = [
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date',
@@ -92,16 +92,7 @@ class Reservation extends Model
             ->whereDate('sch.sch_start_date', $search_date)
             ->get();
 
-        $is_std_kor_res_no_date = $result->count();
-
-        if (!$is_std_kor_res_no_date) {
-            return
-                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 202);
-        }
-
-        $message_template = self::_STD_KOR_RES_INDEX_SUCCESS;
-        return
-            Controller::response_json($message_template, 200, $result);
+        return $result;
     }
 
     /**
