@@ -158,6 +158,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 				<ModifyForeignerStudent
 					handleClose={handleCloseForModify}
 					currentInfo={currentInfo}
+					reRender={handleClose}
 				/>
 			</Modal>
 		</div>

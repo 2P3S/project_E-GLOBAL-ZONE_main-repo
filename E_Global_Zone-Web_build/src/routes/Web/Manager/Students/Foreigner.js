@@ -644,19 +644,23 @@ export default function Foreigner() {
 							연락처 정보
 						</div>
 						<div onClick={handleOpenForAdd}>근로 유학생 등록</div>
-						<div
-							onClick={() => {
-								if (dataSet.data && dataSet.data.length > 0) {
-									history.push(
-										`/section/${selectSect}/${dataSet.data[0].std_for_id}`
-									);
-								} else {
-									alert("해당 학기에 등록 된 학생이 없습니다.");
-								}
-							}}
-						>
-							학기 스케줄 등록
-						</div>
+						{dataSet && moment(Date.now()).isAfter(dataSet.time.sect_start_date) ? (
+							<></>
+						) : (
+							<div
+								onClick={() => {
+									if (dataSet.data && dataSet.data.length > 0) {
+										// history.push(
+										// 	`/section/${selectSect}/${dataSet.data[0].std_for_id}`
+										// );
+									} else {
+										alert("해당 학기에 등록 된 학생이 없습니다.");
+									}
+								}}
+							>
+								학기 스케줄 등록
+							</div>
+						)}
 						<div onClick={handleOpenForCreate}>스케줄 개별 입력</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>

@@ -17,4 +17,6 @@ export const postKoreanAccount = (data) => korean.post("account", data);
  */
 export const getKoreanSchedule = (sch_id) => korean.get("schedule" + (sch_id ? `/${sch_id}` : ""));
 
+export const getKoreanSectionRank = (sect_id) => korean.get(`section/rank/${sect_id}`);
+
 export const postKoreanLogin = () => koreanLogin.post();

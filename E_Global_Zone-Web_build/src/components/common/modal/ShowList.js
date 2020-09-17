@@ -65,7 +65,7 @@ export default function ShowList({
 	}, [pending]);
 
 	const handleDelete = () => {
-		postAdminScheduleAdd(selectedResId).then((res) => {
+		deleteAdminScheduleAdd(selectedResId).then((res) => {
 			handleCloseForDelete();
 			alert(res.data.message);
 		});

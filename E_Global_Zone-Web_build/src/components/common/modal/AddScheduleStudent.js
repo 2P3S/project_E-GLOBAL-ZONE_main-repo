@@ -45,7 +45,7 @@ export default function AddScheduleStudent({
 	useEffect(() => {
 		process.env.REACT_APP_DEVELOP_MODE && console.log(result);
 		if (result && result.status === 201) {
-			alert(result.data.message);
+			// alert(result.data.message);
 			handleClose();
 		} else if (result && result.status !== 201) {
 			alert("[에러] 이미 추가한 학생입니다.");
