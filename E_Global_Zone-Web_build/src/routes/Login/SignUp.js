@@ -65,13 +65,11 @@ export default function SignUp() {
 			return false;
 		}
 		{
-			/** @todo 유효성 검사 필요함 */
 			postKoreanAccount({ std_kor_id, std_kor_name, std_kor_dept, std_kor_phone })
 				.then((res) => {
 					res.status === 201 && window.location.reload();
 				})
 				.catch((e) => {
-					alert(e);
 					history.push("/");
 				});
 		}

@@ -4,8 +4,9 @@ import { selectUser } from "../../../../redux/userSlice/userSlice";
 import { selectToday } from "../../../../redux/confSlice/confSlice";
 import Loader from "../../../../components/common/Loader";
 import moment from "moment";
-import { getKoreanSection } from "../../../../api/korean";
+import { getKoreanSection, getKoreanSectionRank } from "../../../../api/korean";
 import { getKoreanReservationResult } from "../../../../api/korean/reservation";
+import { useHistory } from "react-router-dom";
 
 /**
  * Korean :: 결과 조회
@@ -16,11 +17,13 @@ import { getKoreanReservationResult } from "../../../../api/korean/reservation";
 export default function Results() {
 	const user = useSelector(selectUser);
 	const today = useSelector(selectToday);
+	const history = useHistory();
 	const [data, setData] = useState();
 	const [sect, setSect] = useState();
 	const [pending, setPending] = useState(false);
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectId, setSelectSectId] = useState();
+	const [sectRank, setSectRank] = useState(0);
 	const [selectMonth, setSelectMonth] = useState(moment(today));
 
 	useEffect(() => {
@@ -29,7 +32,12 @@ export default function Results() {
 		getKoreanSection().then((res) => {
 			setSect(res.data.data);
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
-			setPending(true);
+			if (res.status === 202) {
+				alert(res.data.message);
+				// history.push("/");
+			} else {
+				setPending(true);
+			}
 			// window.easydropdown.all();
 		});
 		// window.easydropdown.all();
@@ -44,6 +52,13 @@ export default function Results() {
 			});
 	}, [pending]);
 
+	useEffect(() => {
+		selectSect &&
+			getKoreanSectionRank(selectSect.sect_id).then((res) => {
+				setSectRank(res.data.data);
+			});
+	}, [selectSect]);
+
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
 		setPending(true);
@@ -55,17 +70,21 @@ export default function Results() {
 				{/* <p className="tit">{selectSect && selectSect.sect_name}</p> */}
 				<div className="point_info">
 					<p>
-						<div><span className="name">{user.name}</span> 학생의 학기별</div>
+						<div>
+							<span className="name">{user.name}</span> 학생의{" "}
+							{selectSect ? selectSect.sect_name : "학기별"}
+						</div>
 						글로벌 존 이용 횟수
+						<div>{selectSect ? selectSect.sect_name : ""}</div>
 					</p>
 					<div className="result">
-						{/*<span className="rank">상위 10%</span>*/}
-						<span>{selectSect && selectSect.res_count}</span>
+						<span className="rank">상위 {sectRank}%</span>
+						<span>{selectSect && selectSect.res_count ? selectSect.res_count : 0}</span>
 						<span className="times">회</span>
 					</div>
 				</div>
 
-				<select name="" id="" className="mt50" onChange={handleChange}>
+				<select name="" id="" className="resultSelect" onChange={handleChange}>
 					{sect && sect ? (
 						sect.map((v) => {
 							return <option value={v.sect_id}>{v.sect_name}</option>;
@@ -128,8 +147,9 @@ export default function Results() {
 								)
 							) : (
 								<tr>
-									<td></td>
-									<Loader></Loader>
+									<td colSpan="2">
+										<Loader></Loader>
+									</td>
 								</tr>
 							)}
 						</tbody>

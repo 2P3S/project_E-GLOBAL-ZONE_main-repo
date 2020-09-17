@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import useClick from "../../../modules/hooks/useClick";
-import { getAdminKoreanAccount, patchAdminKoreanAccount } from "../../../api/admin/korean";
+import {
+	getAdminKoreanAccount,
+	patchAdminKoreanAccount,
+	deleteAdminKoreanAccount,
+} from "../../../api/admin/korean";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
@@ -79,6 +83,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 							<th scope="col">이름</th>
 							<th scope="col">연락처</th>
 							<th scope="col">G Suite 계정</th>
+							<th scope="col">삭제</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -103,6 +108,27 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 									<td>{v.std_kor_name}</td>
 									<td>{v.std_kor_phone}</td>
 									<td>{v.std_kor_mail}</td>
+									<td>
+										<img
+											style={{ cursor: "pointer" }}
+											src="/global/img/row_del_btnOn.gif"
+											art="삭제이미지"
+											onClick={() => {
+												if (
+													window.confirm(
+														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_kor_id}\n이름 : ${v.std_kor_name}`
+													) === true
+												) {
+													deleteAdminKoreanAccount(v.std_kor_id).then(
+														(res) => {
+															alert(res.data.message);
+															setPending(true);
+														}
+													);
+												}
+											}}
+										/>
+									</td>
 								</tr>
 							))}
 					</tbody>

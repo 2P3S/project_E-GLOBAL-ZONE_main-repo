@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
 import { current } from "@reduxjs/toolkit";
 
-const InsertForeignerStudent = ({ handleClose, currentInfo }) => {
+const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 	const [state, setState] = useState(false);
 	const history = useHistory();
 	const specialChar = [
@@ -64,7 +64,7 @@ const InsertForeignerStudent = ({ handleClose, currentInfo }) => {
 			}
 		});
 		!_validator &&
-			updateAdminForeignerAccount({
+			updateAdminForeignerAccount(currentInfo.std_for_id, {
 				std_for_lang: array[0],
 				std_for_country: array[1],
 				std_for_id: parseInt(array[2]),
@@ -86,6 +86,7 @@ const InsertForeignerStudent = ({ handleClose, currentInfo }) => {
 	useEffect(() => {
 		window.easydropdown.all();
 		console.log(currentInfo);
+		return reRender;
 	}, []);
 
 	return (

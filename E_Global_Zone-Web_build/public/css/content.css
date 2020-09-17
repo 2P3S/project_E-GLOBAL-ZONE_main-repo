@@ -438,7 +438,7 @@ table.sch_table tbody td:first-child {
 .state_box.state7 {
 	background: #e1e1ea;
 	color: #373a44;
-	overflow: hidden;
+	/* overflow: hidden; */
 }
 
 .state_box.state7 .close {
@@ -1698,7 +1698,7 @@ table.work_time thead th {
 	font-weight: 600;
 }
 
-.join_add_wrap .input_area select {
+.join_add_wrap .input_area .edd-root {
 	width:350px;
 }
 .join_add_wrap .input_area .edd-value {
@@ -1727,6 +1727,7 @@ table.work_time thead th {
 	margin-top: 10px;
 	font-weight: 600;
 	width: 100%;
+	cursor:pointer;
 }
 
 /********************* POPUP *********************/

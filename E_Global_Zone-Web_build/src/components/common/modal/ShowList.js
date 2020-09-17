@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { deleteAdminScheduleAdd, postAdminScheduleAdd } from "../../../api/admin/schedule";
+import {
+	deleteAdminScheduleAdd,
+	deleteAdminScheduleSome,
+	postAdminScheduleAdd,
+} from "../../../api/admin/schedule";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
@@ -65,7 +69,7 @@ export default function ShowList({
 	}, [pending]);
 
 	const handleDelete = () => {
-		postAdminScheduleAdd(selectedResId).then((res) => {
+		deleteAdminScheduleAdd(selectedResId).then((res) => {
 			handleCloseForDelete();
 			alert(res.data.message);
 		});
