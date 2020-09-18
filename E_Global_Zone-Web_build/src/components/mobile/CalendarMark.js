@@ -188,11 +188,11 @@ class Day extends React.Component {
 					let img = document.createElement("img");
 					img.src =
 						v === "영어"
-							? "/global/mobile/img/sch_tab_eng.gif"
+							? "/global/mobile/img/sch_tab_eng.png"
 							: v === "중국어"
-							? "/global/mobile/img/sch_tab_ch.gif"
+							? "/global/mobile/img/sch_tab_ch.png"
 							: v === "일본어"
-							? "/global/mobile/img/sch_tab_jp.gif"
+							? "/global/mobile/img/sch_tab_jp.png"
 							: "";
 					div.appendChild(img);
 				});

@@ -145,6 +145,9 @@ export const MobileLogin = () => {
 	}, []);
 	return (
 		<div className="wrap mobile_login">
+			
+			<p class="tit">Global Zone <span>Service Login</span></p>
+			<p class="txt"><span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.</p>
 			<GoogleLogin
 				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 				buttonText="Google"
@@ -160,7 +163,7 @@ export const MobileLogin = () => {
 				onSuccess={onSuccess}
 				onFailure={onFailure}
 			/>
-			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
+			<p className="info">@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
 	);
 };
