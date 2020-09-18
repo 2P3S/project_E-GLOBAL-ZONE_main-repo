@@ -75,12 +75,13 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 				std_for_zoom_id: array[7],
 			}).then((res) => {
 				setState(res.data);
+				alert(res.data.message);
 			});
 	};
 
 	useEffect(() => {
 		if (state) {
-			handleClose();
+			// handleClose();
 		}
 	}, [state]);
 	useEffect(() => {
