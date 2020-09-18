@@ -160,10 +160,8 @@
     @endphp
 
 @elseif (
-    isset($account, $provider, $name, $token) && (
-        $request_uri === '/api/login/admin' ||
-        $request_uri === '/api/login/foreigner'
-    )
+    isset($account, $provider, $name, $token) &&
+    $request_uri === '/api/password/update'
 )
     <?php
     if (isset($account, $provider, $name, $token, $login_controller, $uri)) {
