@@ -189,7 +189,9 @@ export default function Schedules() {
 											"h"
 										)}`
 									);
+
 									let div = document.createElement("div");
+									// if(moment(schedule.sch_start_date))
 									div.classList.add("state_box");
 									if (
 										schedule.un_permission_count === 0 &&
