@@ -508,6 +508,7 @@ export default function Schedules() {
 					<li className="ico02">[예약 승인 완료]</li>
 				</ul>
 				<ul>
+					{/* 여기에 미승인 목록 모달 달아야함 */}
 					<li className="ico03">[결과 미입력] 출석 학생</li>
 					{/* <li className="ico04">[결과 입력 완료]</li> 2020-09-09 삭제 */}
 				</ul>
