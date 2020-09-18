@@ -30,8 +30,8 @@ Modal.setAppElement(document.getElementById("modal-root"));
  */
 export default function ({ children, isOpen, handleClose }) {
 	return (
-		<Modal style={modalStyle} isOpen={isOpen}>
-			<div
+		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
+			{/* <div
 				onClick={handleClose}
 				style={{
 					marginLeft: "100%",
@@ -42,7 +42,7 @@ export default function ({ children, isOpen, handleClose }) {
 					borderRadius: "15px",
 					cursor: "pointer",
 				}}
-			></div>
+			></div> */}
 			{children}
 		</Modal>
 	);
