@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://210.101.228.177',
-        'admin' => 'http://210.101.228.177/admin',
-        'reset' => 'http://210.101.228.177/api/reset',
+        'main' => 'http://global.yju.ac.kr',
+        'admin' => 'http://global.yju.ac.kr/admin',
+        'reset' => 'http://global.yju.ac.kr/api/reset',
     ],
     'initial_password' => [
         'admin' => 'oicyju5630!',
