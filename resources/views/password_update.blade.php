@@ -143,8 +143,6 @@
         $is_password_update_success = $login_controller
             ->update_password_url(array_merge($_SESSION, $_POST), $_GET['expire_time']);
 
-        echo "<h1>비밀번호 변경 중입니다.</h1>";
-
         $target_uri = $_POST['uri'];
         $result_message = $is_password_update_success ?
                         '비밀번호 변경을 성공하였습니다.' :
@@ -152,7 +150,6 @@
         $append_message = '다시 로그인해주세요.';
 
         echo "&nbsp;";
-        echo "<a href='{$target_uri}'>메인페이지로 이동</a>";
         echo "
             <script>
                 go_main_page(`{$result_message}\n{$append_message}`, '{$target_uri}')
