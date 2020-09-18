@@ -192,6 +192,15 @@ export default function Schedules() {
 
 									let div = document.createElement("div");
 									// if(moment(schedule.sch_start_date))
+									if (
+										moment(schedule.sch_start_date).minute() !== 0 &&
+										td.childNodes.length === 0
+									) {
+										// td.style.backgroundColor = "red";
+										let blank = document.createElement("div");
+										blank.className = "state_box";
+										td.appendChild(blank);
+									}
 									div.classList.add("state_box");
 									if (
 										schedule.un_permission_count === 0 &&
