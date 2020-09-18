@@ -151,7 +151,7 @@
                         '비밀번호 변경을 실패하였습니다.';
         $append_message = '다시 로그인해주세요.';
 
-        echo "{$result_message}<br>{$append_message}";
+        echo "&nbsp;";
         echo "<a href='{$target_uri}'>메인페이지로 이동</a>";
         echo "
             <script>
