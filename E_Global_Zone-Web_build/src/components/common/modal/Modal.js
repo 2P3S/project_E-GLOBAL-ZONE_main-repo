@@ -30,7 +30,8 @@ Modal.setAppElement(document.getElementById("modal-root"));
  */
 export default function ({ children, isOpen, handleClose }) {
 	return (
-		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
+		<Modal style={modalStyle} isOpen={isOpen}>
+			<div onClick={handleClose}>닫기</div>
 			{children}
 		</Modal>
 	);
