@@ -454,7 +454,11 @@ export default function Students() {
 					}}
 				/>
 			</Modal>
-			<Modal isOpen={isUnrestrict} onRequestClose={handleCloseForUnrestrict}>
+			<Modal
+				isOpen={isUnrestrict}
+				onRequestClose={handleCloseForUnrestrict}
+				handleClose={handleCloseForUnrestrict}
+			>
 				<ConfirmUnrestriction
 					std_kor_name={selectedKor.std_kor_name}
 					std_kor_id={selectedKor.std_kor_id}
@@ -463,7 +467,11 @@ export default function Students() {
 					reRender={reRender}
 				/>
 			</Modal>
-			<Modal isOpen={isRestrict} onRequestClose={handleCloseForRestrict}>
+			<Modal
+				isOpen={isRestrict}
+				onRequestClose={handleCloseForRestrict}
+				handleClose={handleCloseForRestrict}
+			>
 				<ConfirmRestriction
 					handleClose={handleCloseForRestrict}
 					std_kor_id={selectedKor.std_kor_id}

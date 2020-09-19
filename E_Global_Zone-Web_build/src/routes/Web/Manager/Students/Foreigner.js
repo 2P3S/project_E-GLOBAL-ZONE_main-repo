@@ -36,6 +36,25 @@ let j = 0;
  * @todo sorting
  */
 export default function Foreigner() {
+	let mockup = {
+		sort: null,
+		data: [
+			{
+				std_for_lang: conf.language.ENGLISH,
+				country: "미국",
+				favorite: false,
+				std_id: i++,
+				name: "Emma Stone",
+				dept: conf.shortDepartment[1],
+				curruntMonth: 120,
+				lastMonth: 150,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+		],
+	};
 	const history = useHistory();
 	const params = useParams();
 
@@ -556,9 +575,9 @@ export default function Foreigner() {
 																		>
 																			비밀번호 초기화
 																		</div>
-																		{/* <div className="lightGray">
-																			삭제
-																		</div> */}
+																		<div className="lightGray">
+																			수정
+																		</div>
 																	</div>
 																</div>
 															</td>
@@ -631,7 +650,7 @@ export default function Foreigner() {
 							<div
 								onClick={() => {
 									if (dataSet.data && dataSet.data.length > 0) {
-										history.push(`/section/${selectSect}}`);
+										history.push(`/section/${selectSect}/${0}`);
 									} else {
 										alert("해당 학기에 등록 된 학생이 없습니다.");
 									}
