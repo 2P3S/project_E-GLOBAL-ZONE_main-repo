@@ -142,12 +142,23 @@ export const MobileLogin = () => {
 	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
+		let link = document.getElementById("content");
+		document.head.removeChild(link);
+		let link_ = document.createElement("link");
+		link_.rel = "stylesheet";
+		console.log(link);
+		link_.href = "/css/mobile/content.css";
+		link_.id = "content";
+		document.head.appendChild(link_);
 	}, []);
 	return (
 		<div className="wrap mobile_login">
-			
-			<p class="tit">Global Zone <span>Service Login</span></p>
-			<p class="txt"><span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.</p>
+			<p class="tit">
+				Global Zone <span>Service Login</span>
+			</p>
+			<p class="txt">
+				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
+			</p>
 			<GoogleLogin
 				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 				buttonText="Google"
