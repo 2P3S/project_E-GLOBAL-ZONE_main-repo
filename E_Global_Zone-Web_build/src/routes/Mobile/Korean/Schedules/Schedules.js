@@ -21,15 +21,17 @@ export default function Schedules() {
 		getKoreanSchedule().then((res) => {
 			const { data } = res.data;
 			if (data.length === 0) {
-				alert("조회가능한 스케줄이 없습니다.");
+				alert("예약 가능한 스케줄이 없습니다.");
+				// history.push("/reservation");
+				setData([]);
 			} else {
 				dispatch(setSelectDate(moment(data[0].sch_start_date).format("YYYY-MM-DD")));
+				setData(
+					group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+						moment(data[0].sch_start_date).format("YYYY-MM-DD")
+					)
+				);
 			}
-			setData(
-				group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
-					moment(data[0].sch_start_date).format("YYYY-MM-DD")
-				)
-			);
 			setDefaultData(data);
 			let dateSet = group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD"));
 			let dateObj = {};
@@ -90,28 +92,37 @@ export default function Schedules() {
 			{!pending ? (
 				<div className="wrap">
 					{calset ? <Loader /> : <Calendar dates={dates} selectedDate={selectedDate} />}
-					<ul className="sch_tab" style={{ cursor: "pointer" }}>
-						<li>
-							<div id="allView" name="tabview" className="on" onClick={handleClick}>
-								전체
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="eng" onClick={handleClick}>
-								영어
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="jp" onClick={handleClick}>
-								일본어
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="ch" onClick={handleClick}>
-								중국어
-							</div>
-						</li>
-					</ul>
+
+					{data && data.length > 0 && (
+						<ul className="sch_tab" style={{ cursor: "pointer" }}>
+							<li>
+								<div
+									id="allView"
+									name="tabview"
+									className="on"
+									onClick={handleClick}
+								>
+									전체
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="eng" onClick={handleClick}>
+									영어
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="jp" onClick={handleClick}>
+									일본어
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="ch" onClick={handleClick}>
+									중국어
+								</div>
+							</li>
+						</ul>
+					)}
+
 					<div className="reservation_boxs tab_wrap">
 						{data && data.length > 0 ? (
 							data.map((v) => (
