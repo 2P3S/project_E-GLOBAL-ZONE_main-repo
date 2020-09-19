@@ -149,6 +149,34 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        // <<-- 외국인 유학생
+        'std_for_id' => '학번',
+        'std_for_dept' => '학과',
+        'std_for_name' => '이름',
+        'std_for_lang' => '언어',
+        'std_for_country' => '국가',
+        'std_for_phone' => '휴대폰 번호',
+        'std_for_mail' => '카카오톡 아이디',
+        'std_for_zoom_id' => '줌 아이디',
+        // -->>
+        // <<-- 한국인 학생
+        'std_kor_id' => '학번',
+        'std_kor_dept' => '학과',
+        'std_kor_name' => '이름',
+        'std_kor_phone' => '휴대폰 번호',
+        'std_kor_mail' => '이메일',
+        // -->>
+        // <<-- 스케줄
+        'sch_id' => '스케줄 아이디',
+        'sch_sect' => '학과',
+        'sch_std_for' => '외국인학생 학번',
+        'sch_start_date' => '스케줄 시작 날짜',
+        'sch_end_date' => '스케줄 종료 날짜',
+        'sch_state_of_result_input' => '유학생 결과 입력 여부',
+        'sch_state_of_permission' => '관리자 결과 승인 여부',
+        'sch_for_zoom_pw' => '줌 비밀번호'
+        // -->>
+    ],
 
 ];

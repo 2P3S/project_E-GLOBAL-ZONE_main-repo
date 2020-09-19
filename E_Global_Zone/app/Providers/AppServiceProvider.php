@@ -37,5 +37,12 @@ class AppServiceProvider extends ServiceProvider
 
             return strcmp($parse_email, 'g.yju.ac.kr');
         });
+
+        // 카카오톡 아이디 확인
+        Validator::extend('kakao_id', function ($attribute, $value, $parameters, $validator) {
+            $regular_expression = '/^[A-Za-z0-9+]{4,15}$/';
+
+            return preg_match($regular_expression, $value);
+        });
     }
 }
