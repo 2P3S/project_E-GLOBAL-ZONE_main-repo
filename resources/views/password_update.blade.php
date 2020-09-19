@@ -53,7 +53,7 @@
         }
 
         .wrapper .content .sub_title p.tit {
-            float: center;
+            float: none;
             line-height: 30px;
             font-size: 23px;
             color: #373a44;
@@ -129,7 +129,7 @@
 
 @php
     session_start();
-    $expire_time = date("Y-m-d H:i:s", strtotime("+30 seconds"));
+    $expire_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
     $url = "/api/password/update?expire_time=" . "'{$expire_time}'";
 
     $request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
@@ -143,16 +143,13 @@
         $is_password_update_success = $login_controller
             ->update_password_url(array_merge($_SESSION, $_POST), $_GET['expire_time']);
 
-        echo "<h1>비밀번호 변경 중입니다.</h1>";
-
         $target_uri = $_POST['uri'];
         $result_message = $is_password_update_success ?
                         '비밀번호 변경을 성공하였습니다.' :
                         '비밀번호 변경을 실패하였습니다.';
         $append_message = '다시 로그인해주세요.';
 
-        echo "{$result_message}<br>{$append_message}";
-        echo "<a href='{$target_uri}'>메인페이지로 이동</a>";
+        echo "&nbsp;";
         echo "
             <script>
                 go_main_page(`{$result_message}\n{$append_message}`, '{$target_uri}')
@@ -189,7 +186,7 @@
                 <div class="input_area">
                     <div class="sub_title">
                         <p class="tit">
-                            {{ $name }} 님 안녕하세요!!!<br>
+                            {{ $name }} 님 안녕하세요<br>
                             비밀번호 변경 후 사용해주세요.
                         </p>
                     </div>

@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://www.94soon.net',
-        'admin' => 'http://www.94soon.net/admin',
-        'reset' => 'http://www.94soon.net/api/reset',
+        'main' => 'http://global.yju.ac.kr',
+        'admin' => 'http://global.yju.ac.kr/admin',
+        'reset' => 'http://global.yju.ac.kr/api/reset',
     ],
     'initial_password' => [
         'admin' => 'oicyju5630!',

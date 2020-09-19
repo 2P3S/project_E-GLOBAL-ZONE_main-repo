@@ -47,6 +47,9 @@ Route::middleware('auth.multi')->group(static function () {
                 /** 유학생 계정 생성 (회원가입) */
                 Route::post('', 'ForeignerController@store')->name('foreigners.registerAccount');
 
+                /** 유학생 계정 정보 변경 */
+                Route::patch('update/{std_for_id}', 'ForeignerController@update')->name('foreigners.update');
+
                 /** 유학생 비밀번호 변경 */
                 Route::patch('{std_for_id}', 'ForeignerController@updateAccount')->name('foreigners.updateAccount');
 
@@ -210,6 +213,9 @@ Route::middleware('auth.korean')->group(function () {
 
         /** 참석한 학기 목록 조회 */
         Route::get('section', 'SectionController@std_kor_attendanced_index')->name('section.std_kor_attendanced_index');
+
+        /** 해당 학기 랭킹(백분율) 조회 */
+        Route::get('section/rank/{sect_id}', 'ReservationController@std_kor_show_rank_by_sect')->name('reservations.std_kor_show_rank_by_sect');
 
         /** 등록된 환경변수 조회 */
         Route::get('setting', 'SettingController@index')->name('settings.index');
