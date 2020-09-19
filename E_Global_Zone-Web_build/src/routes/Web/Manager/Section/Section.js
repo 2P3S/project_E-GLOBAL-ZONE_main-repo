@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-// import {
-// 	getAdminForeignerWork,
-// 	getAdminSection,
-// 	postAdminSchedule,
-// 	deleteAdminSchedule,
-// 	getAdminForeigner,
-// } from "../../../../modules/hooks/useAxios";
 
 import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
 import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
@@ -164,7 +157,9 @@ export default function Section(props) {
 						<input type="submit" value="검색" />
 					</div>
 					<div className="not_enter">
-						<p className="tit"><span>미입력 리스트</span></p>
+						<p className="tit">
+							<span>미입력 리스트</span>
+						</p>
 						<div className="scroll_area">
 							<table>
 								<thead>
@@ -200,7 +195,9 @@ export default function Section(props) {
 					</div>
 
 					<div className="enter">
-						<p className="tit"><span>입력 완료 리스트</span></p>
+						<p className="tit">
+							<span>입력 완료 리스트</span>
+						</p>
 						<div className="scroll_area">
 							<table>
 								<thead>

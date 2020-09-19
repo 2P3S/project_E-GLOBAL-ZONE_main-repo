@@ -44,7 +44,7 @@ export function ManagerRouter() {
 
 					<Route path="/settings" component={Settings} />
 
-					<Route path="/section/:sect_id/:std_for_id" component={Section} />
+					<Route path="/section/:sect_id/" component={Section} />
 				</Switch>
 			</div>
 			<Footer />
