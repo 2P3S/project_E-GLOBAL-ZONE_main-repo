@@ -1,12 +1,13 @@
-# e-global-zone
-영진전문대학교 글로벌 존 온라인 예약 시스템
+# 영진전문대학교 글로벌 존 온라인 예약 시스템
+### [YJU E-global-zone](http://global.yju.ac.kr)
 
 <p align="center">
     <a href="https://www.yju.ac.kr/" target="_blank">
         <img src="https://www.yju.ac.kr/sites/kr/masterSkin/kr_JW_MS_K2WT003_M/images/logo/m_h-logo.png" width="400">
     </a>
 </p>
-<div class="footer__bottom-section__information">
+
+<div>
     <address>대표전화 053-940-5114<span>41527 대구광역시 북구 복현로 35 (복현2동 218) 영진전문대학교</span></address>
     <p>COPYRIGHT© <strong>YEUNGJIN UNIVERSITY</strong>. <span>All RIGHTS RESERVED.</span></p>
 </div>
@@ -27,9 +28,7 @@
 
 [7. 2차 테스트 진행](#2차-테스트-진행)
 
-[8. 버그 수정 및 검수](#버그-수정-및-검수)
-
-[9. 실 서버 배포 및 베타 오픈(예정)](#실-서버-배포-및-베타-오픈)
+[8. 서비스 배포](#서비스-배포)
 
 ## 사용자 요구 분석
 진행 일시 : 2020-07-07
@@ -129,7 +128,6 @@
 #### System architecture
 ![E_Global_Zone Setting Manual 001](https://user-images.githubusercontent.com/53788601/92883908-4f19bc80-f44c-11ea-9e75-5e198c34f221.jpeg)
 
-
 ## API 설계 및 Component 구성
 진행 일시 : 2020-07-30 ~ 08-11
 
@@ -161,23 +159,33 @@
 #### 테스트 내용
 - 테스트 참가자
     - 관리자 : [정재순](https://github.com/JeongJaeSoon)
-    - 한국인 학생 : [조승현](https://github.com/kokomade98), [박중규](https://github.com/JoongQ96), [김창한](https://github.com/KCH97), 권소현, 정경숙, 신동협
-    - 유학생 : [조미향](https://github.com/ChoMihyang), [김범수](https://github.com/KBS10), 이승형, 박시연, 김희수, [이재원](https://github.com/LeeJaeBae), [이구슬](https://github.com/LeeGuSeul)
+    - 한국인 학생 : [조승현](https://github.com/kokomade98), [박중규](https://github.com/JoongQ96), [김창한](https://github.com/KCH97), 권소현, 정경숙, [신동협](https://github.com/go05117)
+    - 유학생 : [조미향](https://github.com/ChoMihyang), [김범수](https://github.com/KBS10), [이승형](https://github.com/Samsam-lee), [박시연](https://github.com/Siyeon-dev), [김희수](https://github.com/HeesuKim0203), [이재원](https://github.com/LeeJaeBae), [이구슬](https://github.com/LeeGuSeul)
 - 한국인 학생, 외국인 유학생 역할 분담
 - E Global Zone 서비스 모의 운영 
 - UI / UX 사용성 테스트
 
 #### 테스트 결과 및 피드백 목록 작성
-<img src="https://user-images.githubusercontent.com/53788601/92882535-f990e000-f44a-11ea-9314-64d9897b15d5.png" width="32.8%">
-<img src="https://user-images.githubusercontent.com/53788601/92882232-adde3680-f44a-11ea-868f-e17ac6e245f1.png" width="32.8%">
-<img src="https://user-images.githubusercontent.com/53788601/92882213-a9b21900-f44a-11ea-81cd-40cea916a330.png" width="32.8%">
+<table>
+    <tr>
+        </td>
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882535-f990e000-f44a-11ea-9314-64d9897b15d5.png" width="200px">
+        </td>
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882232-adde3680-f44a-11ea-868f-e17ac6e245f1.png" width="200px">
+        </td>    
+        <td align="center">
+            <img src="https://user-images.githubusercontent.com/53788601/92882213-a9b21900-f44a-11ea-81cd-40cea916a330.png" width="200px">
+        </td>    
+    </tr>
+</table>
 
 
-## 버그 수정 및 검수
-진행 일시 : 2020-09-04 ~ 09-11
-
-## 실 서버 배포 및 베타 오픈
-진행 일시 : 2020-09-14(예정)
+## 서비스 배포
+- 버그 수정 및 검수 : 2020-09-04 ~ 09-11
+- 실 서버 배포 : 2020-09-16 ~ 09-18
+- 베타 오픈 : 2020-09-21
 
 ## developers
 <table>
