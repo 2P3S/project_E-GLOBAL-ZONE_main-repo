@@ -368,9 +368,9 @@ export function AdminLogin() {
 						Login
 					</div>
 
-					<button onClick={handleReset} className="pwReset">
+					{/* <button onClick={handleReset} className="pwReset">
 						비밀번호를 초기화하시겠습니까?
-					</button>
+					</button> 2020-09-20 삭제 처리 */}
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
