@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
+use App\Student_korean;
 use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use phpDocumentor\Reflection\Types\Self_;
 
 class ForeignerController extends Controller
@@ -24,6 +26,9 @@ class ForeignerController extends Controller
     // 000 유학생 등록에 실패하였습니다.
     private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
     private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
+
+    private const _STD_FOR_UPDATE_SUCCESS = " 유학생 정보 변경에 성공하였습니다.";
+    private const _STD_FOR_UPDATE_FAILURE = " 유학생 정보 변경에 실패하였습니다.";
 
     // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
     // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
@@ -140,6 +145,59 @@ class ForeignerController extends Controller
 
         $message = $request->input('std_for_name') . Config::get('constants.kor.std_for.store.success');
         return self::response_json($message, 201);
+    }
+
+    /**
+     * 유학생 계정 정보 변경
+     */
+    public function update(Student_foreigner $std_for_id, Request $request): JsonResponse
+    {
+        $contact_data = $this->std_for_contact->get_std_for_contact($std_for_id);
+
+        $rules = [
+            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_dept' => 'required|integer',
+            'std_for_name' => 'required|string|min:2',
+            'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
+            'std_for_country' => 'required|string|min:2',
+            'std_for_phone' => [
+                'required',
+                'phone_number',
+                Rule::unique('student_foreigners_contacts', 'std_for_phone')->ignore($contact_data['std_for_phone'], 'std_for_phone')
+            ],
+            'std_for_mail' => [
+                'required',
+                'email',
+                Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail')
+            ],
+            'std_for_zoom_id' => [
+                'required',
+                'integer',
+                'between:1000000000,9999999999',
+                Rule::unique('student_foreigners_contacts', 'std_for_zoom_id')->ignore($contact_data['std_for_zoom_id'], 'std_for_zoom_id')
+            ],
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_STD_FOR_UPDATE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $std_for_id->update($request->all());
+
+        Student_foreigners_contact::find($std_for_id['std_for_id'])->update([
+            'std_for_id' => $request->input('std_for_id'),
+            'std_for_phone' => $request->input('std_for_phone'),
+            'std_for_mail' => $request->input('std_for_mail'),
+            'std_for_zoom_id' => $request->input('std_for_zoom_id'),
+        ]);
+
+        return self::response_json(self::_STD_FOR_UPDATE_SUCCESS, 200);
     }
 
     /**

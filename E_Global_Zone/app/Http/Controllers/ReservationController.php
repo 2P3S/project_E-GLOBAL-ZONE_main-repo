@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Library\Services\Preference;
 use App\Reservation;
 use App\Schedule;
+use App\Section;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ReservationController extends Controller
@@ -87,10 +89,10 @@ class ReservationController extends Controller
         $current_date_string = date("Y-m-d", time());
         $cancellable_date_string = date("Y-m-d", strtotime($schedule['sch_start_date']));
 
-        $current_date = strtotime($current_date_string);
+        $current_date = strtotime($current_date_string . "-{$res_start_period} day");
         $cancellable_date = strtotime($cancellable_date_string . "-{$res_start_period} day");
 
-        $is_cancellable_date = $current_date <= $cancellable_date ? true : false;
+        $is_cancellable_date = $cancellable_date >= $current_date ? true : false;
         // -->>
 
         /**
@@ -314,7 +316,8 @@ class ReservationController extends Controller
         }
 
         // 최대 예약 횟수가 넘어간 경우
-        $is_over_max_res_per_day = $std_kor_res->count() >= $setting_value->max_res_per_day;
+        $count_of_reservation = $this->reservation->get_std_kor_res_by_date($std_kor_id, $sch_id['sch_start_date'])->count();
+        $is_over_max_res_per_day = $count_of_reservation >= $setting_value->max_res_per_day;
 
         if ($is_over_max_res_per_day) {
             return
@@ -393,6 +396,44 @@ class ReservationController extends Controller
     }
 
     /**
+     * 한국인학생 - 해당 학기 랭킹 조회
+     */
+    public function std_kor_show_rank_by_sect(Section $sect_id, Request $request): JsonResponse
+    {
+        $std_kor_id = $request->input('std_kor_info')['std_kor_id'];
+
+        $sect_by_reservations = Reservation::select('res_std_kor', DB::raw('count(*) as res_count'))
+            ->join('schedules as sch', 'sch_id', 'res_sch')
+            ->where('sch_sect', $sect_id['sect_id'])
+            ->where('res_state_of_attendance', true)
+            ->groupBy('res_std_kor')
+            ->orderBy('res_count', 'DESC')
+            ->get();
+
+        $msg                = $sect_id['sect_name'] . "학기의 랭킹을 반환합니다.";
+        $search_data        = $sect_by_reservations->where('res_std_kor', $std_kor_id);
+
+        $has_no_reservation = $search_data->count() == 0;
+
+        if ($has_no_reservation)
+            return response()->json([
+                'message' => $msg,
+                'data' => 0,
+            ], 200);
+
+        $number_of_student       = $sect_by_reservations->count();
+        $number_of_rank_by_sect  = $search_data->keys()->first() + 1;
+
+        $rank_by_percent_formula = (int) ($number_of_rank_by_sect / $number_of_student * 100);
+
+
+        return response()->json([
+            'message' => $msg,
+            'data' => $rank_by_percent_formula,
+        ], 200);
+    }
+
+    /**
      * 한국인학생 - 학기별 미팅 목록 결과 조회
      *
      * @param Request $request
@@ -400,8 +441,6 @@ class ReservationController extends Controller
      */
     public function std_kor_show_res_by_sect(Request $request): JsonResponse
     {
-        //TODO 랭킹 순위 비교하기.
-
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
             'search_month' => 'required|integer|distinct|min:1|max:12',
@@ -499,24 +538,19 @@ class ReservationController extends Controller
         Request $request,
         Reservation $res_id
     ): JsonResponse {
-        // <<-- Request 유효성 검사
-        $rules = [
-            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
-            'guard' => 'required|string|in:admin'
-        ];
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
 
-        $validated_result = self::request_validator(
-            $request,
-            $rules,
-            self::_STD_KOR_RES_STORE_FAILURE
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
+        if (is_object($is_admin)) {
+            return $is_admin;
         }
         // -->>
 
-        $res_id->delete();
+        try {
+            $res_id->delete();
+        } catch (Exception $e) {
+            return self::response_json_error(self::_STD_KOR_RES_DELETE_FAILURE);
+        }
 
         return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
     }
