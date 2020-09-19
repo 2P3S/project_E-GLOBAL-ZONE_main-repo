@@ -197,7 +197,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 								/>
 							</td>
 							<td>
-								<p>이메일</p>
+								<p>카카오톡 ID</p>
 								<input
 									onKeyUp={(e) => handleEnterKey(e, handleSave)}
 									type="text"
@@ -222,6 +222,8 @@ const InsertForeignerStudent = ({ handleClose }) => {
 						</tr>
 					</tbody>
 				</table>
+				{/*  에러메세지 */}
+				<p className="warn_txt">※ 영문과 숫자로 된 4~15자의 카카오톡 아이디만 가능합니다.</p>
 			</div>
 
 			<div className="btn_area right">
@@ -231,6 +233,43 @@ const InsertForeignerStudent = ({ handleClose }) => {
 				<div className="bbtn darkGray" onClick={handleClose}>
 					닫기
 				</div>
+			</div>
+
+			{/*  유학생 계정 생성 리스트 */}
+			<div className="table_area scroll_area">
+				<table>
+					<colgroup>
+						<col width="7%" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">언어</th>
+							<th scope="col">국가</th>
+							<th scope="col">학번</th>
+							<th scope="col">이름</th>
+							<th scope="col">계열학과</th>
+							<th scope="col">연락처</th>
+							<th scope="col">카카오톡 ID</th>
+							<th scope="col">ZoomID</th>
+							<th scope="col">수정</th>
+							<th scope="col">삭제</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>영어</td>
+							<td>미국</td>
+							<td>1901192</td>
+							<td>바라트벡 울잔</td>
+							<td>컴정</td>
+							<td>010-0000-0000</td>
+							<td>zxc1234</td>
+							<td>211 233 1564</td>
+							<td><img src="/global/img/insert_foreigner_modify.png" alt="등록 유학생 정보 수정" /></td>
+							<td><img src="/global/img/insert_foreigner_del.png" alt="등록 유학생 삭제" /></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	);
