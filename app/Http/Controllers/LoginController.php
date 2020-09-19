@@ -35,8 +35,8 @@ class LoginController extends Controller
     {
         $this->authenticator = $authenticator;
         $this->initial_password = [
-            'admins' => Config::get('constants.initial_password.admin'),
-            'foreigners' => Config::get('constants.initial_password.foreigner'),
+            'admins' => env('ADMIN_INITIAL_PASSWORD'),
+            'foreigners' => env('FOREIGN_INITIAL_PASSWORD'),
         ];
     }
 

@@ -92,6 +92,7 @@ return [
     ],
     'phone_number' => ':value 는 휴대폰 형식이 아닙니다.',
     'g_suite_mail' => 'G - Suite 계정만 가입 가능합니다.',
+    'kakao_id' => '영문과 숫자로 된 4~15자의 카카오톡 아이디만 가능합니다.',
     'not_regex' => 'The :attribute format is invalid.',
     'password' => 'The password is incorrect.',
     'not_in' => ':attribute 값이 유효하지 않습니다.',
