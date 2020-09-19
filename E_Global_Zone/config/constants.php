@@ -69,7 +69,7 @@ return [
             ]
         ],
         'data_export' => [
-            'dept' => '계열, 학과 목록',
+            'dept' => '계열, 학과 목록.xlsx',
             'failure' => '엑셀 파일 출력에 실패하였습니다.'
         ]
     ]
