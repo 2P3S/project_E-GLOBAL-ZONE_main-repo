@@ -2919,6 +2919,7 @@ ul.img_file li p.file_name:hover {
 .popup.account table {
 	display: inline-block;
 	font-size: 12px;
+	width:100%;
 }
 .popup.account table td {
 	padding: 0 10px;
@@ -2928,6 +2929,18 @@ ul.img_file li p.file_name:hover {
 	font-weight: 600;
 	margin-bottom: 5px;
 	text-align: left;
+}
+
+.popup.account p.warn_txt {
+	margin: 0;
+	font-weight: 500;
+	font-size: 11px;
+	width:100%;
+	border: 2px solid #ffd8d5;
+	border-radius: 8px;
+	padding: 8px 0px;
+	color: #ff6367;
+	background: #fff1f1;
 }
 .popup.account table td input {
 	border: none;
@@ -2955,7 +2968,31 @@ ul.img_file li p.file_name:hover {
 	position: absolute;
 	right: 45px;
 	top: 5px;
+	width:auto;
 }
+
+.popup.account .table_area {
+	margin-top:20px;
+}
+.popup.account .table_area table {
+	display:table;
+}
+.popup.account .table_area table thead tr,
+.popup.account .table_area table thead th {
+	background: #dee7f1;
+}
+
+.popup.account .table_area table th:first-child {
+	border-radius:7px 0 0 7px;
+}
+.popup.account .table_area table th:last-child {
+	border-radius:0 7px 7px 0;
+}
+
+.popup.account .table_area table th,
+.popup.account .table_area table td {padding: 16px 0; text-align: center;}
+.popup.account .table_area table td {border-bottom: 1px solid #ddd;}
+.popup.account .table_area table td img {cursor: pointer;}
 
 /* 학과명 입력*/
 .popup.depart_regist {
