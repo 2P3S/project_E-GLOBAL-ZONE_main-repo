@@ -124,6 +124,9 @@ Route::middleware('auth.multi')->group(static function () {
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
             Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
+            /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
+            Route::delete('/date', 'ScheduleController@destroy_by_date')->name('schedules.destroy_by_date');
+
             /* 특정 스케줄 추가 */
             Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
 
