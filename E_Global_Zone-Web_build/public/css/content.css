@@ -1733,8 +1733,17 @@ table.work_time thead th {
 /********************* POPUP *********************/
 .popup {
 	padding: 40px;
-	background: #fff;
-	border-radius: 100px;
+	/* background: #fff;
+	border-radius: 100px; */
+	overflow: hidden;
+}
+
+.modal_close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	cursor: pointer;
+	z-index:10;
 }
 
 .popup p.tit {
