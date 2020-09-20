@@ -32,7 +32,9 @@ Modal.setAppElement(document.getElementById("modal-root"));
 export default function ({ children, isOpen, handleClose }) {
 	return (
 		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
+
 			<div onClick={handleClose} className="modal_close"><img src="/global/img/modalClose_ico.png" alt="모달 삭제 버튼"/></div>
+
 			{children}
 		</Modal>
 	);

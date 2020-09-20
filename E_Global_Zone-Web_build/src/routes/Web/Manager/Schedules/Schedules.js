@@ -639,6 +639,10 @@ export default function Schedules() {
 							<Loader />
 						</div>
 					)}
+					<div className="table_btn">
+						<div>해당날짜 스케줄 삭제</div>
+						<div>CSV 다운</div>
+					</div>
 				</div>
 
 				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>

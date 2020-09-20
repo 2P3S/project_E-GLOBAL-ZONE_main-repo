@@ -160,19 +160,19 @@ body {
 .login_wrap .tit {
 	font-size: 43px;
 	font-family: "Roboto", sans-serif;
-	margin-bottom:10px;
+	margin-bottom: 10px;
 	font-weight: 200;
 	color: #8d8f94;
 }
 
 .login_wrap .tit span {
-	color:#30addc;
+	color: #30addc;
 }
 
 .login_wrap .txt {
- font-size: 14px;
- color: #787878;
- margin-bottom: 55px;
+	font-size: 14px;
+	color: #787878;
+	margin-bottom: 55px;
 }
 
 /* 로그인 - 유학생 */
@@ -185,23 +185,52 @@ body {
 }
 
 .login_wrap .login_input .pwReset {
-	background:none;
-	border:none;
-	text-decoration:underline;
-	color:#30addc;
-	font-size:12px;
+	background: none;
+	border: none;
+	text-decoration: underline;
+	color: #30addc;
+	font-size: 12px;
 	letter-spacing: -0.05em;
-	margin-top:5px;
+	margin-top: 5px;
 }
 
-.login_content {width:100%; display:inline-block; background:#fbfafb; height: 100vh;}
-.login_content .head {height:70px; background:#fff; border-bottom:1px solid #f8f7f9; text-align:right;}
-.login_content .head .head_w{width:1200px;margin: 0 auto;/* padding-top: 24px; */}
-.login_content .head .head_w .logo {float:left;margin-top: 19px;}
-.login_content .head ul {display:inline-block;margin-top: 26px;}
-.login_content .head ul li {float:left;font-size:13px;color:#9c9c9c;margin-left: 20px;cursor: pointer;}
-.login_content .head ul li.on {padding-left: 12px;background: url(/global/img/login_tab_on.gif) no-repeat left 50%;color:#30addc;font-weight:600;}
-
+.login_content {
+	width: 100%;
+	display: inline-block;
+	background: #fbfafb;
+	height: 100vh;
+}
+.login_content .head {
+	height: 70px;
+	background: #fff;
+	border-bottom: 1px solid #f8f7f9;
+	text-align: right;
+}
+.login_content .head .head_w {
+	width: 1200px;
+	margin: 0 auto; /* padding-top: 24px; */
+}
+.login_content .head .head_w .logo {
+	float: left;
+	margin-top: 19px;
+}
+.login_content .head ul {
+	display: inline-block;
+	margin-top: 26px;
+}
+.login_content .head ul li {
+	float: left;
+	font-size: 13px;
+	color: #9c9c9c;
+	margin-left: 20px;
+	cursor: pointer;
+}
+.login_content .head ul li.on {
+	padding-left: 12px;
+	background: url(/global/img/login_tab_on.gif) no-repeat left 50%;
+	color: #30addc;
+	font-weight: 600;
+}
 
 .login_wrap .login_input input[type="text"],
 .login_wrap .login_input input[type="password"] {
@@ -217,15 +246,15 @@ body {
 }
 .login_wrap .login_input input[type="text"]:hover,
 .login_wrap .login_input input[type="password"]:hover {
-	background:#f1f6f6;
-	transition-duration:0.3s;
-	border:1px solid #30addc;
+	background: #f1f6f6;
+	transition-duration: 0.3s;
+	border: 1px solid #30addc;
 }
 
 .login_wrap .login_input input[type="text"]::placeholder,
 .login_wrap .login_input input[type="password"]::placeholder {
-	color:#aaa;
-	font-size:13px;
+	color: #aaa;
+	font-size: 13px;
 }
 
 .login_wrap .login_input input[type="text"]:first-child {
@@ -253,16 +282,16 @@ body {
 }
 
 .login_footer {
-    position: absolute;
-    bottom:3%;
-    text-align: center;
-    width: 1200px;
-    font-family: "Roboto", sans-serif;
-    font-weight: 300;
-    color:#aaa;
-    font-size: 13px;
-    padding-top:25px;
-    border-top: 1px solid #eaeaea;
+	position: absolute;
+	bottom: 3%;
+	text-align: center;
+	width: 1200px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 300;
+	color: #aaa;
+	font-size: 13px;
+	padding-top: 25px;
+	border-top: 1px solid #eaeaea;
 }
 
 /* 로그인 - 한국인 학생 */
@@ -445,7 +474,7 @@ table.sch_table tbody td:first-child {
 	width: 0px;
 	height: 0px;
 	border-bottom: 42px solid #c3cad6;
-	border-right: 55px solid rgba(0,0,0,0);
+	border-right: 55px solid rgba(0, 0, 0, 0);
 	background: #dadfe8;
 }
 
@@ -784,34 +813,34 @@ table.sch_table tbody tr:hover td:first-child {
 
 #pagenation {
 	/* width:100%; */
-	display:inline-block;
-	text-align:center;
-	margin-top:30px;
+	display: inline-block;
+	text-align: center;
+	margin-top: 30px;
 }
 #pagenation button {
-	background:none;
-	border:none;
-	float:left;
-	height:32px;
-	line-height:32px;
+	background: none;
+	border: none;
+	float: left;
+	height: 32px;
+	line-height: 32px;
 	font-size: 14px;
 	font-weight: 600;
-	color:#666;
-	cursor:pointer;
-	padding:0 5px;
+	color: #666;
+	cursor: pointer;
+	padding: 0 5px;
 }
 #pagenation button img {
 	height: 32px;
-	line-height:0;
+	line-height: 0;
 }
 #pagenation button.on {
-	color:#ff8421;
-	text-decoration:underline;
+	color: #ff8421;
+	text-decoration: underline;
 }
 
 #pagenation button:checked {
-	border:none !important;
-	color:none !important;
+	border: none !important;
+	color: none !important;
 }
 /* 스케줄관리 hover button [2020-08-29 추가] 
 .hover_btn.sch {
@@ -1412,6 +1441,11 @@ table.student_manage_table td:first-child {
 	border-radius: 8px;
 	margin-bottom: 15px;
 }
+
+.search_student .not_enter .selected {
+	background-color: #b9c7e6;
+}
+
 .search_student .not_enter .scroll_area,
 .search_student .enter .scroll_area {
 	margin-top: 10px;
@@ -1430,8 +1464,8 @@ table.student_manage_table td:first-child {
 .search_student .enter p.tit span {
 	padding: 20px 0;
 	width: 100%;
-	height:100%;
-	display:inline-block;
+	height: 100%;
+	display: inline-block;
 }
 
 .search_student .not_enter p.tit span {
@@ -1699,7 +1733,7 @@ table.work_time thead th {
 }
 
 .join_add_wrap .input_area .edd-root {
-	width:350px;
+	width: 350px;
 }
 .join_add_wrap .input_area .edd-value {
 	height: 45px;
@@ -1727,7 +1761,7 @@ table.work_time thead th {
 	margin-top: 10px;
 	font-weight: 600;
 	width: 100%;
-	cursor:pointer;
+	cursor: pointer;
 }
 
 /********************* POPUP *********************/
@@ -2928,7 +2962,7 @@ ul.img_file li p.file_name:hover {
 .popup.account table {
 	display: inline-block;
 	font-size: 12px;
-	width:100%;
+	width: 100%;
 }
 .popup.account table td {
 	padding: 0 10px;
@@ -2944,7 +2978,7 @@ ul.img_file li p.file_name:hover {
 	margin: 0;
 	font-weight: 500;
 	font-size: 11px;
-	width:100%;
+	width: 100%;
 	border: 2px solid #ffd8d5;
 	border-radius: 8px;
 	padding: 8px 0px;
@@ -2977,14 +3011,14 @@ ul.img_file li p.file_name:hover {
 	position: absolute;
 	right: 45px;
 	top: 5px;
-	width:auto;
+	width: auto;
 }
 
 .popup.account .table_area {
-	margin-top:20px;
+	margin-top: 20px;
 }
 .popup.account .table_area table {
-	display:table;
+	display: table;
 }
 .popup.account .table_area table thead tr,
 .popup.account .table_area table thead th {
@@ -2992,16 +3026,23 @@ ul.img_file li p.file_name:hover {
 }
 
 .popup.account .table_area table th:first-child {
-	border-radius:7px 0 0 7px;
+	border-radius: 7px 0 0 7px;
 }
 .popup.account .table_area table th:last-child {
-	border-radius:0 7px 7px 0;
+	border-radius: 0 7px 7px 0;
 }
 
 .popup.account .table_area table th,
-.popup.account .table_area table td {padding: 16px 0; text-align: center;}
-.popup.account .table_area table td {border-bottom: 1px solid #ddd;}
-.popup.account .table_area table td img {cursor: pointer;}
+.popup.account .table_area table td {
+	padding: 16px 0;
+	text-align: center;
+}
+.popup.account .table_area table td {
+	border-bottom: 1px solid #ddd;
+}
+.popup.account .table_area table td img {
+	cursor: pointer;
+}
 
 /* 학과명 입력*/
 .popup.depart_regist {

@@ -432,6 +432,13 @@ export default function Students() {
 					>
 						신청 승인
 					</div>
+					<div
+						ref={useClick(() => {
+							setIsOpen(true);
+						})}
+					>
+						CSV 다운
+					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
 					{/*		alert("엑셀 다운");*/}
@@ -454,7 +461,11 @@ export default function Students() {
 					}}
 				/>
 			</Modal>
-			<Modal isOpen={isUnrestrict} onRequestClose={handleCloseForUnrestrict}>
+			<Modal
+				isOpen={isUnrestrict}
+				onRequestClose={handleCloseForUnrestrict}
+				handleClose={handleCloseForUnrestrict}
+			>
 				<ConfirmUnrestriction
 					std_kor_name={selectedKor.std_kor_name}
 					std_kor_id={selectedKor.std_kor_id}
@@ -463,7 +474,11 @@ export default function Students() {
 					reRender={reRender}
 				/>
 			</Modal>
-			<Modal isOpen={isRestrict} onRequestClose={handleCloseForRestrict}>
+			<Modal
+				isOpen={isRestrict}
+				onRequestClose={handleCloseForRestrict}
+				handleClose={handleCloseForRestrict}
+			>
 				<ConfirmRestriction
 					handleClose={handleCloseForRestrict}
 					std_kor_id={selectedKor.std_kor_id}

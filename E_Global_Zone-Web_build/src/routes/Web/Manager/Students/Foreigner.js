@@ -5,6 +5,7 @@ import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+import ModifyForeignerStudent from "../../../../components/common/modal/ModifyForeignerStudent";
 // import {
 // 	getAdminForeignerWork,
 // 	getAdminSection,
@@ -13,6 +14,7 @@ import InsertForeignerStudent from "../../../../components/common/modal/InsertFo
 // } from "../../../../modules/hooks/useAxios";
 
 import {
+	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
 	getAdminForeignerWork,
 	patchAdminForeignerAccount,
@@ -36,6 +38,25 @@ let j = 0;
  * @todo sorting
  */
 export default function Foreigner() {
+	let mockup = {
+		sort: null,
+		data: [
+			{
+				std_for_lang: conf.language.ENGLISH,
+				country: "미국",
+				favorite: false,
+				std_id: i++,
+				name: "Emma Stone",
+				dept: conf.shortDepartment[1],
+				curruntMonth: 120,
+				lastMonth: 150,
+				thePastMonth: 560,
+				count: j++,
+				delay: 0,
+				check: false,
+			},
+		],
+	};
 	const history = useHistory();
 	const params = useParams();
 
@@ -51,6 +72,8 @@ export default function Foreigner() {
 	const [pending, setPending] = useState(false);
 	const [toggle, setToggle] = useState(true);
 	const [index, setIndex] = useState(0);
+	const [modifyInfo, setModifyInfo] = useState();
+
 	const {
 		isOpen: contactIsOpen,
 
@@ -72,6 +95,12 @@ export default function Foreigner() {
 		handleClose: handleCloseForCreate,
 		handleOpen: handleOpenForCreate,
 	} = useModal();
+	const {
+		isOpen: isOpenForModify,
+		handleClose: handleCloseForModify,
+		handleOpen: handleOpenForModify,
+	} = useModal();
+
 	const deptList = useSelector(selectDept);
 
 	function handleCheckAll(e) {
@@ -556,9 +585,28 @@ export default function Foreigner() {
 																		>
 																			비밀번호 초기화
 																		</div>
-																		{/* <div className="lightGray">
-																			삭제
-																		</div> */}
+																		<div
+																			className="lightGray"
+																			onClick={() => {
+																				getAdminForeigner({
+																					foreigners: [
+																						value.std_for_id,
+																					],
+																				}).then((res) => {
+																					let obj = {
+																						...value,
+																						...res.data
+																							.data[0],
+																					};
+																					setModifyInfo(
+																						obj
+																					);
+																					handleOpenForModify();
+																				});
+																			}}
+																		>
+																			수정
+																		</div>
 																	</div>
 																</div>
 															</td>
@@ -631,7 +679,7 @@ export default function Foreigner() {
 							<div
 								onClick={() => {
 									if (dataSet.data && dataSet.data.length > 0) {
-										history.push(`/section/${selectSect}}`);
+										history.push(`/section/${selectSect}/${0}`);
 									} else {
 										alert("해당 학기에 등록 된 학생이 없습니다.");
 									}
@@ -641,6 +689,7 @@ export default function Foreigner() {
 							</div>
 						)}
 						<div onClick={handleOpenForCreate}>스케줄 개별 입력</div>
+						<div onClick={handleOpenForCreate}>csv 출력</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
@@ -669,6 +718,9 @@ export default function Foreigner() {
 					</Modal>
 					<Modal isOpen={contactIsOpen} handleClose={handleCloseForContact}>
 						<ForeignerContact list={contactList} handleClose={handleCloseForContact} />
+					</Modal>
+					<Modal isOpen={isOpenForModify} handleClose={handleCloseForModify}>
+						<ModifyForeignerStudent currentInfo={modifyInfo} reRender={reRender} />
 					</Modal>
 				</div>
 			</div>
