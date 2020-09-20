@@ -6,10 +6,6 @@ return [
         'admin' => 'http://global.yju.ac.kr/admin',
         'reset' => 'http://global.yju.ac.kr/api/reset',
     ],
-    'initial_password' => [
-        'adin' => 'oicyju5630!',
-        'foreigner' => '1q2w3e4r!'
-    ],
     'kor' => [
         'access' => [
             'admin' => '관리자만 접근 할 수 있습니다.',
