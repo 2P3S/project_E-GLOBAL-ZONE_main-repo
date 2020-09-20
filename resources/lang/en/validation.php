@@ -116,7 +116,7 @@ return [
     'starts_with' => 'The :attribute must start with one of the following: :values.',
     'string' => ':attribute 값이 글자가 아닙니다.',
     'timezone' => 'The :attribute must be a valid zone.',
-    'unique' => ':attribute 값은 이미 사용 중입니다.',
+    'unique' => '이미 사용 중인 :attribute 값 입니다.',
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
@@ -158,7 +158,7 @@ return [
         'std_for_country' => '국가',
         'std_for_phone' => '휴대폰 번호',
         'std_for_mail' => '카카오톡 아이디',
-        'std_for_zoom_id' => '줌 아이디',
+        'std_for_zoom_id' => 'Zoom 아이디',
         // -->>
         // <<-- 한국인 학생
         'std_kor_id' => '학번',
