@@ -432,6 +432,13 @@ export default function Students() {
 					>
 						신청 승인
 					</div>
+					<div
+						ref={useClick(() => {
+							setIsOpen(true);
+						})}
+					>
+						CSV 다운
+					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
 					{/*		alert("엑셀 다운");*/}
