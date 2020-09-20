@@ -69,7 +69,7 @@ class Reservation extends Model
      *
      * @param int $std_kor_id
      * @param string $search_date
-     * @return JsonResponse
+     * @return object
      */
     public function get_std_kor_res_by_date(
         int $std_kor_id,
@@ -89,7 +89,7 @@ class Reservation extends Model
             ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
             ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
             ->where('reservations.res_std_kor', $std_kor_id)
-            ->whereDate('sch.sch_start_date', $search_date)
+            ->whereDate('sch.sch_start_date', date("Y-m-d", strtotime($search_date)))
             ->get();
 
         return $result;
