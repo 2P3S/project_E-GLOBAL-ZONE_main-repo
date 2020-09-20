@@ -19,26 +19,27 @@ class AuthenticateMulti
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $rules = [
-            'guard' => 'required|string|in:admin,foreigner',
-        ];
-
-        $validated_result = Controller::request_validator(
-            $request, $rules, self::_LOGIN_FAILURE
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
-        }
-
-        $is_guard_checked = Auth::guard($request->input('guard'))->check();
-
-        if (!$is_guard_checked) {
-            return
-                Controller::response_json(self::_ACCESS_ERROR, 401);
-        }
+        // TODO 주석 해제 하기
+//        $rules = [
+//            'guard' => 'required|string|in:admin,foreigner',
+//        ];
+//
+//        $validated_result = Controller::request_validator(
+//            $request, $rules, self::_LOGIN_FAILURE
+//        );
+//
+//        if (is_object($validated_result)) {
+//            return $validated_result;
+//        }
+//
+//        $is_guard_checked = Auth::guard($request->input('guard'))->check();
+//
+//        if (!$is_guard_checked) {
+//            return
+//                Controller::response_json(self::_ACCESS_ERROR, 401);
+//        }
 
         return $next($request);
     }
