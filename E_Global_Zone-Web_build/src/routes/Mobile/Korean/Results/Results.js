@@ -33,7 +33,7 @@ export default function Results() {
 			setSect(res.data.data);
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
 			if (res.status === 202) {
-				alert(res.data.message);
+				// alert(res.data.message);
 				// history.push("/");
 			} else {
 				setPending(true);

@@ -43,6 +43,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 		"-",
 	];
 	const departmentList = useSelector(selectDept);
+	const [isError, setIsError] = useState(true);
 
 	const handleChange = (e) => {
 		e.preventDefault();
@@ -223,7 +224,15 @@ const InsertForeignerStudent = ({ handleClose }) => {
 					</tbody>
 				</table>
 				{/*  에러메세지 */}
-				<p className="warn_txt">※ 영문과 숫자로 된 4~15자의 카카오톡 아이디만 가능합니다.</p>
+				{isError ? (
+					<>
+						<p className="warn_txt">
+							※ 영문과 숫자로 된 4~15자의 카카오톡 아이디만 가능합니다.
+						</p>
+					</>
+				) : (
+					<></>
+				)}
 			</div>
 
 			<div className="btn_area right">
@@ -265,8 +274,18 @@ const InsertForeignerStudent = ({ handleClose }) => {
 							<td>010-0000-0000</td>
 							<td>zxc1234</td>
 							<td>211 233 1564</td>
-							<td><img src="/global/img/insert_foreigner_modify.png" alt="등록 유학생 정보 수정" /></td>
-							<td><img src="/global/img/insert_foreigner_del.png" alt="등록 유학생 삭제" /></td>
+							<td>
+								<img
+									src="/global/img/insert_foreigner_modify.png"
+									alt="등록 유학생 정보 수정"
+								/>
+							</td>
+							<td>
+								<img
+									src="/global/img/insert_foreigner_del.png"
+									alt="등록 유학생 삭제"
+								/>
+							</td>
 						</tr>
 					</tbody>
 				</table>

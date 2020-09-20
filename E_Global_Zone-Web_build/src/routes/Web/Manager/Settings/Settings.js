@@ -294,7 +294,8 @@ export default function Settings() {
 							</div>
 						</div>
 						<p class="warning_txt">
-						설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 <span>변경 불가</span>
+							설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는{" "}
+							<span>변경 불가</span>
 						</p>
 					</div>
 				</div>
@@ -435,15 +436,18 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForInsertForeignerStudent}>
 					유학생 등록
 				</div>
+				<div className="gray" onClick={handleOpenForCreateDept}>
+					유학생 목록 저장(csv)
+				</div>
 				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
 					학기 기간 설정
 				</div>
 				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
 					학기 기간 조회
 				</div>
-				<div className="gray" onClick={handleOpenForCreateDept}>
+				{/* <div className="gray" onClick={handleOpenForCreateDept}>
 					학과 등록
-				</div>
+				</div> */}
 
 				<div
 					className="save"
