@@ -87,8 +87,6 @@ class SectionController extends Controller
             ->orderBy('sect_start_date', 'DESC')
             ->get();
 
-        //TODO 상위 % 인지 계산 후 반영.
-
         $is_non_attendanced_data = $attendanced_section_data->count() == 0;
 
         if ($is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);

@@ -19,9 +19,9 @@ class DepartmentController extends Controller
     /**
      * 등록된 계열 / 학과 목록 조회
      *
-     * @return JsonResponse
+     * @return object
      */
-    public function index(): JsonResponse
+    public function index(): object
     {
         return $this->department->get_departments_list();
     }

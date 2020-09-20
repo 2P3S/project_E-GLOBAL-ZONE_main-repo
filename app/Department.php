@@ -25,26 +25,39 @@ class Department extends Model
      */
     protected $fillable = ['dept_name'];
 
-    public function get_departments_list(): JsonResponse
+    /**
+     * @param bool $flag_make_json
+     * @return object
+     */
+    public function get_departments_list(
+        bool $flag_make_json = true
+    ): ?object
     {
         $departments = null;
         try {
             $departments = self::all();
         } catch (\Exception $e) {
             $message = Config::get('constants.kor.dept.index.failure');
-            return Controller::response_json_error($message);
+            return $flag_make_json ?
+                Controller::response_json_error($message) :
+                null;
         }
 
         $is_dept_no_value = !(bool)$departments->count();
         if ($is_dept_no_value) {
             $message = Config::get('constants.kor.dept.index.no_value');
-            return Controller::response_json_error($message);
+            return $flag_make_json ?
+                Controller::response_json_error($message) :
+                null;
         }
 
         $message = Config::get('constants.kor.dept.index.success');
-        return Controller::response_json(
-            $message, 200, $departments
-        );
+
+        return $flag_make_json ?
+            Controller::response_json(
+                $message, 200, $departments
+            ) :
+            $departments;
     }
 
     public function store_department(

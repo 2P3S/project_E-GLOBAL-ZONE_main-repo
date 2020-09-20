@@ -92,7 +92,7 @@ class Schedule extends Model
         $lookup_columns = [
             'res_id', 'std_kor_id',
             'std_kor_name', 'std_kor_phone',
-            'sch_start_date', 'sch_end_date',
+            'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw',
             'res_state_of_permission', 'res_state_of_attendance'
         ];
 

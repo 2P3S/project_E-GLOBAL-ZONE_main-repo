@@ -73,7 +73,7 @@ class MailController extends Controller
         $is_reset_availability = $reset_expire_time >= $current_time;
         if ($is_reset_availability) {
             $admin->update([
-                "password" => Hash::make(Config::get('constants.initial_password.admin'))
+                "password" => Hash::make(env('ADMIN_INITIAL_PASSWORD'))
             ]);
         }
 
