@@ -7,10 +7,13 @@ return [
         'reset' => 'http://global.yju.ac.kr/api/reset',
     ],
     'initial_password' => [
-        'admin' => 'oicyju5630!',
+        'adin' => 'oicyju5630!',
         'foreigner' => '1q2w3e4r!'
     ],
     'kor' => [
+        'access' => [
+            'admin' => '관리자만 접근 할 수 있습니다.',
+        ],
         'dept' => [
             'index' => [
                 'success' => '계열/학과 목록 조회에 성공하였습니다.',
@@ -68,7 +71,13 @@ return [
                 'failure' => '미등록 유학생 목록 조회에 실패하였습니다.',
             ]
         ],
-
+        'data_export' => [
+            'dept' => '계열, 학과 목록.xlsx',
+            'std_kor' => '글로벌 존 이용 학생 목록.xlsx',
+            'std_for' => '글로벌 존 유학생 목록.xlsx',
+            'work_std_for' => '글로벌 존 근로 유학생 목록.xlsx',
+            'failure' => '엑셀 파일 출력에 실패하였습니다.'
+        ]
     ]
 
 ];
