@@ -124,6 +124,9 @@ Route::middleware('auth.multi')->group(static function () {
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
             Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
+            /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
+            Route::delete('/date', 'ScheduleController@destroy_by_date')->name('schedules.destroy_by_date');
+
             /* 특정 스케줄 추가 */
             Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
 
@@ -170,6 +173,15 @@ Route::middleware('auth.multi')->group(static function () {
             /** 환경변수 저장 */
             Route::post('', 'SettingController@store')->name('settings.store');
         });
+
+        // <<-- DataExport : DB 엑셀 출력
+        Route::prefix('export')->group(function () {
+            Route::get('department', 'DataExportController@index_dept')->name('dept.export');
+            Route::get('korean', 'DataExportController@index_std_kor')->name('kor.export');
+            Route::get('foreigner', 'DataExportController@index_std_for')->name('for.export');
+            Route::get('foreigner/sect/{sect_id}', 'DataExportController@index_std_for_by_section')->name('sch.export');
+        });
+        // -->>
 
         /** 해당 스케줄 신청 학생 명단 조회 */
         Route::get('reservation/{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
