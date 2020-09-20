@@ -99,8 +99,8 @@ class ForeignerController extends Controller
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
-            'std_for_phone' => 'required|phone_number|unique:student_foreigners_contacts,std_for_phone',
-            'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
+            'std_for_phone' => 'phone_number|unique:student_foreigners_contacts,std_for_phone|nullable',
+            'std_for_mail' => 'kakao_id|unique:student_foreigners_contacts,std_for_mail|nullable',
             'std_for_zoom_id' => 'required|integer|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
             'guard' => 'required|string|in:admin'
         ];
@@ -117,7 +117,7 @@ class ForeignerController extends Controller
 
         $std_for_data = [
             'std_for_id' => $request->input('std_for_id'),
-            'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
+            'password' => Hash::make(env('FOREIGN_INITIAL_PASSWORD')),
             'std_for_dept' => $request->input('std_for_dept'),
             'std_for_name' => $request->input('std_for_name'),
             'std_for_lang' => $request->input('std_for_lang'),
@@ -161,14 +161,14 @@ class ForeignerController extends Controller
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
             'std_for_phone' => [
-                'required',
                 'phone_number',
-                Rule::unique('student_foreigners_contacts', 'std_for_phone')->ignore($contact_data['std_for_phone'], 'std_for_phone')
+                Rule::unique('student_foreigners_contacts', 'std_for_phone')->ignore($contact_data['std_for_phone'], 'std_for_phone'),
+                'nullable'
             ],
             'std_for_mail' => [
-                'required',
-                'email',
-                Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail')
+                'kakao_id',
+                Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail'),
+                'nullable'
             ],
             'std_for_zoom_id' => [
                 'required',
@@ -231,7 +231,7 @@ class ForeignerController extends Controller
             ]);
         } else {
             $std_for_id->update([
-                'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
+                'password' => Hash::make(env('FOREIGN_INITIAL_PASSWORD')),
             ]);
         }
 

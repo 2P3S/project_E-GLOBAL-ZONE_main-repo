@@ -24,7 +24,8 @@ class ScheduleController extends Controller
     private const _SCHEDULE_RES_STORE_SECT_STARTED = "학기가 시작된 이후부터는 스케줄 등록이 불가능합니다. 개별 입력을 이용해주세요.";
 
     private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
-    private const _SCHEDULE_RES_DELETE_FAILURE = "해당 학기에 등록된 스케줄이 없습니다.";
+    private const _SCHEDULE_RES_DELETE_NONDATA = "해당 날짜에 스케줄이 없습니다.";
+    private const _SCHEDULE_RES_DELETE_FAILURE = "스케줄 삭제에 실패하였습니다.";
     private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경를 완료하였습니다.";
 
     private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
@@ -203,7 +204,11 @@ class ScheduleController extends Controller
             'schedule.*.*' => 'integer',
             'ecept_date' => 'array',
             'ecept_date.*' => 'date',
-            'guard' => 'required|string|in:admin'
+            'guard' => 'required|string|in:admin',
+            // <<-- 학기 시작 후 스케줄 조정일 경우 사용 + 서로 존재여부 체크 + 크고 작음 설정해야함.
+            // 'sch_start_date' => 'date|',
+            // 'exception_mode' => 'required|bool',
+            // -->>
         ];
 
         // <<-- Request 유효성 검사
@@ -217,20 +222,30 @@ class ScheduleController extends Controller
             return $validated_result;
         }
 
-        $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
+        $setting_value = $preference_instance->getPreference();                                  /* 환경설정 변수 */
+        // $exception_mode = $request->input('exception_mode');                                     /* 예외 모드 ( 학기 시작 후 전체 수정 ) */
 
-        $schedule_data = $request->input('schedule');                                   /* 스케줄 데이터 */
-        $ecept_date = $request->input('ecept_date');                                    /* 제외날짜 */
+        $schedule_data = $request->input('schedule');                                            /* 스케줄 데이터 */
+        $ecept_date = $request->input('ecept_date');                                             /* 제외날짜 */
         $sect = Section::find($request->input('sect_id'));                                       /* 학기 데이터 */
         $std_for_id = $request->input('std_for_id');                                             /* 외국인 유학생 학번 */
+        $sect_start_date = strtotime($sect->sect_start_date);
 
-        // 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
+        // if ($exception_mode) {
+        //     /**
+        //      * 학기 시작날짜 X -> 커스텀 시작 날짜로 변경.
+        //      *
+        //      * (예외처리 리스트)
+        //      * 1. 관리자 실수 해당 날짜 스케줄이 존재하는 경우.
+        //      * 1-1. 해당 날짜 스케줄에 예약이 존재하는 경우.
+        //      */
+        // } else {
+        // <<-- 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
         $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->input('sect_id'), $std_for_id);
 
         $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
         if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
-
-        $sect_start_date = strtotime($sect->sect_start_date);
+        // -->>
 
         // <<--이미 학기가 시작 된 경우 에러 반환.
         $now_date = strtotime("Now");
@@ -238,6 +253,8 @@ class ScheduleController extends Controller
             return self::response_json(self::_SCHEDULE_RES_STORE_SECT_STARTED, 422);
         }
         // -->>
+        // }
+
 
         $sect_start_date = date("Y-m-d", $sect_start_date);
         $sect_end_date = strtotime($sect->sect_end_date);
@@ -252,14 +269,12 @@ class ScheduleController extends Controller
 
         // 학기 시작 날짜에 맞춰 시작 날짜 재설정
         if ($sect_start_yoil == "토") {
-            $sect_start_date = strtotime("{$sect_start_date} +2 day");
             /* 날짜 String 변경 */
-            $sect_start_date = date("Y-m-d", $sect_start_date);
+            $sect_start_date = date("Y-m-d", strtotime("{$sect_start_date} +2 day"));
             $isFirstLoop = false;
         } else if ($sect_start_yoil == "일") {
-            $sect_start_date = strtotime("{$sect_start_date} +1 day");
             /* 날짜 String 변경 */
-            $sect_start_date = date("Y-m-d", $sect_start_date);
+            $sect_start_date = date("Y-m-d", strtotime("{$sect_start_date} +1 day"));
             $isFirstLoop = false;
         }
 
@@ -298,7 +313,7 @@ class ScheduleController extends Controller
                 }
 
                 // 종료 날짜에 맞춰 반복문 종료.
-                if ($sect_start_date == $sect_end_date) {
+                if (strtotime($sect_start_date) >= strtotime($sect_end_date)) {
                     $isRepeatMode = false;
                     break;
                 }
@@ -359,7 +374,6 @@ class ScheduleController extends Controller
     /**
      * 관리자 - 해당 학기 해당 유학생 전체 스케줄 삭제
      *
-     * @param int $sch_id
      * @return \Illuminate\Http\Response
      */
     public function destroy_all_schedule(Request $request): JsonResponse
@@ -374,7 +388,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_SHOW_SCH_FAILURE
+            self::_SCHEDULE_RES_DELETE_FAILURE
         );
 
         if (is_object($validated_result)) {
@@ -389,7 +403,7 @@ class ScheduleController extends Controller
             $get_sect_by_schedule->delete();
             return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
         } else {
-            return self::response_json(self::_SCHEDULE_RES_DELETE_FAILURE, 200);
+            return self::response_json(self::_SCHEDULE_RES_DELETE_NONDATA, 202);
         }
     }
 
@@ -459,6 +473,41 @@ class ScheduleController extends Controller
         }
 
         return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
+    }
+
+    /**
+     * 관리자 - 해당 날짜 전체 스케줄 삭제
+     *
+     * @return JsonResponse
+     */
+    public function destroy_by_date(Request $request): JsonResponse
+    {
+        $rules = [
+            'date' => 'required|date',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            self::_SCHEDULE_RES_DELETE_FAILURE
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        $schedules_by_date = Schedule::whereDate('sch_start_date', '=', $request->input('date'));
+        $schedule_exists = $schedules_by_date->count() > 0;
+
+        if ($schedule_exists) {
+            $schedules_by_date->delete();
+            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
+        } else {
+            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 202);
+        }
     }
 
     /**
