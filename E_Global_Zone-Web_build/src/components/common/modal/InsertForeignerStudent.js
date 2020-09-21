@@ -119,6 +119,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 				alert(res.data.message);
 				insertedList.splice(index, 1);
 				buildTable();
+				setInsertMode(true);
 			});
 	};
 	const handleModify = (data, index) => {
@@ -205,7 +206,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 	return (
 		<div className="popup account">
 			{insertMode ? (
-				<div className="account_insert" style={{ zIndex: "9999" }}>
+				<div className="account_insert">
 					<p className="tit">유학생 계정 생성</p>
 					<div className="input_area">
 						<table>

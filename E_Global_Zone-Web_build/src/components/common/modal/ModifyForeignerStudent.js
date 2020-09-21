@@ -111,7 +111,7 @@ const InsertForeignerStudent = ({
 	}, []);
 
 	return (
-		<div className="popup account">
+		<div className="account_insert">
 			<p className="tit">유학생 계정 수정</p>
 			<div className="input_area">
 				{currentInfo && (
