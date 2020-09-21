@@ -132,10 +132,11 @@ body {
 
 .mobile_login .tit span {
 	color: #139cc0;
+	display: block;
 }
 
 .mobile_login .txt {
- font-size: 14px;
+ font-size: 13px;
  color: #a0a0a0;
  margin-bottom: 45px;
  text-decoration: none;
@@ -145,6 +146,7 @@ body {
 .mobile_login .txt span {
 	display:block;
 	line-height:135%;
+	/* font-size: 13px; */
 }
 
 .mobile_login div.btn {
