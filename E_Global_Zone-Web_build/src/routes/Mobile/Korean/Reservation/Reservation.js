@@ -8,6 +8,7 @@ import { selectSelectDate, selectToday } from "../../../../redux/confSlice/confS
 
 import { selectUser } from "../../../../redux/userSlice/userSlice";
 import { deleteKoreanReservation, getKoreanReservation } from "../../../../api/korean/reservation";
+import { getKoreanSetting } from "../../../../api/korean";
 
 /**
  * Korean :: 예약 조회
@@ -22,6 +23,7 @@ export default function Reservation() {
 
 	const [data, setData] = useState();
 	const [pending, setPending] = useState(false);
+	const [setting, setSetting] = useState();
 	const [dataSet, setDataSet] = useState({
 		arrayOfWatingForPermission: [],
 		arrayOfPermission: [],
@@ -30,7 +32,10 @@ export default function Reservation() {
 
 	useEffect(() => {
 		setPending(true);
+		getKoreanSetting().then((res) => setSetting(res.data.result));
 	}, []);
+
+	useEffect(() => console.log(setting));
 	useEffect(() => {
 		pending &&
 			getKoreanReservation().then((res) => {
@@ -92,6 +97,7 @@ export default function Reservation() {
 								</a>
 								<div className="subMenu">
 									{dataSet &&
+										setting &&
 										dataSet.arrayOfWatingForPermission.map((v) => (
 											<div>
 												<p className="left">
@@ -103,20 +109,26 @@ export default function Reservation() {
 														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
-												<div className="reserv_del_btn">
-													<img
-														onClick={() => {
-															deleteKoreanReservation(v.res_id).then(
-																(res) => {
+												{moment(v.sch_start_date)
+													.subtract(setting.res_end_period, "day")
+													.isAfter(moment(Date.now())) ? (
+													<div className="reserv_del_btn">
+														<img
+															onClick={() => {
+																deleteKoreanReservation(
+																	v.res_id
+																).then((res) => {
 																	alert(res.data.message);
 																	window.location.reload();
-																}
-															);
-														}}
-														src="/global/img/reservation_del.gif"
-														alt="예약 삭제 버튼"
-													/>
-												</div>
+																});
+															}}
+															src="/global/img/reservation_del.gif"
+															alt="예약 삭제 버튼"
+														/>
+													</div>
+												) : (
+													<div></div>
+												)}
 												<p className="right">예약 대기</p>
 											</div>
 										))}

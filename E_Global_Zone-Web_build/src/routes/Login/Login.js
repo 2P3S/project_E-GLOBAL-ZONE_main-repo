@@ -72,7 +72,9 @@ const Login = () => {
 				</div>
 			</div>
 			<div className="login_wrap">
-			<p class="tit">Global Zone <span>Reservation Service</span></p>
+				<p class="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
 				<p className="txt">
 					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
@@ -153,7 +155,9 @@ export const MobileLogin = () => {
 	}, []);
 	return (
 		<div className="wrap mobile_login">
-			<p class="tit">Global Zone <span>Reservation Service</span></p>
+			<p class="tit">
+				Global Zone <span>Reservation Service</span>
+			</p>
 			<p class="txt">
 				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
 			</p>
@@ -229,7 +233,9 @@ export const KoreanLogin = () => {
 				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Global Zone <span>Reservation Service</span></p>
+				<p className="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
 				<p className="txt">
 					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
@@ -342,7 +348,9 @@ export function AdminLogin() {
 			</div>
 			<div className="login_wrap admin">
 				<p className="tit">
-				Global Zone Reservation Service<br /><span>Admin Login</span>
+					Global Zone Reservation Service
+					<br />
+					<span>Admin Login</span>
 				</p>
 				<p className="txt">
 					관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.

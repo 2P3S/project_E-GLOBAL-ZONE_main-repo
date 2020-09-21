@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { group } from "d3-array";
 import moment from "moment";
-import { getKoreanSchedule } from "../../../../api/korean";
+import { getKoreanSchedule, getKoreanSetting } from "../../../../api/korean";
 import Loader from "../../../../components/common/Loader";
 import Calendar from "../../../../components/mobile/CalendarMark";
 import { useHistory } from "react-router-dom";
@@ -14,6 +14,7 @@ export default function Schedules() {
 	const [data, setData] = useState();
 	const [defaultData, setDefaultData] = useState();
 	const [dates, setDates] = useState();
+	const [setting, setSetting] = useState();
 	const [calset, setCalset] = useState(false);
 	const [pending, setPending] = useState(true);
 	const history = useHistory();
@@ -52,6 +53,7 @@ export default function Schedules() {
 			setDates(dateObj);
 			setPending(false);
 		});
+		getKoreanSetting().then((res) => setSetting(res.data.result));
 	}, []);
 
 	useEffect(() => {
@@ -124,7 +126,7 @@ export default function Schedules() {
 					)}
 
 					<div className="reservation_boxs tab_wrap">
-						{data && data.length > 0 ? (
+						{data && setting && data.length > 0 ? (
 							data.map((v) => (
 								<div
 									key={`${v.sch_id}`}
@@ -171,7 +173,9 @@ export default function Schedules() {
 									</ul>
 									<div>
 										{v.sch_res_available ? "예약 가능" : "예약 불가"}{" "}
-										<span>{v.std_res_count}</span>
+										<span>
+											{v.std_res_count} / {setting.max_std_once}
+										</span>
 									</div>
 								</div>
 							))
