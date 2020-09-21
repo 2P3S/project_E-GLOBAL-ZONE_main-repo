@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import conf from "conf/conf";
-
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
@@ -12,7 +11,6 @@ import ModifyForeignerStudent from "../../../../components/common/modal/ModifyFo
 // 	getAdminForeignerAccountFavorite,
 // 	patchAdminForeignerAccount,
 // } from "../../../../modules/hooks/useAxios";
-
 import {
 	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
@@ -27,6 +25,9 @@ import SetSectForeigner from "../../../../components/common/modal/SetSectForeign
 import { useHistory, useParams } from "react-router-dom";
 import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 import Loader from "../../../../components/common/Loader";
+import { getAdminExportForeignerSect } from "../../../../api/admin/export";
+import Axios from "axios";
+import utf8 from "utf8";
 
 let i = 1601214;
 let j = 0;
@@ -67,6 +68,7 @@ export default function Foreigner() {
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
 	const [selectSect, setSelectSect] = useState();
+	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
 	const [contactList, setContactList] = useState([]);
 	const [pending, setPending] = useState(false);
@@ -116,6 +118,9 @@ export default function Foreigner() {
 	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
+		Array.from(e.target.options).forEach((v) => {
+			v.value === e.target.value && setSelectSectName(v.id);
+		});
 	};
 
 	const handleSearch = (e) => {
@@ -165,6 +170,7 @@ export default function Foreigner() {
 				setDefaultData(res.data);
 			});
 			setSelectSect(sectOfYear.data[index].sect_id);
+			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear]);
 
@@ -246,7 +252,11 @@ export default function Foreigner() {
 							{sectOfYear &&
 								sectOfYear.data &&
 								sectOfYear.data.map((v) => {
-									return <option value={v.sect_id}>{v.sect_name}</option>;
+									return (
+										<option value={v.sect_id} id={v.sect_name}>
+											{v.sect_name}
+										</option>
+									);
 								})}
 						</select>
 					</div>
@@ -689,7 +699,13 @@ export default function Foreigner() {
 							</div>
 						)}
 						<div onClick={handleOpenForCreate}>스케줄 개별 입력</div>
-						<div onClick={handleOpenForCreate}>csv 출력</div>
+						<div
+							onClick={() => {
+								getAdminExportForeignerSect(selectSect, selectSectName);
+							}}
+						>
+							csv 출력
+						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}

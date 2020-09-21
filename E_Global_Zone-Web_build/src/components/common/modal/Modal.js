@@ -17,7 +17,7 @@ const modalStyle = {
 		padding: "0",
 		border: "none",
 		borderRadius: "20px",
-		background: "#fff url(/global/img/modalClose_bg.png) no-repeat right 0"
+		background: "#fff url(/global/img/modalClose_bg.png) no-repeat right 0",
 	},
 };
 Modal.setAppElement(document.getElementById("modal-root"));
@@ -31,9 +31,10 @@ Modal.setAppElement(document.getElementById("modal-root"));
  */
 export default function ({ children, isOpen, handleClose }) {
 	return (
-		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
-
-			<div onClick={handleClose} className="modal_close"><img src="/global/img/modalClose_ico.png" alt="모달 삭제 버튼"/></div>
+		<Modal style={modalStyle} isOpen={isOpen}>
+			<div onClick={handleClose} className="modal_close">
+				<img src="/global/img/modalClose_ico.png" alt="모달 삭제 버튼" />
+			</div>
 
 			{children}
 		</Modal>

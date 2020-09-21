@@ -7,7 +7,13 @@ import { useHistory } from "react-router-dom";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
 import { current } from "@reduxjs/toolkit";
 
-const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
+const InsertForeignerStudent = ({
+	currentInfo,
+	handleClose,
+	reRender,
+	setInsertedList = () => {},
+	setErrorMsg = () => {},
+}) => {
 	const [state, setState] = useState(false);
 	const history = useHistory();
 	const specialChar = [
@@ -73,15 +79,29 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 				std_for_phone: array[5],
 				std_for_mail: array[6],
 				std_for_zoom_id: array[7],
-			}).then((res) => {
-				setState(res.data);
-				alert(res.data.message);
-			});
+			})
+				.then((res) => {
+					setState(res.data);
+					alert(res.data.message);
+					setInsertedList({
+						std_for_lang: array[0],
+						std_for_country: array[1],
+						std_for_id: parseInt(array[2]),
+						std_for_name: array[3],
+						std_for_dept: array[4],
+						std_for_phone: array[5],
+						std_for_mail: array[6],
+						std_for_zoom_id: array[7],
+					});
+				})
+				.catch((error) => {
+					error.response && setErrorMsg(Object.values(error.response.data.error));
+				});
 	};
 
 	useEffect(() => {
 		if (state) {
-			// handleClose();
+			handleClose();
 		}
 	}, [state]);
 	useEffect(() => {
@@ -150,17 +170,12 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 										name="std_info"
 										onChange={(e) => {
 											if (validator.isNumeric(e.target.value)) {
-												e.target.value = validator.isLength(
-													e.target.value,
-													8
-												)
-													? ""
-													: e.target.value;
 											} else {
 												e.target.value = "";
 											}
 										}}
 										defaultValue={currentInfo.std_for_id}
+										maxLength={7}
 									/>
 								</td>
 								<td>
@@ -222,10 +237,9 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 												let second = e.target.value.substr(3, 4);
 												let third = e.target.value.substr(7, 4);
 												e.target.value = `${first}-${second}-${third}`;
-											} else if (validator.isLength(e.target.value, 14)) {
-												e.target.value = "";
 											}
 										}}
+										maxLength={11}
 										defaultValue={currentInfo.std_for_phone}
 									/>
 								</td>
@@ -246,11 +260,7 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 										type="text"
 										id="std_for_zoom_id"
 										name="std_info"
-										onChange={(e) => {
-											if (validator.isLength(e.target.value, 11)) {
-												e.target.value = "";
-											}
-										}}
+										maxLength={10}
 										defaultValue={currentInfo.std_for_zoom_id}
 									/>
 								</td>
@@ -264,9 +274,16 @@ const InsertForeignerStudent = ({ handleClose, currentInfo, reRender }) => {
 				<div className="bbtn blue" onClick={handleSave}>
 					계정 수정하기
 				</div>
-				<div className="bbtn darkGray" onClick={handleClose}>
-					닫기
-				</div>
+
+				{setErrorMsg === (() => {}) ? (
+					<div className="bbtn darkGray" onClick={handleClose}>
+						닫기
+					</div>
+				) : (
+					<div className="bbtn darkGray" onClick={handleClose}>
+						취소
+					</div>
+				)}
 			</div>
 		</div>
 	);

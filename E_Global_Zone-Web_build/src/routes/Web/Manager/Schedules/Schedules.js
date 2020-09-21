@@ -10,7 +10,7 @@ import {
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-import { getAdminSchedule } from "../../../../api/admin/schedule";
+import { deleteAdminScheduleDate, getAdminSchedule } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 
@@ -291,6 +291,7 @@ export default function Schedules() {
 											div.classList.contains("state1")
 										) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowList",
 												std_for_id: v.std_for_id,
@@ -301,6 +302,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state3")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowListDone",
 												std_for_id: v.std_for_id,
@@ -311,6 +313,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state5")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "PermissionScheduleResult",
 												std_for_id: v.std_for_id,
@@ -321,6 +324,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state6")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowResult",
 												std_for_id: v.std_for_id,
@@ -334,6 +338,7 @@ export default function Schedules() {
 											!div.classList.contains("done")
 										) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowList",
 												std_for_id: v.std_for_id,
@@ -640,8 +645,27 @@ export default function Schedules() {
 						</div>
 					)}
 					<div className="table_btn">
-						<div>해당날짜 스케줄 삭제</div>
-						<div>CSV 다운</div>
+						{moment(selectDate).isAfter(Date.now()) && (
+							<div
+								onClick={() => {
+									if (
+										window.confirm(
+											moment(selectDate).format("YYYY년 MM월 DD일") +
+												"의 스케줄을 삭제하시겠습니까?"
+										)
+									) {
+										deleteAdminScheduleDate({
+											date: moment(selectDate).format("YYYY-MM-DD"),
+										}).then((res) => {
+											reRender();
+										});
+									}
+								}}
+							>
+								스케줄 삭제
+							</div>
+						)}
+						<div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div>
 					</div>
 				</div>
 
@@ -650,6 +674,7 @@ export default function Schedules() {
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (
 					<ShowList
+						sch_for_zoom_pw={selectedSchedule && selectedSchedule.sch_for_zoom_pw}
 						sch_id={selectedSchedule && selectedSchedule.sch_id}
 						handleClose={scheduleClose}
 						std_for_id={selectedSchedule && selectedSchedule.std_for_id}

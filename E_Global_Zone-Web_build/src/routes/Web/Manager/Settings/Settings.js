@@ -9,6 +9,7 @@ import GetSections from "../../../../components/common/modal/GetSections";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import Loader from "../../../../components/common/Loader";
 import CreateDept from "../../../../components/common/modal/CreateDept";
+import { getAdminExportForeigner } from "../../../../api/admin/export";
 
 /**
  * Manager :: 시스템 환경설정
@@ -436,7 +437,12 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForInsertForeignerStudent}>
 					유학생 등록
 				</div>
-				<div className="gray" onClick={handleOpenForCreateDept}>
+				<div
+					className="gray"
+					onClick={() => {
+						getAdminExportForeigner();
+					}}
+				>
 					유학생 목록 저장(csv)
 				</div>
 				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>

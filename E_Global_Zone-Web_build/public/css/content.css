@@ -1777,7 +1777,7 @@ table.work_time thead th {
 	right: 0;
 	top: 0;
 	cursor: pointer;
-	z-index:10;
+	z-index: 10;
 }
 
 .popup p.tit {
@@ -2948,6 +2948,7 @@ ul.img_file li p.file_name:hover {
 	background: #f4f8fb;
 	padding-top: 30px;
 	border-radius: inherit;
+	overflow: unset;
 }
 .popup.account .input_area {
 	padding: 25px 20px 20px 20px;

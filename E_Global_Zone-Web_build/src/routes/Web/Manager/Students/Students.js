@@ -16,6 +16,7 @@ import { selectData, setData } from "../../../../redux/managerSlice/managerSlice
 import conf from "../../../../conf/conf";
 import { useParams, useHistory } from "react-router-dom";
 import { handleEnterKey } from "../../../../modules/handleEnterKey";
+import { getAdminExportKorean } from "../../../../api/admin/export";
 
 class Student {
 	dept;
@@ -433,9 +434,9 @@ export default function Students() {
 						신청 승인
 					</div>
 					<div
-						ref={useClick(() => {
-							setIsOpen(true);
-						})}
+						onClick={() => {
+							getAdminExportKorean();
+						}}
 					>
 						CSV 다운
 					</div>
