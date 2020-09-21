@@ -44,12 +44,26 @@ class Kernel extends ConsoleKernel
                 ->where('sch_end_date', '<', $end_date)
                 ->get();
 
-            foreach ($student_foreigners as $student_foreigner) {
-                $tmp_student_foreigner = Student_foreigner::find($student_foreigner['std_for_id']);
+            foreach ($student_foreigners as $schedule) {
+                $reservation_data = ScheduleList::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
-                $tmp_student_foreigner->update([
-                    'std_for_num_of_delay_input' => $tmp_student_foreigner['std_for_num_of_delay_input'] + 1
-                ]);
+                // 전체 예약 한국인 인원수
+                $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+
+                // 예약 한국인이 0 명일 경우 자동 관리자 승인 ( 근로 시간 인증 )
+                if ($reservated_count == 0) {
+                    $schedule->update([
+                        'sch_state_of_permission' => true,
+                    ]);
+                }
+                // 예약 한국인 학생이 있을 경우 결과 지연 입력 횟수 증가
+                else {
+                    $tmp_student_foreigner = Student_foreigner::find($schedule['std_for_id']);
+
+                    $tmp_student_foreigner->update([
+                        'std_for_num_of_delay_input' => $tmp_student_foreigner['std_for_num_of_delay_input'] + 1
+                    ]);
+                }
             }
             // -->>
 
@@ -77,25 +91,6 @@ class Kernel extends ConsoleKernel
                 $tmp_student_foreigner->update([
                     'std_for_num_of_delay_permission' => $tmp_student_foreigner['std_for_num_of_delay_permission'] + 1
                 ]);
-            }
-            // -->>
-
-            // <<-- 이미 지난 스케줄이면서 예약 한국인이 0 명일 경우 자동 관리자 승인 ( 근로 시간 인증 )
-            $search_date = date("Y-m-d", strtotime("-1 days"));
-
-            $deserted_schedules = ScheduleList::whereDate('sch_start_date', '=', $search_date)->get();
-
-            foreach ($deserted_schedules as $schedule) {
-                $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
-
-                // 전체 예약 한국인 인원수
-                $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
-
-                if ($reservated_count == 0) {
-                    $schedule->update([
-                        'sch_state_of_permission' => true
-                    ]);
-                }
             }
             // -->>
         })->dailyAt('00:00');
