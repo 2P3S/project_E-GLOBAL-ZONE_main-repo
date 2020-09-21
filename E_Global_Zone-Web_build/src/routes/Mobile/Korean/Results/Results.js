@@ -33,7 +33,7 @@ export default function Results() {
 			setSect(res.data.data);
 			typeof res.data.data === "object" && setSelectSect(res.data.data[0]);
 			if (res.status === 202) {
-				alert(res.data.message);
+				// alert(res.data.message);
 				// history.push("/");
 			} else {
 				setPending(true);
@@ -134,7 +134,9 @@ export default function Results() {
 									data.data.map((v) => {
 										return (
 											<tr>
-												<td>{v.sch_start_date.substr(5, 20)}</td>
+												<td>
+													{moment(v.sch_start_date).format("MM-DD hh:mm")}
+												</td>
 												<td>{v.std_for_name}</td>
 											</tr>
 										);

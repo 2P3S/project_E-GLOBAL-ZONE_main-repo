@@ -90,6 +90,7 @@ class Schedule {
 	un_permission_count;
 	sch_start_date;
 	sch_end_date;
+	sch_for_zoom_pw;
 
 	constructor(schObj, today) {
 		this.sch_id = schObj.sch_id;
@@ -103,6 +104,7 @@ class Schedule {
 		);
 		this.reservated_count = schObj.reservated_count;
 		this.un_permission_count = schObj.un_permission_count;
+		this.sch_for_zoom_pw = schObj.sch_for_zoom_pw;
 		this.setDate(schObj.sch_start_date);
 		this.sch_end_date = schObj.sch_end_date;
 		this.sch_start_date = schObj.sch_start_date;
@@ -159,7 +161,8 @@ class Schedule {
 		if (un_permission_count === 0 && reservated_count === 0) {
 			this.state = STATE_NOTHING;
 		} else {
-			if (new Date(sch_end_date) > new Date(today)) {
+			console.log(today, sch_end_date, moment(sch_end_date).isAfter(moment(today)));
+			if (moment(sch_end_date).isAfter(moment(today))) {
 				// 스케줄 시작 전
 				if (reservated_count > 0 && un_permission_count === 0) {
 					this.state = STATE_RESERVED;
@@ -192,7 +195,7 @@ export default function Schedules() {
 		}
 		return weeks;
 	};
-	const today = useSelector(selectToday);
+	const today = Date.now();
 	const user = useSelector(selectUser);
 	const selectedDate = useSelector(selectSelectDate);
 	const [currentDate, setCurrentDate] = useState(moment(today));
@@ -222,7 +225,15 @@ export default function Schedules() {
 		setWeekStartDate(moment(selectedDate).subtract(i, "d").format("YYYY-MM-DD"));
 		setWeekEndDate(startDate.add(6, "d").format("YYYY-MM-DD"));
 	};
-	const buildDiv = (td, state, value, sch_id, sch_start_date, sch_end_date) => {
+	const buildDiv = (
+		td,
+		state,
+		value,
+		sch_id,
+		sch_start_date,
+		sch_end_date,
+		sch_for_zoom_pw = 0
+	) => {
 		let div = document.createElement("div");
 		switch (state) {
 			case STATE_PENDING:
@@ -235,6 +246,7 @@ export default function Schedules() {
 							sch_start_date={sch_start_date}
 							sch_end_date={sch_end_date}
 							reRender={reRender}
+							sch_for_zoom_pw={sch_for_zoom_pw}
 						/>
 					);
 					handleOpen();
@@ -251,6 +263,7 @@ export default function Schedules() {
 							sch_start_date={sch_start_date}
 							sch_end_date={sch_end_date}
 							reRender={reRender}
+							sch_for_zoom_pw={sch_for_zoom_pw}
 						/>
 					);
 					handleOpen();
@@ -353,7 +366,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -362,7 +376,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								} else {
@@ -376,7 +391,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -385,7 +401,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								}
@@ -407,7 +424,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -416,7 +434,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								} else {
@@ -430,7 +449,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -439,7 +459,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								}
@@ -461,7 +482,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -470,7 +492,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								} else {
@@ -484,7 +507,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -493,7 +517,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								}
@@ -515,7 +540,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -524,7 +550,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								} else {
@@ -538,7 +565,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -547,7 +575,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								}
@@ -569,7 +598,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -578,7 +608,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								} else {
@@ -592,7 +623,8 @@ export default function Schedules() {
 											],
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									} else {
 										buildDiv(
@@ -601,7 +633,8 @@ export default function Schedules() {
 											v.reservated_count.toString(),
 											v.sch_id,
 											v.sch_start_date,
-											v.sch_end_date
+											v.sch_end_date,
+											v.sch_for_zoom_pw
 										);
 									}
 								}
@@ -642,6 +675,7 @@ export default function Schedules() {
 		}
 	}, [data]);
 	useEffect(() => {
+		console.log(scheduleData);
 		if (scheduleData) buildTable(scheduleData);
 	}, [scheduleData]);
 
@@ -808,7 +842,7 @@ export default function Schedules() {
 					</div>
 				</div>
 			</div>
-			<Modal isOpen={isOpen} handleClose={handleOpen}>
+			<Modal isOpen={isOpen} handleClose={handleClose}>
 				{modal}
 			</Modal>
 		</div>

@@ -31,6 +31,7 @@ export default function ShowList({
 	std_for_name,
 	sch_start_date,
 	sch_end_date,
+	sch_for_zoom_pw,
 	reRender: thisReRender = () => {},
 }) {
 	const [data, setData] = useState();
@@ -61,6 +62,7 @@ export default function ShowList({
 				array.push(v.std_kor_id);
 			});
 			setStudentList(array);
+			console.log(data);
 		}
 		window.easydropdown.all();
 	}, [data]);
@@ -83,11 +85,9 @@ export default function ShowList({
 	};
 
 	const reRender = () => {
-		getForeignerReservation(
-			sch_id,
-			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-			setData
-		);
+		user.userClass === conf.userClass.MANAGER
+			? getAdminReservation(sch_id).then((res) => setData(res.data))
+			: getForeignerReservation(sch_id, std_for_id, setData);
 	};
 
 	return (
@@ -103,7 +103,8 @@ export default function ShowList({
 					</p>
 				</div>
 				<p className="name">
-					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
+					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name} / PW :{" "}
+					{sch_for_zoom_pw}
 				</p>
 			</div>
 

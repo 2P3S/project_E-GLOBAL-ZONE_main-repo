@@ -112,28 +112,60 @@ body {
 
 /* 로그인 */
 .wrap.mobile_login {
-	padding: 260px 0 100px 0;
-	background: #f0f4fa url(/global/mobile/img/login_bg.png) no-repeat 50% 75px;
+	padding: 80px 0 100px 0;
+	background: #fbfafb;
+	/* background: #fbfafb url(/global/mobile/img/login_bg.png) no-repeat 50% 75px; */
 	text-align: center;
 	height: 100vh;
 }
 
-.mobile_login div {
+.mobile_login .tit {
+	font-size: 25px;
+	font-family: "Roboto", sans-serif;
+	margin-bottom: 12px;
+	font-weight: 200;
+	color: #8d8f94;
+	padding-top: 115px;
+	background: #fbfafb url(/global/mobile/img/symbol_img.png) no-repeat 50% 0px;
+	text-decoration: none;
+}
+
+.mobile_login .tit span {
+	color: #139cc0;
+	display: block;
+}
+
+.mobile_login .txt {
+ font-size: 13px;
+ color: #a0a0a0;
+ margin-bottom: 45px;
+ text-decoration: none;
+ line-height: 200%;
+}
+
+.mobile_login .txt span {
+	display:block;
+	line-height:135%;
+	/* font-size: 13px; */
+}
+
+.mobile_login div.btn {
 	display: inline-block;
-	width: 270px;
+	width: 260px;
 	height: 45px;
 	line-height: 45px;
 	font-size: 13px;
-	color: #6a7d97;
+	color: #ffffff;
 	font-weight: 600;
 	border-radius: 100px;
-	background: #dce5f1;
+	background: #139cc0;
 }
 
-.mobile_login p {
+.mobile_login p.info {
 	font-size: 12px;
-	color: #9eadc4;
-	margin-top: 10px;
+	color: #139cc0;
+	margin-top: 12px;
+	text-decoration: underline;
 }
 
 /*예약조회*/
@@ -149,16 +181,29 @@ body {
 	width: 100%;
 }
 .all .calendar .day {
-	padding:5% 0;
+	padding: 3% 0 6% 0;
+	height: auto;
+}
+.calendar_lang_img {
+	position: absolute;
+	bottom: 10px;
+	line-height: 0;
+}
+.calendar_lang_img img {
+	margin: 0 1px;
+	/* width: 6px; */
+	/* height: 6px; */
 }
 
-.all .calendar .day.selected {
-	background: #182f9e;
-	-webkit-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	-moz-box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	box-shadow: 2px 2px 8px 0px rgb(169 174 192);
-	position: relative;
-	z-index: 1;
+.all .calendar .day.selected_ {
+	
+font-size: 13px;
+	
+font-weight: 900;
+	
+background: #e7e7ff;
+	
+color: #4f369c;
 }
 
 .reservation_boxs .box {
@@ -188,7 +233,18 @@ body {
 	display: block;
 	font-size: 11px;
 	padding: 0 20px;
+	width: 90%;
 }
+
+.reservation_boxs.tab_wrap .box p.no_data {
+	color:#222;
+	padding: 15px 0;
+	background: #fff;
+	text-align: center;
+	border: 1px solid #e2e2e2;
+	border-radius: 6px;
+}
+
 .reservation_boxs .box.puple {
 	background-color: #4d4cac;
 }
@@ -447,7 +503,7 @@ body {
 .wrap.mobile_result .point_info {
 	border-radius: 10px;
 	width: 100%;
-	padding: 22px 30px;
+	padding: 20px 25px;
 	background: #182f9e url(/global/mobile/img/reservation_apply_bg.png) no-repeat 43% center;
 	box-sizing: border-box;
 	display: inline-block;
@@ -490,7 +546,7 @@ body {
 .wrap.mobile_result .point_info .result span.rank {
 	background: #102065;
 	color: #fff;
-	font-size: 13px;
+	font-size: 12px;
 	padding: 6px 11px;
 	border-radius: 5px;
 	margin-right: 11px;
@@ -748,6 +804,7 @@ body {
 .subMenu .reserv_del_btn {
 	float:right;
 	margin:10px 0 0 15px;
+	cursor: pointer;
 }
 .subMenu div:last-child {
 	border-bottom: none;

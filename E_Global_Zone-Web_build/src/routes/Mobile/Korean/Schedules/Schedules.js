@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { group } from "d3-array";
 import moment from "moment";
-import { getKoreanSchedule } from "../../../../api/korean";
+import { getKoreanSchedule, getKoreanSetting } from "../../../../api/korean";
 import Loader from "../../../../components/common/Loader";
 import Calendar from "../../../../components/mobile/CalendarMark";
 import { useHistory } from "react-router-dom";
@@ -14,6 +14,7 @@ export default function Schedules() {
 	const [data, setData] = useState();
 	const [defaultData, setDefaultData] = useState();
 	const [dates, setDates] = useState();
+	const [setting, setSetting] = useState();
 	const [calset, setCalset] = useState(false);
 	const [pending, setPending] = useState(true);
 	const history = useHistory();
@@ -21,15 +22,17 @@ export default function Schedules() {
 		getKoreanSchedule().then((res) => {
 			const { data } = res.data;
 			if (data.length === 0) {
-				alert("조회가능한 스케줄이 없습니다.");
+				alert("예약 가능한 스케줄이 없습니다.");
+				// history.push("/reservation");
+				setData([]);
 			} else {
 				dispatch(setSelectDate(moment(data[0].sch_start_date).format("YYYY-MM-DD")));
+				setData(
+					group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
+						moment(data[0].sch_start_date).format("YYYY-MM-DD")
+					)
+				);
 			}
-			setData(
-				group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
-					moment(data[0].sch_start_date).format("YYYY-MM-DD")
-				)
-			);
 			setDefaultData(data);
 			let dateSet = group(data, (v) => moment(v.sch_start_date).format("YYYY-MM-DD"));
 			let dateObj = {};
@@ -50,6 +53,7 @@ export default function Schedules() {
 			setDates(dateObj);
 			setPending(false);
 		});
+		getKoreanSetting().then((res) => setSetting(res.data.result));
 	}, []);
 
 	useEffect(() => {
@@ -90,30 +94,39 @@ export default function Schedules() {
 			{!pending ? (
 				<div className="wrap">
 					{calset ? <Loader /> : <Calendar dates={dates} selectedDate={selectedDate} />}
-					<ul className="sch_tab" style={{ cursor: "pointer" }}>
-						<li>
-							<div id="allView" name="tabview" className="on" onClick={handleClick}>
-								전체
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="eng" onClick={handleClick}>
-								영어
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="jp" onClick={handleClick}>
-								일본어
-							</div>
-						</li>
-						<li>
-							<div name="tabview" className="ch" onClick={handleClick}>
-								중국어
-							</div>
-						</li>
-					</ul>
+
+					{data && data.length > 0 && (
+						<ul className="sch_tab" style={{ cursor: "pointer" }}>
+							<li>
+								<div
+									id="allView"
+									name="tabview"
+									className="on"
+									onClick={handleClick}
+								>
+									전체
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="eng" onClick={handleClick}>
+									영어
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="jp" onClick={handleClick}>
+									일본어
+								</div>
+							</li>
+							<li>
+								<div name="tabview" className="ch" onClick={handleClick}>
+									중국어
+								</div>
+							</li>
+						</ul>
+					)}
+
 					<div className="reservation_boxs tab_wrap">
-						{data && data.length > 0 ? (
+						{data && setting && data.length > 0 ? (
 							data.map((v) => (
 								<div
 									key={`${v.sch_id}`}
@@ -160,7 +173,9 @@ export default function Schedules() {
 									</ul>
 									<div>
 										{v.sch_res_available ? "예약 가능" : "예약 불가"}{" "}
-										<span>{v.std_res_count}</span>
+										<span>
+											{v.std_res_count} / {setting.max_std_once}
+										</span>
 									</div>
 								</div>
 							))

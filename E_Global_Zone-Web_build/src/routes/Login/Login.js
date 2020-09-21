@@ -22,9 +22,11 @@ const Login = () => {
 	const [pending, setPending] = useState(false);
 
 	useEffect(() => {
-		if (window.localStorage.getItem("global-zone-korean-token")) {
-			// useGoogleLogin();
-		}
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
 	}, []);
 
 	useEffect(() => {
@@ -63,13 +65,19 @@ const Login = () => {
 		<div className="login_content">
 			<div className="head">
 				<div className="head_w">
-					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
 					<LoginHeader />
 				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Global Zone Service Login</p>
-				<p className="txt"><span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
+				<p class="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
+				<p className="txt">
+					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+				</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -136,9 +144,23 @@ export const MobileLogin = () => {
 	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
+		let link = document.getElementById("content");
+		document.head.removeChild(link);
+		let link_ = document.createElement("link");
+		link_.rel = "stylesheet";
+		console.log(link);
+		link_.href = "/css/mobile/content.css";
+		link_.id = "content";
+		document.head.appendChild(link_);
 	}, []);
 	return (
 		<div className="wrap mobile_login">
+			<p class="tit">
+				Global Zone <span>Reservation Service</span>
+			</p>
+			<p class="txt">
+				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
+			</p>
 			<GoogleLogin
 				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
 				buttonText="Google"
@@ -154,7 +176,7 @@ export const MobileLogin = () => {
 				onSuccess={onSuccess}
 				onFailure={onFailure}
 			/>
-			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
+			<p className="info">@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
 		</div>
 	);
 };
@@ -204,13 +226,19 @@ export const KoreanLogin = () => {
 		<div className="login_content">
 			<div className="head">
 				<div className="head_w">
-					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
 					<LoginHeader />
 				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Global Zone Service Login</p>
-				<p className="txt"><span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
+				<p className="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
+				<p className="txt">
+					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+				</p>
 				<div className="gsuite_login">
 					{/* <div className="btn"> */}
 					{/* {" "} */}
@@ -312,13 +340,21 @@ export function AdminLogin() {
 		<div className="login_content">
 			<div className="head">
 				<div className="head_w">
-					<div className="logo"><img src="/global/img/login_logo.gif" alt="로그인 화면 로고" /></div>
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
 					<LoginHeader />
 				</div>
 			</div>
-			<div className="login_wrap">
-				<p className="tit">Global Zone Service <span>Admin Login</span></p>
-				<p className="txt">관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.</p>
+			<div className="login_wrap admin">
+				<p className="tit">
+					Global Zone Reservation Service
+					<br />
+					<span>Admin Login</span>
+				</p>
+				<p className="txt">
+					관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+				</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -338,11 +374,12 @@ export function AdminLogin() {
 						Login
 					</div>
 
-					<button onClick={handleReset} className="pwReset">비밀번호를 초기화하시겠습니까?</button>
+					{/* <button onClick={handleReset} className="pwReset">
+						비밀번호를 초기화하시겠습니까?
+					</button> 2020-09-20 삭제 처리 */}
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
-
 				</div>
 			</div>
 		</div>

@@ -16,6 +16,7 @@ import { selectData, setData } from "../../../../redux/managerSlice/managerSlice
 import conf from "../../../../conf/conf";
 import { useParams, useHistory } from "react-router-dom";
 import { handleEnterKey } from "../../../../modules/handleEnterKey";
+import { getAdminExportKorean } from "../../../../api/admin/export";
 
 class Student {
 	dept;
@@ -432,6 +433,13 @@ export default function Students() {
 					>
 						신청 승인
 					</div>
+					<div
+						onClick={() => {
+							getAdminExportKorean();
+						}}
+					>
+						CSV 다운
+					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
 					{/*		alert("엑셀 다운");*/}
@@ -454,7 +462,11 @@ export default function Students() {
 					}}
 				/>
 			</Modal>
-			<Modal isOpen={isUnrestrict} onRequestClose={handleCloseForUnrestrict}>
+			<Modal
+				isOpen={isUnrestrict}
+				onRequestClose={handleCloseForUnrestrict}
+				handleClose={handleCloseForUnrestrict}
+			>
 				<ConfirmUnrestriction
 					std_kor_name={selectedKor.std_kor_name}
 					std_kor_id={selectedKor.std_kor_id}
@@ -463,7 +475,11 @@ export default function Students() {
 					reRender={reRender}
 				/>
 			</Modal>
-			<Modal isOpen={isRestrict} onRequestClose={handleCloseForRestrict}>
+			<Modal
+				isOpen={isRestrict}
+				onRequestClose={handleCloseForRestrict}
+				handleClose={handleCloseForRestrict}
+			>
 				<ConfirmRestriction
 					handleClose={handleCloseForRestrict}
 					std_kor_id={selectedKor.std_kor_id}

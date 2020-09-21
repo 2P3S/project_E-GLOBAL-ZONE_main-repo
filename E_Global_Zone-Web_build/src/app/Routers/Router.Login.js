@@ -11,18 +11,10 @@ import ResetPassword from "../../routes/Login/ResetPassword";
  */
 export const LoginRouter = () => {
 	useEffect(() => {
-		let link = document.getElementById("content");
-		if (isMobile) {
-			link.innerHTML = "";
-			link.rel = "stylesheet";
-			link.href = "/css/mobile/content.css";
-			document.head.appendChild(link);
-		} else {
-			link.innerHTML = "";
-			link.rel = "stylesheet";
-			link.href = "/css/content.css";
-			document.head.appendChild(link);
-		}
+		// let link = document.getElementById("content");
+		// link.innerHTML = "";
+		// link.rel = "stylesheet";
+		// link.href = "/css/content.css";
 	}, []);
 	return (
 		<Switch>

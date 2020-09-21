@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import conf from "conf/conf";
-
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
+import ModifyForeignerStudent from "../../../../components/common/modal/ModifyForeignerStudent";
 // import {
 // 	getAdminForeignerWork,
 // 	getAdminSection,
 // 	getAdminForeignerAccountFavorite,
 // 	patchAdminForeignerAccount,
 // } from "../../../../modules/hooks/useAxios";
-
 import {
+	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
 	getAdminForeignerWork,
 	patchAdminForeignerAccount,
@@ -25,6 +25,7 @@ import SetSectForeigner from "../../../../components/common/modal/SetSectForeign
 import { useHistory, useParams } from "react-router-dom";
 import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 import Loader from "../../../../components/common/Loader";
+import { getAdminExportForeignerSect } from "../../../../api/admin/export";
 
 let i = 1601214;
 let j = 0;
@@ -65,11 +66,14 @@ export default function Foreigner() {
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
 	const [selectSect, setSelectSect] = useState();
+	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
 	const [contactList, setContactList] = useState([]);
 	const [pending, setPending] = useState(false);
 	const [toggle, setToggle] = useState(true);
 	const [index, setIndex] = useState(0);
+	const [modifyInfo, setModifyInfo] = useState();
+
 	const {
 		isOpen: contactIsOpen,
 
@@ -91,6 +95,12 @@ export default function Foreigner() {
 		handleClose: handleCloseForCreate,
 		handleOpen: handleOpenForCreate,
 	} = useModal();
+	const {
+		isOpen: isOpenForModify,
+		handleClose: handleCloseForModify,
+		handleOpen: handleOpenForModify,
+	} = useModal();
+
 	const deptList = useSelector(selectDept);
 
 	function handleCheckAll(e) {
@@ -106,6 +116,9 @@ export default function Foreigner() {
 	};
 	const handleChange = (e) => {
 		setSelectSect(e.target.value);
+		Array.from(e.target.options).forEach((v) => {
+			v.value === e.target.value && setSelectSectName(v.id);
+		});
 	};
 
 	const handleSearch = (e) => {
@@ -155,6 +168,7 @@ export default function Foreigner() {
 				setDefaultData(res.data);
 			});
 			setSelectSect(sectOfYear.data[index].sect_id);
+			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear]);
 
@@ -236,7 +250,11 @@ export default function Foreigner() {
 							{sectOfYear &&
 								sectOfYear.data &&
 								sectOfYear.data.map((v) => {
-									return <option value={v.sect_id}>{v.sect_name}</option>;
+									return (
+										<option value={v.sect_id} id={v.sect_name}>
+											{v.sect_name}
+										</option>
+									);
 								})}
 						</select>
 					</div>
@@ -575,9 +593,28 @@ export default function Foreigner() {
 																		>
 																			비밀번호 초기화
 																		</div>
-																		{/* <div className="lightGray">
-																			삭제
-																		</div> */}
+																		<div
+																			className="lightGray"
+																			onClick={() => {
+																				getAdminForeigner({
+																					foreigners: [
+																						value.std_for_id,
+																					],
+																				}).then((res) => {
+																					let obj = {
+																						...value,
+																						...res.data
+																							.data[0],
+																					};
+																					setModifyInfo(
+																						obj
+																					);
+																					handleOpenForModify();
+																				});
+																			}}
+																		>
+																			수정
+																		</div>
 																	</div>
 																</div>
 															</td>
@@ -650,9 +687,7 @@ export default function Foreigner() {
 							<div
 								onClick={() => {
 									if (dataSet.data && dataSet.data.length > 0) {
-										// history.push(
-										// 	`/section/${selectSect}/${dataSet.data[0].std_for_id}`
-										// );
+										history.push(`/section/${selectSect}/${0}`);
 									} else {
 										alert("해당 학기에 등록 된 학생이 없습니다.");
 									}
@@ -662,6 +697,13 @@ export default function Foreigner() {
 							</div>
 						)}
 						<div onClick={handleOpenForCreate}>스케줄 개별 입력</div>
+						<div
+							onClick={() => {
+								getAdminExportForeignerSect(selectSect, selectSectName);
+							}}
+						>
+							csv 출력
+						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
@@ -690,6 +732,9 @@ export default function Foreigner() {
 					</Modal>
 					<Modal isOpen={contactIsOpen} handleClose={handleCloseForContact}>
 						<ForeignerContact list={contactList} handleClose={handleCloseForContact} />
+					</Modal>
+					<Modal isOpen={isOpenForModify} handleClose={handleCloseForModify}>
+						<ModifyForeignerStudent currentInfo={modifyInfo} reRender={reRender} />
 					</Modal>
 				</div>
 			</div>
