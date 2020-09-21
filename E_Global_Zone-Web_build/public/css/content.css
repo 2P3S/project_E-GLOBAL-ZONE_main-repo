@@ -165,6 +165,11 @@ body {
 	color: #8d8f94;
 }
 
+.login_wrap.admin .tit {
+	margin-bottom: 15px;
+	line-height: 110%;
+}
+
 .login_wrap .tit span {
 	color: #30addc;
 }
@@ -828,6 +833,7 @@ table.sch_table tbody tr:hover td:first-child {
 	color: #666;
 	cursor: pointer;
 	padding: 0 5px;
+	outline:none;
 }
 #pagenation button img {
 	height: 32px;
@@ -1443,7 +1449,7 @@ table.student_manage_table td:first-child {
 }
 
 .search_student .not_enter .selected {
-	background-color: #b9c7e6;
+	background-color: #f5f7ff;
 }
 
 .search_student .not_enter .scroll_area,
@@ -2361,6 +2367,17 @@ table.pop_table3 td {
 	font-weight: 600;
 }
 
+.img_info {
+	margin-top: 10px;
+}
+
+.img_info li {
+	font-size: 11px;
+	color: #ff6308;
+	font-weight: 600;
+	margin-top: 2px;
+}
+
 /* [관리자]출석결과 미입력, 미승인 / [유학생] 출석결과 입력 동일 */
 .student_list {
 	width: 100%;
@@ -2779,11 +2796,12 @@ ul.img_file li p.file_name:hover {
 	border-radius: 3px;
 	font-size: 12px;
 	color: #373a44;
-	min-width: 115px;
+	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
 	font-weight: 600;
 	margin-left: 5px;
+	padding:0 15px;
 }
 
 .setting_btn_wrap div.gray {
@@ -3086,6 +3104,7 @@ ul.img_file li p.file_name:hover {
 	background: url(/global/img/Loding_ball.gif) no-repeat center 0px;
 	background-size: 110%;
 	margin: 0 auto;
+	border-radius: 20px;
 }
 .popup.loading p {
 	font-size: 17px;
@@ -3131,7 +3150,7 @@ ul.img_file li p.file_name:hover {
 	color: #fff;
 	border: none;
 	padding: 15px;
-	right: 25px;
+	right: 55px;
 	top: 26px;
 	font-size: 12px;
 	font-weight: 600;
@@ -3196,11 +3215,12 @@ ul.img_file li p.file_name:hover {
 	border-radius: 3px;
 	font-size: 12px;
 	color: #373a44;
-	min-width: 115px;
+	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
 	font-weight: 600;
 	margin-left: 5px;
+	padding: 0 20px;
 }
 
 .table_btn a:hover,
