@@ -26,8 +26,6 @@ import { useHistory, useParams } from "react-router-dom";
 import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 import Loader from "../../../../components/common/Loader";
 import { getAdminExportForeignerSect } from "../../../../api/admin/export";
-import Axios from "axios";
-import utf8 from "utf8";
 
 let i = 1601214;
 let j = 0;

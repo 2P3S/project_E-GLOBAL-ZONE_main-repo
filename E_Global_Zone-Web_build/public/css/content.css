@@ -2968,7 +2968,7 @@ ul.img_file li p.file_name:hover {
 	border-radius: inherit;
 	overflow: unset;
 }
-.popup.account .input_area {
+.account_insert .input_area {
 	padding: 25px 20px 20px 20px;
 	background: #ffffff;
 	text-align: center;
@@ -2978,22 +2978,22 @@ ul.img_file li p.file_name:hover {
 	-moz-box-shadow: 2px 3px 12px 0px rgba(122, 144, 204, 0.2);
 	box-shadow: 2px 3px 12px 0px rgba(122, 144, 204, 0.2);
 }
-.popup.account table {
+.account_insert table {
 	display: inline-block;
 	font-size: 12px;
 	width: 100%;
 }
-.popup.account table td {
+.account_insert table td {
 	padding: 0 10px;
 }
-.popup.account table td p {
+.account_insert table td p {
 	color: #373a44;
 	font-weight: 600;
 	margin-bottom: 5px;
 	text-align: left;
 }
 
-.popup.account p.warn_txt {
+.account_insert p.warn_txt {
 	margin: 0;
 	font-weight: 500;
 	font-size: 11px;
@@ -3004,7 +3004,7 @@ ul.img_file li p.file_name:hover {
 	color: #ff6367;
 	background: #fff1f1;
 }
-.popup.account table td input {
+.account_insert table td input {
 	border: none;
 	margin-bottom: 14px;
 	border: 1px solid #dadbde;
@@ -3014,52 +3014,60 @@ ul.img_file li p.file_name:hover {
 	padding: 0 10px;
 	width: 160px;
 }
-.popup.account .input_area table td .edd-root {
+
+.account_insert table td input::placeholder {
+	font-size:11px;
+	color:#515f68;
+	font-weight:600;
+}
+
+.account_insert .input_area table td .edd-root {
 	margin: 0;
 	width: 170px;
 	border: 1px solid #ced9e0;
 	border-radius: 5px;
 	color: #373a44;
 }
-.popup.account table td input:focus {
+.account_insert table td input:focus {
 	outline: none !important;
 	border: 1px solid #373a44;
 	transition-duration: 0.3s;
 }
-.popup.account .btn_area {
+.account_insert .btn_area {
 	position: absolute;
 	right: 45px;
 	top: 5px;
 	width: auto;
 }
 
-.popup.account .table_area {
+.account_table .table_area {
 	margin-top: 20px;
 }
-.popup.account .table_area table {
+.account_table .table_area table {
 	display: table;
+	width:100%;
 }
-.popup.account .table_area table thead tr,
-.popup.account .table_area table thead th {
+.account_table .table_area table thead tr,
+.account_table .table_area table thead th {
 	background: #dee7f1;
 }
 
-.popup.account .table_area table th:first-child {
+.account_table .table_area table th:first-child {
 	border-radius: 7px 0 0 7px;
 }
-.popup.account .table_area table th:last-child {
+.account_table .table_area table th:last-child {
 	border-radius: 0 7px 7px 0;
 }
 
-.popup.account .table_area table th,
-.popup.account .table_area table td {
+.account_table .table_area table th,
+.account_table .table_area table td {
 	padding: 16px 0;
 	text-align: center;
 }
-.popup.account .table_area table td {
+.account_table .table_area table td {
 	border-bottom: 1px solid #ddd;
 }
-.popup.account .table_area table td img {
+.account_table .table_area table td img {
 	cursor: pointer;
 }
 

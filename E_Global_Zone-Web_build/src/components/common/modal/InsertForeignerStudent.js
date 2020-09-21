@@ -203,9 +203,9 @@ const InsertForeignerStudent = ({ handleClose }) => {
 	}, [errorMsg]);
 
 	return (
-		<>
+		<div className="popup account">
 			{insertMode ? (
-				<div className="popup account_insert" style={{ zIndex: "9999" }}>
+				<div className="account_insert" style={{ zIndex: "9999" }}>
 					<p className="tit">유학생 계정 생성</p>
 					<div className="input_area">
 						<table>
@@ -378,7 +378,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 
 			{/*  유학생 계정 생성 리스트 */}
 
-			<div className="popup account_table">
+			<div className="account_table">
 				<div className="table_area scroll_area">
 					<table>
 						<colgroup>
@@ -402,7 +402,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 					</table>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 
