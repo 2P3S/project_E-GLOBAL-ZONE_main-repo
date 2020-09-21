@@ -132,10 +132,11 @@ body {
 
 .mobile_login .tit span {
 	color: #139cc0;
+	display: block;
 }
 
 .mobile_login .txt {
- font-size: 14px;
+ font-size: 13px;
  color: #a0a0a0;
  margin-bottom: 45px;
  text-decoration: none;
@@ -145,6 +146,7 @@ body {
 .mobile_login .txt span {
 	display:block;
 	line-height:135%;
+	/* font-size: 13px; */
 }
 
 .mobile_login div.btn {
@@ -233,6 +235,16 @@ color: #4f369c;
 	padding: 0 20px;
 	width: 90%;
 }
+
+.reservation_boxs.tab_wrap .box p.no_data {
+	color:#222;
+	padding: 15px 0;
+	background: #fff;
+	text-align: center;
+	border: 1px solid #e2e2e2;
+	border-radius: 6px;
+}
+
 .reservation_boxs .box.puple {
 	background-color: #4d4cac;
 }
@@ -792,6 +804,7 @@ color: #4f369c;
 .subMenu .reserv_del_btn {
 	float:right;
 	margin:10px 0 0 15px;
+	cursor: pointer;
 }
 .subMenu div:last-child {
 	border-bottom: none;

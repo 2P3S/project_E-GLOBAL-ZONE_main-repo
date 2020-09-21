@@ -26,7 +26,7 @@ export default function Header() {
 						buttonText="Logout"
 						onLogoutSuccess={(res) => {
 							window.localStorage.clear();
-							window.location.reload(true);
+							window.location.reload();
 						}}
 						onFailure={() => {
 							window.localStorage.clear();

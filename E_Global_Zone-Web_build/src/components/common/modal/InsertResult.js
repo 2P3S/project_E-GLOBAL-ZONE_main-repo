@@ -154,6 +154,11 @@ const InsertResult = ({
 				<input type="file" accept="image/*" id="file" onChange={handleInputEndImage} />
 			</div>
 
+			<ul className="img_info">
+				<li>· 줌 출석 및 종료 캡쳐 사진은 일시 및 시간이 잘 보이는 사진이어야 합니다.</li>
+				<li>· 이미지 사이즈 및  크기 : 900 x 900 / 2MB 이하</li>
+			</ul>
+
 			<div className="btn_area right">
 				<div className="bbtn mint" onClick={handleConfirm}>
 					저장

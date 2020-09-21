@@ -72,7 +72,7 @@ const Login = () => {
 				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Global Zone Service Login</p>
+			<p class="tit">Global Zone <span>Reservation Service</span></p>
 				<p className="txt">
 					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
@@ -153,9 +153,7 @@ export const MobileLogin = () => {
 	}, []);
 	return (
 		<div className="wrap mobile_login">
-			<p class="tit">
-				Global Zone <span>Service Login</span>
-			</p>
+			<p class="tit">Global Zone <span>Reservation Service</span></p>
 			<p class="txt">
 				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
 			</p>
@@ -231,7 +229,7 @@ export const KoreanLogin = () => {
 				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Global Zone Service Login</p>
+				<p className="tit">Global Zone <span>Reservation Service</span></p>
 				<p className="txt">
 					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
@@ -342,9 +340,9 @@ export function AdminLogin() {
 					<LoginHeader />
 				</div>
 			</div>
-			<div className="login_wrap">
+			<div className="login_wrap admin">
 				<p className="tit">
-					Global Zone Service <span>Admin Login</span>
+				Global Zone Reservation Service<br /><span>Admin Login</span>
 				</p>
 				<p className="txt">
 					관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
@@ -368,9 +366,9 @@ export function AdminLogin() {
 						Login
 					</div>
 
-					<button onClick={handleReset} className="pwReset">
+					{/* <button onClick={handleReset} className="pwReset">
 						비밀번호를 초기화하시겠습니까?
-					</button>
+					</button> 2020-09-20 삭제 처리 */}
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
