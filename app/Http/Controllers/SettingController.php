@@ -54,7 +54,7 @@ class SettingController extends Controller
         $create_setting = Setting::create($request);
 
         return response()->json([
-            'message' => '환경변수 저장 완료',
+            'message' => '환경설정 변경에 성공하였습니다.',
             'result' => $create_setting,
         ], 201);
     }
