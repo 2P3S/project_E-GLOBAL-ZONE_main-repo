@@ -210,11 +210,9 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // dismensions 속성 잠시 제거..
-        // dimensions:min_width=900,min_height=900|max:2000
         $rules = [
-            'result_start_img' => 'required|image',
-            'result_end_img' => 'required|image',
+            'result_start_img' => 'required|image|max:5000',
+            'result_end_img' => 'required|image|max:5000',
             'attendance_std_kor_id_list' => 'nullable|array',
             'attendance_std_kor_id_list.*' => 'integer|distinct|min:1000000|max:9999999',
             'absent_std_kor_id_list' => 'nullable|array',
