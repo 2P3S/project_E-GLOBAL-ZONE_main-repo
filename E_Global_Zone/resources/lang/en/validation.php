@@ -175,7 +175,11 @@ return [
         'sch_end_date' => '스케줄 종료 날짜',
         'sch_state_of_result_input' => '유학생 결과 입력 여부',
         'sch_state_of_permission' => '관리자 결과 승인 여부',
-        'sch_for_zoom_pw' => '줌 비밀번호'
+        'sch_for_zoom_pw' => '줌 비밀번호',
+        // -->>
+        // <<-- 학기
+        'sect_start_date' => '학기 시작일',
+        'sect_end_date' => '학기 종료일',
         // -->>
     ],
 
