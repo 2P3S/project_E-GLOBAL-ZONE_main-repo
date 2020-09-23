@@ -2,11 +2,14 @@
 
 return [
     'uri' => [
-        'main' => 'http://global.yju.ac.kr',
-        'admin' => 'http://global.yju.ac.kr/admin',
-        'reset' => 'http://global.yju.ac.kr/api/reset',
+        'main' => 'http://gzone.yjuweb.org/',
+        'admin' => 'http://gzone.yjuweb.org/admin',
+        'reset' => 'http://gzone.yjuweb.org/api/reset',
     ],
     'kor' => [
+        'access' => [
+            'admin' => '관리자만 접근 할 수 있습니다.',
+        ],
         'dept' => [
             'index' => [
                 'success' => '계열/학과 목록 조회에 성공하였습니다.',
@@ -123,7 +126,13 @@ return [
                 'failure' => '로그아웃에 실패하였습니다.',
             ]
         ],
-
+        'data_export' => [
+            'dept' => '계열, 학과 목록.xlsx',
+            'std_kor' => '글로벌 존 이용 학생 목록.xlsx',
+            'std_for' => '글로벌 존 유학생 목록.xlsx',
+            'work_std_for' => '글로벌 존 근로 유학생 목록.xlsx',
+            'failure' => '엑셀 파일 출력에 실패하였습니다.'
+        ]
     ]
 
 ];
