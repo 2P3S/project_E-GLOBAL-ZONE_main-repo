@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://global.yju.ac.kr',
-        'admin' => 'http://global.yju.ac.kr/admin',
-        'reset' => 'http://global.yju.ac.kr/api/reset',
+        'main' => 'http://gzone.yjuweb.org/',
+        'admin' => 'http://gzone.yjuweb.org/admin',
+        'reset' => 'http://gzone.yjuweb.org/api/reset',
     ],
     'kor' => [
         'access' => [
