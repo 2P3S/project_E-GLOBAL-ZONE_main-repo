@@ -47,6 +47,7 @@ body {
 	width: 100%;
 	height: 80px;
 	background: #373a44;
+	min-width:1200px;
 }
 
 .head .head_area {
@@ -89,6 +90,7 @@ body {
 	width: 100%;
 	text-align: center;
 	background: url(/global/img/sub_title_bg.gif) no-repeat 50% 0px;
+	min-width:1200px;
 }
 
 .wrapper .content {
@@ -3431,6 +3433,7 @@ ul.tab.no5 li {
 	width: 100%;
 	border-top: 1px solid #e6e6e6;
 	text-align: center;
+	min-width:1200px;
 }
 
 .footer .footer_area {
