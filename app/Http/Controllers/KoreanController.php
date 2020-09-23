@@ -13,16 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class KoreanController extends Controller
 {
-    private const _STD_KOR_IS_ALREADY_REGISTERED = "이미 존재하는 학생의 정보입니다.";
-
-
-    private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
-    private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
-
-    private const _STD_KOR_INDEX_SUCCESS = "한국인 학생 정보 조회에 성공하였습니다.";
-    private const _STD_KOR_INDEX_NONDATA = "해당 학생의 정보가 없습니다.";
-    private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
-
     private $restricted;
     private $std_kor;
 
@@ -116,7 +106,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_INDEX_FAILURE
+            Config::get('constants.kor.std_kor.index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -131,9 +121,9 @@ class KoreanController extends Controller
         $is_non_kor_data = $std_kor_info->count() === 0;
 
         // 검색 후 조회된 데이터가 없을 경우
-        if ($is_non_kor_data) return self::response_json(self::_STD_KOR_INDEX_NONDATA, 202);
+        if ($is_non_kor_data) return self::response_json(Config::get('constants.kor.std_kor.index.no_value'), 202);
 
-        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_kor_info);
+        return self::response_json(Config::get('constants.kor.std_kor.index.success'), 200, $std_kor_info);
     }
 
     /**
@@ -151,7 +141,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_INDEX_FAILURE
+            Config::get('constants.kor.std_kor.index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -170,7 +160,7 @@ class KoreanController extends Controller
             }
         }
 
-        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
+        return self::response_json(Config::get('constants.kor.std_kor.index.success'), 200, $std_koreans);
     }
 
     /**
@@ -229,9 +219,9 @@ class KoreanController extends Controller
         try {
             $std_kor_id->delete();
         } catch (Exception $e) {
-            return self::response_json(Config::get('constants.kor.std_kor.dextroy.failure'), 422);
+            return self::response_json(Config::get('constants.kor.std_kor.destroy.failure'), 422);
         }
-        return self::response_json($std_kor_name . Config::get('constants.kor.std_kor.dextroy.success'), 200);
+        return self::response_json($std_kor_name . Config::get('constants.kor.std_kor.destroy.success'), 200);
     }
 
     /**
