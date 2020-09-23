@@ -134,7 +134,7 @@ class KoreanController extends Controller
     public function index(Request $request): JsonResponse
     {
         $rules = [
-            'orderby' => 'required|in:std_kor_dept,std_kor_state_of_restriction,std_kor_num_of_attendance,std_for_num_of_absent,',
+            'orderby' => 'required|in:std_kor_dept,std_kor_state_of_restriction,std_kor_num_of_attendance,std_kor_num_of_absent',
             'guard' => 'required|string|in:admin'
         ];
 
