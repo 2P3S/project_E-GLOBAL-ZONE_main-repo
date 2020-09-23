@@ -102,8 +102,6 @@ export default () => {
 					</div>
 
 					<Switch>
-						<Redirect exact path="/" to={`/reservation`} />
-
 						{/* 예약 조회 페이지 */}
 						<Route exact path="/reservation" component={Reservation} />
 						<Route path="/schedule/:id" component={ApplicationForm} />
@@ -117,6 +115,8 @@ export default () => {
 
 						{/* 임시 로그인 */}
 						<Route path="/login" component={MobileLogin} />
+
+						<Redirect path="/" to={`/reservation`} />
 					</Switch>
 				</div>
 				<Footer />

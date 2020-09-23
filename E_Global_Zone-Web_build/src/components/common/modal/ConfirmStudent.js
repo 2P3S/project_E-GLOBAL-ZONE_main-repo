@@ -139,12 +139,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 				<div href="" className="bbtn mint" onClick={handleConfirm}>
 					등록
 				</div>
-				<div
-					className="bbtn white"
-					ref={useClick(() => {
-						handleClose();
-					})}
-				>
+				<div className="bbtn white" onClick={handleClose}>
 					닫기
 				</div>
 			</div>
