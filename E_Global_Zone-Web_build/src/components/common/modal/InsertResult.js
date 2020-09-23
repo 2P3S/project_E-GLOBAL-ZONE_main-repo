@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import imageCompression from "browser-image-compression";
 import {
 	postForeignerReservationResult,
 	getForeignerReservation,
@@ -7,6 +7,8 @@ import {
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";
+import Modal from "./Modal";
+import useModal from "../../../modules/hooks/useModal";
 
 const InsertResult = ({
 	sch_id,
@@ -17,27 +19,57 @@ const InsertResult = ({
 	std_for_id,
 	reRender,
 }) => {
+	const option = { maxSizeMb: 2, maxWidthOrHeight: 900 };
 	const user = useSelector(selectUser);
-	const [imgStart, setImgStart] = useState();
-	const [imgEnd, setImgEnd] = useState();
 	const [data, setData] = useState(new FormData());
 	const [stdData, setStdData] = useState();
 	const [pending, setPending] = useState(false);
-	const handleInputStartImage = (e) => {
-		data.append("result_start_img", e.target.files[0]);
-		// data.append("result_end_img", e.target.files[0]);
-		setImgStart(e.target.files[0]);
-		// setImgEnd(e.target.files[0]);
-		let tag = document.getElementById("startImg");
-		tag.value = e.target.files[0].name;
+	const [startImgUrl, setStartImgUrl] = useState("");
+	const [endImgUrl, setEndImgUrl] = useState("");
+	const {
+		isOpen: startImgIsOpen,
+		handleClose: handleCloseForStartImg,
+		handleOpen: handleOpenForStartImg,
+	} = useModal();
+	const {
+		isOpen: endImgIsOpen,
+		handleClose: handleCloseForEndImg,
+		handleOpen: handleOpenForEndImg,
+	} = useModal();
+
+	const handleInputStartImage = async (e) => {
+		if (data.has("result_start_img")) data.delete("result_start_img");
+		const file = e.target.files[0];
+		let compressedFile;
+		try {
+			compressedFile = await imageCompression(file, option);
+			data.append("result_start_img", compressedFile);
+			let tag = document.getElementById("startImg");
+			tag.value = file.name;
+			tag.addEventListener("click", handleOpenForStartImg);
+			imageCompression.getDataUrlFromFile(compressedFile).then((result) => {
+				setStartImgUrl(result);
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
-	const handleInputEndImage = (e) => {
-		// data.append("result_start_img", e.target.files[0]);
-		data.append("result_end_img", e.target.files[0]);
-		// setImgStart(e.target.files[0]);
-		setImgEnd(e.target.files[0]);
-		// e.target.value = e.target.files[0]
-		document.getElementById("endImg").value = e.target.files[0].name;
+	const handleInputEndImage = async (e) => {
+		if (data.has("result_end_img")) data.delete("result_end_img");
+		const file = e.target.files[0];
+		let compressedFile;
+		try {
+			compressedFile = await imageCompression(e.target.files[0], option);
+			data.append("result_end_img", compressedFile);
+			let tag = document.getElementById("endImg");
+			tag.value = file.name;
+			tag.addEventListener("click", handleOpenForEndImg);
+			imageCompression.getDataUrlFromFile(compressedFile).then((result) => {
+				setEndImgUrl(result);
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const handleConfirm = () => {
@@ -156,7 +188,7 @@ const InsertResult = ({
 
 			<ul className="img_info">
 				<li>· 줌 출석 및 종료 캡쳐 사진은 일시 및 시간이 잘 보이는 사진이어야 합니다.</li>
-				<li>· 이미지 사이즈 및  크기 : 900 x 900 / 2MB 이하</li>
+				<li>· 이미지 사이즈 및 크기 : 900 x 900 / 2MB 이하</li>
 			</ul>
 
 			<div className="btn_area right">
@@ -170,6 +202,12 @@ const InsertResult = ({
 					닫기
 				</div>
 			</div>
+			<Modal isOpen={startImgIsOpen} handleClose={handleCloseForStartImg}>
+				<img id="startImg_img" src={startImgUrl} onClick={handleCloseForStartImg}></img>
+			</Modal>
+			<Modal isOpen={endImgIsOpen} handleClose={handleCloseForEndImg}>
+				<img id="endImg_img" src={endImgUrl} onClick={handleCloseForEndImg}></img>
+			</Modal>
 		</div>
 	);
 };
