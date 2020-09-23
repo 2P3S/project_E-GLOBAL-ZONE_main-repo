@@ -49,6 +49,7 @@ class ScheduleController extends Controller
         $this->schedule = new Schedule();
         $this->resultImage = new SchedulesResultImg();
         $this->restrict = new Restricted_student_korean();
+        $this->reservation = new Reservation();
     }
 
     /**
@@ -639,10 +640,10 @@ class ScheduleController extends Controller
         }
 
         $rules = [
-            'attendance' => 'required|array',
-            'attendance.*' => 'required|integer',
-            'absent' => 'array',
-            'absent.*' => 'integer',
+            'attendance' => 'nullable|array',
+            'attendance.*' => 'integer|distinct|min:1000000|max:9999999',
+            'absent' => 'nullable|array',
+            'absent.*' => 'integer|distinct|min:1000000|max:9999999',
             'guard' => 'required|string|in:admin'
         ];
 
@@ -659,28 +660,39 @@ class ScheduleController extends Controller
         $update_attendance_id_list = $request->input('attendance');
         $update_absent_id_list = $request->input('absent');
 
-        // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
-        $sch_id->update([
-            'sch_state_of_permission' => true
-        ]);
+        // <<-- 출석, 결석 학생 업데이트
+        if (!empty($update_attendance_id_list)) {
+            $this->reservation->update_std_kor_res(
+                $sch_id,
+                $update_attendance_id_list,
+                'res_state_of_attendance',
+                true
+            );
 
-        // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
+            // 해당 스케줄이 대한 한국인 학생 활동 참여 횟수 업데이트
+            Student_korean::whereIn('std_kor_id', $update_attendance_id_list)
+                ->increment('std_kor_num_of_attendance', 1);
+        }
+
         if (!empty($update_absent_id_list)) {
+            $this->reservation->update_std_kor_res(
+                $sch_id,
+                $update_absent_id_list,
+                'res_state_of_attendance',
+                false
+            );
+
+            // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
             foreach ($update_absent_id_list as $std_kor_id) {
                 $this->restrict->set_korean_absent_count($std_kor_id);
             }
         }
+        // -->>
 
-        // 해당 스케줄에 대한 한국인 학생 출석 결과 승인
-        Reservation::whereIn('res_id', $update_attendance_id_list)
-            ->where('res_sch', $sch_id['sch_id'])
-            ->update([
-                'res_state_of_attendance' => true
-            ]);
-
-        // 해당 스케줄이 대한 한국인 학생 활동 참여 횟수 업데이트
-        Student_korean::whereIn('std_kor_id', $update_attendance_id_list)
-            ->increment('std_kor_num_of_attendance', 1);
+        // 해당 스케줄에 대한 유학생 출석 결과 입력 승인
+        $sch_id->update([
+            'sch_state_of_permission' => true
+        ]);
 
         return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
     }
