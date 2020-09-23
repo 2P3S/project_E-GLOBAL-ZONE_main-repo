@@ -50,7 +50,7 @@ const InsertResult = ({
 		handleOpenForLoader();
 		try {
 			compressedFile = await imageCompression(file, option);
-			data.append("result_start_img", compressedFile);
+			data.append("result_start_img", new File([compressedFile], file.name));
 			let tag = document.getElementById("startImg");
 			tag.value = file.name;
 			tag.addEventListener("click", handleOpenForStartImg);
@@ -71,7 +71,8 @@ const InsertResult = ({
 		handleOpenForLoader();
 		try {
 			compressedFile = await imageCompression(e.target.files[0], option);
-			data.append("result_end_img", compressedFile);
+			compressedFile.name = file.name;
+			data.append("result_end_img", new File([compressedFile], file.name));
 			let tag = document.getElementById("endImg");
 			tag.value = file.name;
 			tag.addEventListener("click", handleOpenForEndImg);

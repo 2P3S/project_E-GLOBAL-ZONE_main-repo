@@ -70,8 +70,8 @@ export function ForeignerRouter() {
 		<>
 			<Header /> {/* 유학생용 헤더로 대체해야함 */}
 			<Switch>
-				<Route exact path="/:id" component={ForeignerSchedules} />
-				<Redirect path="/" to={`/${user.id}`} />
+				<Route exact path="/" component={ForeignerSchedules} />
+				<Redirect path="/" to={`/`} />
 			</Switch>
 			<Footer />
 		</>
