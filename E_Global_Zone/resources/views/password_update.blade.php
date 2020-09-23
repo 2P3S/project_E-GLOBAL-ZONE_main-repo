@@ -42,6 +42,7 @@
         .wrapper {
             width: 100%;
             text-align: center;
+            background: none;
         }
 
         .wrapper .content {
