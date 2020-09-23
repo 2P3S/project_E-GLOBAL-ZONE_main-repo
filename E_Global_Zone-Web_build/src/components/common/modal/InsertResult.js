@@ -9,6 +9,7 @@ import { selectUser } from "../../../redux/userSlice/userSlice";
 import conf from "../../../conf/conf";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
+import Loader from "../Loader";
 
 const InsertResult = ({
 	sch_id,
@@ -36,11 +37,17 @@ const InsertResult = ({
 		handleClose: handleCloseForEndImg,
 		handleOpen: handleOpenForEndImg,
 	} = useModal();
+	const {
+		isOpen: loaderIsOpen,
+		handleClose: handleCloseForLoader,
+		handleOpen: handleOpenForLoader,
+	} = useModal();
 
 	const handleInputStartImage = async (e) => {
 		if (data.has("result_start_img")) data.delete("result_start_img");
 		const file = e.target.files[0];
 		let compressedFile;
+		handleOpenForLoader();
 		try {
 			compressedFile = await imageCompression(file, option);
 			data.append("result_start_img", compressedFile);
@@ -52,12 +59,16 @@ const InsertResult = ({
 			});
 		} catch (error) {
 			console.log(error);
+			alert("error");
+		} finally {
+			handleCloseForLoader();
 		}
 	};
 	const handleInputEndImage = async (e) => {
 		if (data.has("result_end_img")) data.delete("result_end_img");
 		const file = e.target.files[0];
 		let compressedFile;
+		handleOpenForLoader();
 		try {
 			compressedFile = await imageCompression(e.target.files[0], option);
 			data.append("result_end_img", compressedFile);
@@ -69,6 +80,9 @@ const InsertResult = ({
 			});
 		} catch (error) {
 			console.log(error);
+			alert("error");
+		} finally {
+			handleCloseForLoader();
 		}
 	};
 
@@ -207,6 +221,9 @@ const InsertResult = ({
 			</Modal>
 			<Modal isOpen={endImgIsOpen} handleClose={handleCloseForEndImg}>
 				<img id="endImg_img" src={endImgUrl} onClick={handleCloseForEndImg}></img>
+			</Modal>
+			<Modal isOpen={loaderIsOpen}>
+				<Loader />
 			</Modal>
 		</div>
 	);
