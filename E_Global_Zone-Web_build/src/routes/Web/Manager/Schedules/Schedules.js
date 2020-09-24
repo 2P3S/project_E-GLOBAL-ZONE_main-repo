@@ -63,35 +63,46 @@ export default function Schedules() {
 		setCalIsOpen(!calIsOpen);
 	};
 
-	const handleCheck = (className, isAdd) => {
+	const handleCheck = (className) => {
 		if (className === "checkAll") {
-			document.getElementsByName("checkBox").forEach((v) => {
-				v.checked = isAdd;
-			});
-			handleCheck("state1", isAdd);
-			handleCheck("state2", isAdd);
-			handleCheck("state3", isAdd);
-			handleCheck("state4", isAdd);
-			handleCheck("state5", isAdd);
-			handleCheck("state6", isAdd);
-			handleCheck("state7", isAdd);
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.remove("off");
+				}
+			}
 		} else {
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.add("off");
+				}
+			}
 			for (const key in document.getElementsByClassName(`state_box ${className}`)) {
 				if (document.getElementsByClassName(`state_box ${className}`).hasOwnProperty(key)) {
 					const element = document.getElementsByClassName(`state_box ${className}`)[key];
-					isAdd ? element.classList.remove("off") : element.classList.add("off");
+					element.classList.remove("off");
 				}
 			}
 		}
 	};
+	const handleChange = (e) => {
+		console.log(e.target);
+		handleCheck(e.target.value);
+	};
 
 	const handleClick = (e) => {
-		if (e.target.value === "state1") {
-			handleCheck(e.target.value, e.target.checked);
-			handleCheck("state2", e.target.checked);
-		} else {
-			handleCheck(e.target.value, e.target.checked);
-		}
+		document
+			.getElementsByName("checkBox")
+			.forEach((v) => v.value !== e.target.value && (v.checked = false));
+		e.target.checked = true;
+		// alert(e.target.value);
+		// if (e.target.value === "state1") {
+		// 	handleCheck(e.target.value, true);
+		// 	handleCheck("state2", true);
+		// } else {
+		// 	handleCheck(e.target.value, e.target.checked);
+		// }
 	};
 	useMemo(() => {
 		if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
@@ -106,6 +117,7 @@ export default function Schedules() {
 		document.getElementsByName("checkBox").forEach((v) => {
 			// v.checked = false;
 			v.addEventListener("click", handleClick);
+			v.addEventListener("change", handleChange);
 		});
 	}, []);
 	useEffect(() => {
@@ -448,10 +460,7 @@ export default function Schedules() {
 							/>
 							<label htmlFor="no_app_reservation">
 								<span>
-									예약 미승인{" "}
-									<span className="blue">
-										{countOfstate.state1 + countOfstate.state2}
-									</span>
+									예약 미승인 <span className="blue">{countOfstate.state1}</span>
 									건
 								</span>
 							</label>
