@@ -657,7 +657,7 @@ export default function Schedules() {
 								스케줄 삭제
 							</div>
 						)}
-						<div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div>
+						{/* <div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div> */}
 					</div>
 				</div>
 
