@@ -213,9 +213,9 @@ const InsertResult = ({
 				{/* <div className="bbtn red" onClick={handleConfirm}>
 					삭제
 				</div> */}
-				<div className="bbtn darkGray" onClick={handleClose}>
+				{/* <div className="bbtn darkGray" onClick={handleClose}>
 					닫기
-				</div>
+				</div> */}
 			</div>
 			<Modal isOpen={startImgIsOpen} handleClose={handleCloseForStartImg}>
 				<img id="startImg_img" src={startImgUrl} onClick={handleCloseForStartImg}></img>

@@ -217,9 +217,9 @@ export default function PermissionScheduleResult({
 					>
 						승인
 					</div>
-					<div className="bbtn darkGray" onClick={handleClose}>
+					{/* <div className="bbtn darkGray" onClick={handleClose}>
 						닫기
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<Modal isOpen={isOpen} handleClose={handleCloseForImg}>

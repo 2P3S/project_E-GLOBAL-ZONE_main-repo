@@ -73,7 +73,9 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 			let date = document.createElement("td");
 			date.innerText = _data[i].date;
 			let time = document.createElement("td");
-			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).hour()}:00 ~ ${moment(`1996-02-27 ${_data[i].endTime}:00`).hour()}:00`;
+			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).hour()}:00 ~ ${moment(
+				`1996-02-27 ${_data[i].endTime}:00`
+			).hour()}:00`;
 			let name = document.createElement("td");
 			name.innerText = _data[i].std_for_name;
 			let button = document.createElement("td");
@@ -211,9 +213,9 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 				>
 					등록
 				</div>
-				<div className="bbtn darkGray" onClick={handleClose}>
+				{/* <div className="bbtn darkGray" onClick={handleClose}>
 					닫기
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
