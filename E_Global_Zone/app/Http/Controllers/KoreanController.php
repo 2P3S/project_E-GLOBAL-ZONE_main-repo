@@ -13,26 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class KoreanController extends Controller
 {
-    // indexApproval
-    private const _STD_KOR_APR_INDEX_SUCCESS1 = "가입 승인 대기중인 한국인 학생은 ";
-    private const _STD_KOR_APR_INDEX_SUCCESS2 = "명입니다.";
-    private const _STD_KOR_APR_INDEX_FAILURE = "가입 승인 대기중인 한국인 학생이 없습니다.";
-    private const _STD_KOR_IS_ALREADY_REGISTERED = "이미 존재하는 학생의 정보입니다.";
-
-    // updateApproval
-    private const _STD_KOR_APR_UPDATE_SUCCESS = "명의 한국인 학생이 가입 승인 되었습니다.";
-    private const _STD_KOR_APR_UPDATE_FAILURE = "가입 승인에 실패하였습니다. 한국인 학생 다시 목록을 확인해주세요";
-
-    private const _STD_KOR_RGS_SUCCESS = "가입 신청에 성공하였습니다. 글로벌 존 관리자 승인 시 이용가능합니다.";
-    private const _STD_KOR_RGS_FAILURE = "가입 신청에 실패하였습니다. 글로벌 존 관리자에게 문의해주세요.";
-
-    private const _STD_KOR_RGS_DELETE_SUCCESS = " 한국인 학생이 삭제되었습니다.";
-    private const _STD_KOR_RGS_DELETE_FAILURE = " 한국인 학생에 실패하였습니다.";
-
-    private const _STD_KOR_INDEX_SUCCESS = "한국인 학생 정보 조회에 성공하였습니다.";
-    private const _STD_KOR_INDEX_NONDATA = "해당 학생의 정보가 없습니다.";
-    private const _STD_KOR_INDEX_FAILURE = "한국인 학생 정보 조회에 실패하였습니다.";
-
     private $restricted;
     private $std_kor;
 
@@ -66,11 +46,11 @@ class KoreanController extends Controller
 
         // 대기중인 학생이 없을 경우
         if ($approval_count == 0) {
-            return self::response_json(self::_STD_KOR_APR_INDEX_FAILURE, 200);
+            return self::response_json(Config::get('constants.kor.std_kor.index_approval.no_value'), 202);
         }
         // 대기중인 학생이 있을 경우
         else {
-            $msg = self::_STD_KOR_APR_INDEX_SUCCESS1 . $approval_count . self::_STD_KOR_APR_INDEX_SUCCESS2;
+            $msg = Config::get('constants.kor.std_kor.index_approval.success1') . $approval_count . Config::get('constants.kor.std_kor.index_approval.success2');
             return self::response_json($msg, 200, $approval_result);
         }
     }
@@ -92,7 +72,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_APR_UPDATE_FAILURE
+            Config::get('constants.kor.std_kor.update_approval.failure')
         );
 
         if (is_object($validated_result)) {
@@ -106,7 +86,7 @@ class KoreanController extends Controller
                 'std_kor_state_of_permission' => (int)true
             ]);
 
-        return self::response_json(count($update_std_kor_id_list) . self::_STD_KOR_APR_UPDATE_SUCCESS, 200);
+        return self::response_json(count($update_std_kor_id_list) . Config::get('constants.kor.std_kor.update_approval.success'), 200);
     }
 
     /**
@@ -126,7 +106,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_INDEX_FAILURE
+            Config::get('constants.kor.std_kor.index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -141,9 +121,9 @@ class KoreanController extends Controller
         $is_non_kor_data = $std_kor_info->count() === 0;
 
         // 검색 후 조회된 데이터가 없을 경우
-        if ($is_non_kor_data) return self::response_json(self::_STD_KOR_INDEX_NONDATA, 202);
+        if ($is_non_kor_data) return self::response_json(Config::get('constants.kor.std_kor.index.no_value'), 202);
 
-        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_kor_info);
+        return self::response_json(Config::get('constants.kor.std_kor.index.success'), 200, $std_kor_info);
     }
 
     /**
@@ -161,7 +141,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_INDEX_FAILURE
+            Config::get('constants.kor.std_kor.index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -180,7 +160,7 @@ class KoreanController extends Controller
             }
         }
 
-        return self::response_json(self::_STD_KOR_INDEX_SUCCESS, 200, $std_koreans);
+        return self::response_json(Config::get('constants.kor.std_kor.index.success'), 200, $std_koreans);
     }
 
     /**
@@ -207,7 +187,7 @@ class KoreanController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_RGS_FAILURE
+            Config::get('constants.kor.std_kor.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -225,7 +205,7 @@ class KoreanController extends Controller
 
         $this->std_kor->store_std_kor_info($std_kor_data);
 
-        return self::response_json(self::_STD_KOR_RGS_SUCCESS, 201);
+        return self::response_json(Config::get('constants.kor.std_kor.store.success'), 201);
     }
 
     /**
@@ -235,9 +215,13 @@ class KoreanController extends Controller
      */
     public function destroyAccount(Student_korean $std_kor_id): JsonResponse
     {
-        $std_kor_id->delete();
-
-        return self::response_json(self::_STD_KOR_RGS_DELETE_SUCCESS, 200);
+        $std_kor_name = $std_kor_id['std_kor_name'];
+        try {
+            $std_kor_id->delete();
+        } catch (Exception $e) {
+            return self::response_json(Config::get('constants.kor.std_kor.destroy.failure'), 422);
+        }
+        return self::response_json($std_kor_name . Config::get('constants.kor.std_kor.destroy.success'), 200);
     }
 
     /**
