@@ -5,16 +5,25 @@ import {
 } from "../../../api/admin/schedule";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
+import Loader from "../Loader";
 
-export default function PermissionScheduleResult({ date, handleClose, reRender = () => {} }) {
+export default function PermissionScheduleResult({
+	date,
+	handleClose,
+	sch_id = null,
+	reRender = () => {},
+}) {
 	const [data, setData] = useState();
 	const [pending, setPending] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [selectIndex, setSelectIndex] = useState(0);
 	const [selectedImgSrc, setSelectedImgSrc] = useState();
+	const [selectedSch, setSelectedSch] = useState(sch_id);
 	const { isOpen, handleClose: handleCloseForImg, handleOpen } = useModal();
 	useEffect(() => {
 		getAdminScheduleUnapproved(date, 0).then((res) => {
 			setData(res.data);
+			setLoading(false);
 		});
 		return reRender;
 	}, []);
@@ -32,7 +41,10 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 			setSelectIndex(0);
 		}
 	}, [pending]);
-	return (
+
+	return loading ? (
+		<Loader />
+	) : (
 		<div className="popup not_attend">
 			<div className="left_wrap">
 				<p className="tit">미승인 출석결과 목록</p>
@@ -59,8 +71,13 @@ export default function PermissionScheduleResult({ date, handleClose, reRender =
 											key={v.sch_id}
 											onClick={() => {
 												setSelectIndex(index);
+												setSelectedSch(v.sch_id);
 											}}
-											style={{ cursor: "pointer" }}
+											style={{
+												cursor: "pointer",
+												backgroundColor:
+													v.sch_id === selectedSch ? "#faf3dd" : "",
+											}}
 										>
 											<td>{index + 1}</td>
 											<td>

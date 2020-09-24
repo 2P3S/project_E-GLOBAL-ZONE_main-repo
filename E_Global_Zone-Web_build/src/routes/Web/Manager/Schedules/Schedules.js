@@ -104,7 +104,7 @@ export default function Schedules() {
 
 	useEffect(() => {
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			// v.checked = false;
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
@@ -122,8 +122,9 @@ export default function Schedules() {
 	useEffect(() => {
 		setPending(true);
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			v.checked = false;
 		});
+		document.getElementById("allCheck").checked = true;
 	}, [selectDate]);
 
 	useEffect(() => {
@@ -413,6 +414,7 @@ export default function Schedules() {
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
+
 				<div
 					style={{ position: "absolute", zIndex: "9999" }}
 					onMouseLeave={() => setCalIsOpen(false)}
@@ -506,6 +508,7 @@ export default function Schedules() {
 				</ul>
 				<ul>
 					{/* 여기에 미승인 목록 모달 달아야함 */}
+					{/* 화이팅ㅋㅋ */}
 					<li className="ico03">[결과 미입력] 출석 학생</li>
 					{/* <li className="ico04">[결과 입력 완료]</li> 2020-09-09 삭제 */}
 				</ul>
@@ -689,6 +692,7 @@ export default function Schedules() {
 					<PermissionScheduleResult
 						handleClose={scheduleClose}
 						date={params.date}
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
 						reRender={reRender}
 					/>
 				) : selectedSchedule.component === "ShowResult" ? (
