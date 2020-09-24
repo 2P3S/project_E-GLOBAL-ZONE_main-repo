@@ -103,20 +103,16 @@ export default function Schedules() {
 	}, [params]);
 
 	useEffect(() => {
-		// document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
 			v.checked = true;
 			v.addEventListener("click", handleClick);
 		});
 	}, []);
-	useMemo(() => {
+	useEffect(() => {
 		if (!firstRendering) {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		} else {
-			console.log(params.date !== _selectDate);
-			// if (_selectDate !== today) {
-			// 	dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
 			if (params.date !== _selectDate) {
 				let { date } = params;
 				dispatch(_setSelectDate(moment(date).format("YYYY-MM-DD")));
@@ -206,7 +202,7 @@ export default function Schedules() {
 										schedule.un_permission_count === 0 &&
 										schedule.reservated_count === 0
 									) {
-										if (moment(schedule.sch_end_date) > moment(Date.now())) {
+										if (moment(schedule.sch_start_date) > moment(Date.now())) {
 											div.classList.add("state7");
 											setCountOfState({
 												...countOfstate,
@@ -218,10 +214,6 @@ export default function Schedules() {
 												...countOfstate,
 												state7: ++countOfstate.state7,
 											});
-											/*********************************
-											 * 종료 아이콘 추가 예정
-											 *********************************/
-											// div.style.visibility = "hidden";
 											let close = document.createElement("div");
 											close.className = "close";
 											div.appendChild(close);
