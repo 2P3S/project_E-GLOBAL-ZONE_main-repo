@@ -11,8 +11,7 @@ use App\Section;
 use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
 
 class ScheduleController extends Controller
 {
@@ -610,13 +609,6 @@ class ScheduleController extends Controller
 
             // 한국인 학생 정보 추가.
             $schedule['student_korean'] = $kor_data;
-
-            // <<-- 이미지 주소 매핑
-            $schedule['start_img_url'] =
-                $this->resultImage->get_base64_img($schedule['start_img_url']);
-            $schedule['end_img_url'] =
-                $this->resultImage->get_base64_img($schedule['end_img_url']);
-            // -->>
         }
 
         return response()->json([
