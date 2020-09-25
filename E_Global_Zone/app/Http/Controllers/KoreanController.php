@@ -7,6 +7,7 @@ use App\Restricted_student_korean;
 use App\Student_korean;
 use Socialite;
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
