@@ -86,11 +86,12 @@ class ReservationController extends Controller
      */
     public function std_for_show_res_by_id(
         Schedule $sch_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $std_for_id = $sch_id['sch_std_for'];
 
         // <<-- 스케줄에 대한 예약 학생 명단 조회
-        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', (int) $std_for_id, true);
+        return $this->schedule->get_sch_res_std_kor_list($sch_id, 'sch_std_for', (int)$std_for_id, true);
     }
 
     /**
@@ -103,7 +104,8 @@ class ReservationController extends Controller
     public function std_for_update_res_permission(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $rules = [
             'permission_std_kor_id_list' => 'nullable|array',
             'permission_std_kor_id_list.*' => 'integer|distinct|min:1000000|max:9999999',
@@ -157,7 +159,8 @@ class ReservationController extends Controller
     public function std_for_input_sch_result(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         // <<-- 기존 결과 입력 여부 확인
         $sch_state_of_result_input = $sch_id['sch_state_of_result_input'];
 
@@ -219,10 +222,10 @@ class ReservationController extends Controller
         // <<-- 스케줄 결과 입력 결과 업데이트
         $sch_id->update(['sch_state_of_result_input' => true]);
         // -->>
-
+        $sch_result_img = new SchedulesResultImgController();
         // 이미지 저장 후 결과 반환
         return
-            SchedulesResultImgController::store_result_img(
+            $sch_result_img->store_result_img(
                 $sch_id,
                 $request->file('result_start_img'),
                 $request->file('result_end_img')
@@ -241,7 +244,8 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id,
         Preference $preference_instance
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $setting_value = $preference_instance->getPreference();                         /* 환경설정 변수 */
 
         // <<-- 신청한 스케줄이 예약 신청 가능한지 확인(시작, 마감일 기준)
@@ -373,8 +377,8 @@ class ReservationController extends Controller
             ->orderBy('res_count', 'DESC')
             ->get();
 
-        $msg                = $sect_id['sect_name'] . Config::get('constants.kor.reservation.kor_show_rank.success');
-        $search_data        = $sect_by_reservations->where('res_std_kor', $std_kor_id);
+        $msg = $sect_id['sect_name'] . Config::get('constants.kor.reservation.kor_show_rank.success');
+        $search_data = $sect_by_reservations->where('res_std_kor', $std_kor_id);
 
         $has_no_reservation = $search_data->count() == 0;
 
@@ -384,10 +388,10 @@ class ReservationController extends Controller
                 'data' => 0,
             ], 200);
 
-        $number_of_student       = $sect_by_reservations->count();
-        $number_of_rank_by_sect  = $search_data->keys()->first() + 1;
+        $number_of_student = $sect_by_reservations->count();
+        $number_of_rank_by_sect = $search_data->keys()->first() + 1;
 
-        $rank_by_percent_formula = (int) ($number_of_rank_by_sect / $number_of_student * 100);
+        $rank_by_percent_formula = (int)($number_of_rank_by_sect / $number_of_student * 100);
 
 
         return response()->json([
@@ -445,7 +449,8 @@ class ReservationController extends Controller
     public function add_kor_schedule_by_admin(
         Request $request,
         Schedule $sch_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         // <<-- Request 유효성 검사
         $rules = [
             'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
@@ -500,7 +505,8 @@ class ReservationController extends Controller
     public function destroy_kor_reservation_by_admin(
         Request $request,
         Reservation $res_id
-    ): JsonResponse {
+    ): JsonResponse
+    {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
