@@ -49,7 +49,7 @@ export default function PermissionScheduleResult({
 
 	const setImg = (sch_id) => {
 		getAdminScheduleImage(sch_id).then((res) => {
-			setResultImg(res.data);
+			setResultImg(res.data.data);
 			setPending(false);
 		});
 	};
@@ -169,6 +169,7 @@ export default function PermissionScheduleResult({
 								<p
 									className="file_name"
 									onClick={() => {
+										console.log(resultImg);
 										setSelectedImgSrc(resultImg.end_img);
 										handleOpen();
 									}}

@@ -71,11 +71,11 @@ export default function Results() {
 				<div className="point_info">
 					<p>
 						<div>
-							<span className="name">{user.name}</span> 학생의{" "}
+							<span className="name">{user.name}</span> 학생의{" "}<br />
 							{selectSect ? selectSect.sect_name : "학기별"}
 						</div>
 						글로벌 존 이용 횟수
-						<div>{selectSect ? selectSect.sect_name : ""}</div>
+						{/* <div>{selectSect ? selectSect.sect_name : ""}</div> */}
 					</p>
 					<div className="result">
 						<span className="rank">상위 {sectRank}%</span>
@@ -119,8 +119,8 @@ export default function Results() {
 					<div>{/* <a href=""></a> */}</div>
 					<table>
 						<colgroup>
-							<col width="30%" />
-							<col width="70%" />
+							<col width="45%" />
+							<col width="55%" />
 						</colgroup>
 						<thead>
 							<tr>
