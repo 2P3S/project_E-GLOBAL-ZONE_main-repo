@@ -11,45 +11,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 class ReservationController extends Controller
 {
-    /*
-     * [Refactoring]
-     * TODO RESPONSE 수정
-     * TODO validator 수정
-     *
-     * == 누락 API ==
-     * TODO 접근 가능 범위 수정
-     * TODO 관리자가 예약 신청, 승인
-     */
-    private const _STD_KOR_RES_STORE_OVER = "1일 최대 스케줄 예약 횟수를 초과하였습니다.";
-    private const _STD_KOR_RES_STORE_SAME_TIME = "같은 시간대의 스케줄은 예약이 불가능합니다.";
-    private const _STD_KOR_RES_STORE_OVER_PEOPLE = "해당 스케줄은 정원 초과로 예약에 실패하였습니다.";
-    private const _STD_KOR_RES_STORE_DUPLICATE = "이미 예약한 스케줄입니다.";
-    private const _STD_KOR_RES_STORE_IMPOSSIBILITY = "예약 불가능한 스케줄입니다.";
-    private const _STD_KOR_RES_STORE_SUCCESS = "일 스케줄 예약이 성공하였습니다.";
-    private const _STD_KOR_RES_STORE_FAILURE = "스케줄 예약에 실패하였습니다.";
-
-    private const _STD_KOR_RES_INDEX_FAILURE = "스케줄 예약 목록 조회에 실패하였습니다.";
-
-    private const _STD_KOR_RES_DELETE_SUCCESS = "예약한 스케줄이 삭제되었습니다.";
-    private const _STD_KOR_RES_DELETE_FAILURE = "예약한 스케줄 삭제에 실패하였습니다.";
-    private const _STD_KOR_RES_DELETE_OVER_DATE = "예약 취소 가능 일자를 초과했습니다.";
-
-    private const _STD_KOR_RESULT_SUCCESS = " 학기별 미팅 목록 조회에 성공하였습니다.";
-    private const _STD_KOR_RESULT_FAILURE = " 학기별 미팅 목록 조회에 실패하였습니다.";
-
-    private const _STD_FOR_RES_UPDATE_SUCCESS = "스케줄 예약 학생 승인결과 업데이트를 성공하였습니다.";
-    private const _STD_FOR_RES_UPDATE_FAILURE = "스케줄 예약 학생 승인결과 업데이트에 실패하였습니다.";
-
-    private const _STD_FOR_RES_INDEX_FAILURE = "스케줄에 대한 예약 목록이 없습니다.";
-    private const _STD_FOR_RES_RESULT_FAILURE = "스케줄 출석 결과 입력에 실패하였습니다.";
-    private const _STD_FOR_RES_RESULT_COMPLETED = "이미 결과 입력이 완료되어 수정 불가능합니다.";
-
-    private const _STD_KOR_RES_INDEX_SUCCESS = "예약한 스케줄 조회에 성공하였습니다. ";
-
-
     private $schedule;
     private $reservation;
 
@@ -76,7 +41,7 @@ class ReservationController extends Controller
 
         if ($is_unauthenticated)
             return
-                self::response_json_error(self::_STD_KOR_RES_DELETE_FAILURE);
+                self::response_json_error(Config::get('constants.kor.reservation.destroy.failure'));
 
         // <<-- 환경변수 설정
         $setting_value = $preference_instance->getPreference();
@@ -105,11 +70,11 @@ class ReservationController extends Controller
 
         if (!$is_cancellable_date) {
             return
-                self::response_json_error(self::_STD_KOR_RES_DELETE_OVER_DATE);
+                self::response_json_error(Config::get('constants.kor.reservation.destroy.over_date'));
         } else {
             $res_id->delete();
 
-            return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
+            return self::response_json(Config::get('constants.kor.reservation.destroy.success'), 200);
         }
     }
 
@@ -150,7 +115,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_RES_UPDATE_FAILURE
+            Config::get('constants.kor.reservation.for_update_permission.failure')
         );
 
         if (is_object($validated_result)) {
@@ -179,7 +144,7 @@ class ReservationController extends Controller
             );
         // -->>
 
-        return self::response_json(self::_STD_FOR_RES_UPDATE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.reservation.for_update_permission.success'), 200);
     }
 
     /**
@@ -198,7 +163,7 @@ class ReservationController extends Controller
 
         if ($sch_state_of_result_input) {
             return
-                self::response_json(self::_STD_FOR_RES_RESULT_COMPLETED, 202);
+                self::response_json(Config::get('constants.kor.reservation.for_input_result.completed'), 202);
         }
         // -->>
 
@@ -206,7 +171,7 @@ class ReservationController extends Controller
         $is_sch_no_res = $this->schedule->get_sch_res_std_kor_list($sch_id) === null;
         if ($is_sch_no_res) {
             return
-                self::response_json(self::_STD_FOR_RES_INDEX_FAILURE, 202);
+                self::response_json(Config::get('constants.kor.reservation.for_index.failure'), 202);
         }
         // -->>
 
@@ -223,7 +188,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_RES_RESULT_FAILURE
+            Config::get('constants.kor.reservation.for_input_result.failure')
         );
 
         if (is_object($validated_result)) {
@@ -284,7 +249,7 @@ class ReservationController extends Controller
 
         if (!$is_res_possibility) {
             return
-                self::response_json(self::_STD_KOR_RES_STORE_IMPOSSIBILITY, 202);
+                self::response_json(Config::get('constants.kor.reservation.kor_store.failure'), 202);
         }
         // -->>
 
@@ -296,7 +261,7 @@ class ReservationController extends Controller
 
         if ($is_over_max_std_once) {
             return
-                self::response_json(self::_STD_KOR_RES_STORE_OVER_PEOPLE, 202);
+                self::response_json(Config::get('constants.kor.reservation.kor_store.over_people'), 202);
         }
         // -->>
 
@@ -309,7 +274,7 @@ class ReservationController extends Controller
         foreach ($std_kor_res as $res) {
             if (strtotime($res['sch_start_date']) == $res_start_time) {
                 return
-                    self::response_json(self::_STD_KOR_RES_STORE_SAME_TIME, 202);
+                    self::response_json(Config::get('constants.kor.reservation.kor_store.same_time'), 202);
             }
         }
 
@@ -319,7 +284,7 @@ class ReservationController extends Controller
 
         if ($is_over_max_res_per_day) {
             return
-                self::response_json(self::_STD_KOR_RES_STORE_OVER, 202);
+                self::response_json(Config::get('constants.kor.reservation.kor_store.over_count'), 202);
         }
         // -->>
 
@@ -329,7 +294,7 @@ class ReservationController extends Controller
             $std_kor_id
         );
 
-        if ($is_already_res) return self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
+        if ($is_already_res) return self::response_json(Config::get('constants.kor.reservation.kor_store.duplicate'), 202);
         // -->>
 
         // <<-- 예약 정보 저장
@@ -343,7 +308,7 @@ class ReservationController extends Controller
         $schedule_date = strtotime($sch_id['sch_start_date']);
         $schedule_date = date("Y-m-d", $schedule_date);
 
-        return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+        return self::response_json($schedule_date . Config::get('constants.kor.reservation.kor_store.success'), 201, $created_res);
     }
 
     /**
@@ -363,7 +328,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_RES_INDEX_FAILURE
+            Config::get('constants.kor.reservation.kor_index.failure')
         );
 
         if (is_object($validated_result)) {
@@ -408,7 +373,7 @@ class ReservationController extends Controller
             ->orderBy('res_count', 'DESC')
             ->get();
 
-        $msg                = $sect_id['sect_name'] . "학기의 랭킹을 반환합니다.";
+        $msg                = $sect_id['sect_name'] . Config::get('constants.kor.reservation.kor_show_rank.success');
         $search_data        = $sect_by_reservations->where('res_std_kor', $std_kor_id);
 
         $has_no_reservation = $search_data->count() == 0;
@@ -448,7 +413,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_RESULT_FAILURE
+            Config::get('constants.kor.reservation.kor_show_sect.failure')
         );
 
         if (is_object($validated_result)) {
@@ -467,7 +432,7 @@ class ReservationController extends Controller
             ->where('res_state_of_attendance', true)
             ->get();
 
-        return self::response_json(self::_STD_KOR_RESULT_SUCCESS, 200, $sect_by_reservations);
+        return self::response_json(Config::get('constants.kor.reservation.kor_show_sect.success'), 200, $sect_by_reservations);
     }
 
     /**
@@ -490,7 +455,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_KOR_RES_STORE_FAILURE
+            Config::get('constants.kor.reservation.admin_add_kor.failure')
         );
 
         if (is_object($validated_result)) {
@@ -507,7 +472,7 @@ class ReservationController extends Controller
             $std_kor_id
         );
 
-        if ($is_already_res) return self::response_json(self::_STD_KOR_RES_STORE_DUPLICATE, 202);
+        if ($is_already_res) return self::response_json(Config::get('constants.kor.reservation.admin_add_kor.duplicate'), 202);
         // -->>
 
         // 예약 정보 저장
@@ -522,7 +487,7 @@ class ReservationController extends Controller
         $schedule_date = strtotime($sch_id['sch_start_date']);
         $schedule_date = date("Y-m-d", $schedule_date);
 
-        return self::response_json($schedule_date . self::_STD_KOR_RES_STORE_SUCCESS, 201, $created_res);
+        return self::response_json($schedule_date . Config::get('constants.kor.reservation.admin_add_kor.success'), 201, $created_res);
     }
 
     /**
@@ -547,9 +512,9 @@ class ReservationController extends Controller
         try {
             $res_id->delete();
         } catch (Exception $e) {
-            return self::response_json_error(self::_STD_KOR_RES_DELETE_FAILURE);
+            return self::response_json_error(Config::get('constants.kor.reservation.destroy.failure'));
         }
 
-        return self::response_json(self::_STD_KOR_RES_DELETE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.reservation.destroy.success'), 200);
     }
 }
