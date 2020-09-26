@@ -11,6 +11,7 @@ export const confSlice = createSlice({
 		dept: {},
 		today: moment(Date.now()).format("YYYY-MM-DD"),
 		selectDate: moment(new Date(Date.now())).format("YYYY-MM-DD"),
+		language: "default",
 	},
 	reducers: {
 		setDept: (state, action) => {
