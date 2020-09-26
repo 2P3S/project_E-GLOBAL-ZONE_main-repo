@@ -156,6 +156,8 @@ export const MobileLogin = () => {
 	}, []);
 	return (
 		<div className="wrap mobile_login">
+			<LoginHeader />
+
 			<p class="tit">
 				Global Zone <span>Reservation Service</span>
 			</p>
@@ -276,7 +278,7 @@ function LoginHeader() {
 	const history = useHistory();
 	const location = useLocation();
 	return (
-		<ul>
+		<ul className="top_tab">
 			<li
 				className={location.pathname === "/student" && "on"}
 				onClick={() => {
