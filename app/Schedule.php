@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @method join(string $string, string $string1, string $string2)
@@ -85,7 +86,7 @@ class Schedule extends Model
         $is_exist_sch_res = $result->count();
         if (!$is_exist_sch_res) {
             return $flag_make_json ?
-                Controller::response_json(self::_STD_FOR_RES_SHOW_NO_DATA, 202) :
+                Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.failure'), 202) :
                 null;
         }
 
@@ -99,11 +100,9 @@ class Schedule extends Model
         $response_data = $result->select($lookup_columns)->get();
 
         return $flag_make_json ?
-            Controller::response_json(self::_STD_FOR_RES_SHOW_SUCCESS, 200, $response_data) :
+            Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.success'), 200, $response_data) :
             $response_data;
     }
-
-    private const _STD_KOR_SCH_SHOW = "스케줄 목록 조회에 성공하였습니다.";
 
     /**
      * 스케줄 id 값으로 스케줄 정보 조회
@@ -142,7 +141,7 @@ class Schedule extends Model
         ];
 
         return
-            Controller::response_json(self::_STD_KOR_SCH_SHOW, 200, $response_data);
+            Controller::response_json(Config::get('constants.kor.reservation.for_index.success'), 200, $response_data);
     }
 
     /**
