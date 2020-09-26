@@ -8,6 +8,7 @@ use App\Student_korean;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
 
 class RestrictKoreanController extends Controller
 {
@@ -47,12 +48,12 @@ class RestrictKoreanController extends Controller
 
         if (empty($restricted_kor_data->first()) || $restricted_kor_data->count() == 0) {
             return response()->json([
-                "message" => self::_INDEX_ERROR
+                "message" => Config::get('constants.kor.restrict.index.failure')
             ], 202);
         }
 
         return response()->json([
-            "message" => $restricted_kor_data['std_kor_name'] . self::_INDEX_SUCCESS,
+            "message" => $restricted_kor_data['std_kor_name'] . Config::get('constants.kor.restrict.index.success'),
             "data" => $restricted_kor_data
         ], 200);
     }
@@ -78,7 +79,7 @@ class RestrictKoreanController extends Controller
 
         if ($student['std_kor_state_of_restriction'] === (int)true) {
             return response()->json([
-                'message' => self::_REGISTER_ERROR
+                'message' => Config::get('constants.kor.restrict.store.failure')
             ], 202);
         }
 
@@ -91,7 +92,7 @@ class RestrictKoreanController extends Controller
 
             if (empty($sect_data)) {
                 return response()->json([
-                    'message' => self::_SECTION_ERROR
+                    'message' => Config::get('constants.kor.restrict.store.section_err')
                 ], 422);
             }
             $restricted_kor_data =
@@ -114,7 +115,7 @@ class RestrictKoreanController extends Controller
         $restricted_kor_data = $this->restrict->get_korean_restricted_info($request['std_kor_id']);
 
         return response()->json([
-            "message" => $restricted_kor_data['std_kor_name'] . self::_REGISTER_SUCCESS,
+            "message" => $restricted_kor_data['std_kor_name'] . Config::get('constants.kor.restrict.store.success'),
             "restrict_date" => $restricted_kor_data['restrict_start_date'] . " ~ " . $restricted_kor_data['restrict_end_date'],
             "restrict_reason" => $restricted_kor_data['restrict_reason']
         ], 201);
@@ -138,7 +139,7 @@ class RestrictKoreanController extends Controller
 
         if ($student['std_kor_state_of_restriction'] === (int)false) {
             return response()->json([
-                "message" => self::_INDEX_ERROR
+                "message" => Config::get('constants.kor.restrict.index.failure')
             ], 202);
         }
 
@@ -151,7 +152,7 @@ class RestrictKoreanController extends Controller
         ]);
 
         return response()->json([
-            "message" => $student['std_kor_name'] . self::_UPDATE_SUCCESS,
+            "message" => $student['std_kor_name'] . Config::get('constants.kor.restrict.update.success'),
         ], 200);
     }
 }

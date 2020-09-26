@@ -149,6 +149,9 @@ Route::middleware('auth.multi')->group(static function () {
             /** 해당 날짜 출석 결과 (승인, 미승인)건 조회 */
             Route::get('unapproved/{date}', 'ScheduleController@indexApprovedList')->name('schedules.indexApprovedList');
 
+            /** 완료된 스케줄의 사진 불러오기 */
+            Route::get('image/{sch_id}', 'SchedulesResultImgController@index_result_img')->name('schedulesresultimgs.index_result_img');
+
             /** 출석 결과 미승인 건 승인 */
             Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
         });
