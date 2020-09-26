@@ -21,7 +21,24 @@ const language = {
 			},
 		},
 		mobile: {},
-		foreigner: {},
+		foreigner: {
+			header: { btnLogout: "로그아웃" },
+			body: {
+				title: "스케줄 및 예약관리",
+				calendar: {
+					mon: "월",
+					tues: "화",
+					wednes: "수",
+					thurs: "목",
+					fri: "금",
+					sater: "토",
+					sun: "일",
+				},
+				nav: {
+					countOfWeeklySchedules: "이번 ",
+				},
+			},
+		},
 		admin: {
 			header: {
 				btnSchedule: "스케줄 및 예약관리",
