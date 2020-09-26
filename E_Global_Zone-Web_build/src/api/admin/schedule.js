@@ -3,7 +3,7 @@ import { admin } from "../axios";
 export const getAdminSchedule = (params) => admin.get("schedule", { params });
 export const postAdminSchedule = (data) => admin.post("schedule", data);
 
-export const getAdminScheduleImage = (sch_id) => admin.post(`schedule/image/${sch_id}`);
+export const getAdminScheduleImage = (sch_id) => admin.get(`schedule/image/${sch_id}`);
 export const postAdminScheduleAdd = (sch_id, data) => admin.post(`schedule/add/${sch_id}`, data);
 export const postAdminScheduleSome = (data) => admin.post(`schedule/some`, data);
 
