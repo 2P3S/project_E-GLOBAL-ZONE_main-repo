@@ -19,7 +19,7 @@ export default function Reservation() {
 	const dispatch = useDispatch();
 	const selectDate = useSelector(selectSelectDate);
 	const user = useSelector(selectUser);
-	const today = useSelector(selectToday);
+	const today = Date.now();
 
 	const [data, setData] = useState();
 	const [pending, setPending] = useState(false);
@@ -49,11 +49,12 @@ export default function Reservation() {
 		let arrayOfPermission = [];
 		if (data && data.data) {
 			data.data.forEach((v) => {
+				console.log(v);
 				if (moment(today).isAfter(moment(v.sch_end_date))) {
-					// 오늘 날짜 이전의 스케줄
-					arrayOfWatingForResult.push(v);
+					// 현재시간 이전의 스케줄
+					if (v.res_state_of_permission) arrayOfWatingForResult.push(v);
 				} else {
-					// 오늘 날짜 이후의 스케줄
+					// 현재시간 이후의 스케줄
 					if (v.res_state_of_permission) {
 						arrayOfPermission.push(v);
 					} else {
@@ -111,16 +112,19 @@ export default function Reservation() {
 												</p>
 												{moment(v.sch_start_date)
 													.subtract(setting.res_end_period, "day")
-													.isAfter(moment(Date.now())) ? (
+													.isAfter(
+														moment(Date.now()).format("YYYY-MM-DD")
+													) ? (
 													<div className="reserv_del_btn">
 														<img
 															onClick={() => {
-																deleteKoreanReservation(
-																	v.res_id
-																).then((res) => {
-																	alert(res.data.message);
-																	window.location.reload();
-																});
+																if (window)
+																	deleteKoreanReservation(
+																		v.res_id
+																	).then((res) => {
+																		alert(res.data.message);
+																		window.location.reload();
+																	});
 															}}
 															src="/global/img/reservation_del.gif"
 															alt="예약 삭제 버튼"
@@ -155,7 +159,21 @@ export default function Reservation() {
 													className="right zoom_info"
 													onClick={() => {
 														alert(
-															`Zoom ID : ${v.std_for_zoom_id}\nZoom PW : ${v.sch_for_zoom_pw}`
+															`Zoom ID : ${v.std_for_zoom_id
+																.toString()
+																.substr(
+																	0,
+																	3
+																)} ${v.std_for_zoom_id
+																.toString()
+																.substr(
+																	3,
+																	3
+																)} ${v.std_for_zoom_id
+																.toString()
+																.substr(6, 4)}\nZoom PW : ${
+																v.sch_for_zoom_pw
+															}`
 														);
 													}}
 												>

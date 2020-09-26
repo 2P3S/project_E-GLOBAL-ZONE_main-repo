@@ -111,7 +111,8 @@ export default function Students() {
 	const data = useSelector(selectData);
 	const dispatch = useDispatch();
 
-	const [isOpen, setIsOpen] = useState(false);
+	// const [isOpen, setIsOpen] = useState(false);
+	const { isOpen, handleClose, handleOpen } = useModal();
 	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
 	const [pending, setPending] = useState(false);
 	const [column, setColumn] = useState("std_kor_name");
@@ -170,7 +171,7 @@ export default function Students() {
 					first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 					first.addEventListener("click", () => {
 						history.push(`/students/1/korean`);
-						history.push("/reload");
+						setPending(true);
 					});
 					pagenation.appendChild(first);
 					for (let i = 0; i < resData.data.last_page; i++) {
@@ -191,6 +192,7 @@ export default function Students() {
 					pagenation.appendChild(last);
 					last.addEventListener("click", () => {
 						history.push(`/students/${resData.data.last_page}/korean`);
+						setPending(true);
 					});
 				}
 			}
@@ -426,13 +428,7 @@ export default function Students() {
 				<span id="pagenation"></span>
 
 				<div className="table_btn">
-					<div
-						ref={useClick(() => {
-							setIsOpen(true);
-						})}
-					>
-						신청 승인
-					</div>
+					<div onClick={handleOpen}>신청 승인</div>
 					<div
 						onClick={() => {
 							getAdminExportKorean();
@@ -449,18 +445,8 @@ export default function Students() {
 					{/*</div>*/}
 				</div>
 			</div>
-			<Modal
-				isOpen={isOpen}
-				hadleClose={() => {
-					setIsOpen(false);
-				}}
-			>
-				<ConfirmStudent
-					reRender={reRender}
-					handleClose={() => {
-						setIsOpen(false);
-					}}
-				/>
+			<Modal isOpen={isOpen} handleClose={handleClose}>
+				<ConfirmStudent reRender={reRender} handleClose={handleClose} />
 			</Modal>
 			<Modal
 				isOpen={isUnrestrict}

@@ -63,35 +63,46 @@ export default function Schedules() {
 		setCalIsOpen(!calIsOpen);
 	};
 
-	const handleCheck = (className, isAdd) => {
+	const handleCheck = (className) => {
 		if (className === "checkAll") {
-			document.getElementsByName("checkBox").forEach((v) => {
-				v.checked = isAdd;
-			});
-			handleCheck("state1", isAdd);
-			handleCheck("state2", isAdd);
-			handleCheck("state3", isAdd);
-			handleCheck("state4", isAdd);
-			handleCheck("state5", isAdd);
-			handleCheck("state6", isAdd);
-			handleCheck("state7", isAdd);
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.remove("off");
+				}
+			}
 		} else {
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.add("off");
+				}
+			}
 			for (const key in document.getElementsByClassName(`state_box ${className}`)) {
 				if (document.getElementsByClassName(`state_box ${className}`).hasOwnProperty(key)) {
 					const element = document.getElementsByClassName(`state_box ${className}`)[key];
-					isAdd ? element.classList.remove("off") : element.classList.add("off");
+					element.classList.remove("off");
 				}
 			}
 		}
 	};
+	const handleChange = (e) => {
+		console.log(e.target);
+		handleCheck(e.target.value);
+	};
 
 	const handleClick = (e) => {
-		if (e.target.value === "state1") {
-			handleCheck(e.target.value, e.target.checked);
-			handleCheck("state2", e.target.checked);
-		} else {
-			handleCheck(e.target.value, e.target.checked);
-		}
+		document
+			.getElementsByName("checkBox")
+			.forEach((v) => v.value !== e.target.value && (v.checked = false));
+		e.target.checked = true;
+		// alert(e.target.value);
+		// if (e.target.value === "state1") {
+		// 	handleCheck(e.target.value, true);
+		// 	handleCheck("state2", true);
+		// } else {
+		// 	handleCheck(e.target.value, e.target.checked);
+		// }
 	};
 	useMemo(() => {
 		if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
@@ -103,20 +114,17 @@ export default function Schedules() {
 	}, [params]);
 
 	useEffect(() => {
-		// document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			// v.checked = false;
 			v.addEventListener("click", handleClick);
+			v.addEventListener("change", handleChange);
 		});
 	}, []);
-	useMemo(() => {
+	useEffect(() => {
 		if (!firstRendering) {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		} else {
-			console.log(params.date !== _selectDate);
-			// if (_selectDate !== today) {
-			// 	dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
 			if (params.date !== _selectDate) {
 				let { date } = params;
 				dispatch(_setSelectDate(moment(date).format("YYYY-MM-DD")));
@@ -126,8 +134,9 @@ export default function Schedules() {
 	useEffect(() => {
 		setPending(true);
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			v.checked = false;
 		});
+		document.getElementById("allCheck").checked = true;
 	}, [selectDate]);
 
 	useEffect(() => {
@@ -206,7 +215,7 @@ export default function Schedules() {
 										schedule.un_permission_count === 0 &&
 										schedule.reservated_count === 0
 									) {
-										if (moment(schedule.sch_end_date) > moment(Date.now())) {
+										if (moment(schedule.sch_start_date) > moment(Date.now())) {
 											div.classList.add("state7");
 											setCountOfState({
 												...countOfstate,
@@ -218,10 +227,6 @@ export default function Schedules() {
 												...countOfstate,
 												state7: ++countOfstate.state7,
 											});
-											/*********************************
-											 * 종료 아이콘 추가 예정
-											 *********************************/
-											// div.style.visibility = "hidden";
 											let close = document.createElement("div");
 											close.className = "close";
 											div.appendChild(close);
@@ -421,6 +426,7 @@ export default function Schedules() {
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
+
 				<div
 					style={{ position: "absolute", zIndex: "9999" }}
 					onMouseLeave={() => setCalIsOpen(false)}
@@ -454,10 +460,7 @@ export default function Schedules() {
 							/>
 							<label htmlFor="no_app_reservation">
 								<span>
-									예약 미승인{" "}
-									<span className="blue">
-										{countOfstate.state1 + countOfstate.state2}
-									</span>
+									예약 미승인 <span className="blue">{countOfstate.state1}</span>
 									건
 								</span>
 							</label>
@@ -514,6 +517,7 @@ export default function Schedules() {
 				</ul>
 				<ul>
 					{/* 여기에 미승인 목록 모달 달아야함 */}
+					{/* 화이팅ㅋㅋ */}
 					<li className="ico03">[결과 미입력] 출석 학생</li>
 					{/* <li className="ico04">[결과 입력 완료]</li> 2020-09-09 삭제 */}
 				</ul>
@@ -665,7 +669,7 @@ export default function Schedules() {
 								스케줄 삭제
 							</div>
 						)}
-						<div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div>
+						{/* <div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div> */}
 					</div>
 				</div>
 
@@ -697,6 +701,7 @@ export default function Schedules() {
 					<PermissionScheduleResult
 						handleClose={scheduleClose}
 						date={params.date}
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
 						reRender={reRender}
 					/>
 				) : selectedSchedule.component === "ShowResult" ? (

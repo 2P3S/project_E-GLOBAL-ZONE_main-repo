@@ -101,9 +101,9 @@ export default function InsertSchedule({ closeSch }) {
 			</div>
 			<div className="btn_area right">
 				<Link className="bbtn blue">등록</Link>
-				<div className="bbtn white" onClick={closeSch}>
+				{/* <div className="bbtn white" onClick={closeSch}>
 					닫기
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

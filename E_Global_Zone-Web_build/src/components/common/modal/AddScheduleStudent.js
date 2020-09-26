@@ -84,7 +84,7 @@ export default function AddScheduleStudent({
 							);
 						})}
 				</div>
-				<button
+				{/* <button
 					className="del_btn"
 					onClick={() => {
 						setNotReRendering(true);
@@ -92,7 +92,7 @@ export default function AddScheduleStudent({
 					}}
 				>
 					취소
-				</button>
+				</button> */}
 			</div>
 		</>
 	);

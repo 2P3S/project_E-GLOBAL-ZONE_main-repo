@@ -113,9 +113,9 @@ export default function ShowList({
 
 			<div className="btn_area">
 				<div className="right">
-					<div className="bbtn darkGray" onClick={handleClose}>
+					{/* <div className="bbtn darkGray" onClick={handleClose}>
 						닫기
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</div>

@@ -21,9 +21,9 @@ export default function CreateDept({ handleClose }) {
 				>
 					저장
 				</div>
-				<div className="bbtn darkGray" onClick={handleClose}>
+				{/* <div className="bbtn darkGray" onClick={handleClose}>
 					취소
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
