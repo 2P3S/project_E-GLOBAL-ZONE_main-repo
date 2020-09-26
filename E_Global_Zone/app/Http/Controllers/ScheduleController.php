@@ -15,29 +15,8 @@ use Illuminate\Support\Facades\Config;
 
 class ScheduleController extends Controller
 {
-    private const _SCHEDULE_SEARCH_RES_SUCCESS = " 일 출석 결과 미승인건을 반환합니다.";
-    private const _SCHEDULE_SEARCH_RES_FAILURE = " 일자 유학생 스케줄을 조회에 실패하였습니다.";
-
-    private const _SCHEDULE_RES_STORE_SUCCESS = "스케줄 등록을 완료하였습니다.";
-    private const _SCHEDULE_RES_STORE_FAILURE = "스케줄 등록에 실패하였습니다.";
-    private const _SCHEDULE_RES_STORE_SECT_STARTED = "학기가 시작된 이후부터는 스케줄 등록이 불가능합니다. 개별 입력을 이용해주세요.";
-
-    private const _SCHEDULE_RES_DELETE_SUCCESS = "스케줄 삭제을 완료하였습니다.";
-    private const _SCHEDULE_RES_DELETE_NONDATA = "해당 날짜에 스케줄이 없습니다.";
-    private const _SCHEDULE_RES_DELETE_FAILURE = "스케줄 삭제에 실패하였습니다.";
-    private const _SCHEDULE_RES_UPDATE_SUCCESS = "스케줄 변경를 완료하였습니다.";
-
-    private const _STD_FOR_SHOW_SCH_SUCCESS = "스케줄 목록 조회에 성공하였습니다.";
-    private const _STD_FOR_SHOW_SCH_NO_DATA = "등록된 스케줄이 없습니다.";
-    private const _STD_FOR_SHOW_SCH_FAILURE = "스케줄 목록 조회에 실패하였습니다.";
-
-    private const _SCHDEULE_RES_APPROVE_DUPLICATED = "이미 출석 승인된 완료된 스케줄입니다.";
-    private const _SCHDEULE_RES_APPROVE_SUCCESS = "출석 결과 승인이 완료되었습니다.";
-    private const _SCHDEULE_RES_APPROVE_FAILURE = "출석 결과 승인에 실패하였습니다.";
-
     private const _ZOOM_RAN_NUM_START   = 1000;
     private const _ZOOM_RAN_NUM_END     = 9999;
-
 
     private $schedule;
     private $resultImage;
@@ -68,7 +47,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_SHOW_SCH_FAILURE
+            Config::get('constants.kor.schedule.show.failure')
         );
 
         if (is_object($validated_result)) {
@@ -122,18 +101,13 @@ class ScheduleController extends Controller
         $response_data['Japanese'] = std_for_search_by_lang($search_date, '일본어');
         $response_data['Chinese'] = std_for_search_by_lang($search_date, '중국어');
 
-        // return response()->json([
-        //     'message' => self::_STD_FOR_SHOW_SCH_SUCCESS,
-        //     'result' => $response_data,
-        // ], 200);
-
         // 해당 유학생에 대한 스케줄 정보 추가.
         $response_data['English'] = std_for_add_schedule_data($response_data['English'], $search_date);
         $response_data['Japanese'] = std_for_add_schedule_data($response_data['Japanese'], $search_date);
         $response_data['Chinese'] = std_for_add_schedule_data($response_data['Chinese'], $search_date);
 
         return response()->json([
-            'message' => self::_STD_FOR_SHOW_SCH_SUCCESS,
+            'message' => Config::get('constants.kor.schedule.show.success'),
             'data' => $response_data,
         ], 200);
     }
@@ -155,7 +129,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_SHOW_SCH_FAILURE
+            Config::get('constants.kor.schedule.show.failure')
         );
 
         if (is_object($validated_result)) {
@@ -186,7 +160,7 @@ class ScheduleController extends Controller
             $schedule['un_permission_count'] = $un_permission_count;
         }
 
-        return self::response_json(self::_STD_FOR_SHOW_SCH_SUCCESS, 200, $result_foreigner_schedules);
+        return self::response_json(Config::get('constants.kor.schedule.show.success'), 200, $result_foreigner_schedules);
     }
 
     /**
@@ -215,7 +189,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHEDULE_RES_STORE_FAILURE
+            Config::get('constants.kor.schedule.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -250,7 +224,7 @@ class ScheduleController extends Controller
         // <<--이미 학기가 시작 된 경우 에러 반환.
         $now_date = strtotime("Now");
         if ($now_date >= $sect_start_date) {
-            return self::response_json(self::_SCHEDULE_RES_STORE_SECT_STARTED, 422);
+            return self::response_json(Config::get('constants.kor.schedule.store.section_err'), 422);
         }
         // -->>
         // }
@@ -332,7 +306,7 @@ class ScheduleController extends Controller
             $isFirstLoop = false;
         }
 
-        return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
+        return self::response_json(Config::get('constants.kor.schedule.store.success'), 201);
     }
 
     /**
@@ -355,7 +329,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_SHOW_SCH_FAILURE
+            Config::get('constants.kor.schedule.update.failure')
         );
 
         if (is_object($validated_result)) {
@@ -367,7 +341,7 @@ class ScheduleController extends Controller
             'sch_end_date' => $request->input('sch_end_date'),
         ]);
 
-        return self::response_json(self::_SCHEDULE_RES_UPDATE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.schedule.update.success'), 200);
     }
 
 
@@ -388,7 +362,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHEDULE_RES_DELETE_FAILURE
+            Config::get('constants.kor.schedule.destroy.failure')
         );
 
         if (is_object($validated_result)) {
@@ -401,9 +375,9 @@ class ScheduleController extends Controller
         $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
         if ($is_already_inserted_schedule) {
             $get_sect_by_schedule->delete();
-            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
+            return self::response_json(Config::get('constants.kor.schedule.destroy.success'), 200);
         } else {
-            return self::response_json(self::_SCHEDULE_RES_DELETE_NONDATA, 202);
+            return self::response_json(Config::get('constants.kor.schedule.destroy.no_value'), 202);
         }
     }
 
@@ -428,7 +402,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHEDULE_RES_STORE_FAILURE
+            Config::get('constants.kor.schedule.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -472,7 +446,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return self::response_json(self::_SCHEDULE_RES_STORE_SUCCESS, 201);
+        return self::response_json(Config::get('constants.kor.schedule.store.success'), 201);
     }
 
     /**
@@ -491,7 +465,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHEDULE_RES_DELETE_FAILURE
+            Config::get('constants.kor.schedule.destroy.failure')
         );
 
         if (is_object($validated_result)) {
@@ -504,9 +478,9 @@ class ScheduleController extends Controller
 
         if ($schedule_exists) {
             $schedules_by_date->delete();
-            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
+            return self::response_json(Config::get('constants.kor.schedule.destroy.success'), 200);
         } else {
-            return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 202);
+            return self::response_json(Config::get('constants.kor.schedule.destroy.no_value'), 202);
         }
     }
 
@@ -528,7 +502,7 @@ class ScheduleController extends Controller
 
         $sch_id->delete();
 
-        return self::response_json(self::_SCHEDULE_RES_DELETE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.schedule.destroy.success'), 200);
     }
 
     /**
@@ -563,7 +537,7 @@ class ScheduleController extends Controller
         }
 
         return response()->json([
-            'message' => $date . ' 일 출석 결과 미입력건 조회',
+            'message' => $date . Config::get('constants.kor.schedule.index_uninputed_list.success'),
             'data' => $uninput_list,
         ], 200);
     }
@@ -585,7 +559,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHEDULE_SEARCH_RES_FAILURE
+            Config::get('constants.kor.schedule.index_approved_list.failure')
         );
 
         if (is_object($validated_result)) {
@@ -612,7 +586,7 @@ class ScheduleController extends Controller
         }
 
         return response()->json([
-            'message' => $date . self::_SCHEDULE_SEARCH_RES_SUCCESS,
+            'message' => $date . Config::get('constants.kor.schedule.index_approved_list.success'),
             'data' => $unapproved_list,
         ], 200);
     }
@@ -628,7 +602,7 @@ class ScheduleController extends Controller
     {
         // 이미 출석 결과가 승인 된 스케줄인 경우
         if ($sch_id['sch_state_of_permission'] == true) {
-            return self::response_json(self::_SCHDEULE_RES_APPROVE_DUPLICATED, 422);
+            return self::response_json(Config::get('constants.kor.schedule.update_approved_list.duplicate'), 422);
         }
 
         $rules = [
@@ -642,7 +616,7 @@ class ScheduleController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SCHDEULE_RES_APPROVE_FAILURE
+            Config::get('constants.kor.schedule.update_approved_list.failure')
         );
 
         if (is_object($validated_result)) {
@@ -686,7 +660,7 @@ class ScheduleController extends Controller
             'sch_state_of_permission' => true
         ]);
 
-        return self::response_json(self::_SCHDEULE_RES_APPROVE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.schedule.update_approved_list.success'), 200);
     }
 
     /**
@@ -718,7 +692,7 @@ class ScheduleController extends Controller
         }
 
         return response()->json([
-            'message' => $allSchdules->count() === 0 ? '등록된 스케줄이 없습니다.' : '일정 조회를 성공하였습니다.',
+            'message' => $allSchdules->count() === 0 ? Config::get('constants.kor.schedule.kor_index.failure') : Config::get('constants.kor.schedule.kor_index.success'),
             'data' => $allSchdules,
         ], 200);
     }
