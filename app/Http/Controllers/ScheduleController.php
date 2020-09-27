@@ -593,7 +593,7 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($unapproved_list as $schedule) {
-            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_permission', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
@@ -667,7 +667,15 @@ class ScheduleController extends Controller
 
             // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
             foreach ($update_absent_id_list as $std_kor_id) {
-                $this->restrict->set_korean_absent_count($std_kor_id);
+                // 유학생 승인을 받지 못해 결석으로 처리 된 학생은 제외.
+                $reservation = Reservation::where('res_sch', $sch_id['sch_id'])
+                    ->where('res_std_kor', $std_kor_id)
+                    ->get()
+                    ->first();
+                $has_permission = $reservation['res_state_of_permission'];
+
+                if ($has_permission)
+                    $this->restrict->set_korean_absent_count($std_kor_id);
             }
         }
         // -->>
