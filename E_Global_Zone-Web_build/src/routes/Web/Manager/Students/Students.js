@@ -434,7 +434,7 @@ export default function Students() {
 							getAdminExportKorean();
 						}}
 					>
-						CSV 다운
+						한국인 학생 목록 저장
 					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
