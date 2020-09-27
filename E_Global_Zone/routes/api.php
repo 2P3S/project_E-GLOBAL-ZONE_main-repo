@@ -35,6 +35,9 @@ Route::middleware('auth.multi')->group(static function () {
                 /** 학기별 전체 유학생 정보 조회 */
                 Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
+                /** 해당 학기 특정 날짜로 부터 등록되지 않은 근로 유학생 정보 조회 */
+                Route::get('/special/{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_date')->name('foreigners.index');
+
                 /** 학기별 유학생 등록 */
                 Route::post('{sect_id}', 'WorkStudentForeignerController@store')->name('foreigners.store');
 
@@ -111,6 +114,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 학기 삭제 */
             Route::delete('{sect_id}', 'SectionController@destroy')->name('sections.destroy');
+
+            /* 해당 학기의 가장 마지막 스케줄 날짜 리턴 */
+            Route::get('/lastday/{sect_id}', 'SectionController@last_schedule_date_by_sect')->name('sections.last_schedule_date_by_sect');
         });
 
         /* 스케줄 관리 라우터 */
@@ -118,7 +124,7 @@ Route::middleware('auth.multi')->group(static function () {
             /* 특정 날짜 전체 유학생 스케줄 조회 */
             Route::get('', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
 
-            /* 스케줄 등록 */
+            /* 스케줄 등록 && 학기 수정 후 스케줄 등록 */
             Route::post('', 'ScheduleController@store')->name('schedules.store');
 
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
