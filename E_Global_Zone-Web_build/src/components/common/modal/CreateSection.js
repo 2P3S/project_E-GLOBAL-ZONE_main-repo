@@ -43,8 +43,10 @@ export default function CreateSection({
 			if (resData.data && !Array.isArray(resData.data)) {
 				setCurrentSect({ ...resData.data });
 				setMode(false);
-				setStartDate(moment(resData.data.sect_start_date).format("YYYY-MM-DD"));
-				setEndDate(moment(resData.data.sect_end_date).format("YYYY-MM-DD"));
+				setStartDate(
+					moment(resData.data.sect_start_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+				);
+				setEndDate(moment(resData.data.sect_end_date, "YYYY-MM-DD").format("YYYY-MM-DD"));
 			} else {
 				setCurrentSect({
 					sect_name: "",
@@ -124,7 +126,7 @@ export default function CreateSection({
 						<div
 							className="btn"
 							onClick={
-								moment(startDate) > moment(Date.now())
+								moment(endDate, "YYYY-MM-DD") > moment(Date.now())
 									? mode
 										? () => {
 												postAdminSection({
@@ -132,7 +134,40 @@ export default function CreateSection({
 													sect_start_date: startDate,
 													sect_end_date: endDate,
 												}).then((res) => {
-													// alert(res.data.message);
+													setIsDone(true);
+												});
+										  }
+										: () => {
+												if (window.confirm("학기를 수정하시겠습니까?"))
+													patchAdminSection(
+														currentSect.sect_id,
+														currentSect
+													).then((res) => {
+														// setIsDone(true);
+													});
+										  }
+									: () => alert("이미 종료 된 학기입니다.")
+							}
+						>
+							{mode ? "저장" : "수정"}
+						</div>
+					</div>
+				</>
+			) : (
+				<>
+					<p className="tit"> {defaultSect} 기간 설정</p>
+					<div className="top_select">
+						<div
+							className="btn"
+							onClick={
+								moment(startDate, "YYYY-MM-DD") > moment(Date.now())
+									? mode
+										? () => {
+												postAdminSection({
+													sect_name: `${selectSect.year}학년도 ${selectSect.sect}학기`,
+													sect_start_date: startDate,
+													sect_end_date: endDate,
+												}).then((res) => {
 													setIsDone(true);
 												});
 										  }
@@ -142,7 +177,6 @@ export default function CreateSection({
 													currentSect
 												).then((res) => {
 													setIsDone(true);
-													// alert(res.data.message);
 												});
 										  }
 									: () => alert("이미 시작 된 학기입니다.")
@@ -152,16 +186,16 @@ export default function CreateSection({
 						</div>
 					</div>
 				</>
-			) : (
-				<p className="tit"> {defaultSect} 기간 설정</p>
 			)}
 
 			<div className="date_select">
 				<div
 					className="start_date"
 					onClick={(e) => {
-						handleOpen();
-						handleSetTarget("sect_start_date");
+						if (moment(startDate, "YYYY-MM-DD") > moment(Date.now())) {
+							handleOpen();
+							handleSetTarget("sect_start_date");
+						}
 					}}
 				>
 					<p className="tit">학기 시작일</p>
@@ -171,8 +205,10 @@ export default function CreateSection({
 				<div
 					className="start_date"
 					onClick={(e) => {
-						handleOpen();
-						handleSetTarget("sect_end_date");
+						if (moment(endDate, "YYYY-MM-DD") > moment(Date.now())) {
+							handleOpen();
+							handleSetTarget("sect_end_date");
+						}
 					}}
 				>
 					<p className="tit">학기 종료 일</p>
@@ -184,7 +220,11 @@ export default function CreateSection({
 					handleClose={handleClose}
 					setState={target === "sect_start_date" ? setStartDate : setEndDate}
 					isStartDate={target === "sect_start_date" ? true : false}
-					selectDate={target === "sect_start_date" ? startDate : endDate}
+					selectDate={
+						target === "sect_start_date"
+							? moment(startDate, "YYYY-MM-DD ").format("YYYY-MM-DD")
+							: moment(endDate, "YYYY-MM-DD ").format("YYYY-MM-DD")
+					}
 				/>
 			</Modal>
 		</div>

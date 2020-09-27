@@ -60,11 +60,19 @@ export default function GetSections({ handleClose }) {
 								return (
 									<tr>
 										<td>{v.sect_name}</td>
-										<td>{moment(v.sect_start_date).format("YYYY-MM-DD")}</td>
-										<td>{moment(v.sect_end_date).format("YYYY-MM-DD")}</td>
+										<td>
+											{moment(v.sect_start_date, "YYYY-MM-DD").format(
+												"YYYY-MM-DD"
+											)}
+										</td>
+										<td>
+											{moment(v.sect_end_date, "YYYY-MM-DD").format(
+												"YYYY-MM-DD"
+											)}
+										</td>
 										<td>{v.std_for_count}명</td>
 										<td>
-											{moment(v.sect_start_date).isAfter(
+											{moment(v.sect_start_date, "YYYY-MM-DD").isAfter(
 												moment(Date.now())
 											) ? (
 												<img
@@ -89,12 +97,7 @@ export default function GetSections({ handleClose }) {
 												<img
 													onClick={() => {
 														setSelectSect(v.sect_name);
-														if (
-															window.confirm(
-																"정말 수정 하시겠습니까?"
-															)
-														)
-															handleOpen();
+														handleOpen();
 													}}
 													src="/global/img/modify_ico.gif"
 													alt="학기 수정 버튼"

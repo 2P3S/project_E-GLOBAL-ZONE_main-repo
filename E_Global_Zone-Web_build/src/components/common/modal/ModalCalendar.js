@@ -137,7 +137,7 @@ const Week = (props) => {
 
 	useEffect(() => {
 		return () => {
-			props.setState(moment(selected).format("YYYY-MM-DD"));
+			props.setState(moment(selected, "YYYY-MM-DD").format("YYYY-MM-DD"));
 		};
 	});
 
