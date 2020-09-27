@@ -16,9 +16,6 @@ class WorkStudentForeignerController extends Controller
     private $work_std_for;
     private $std_for;
 
-    // 해당 학기 미등록 유학생 정보 조회
-    private const _STD_FOR_NON_DATA_BY_SECT_SUCCESS = " 학기";
-
     public function __construct()
     {
         $this->schedule = new Schedule();
@@ -34,8 +31,7 @@ class WorkStudentForeignerController extends Controller
      */
     public function work_std_for_registered_index_by_sect(
         Section $sect_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $work_std_for_list = null;
         $time = [
             'sect_start_date' => $sect_id['sect_start_date'],
@@ -112,8 +108,7 @@ class WorkStudentForeignerController extends Controller
      */
     public function work_std_for_not_registered_index_by_sect(
         Section $sect_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $not_work_std_for_list = null;
         try {
             $work_std_for_list = $this->work_std_for->get_sect_work_std_for_list_by_sect($sect_id);
@@ -125,17 +120,11 @@ class WorkStudentForeignerController extends Controller
         }
         $message = $sect_id['sect_name'] . Config::get('constants.kor.not_work_std_for.index.success');
         return self::response_json(
-            $message, 200, $not_work_std_for_list
+            $message,
+            200,
+            $not_work_std_for_list
         );
     }
-
-
-    // 000 유학생이 등록되었습니다.
-    // 000 유학생 등록에 실패하였습니다.
-    private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
-    private const _SECT_STD_FOR_EACH_STORE_SUCCESS = " 근로유학생 목록에 등록되었습니다.";
-    // 000 학번의 학생의 데이터가 중복입니다.
-    private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
 
     /**
      * 학기별 유학생 등록
@@ -143,12 +132,10 @@ class WorkStudentForeignerController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    // TODO 알고리즘 수정 필요
     public function store(
         Request $request,
         Section $sect_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         /*
          * 성공 시, 출력 메세지
          *  -> 0000 학기의 근로유학생 목록 추가에 성공하였습니다.
@@ -165,7 +152,9 @@ class WorkStudentForeignerController extends Controller
         ];
 
         $validated_result = self::request_validator(
-            $request, $rules, self::_STD_FOR_STORE_FAILURE
+            $request,
+            $rules,
+            Config::get('constants.kor.work_std_for.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -188,7 +177,8 @@ class WorkStudentForeignerController extends Controller
                 ->count();
 
             if ($isDuplicatedStudent) {
-                return self::response_json(self::_STD_FOR_DUPLICATED_DATA, 422);
+                $msg = $foreigner_id . Config::get('constants.kor.work_std_for.store.duplicate');
+                return self::response_json($msg, 422);
             }
 
             Work_student_foreigner::create([
@@ -197,9 +187,8 @@ class WorkStudentForeignerController extends Controller
             ]);
         }
 
-        return self::response_json(self::_SECT_STD_FOR_EACH_STORE_SUCCESS, 201);
+        return self::response_json(Config::get('constants.kor.work_std_for.store.success'), 201);
     }
-
 
     /**
      * 학기별 유학생 수정 (=삭제)
@@ -212,8 +201,7 @@ class WorkStudentForeignerController extends Controller
     public function destroy(
         Request $request,
         Work_student_foreigner $work_list_id
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
 
@@ -229,8 +217,7 @@ class WorkStudentForeignerController extends Controller
         string $message,
         array $time,
         object $work_std_for_list = null
-    )
-    {
+    ) {
         $is_no_data = !(bool)$work_std_for_list;
 
         if ($is_no_data) {
