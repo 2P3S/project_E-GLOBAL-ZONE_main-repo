@@ -712,7 +712,7 @@ export default function Foreigner() {
 								getAdminExportForeignerSect(selectSect, selectSectName);
 							}}
 						>
-							csv 출력
+							근로 유학생 목록 저장
 						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
