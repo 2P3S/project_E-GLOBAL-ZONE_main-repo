@@ -1,6 +1,6 @@
 {
 	"name": "e-global-zone",
-	"version": "0.8.2",
+	"version": "0.9.0",
 	"private": true,
 	"dependencies": {
 		"@reduxjs/toolkit": "^1.1.0",
