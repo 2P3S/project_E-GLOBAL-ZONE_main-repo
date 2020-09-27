@@ -2287,7 +2287,12 @@ table.pop_table3 td {
 	width: 950px;
 	padding: 40px 0;
 	display: inline-block;
+	border-radius: 40px;
 	background: url(/global/img/not_attend_bg.gif) repeat-y 0px 50%;
+}
+
+.popup.not_attend .scroll_area {
+	height:425px;
 }
 
 .popup.not_attend .left_wrap,
@@ -2384,7 +2389,7 @@ table.pop_table3 td {
 .student_list {
 	width: 100%;
 	border: 1px solid #e8e8ee;
-	background: #f7f7f9;
+	background: #fff;
 	font-weight: 600;
 	border-radius: 10px;
 }
@@ -2392,10 +2397,6 @@ table.pop_table3 td {
 .student_list ul {
 	display: inline-block;
 	padding-top: 10px;
-}
-
-.popup.not_attend .right_wrap .student_list ul {
-	background: #fff;
 }
 
 .student_list ul li {
@@ -3115,6 +3116,7 @@ ul.img_file li p.file_name:hover {
 	background-size: 110%;
 	margin: 0 auto;
 	border-radius: 20px;
+	background-color: #fff;
 }
 .popup.loading p {
 	font-size: 17px;

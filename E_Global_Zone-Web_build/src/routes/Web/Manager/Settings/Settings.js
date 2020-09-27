@@ -443,7 +443,7 @@ export default function Settings() {
 						getAdminExportForeigner();
 					}}
 				>
-					유학생 목록 저장(csv)
+					유학생 목록 저장
 				</div>
 				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
 					학기 기간 설정
