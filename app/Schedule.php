@@ -149,7 +149,6 @@ class Schedule extends Model
      * @param string $search_date
      * @param int $std_for_id
      */
-
     public function get_sch_by_date(
         string $search_date,
         int $std_for_id = 0
@@ -178,6 +177,22 @@ class Schedule extends Model
     ): ?object
     {
         return self::where('sch_sect', $sect_id)->where('sch_std_for', $std_for_id);
+    }
+
+    /**
+     * 학기 특정 날짜 기준 스케줄 정보 조회
+     *
+     * @param int $sect_id
+     * @param int $std_for_id
+     * @return object|null
+     */
+    public function get_sch_by_sect_start_date(
+        int $sect_id,
+        int $std_for_id = 0,
+        string $sch_start_date
+    ): ?object
+    {
+        return self::where('sch_sect', $sect_id)->whereDate('sch_start_date', '>=' ,$sch_start_date)->where('sch_std_for', $std_for_id);
     }
 
     public function get_sch_count_by_std_for(

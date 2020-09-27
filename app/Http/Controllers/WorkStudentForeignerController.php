@@ -99,6 +99,71 @@ class WorkStudentForeignerController extends Controller
         // -->>
     }
 
+    /**
+     * 해당 학기 특정 날짜로 부터 등록되지 않은 근로 유학생 정보 조회
+     *
+     * @param Section $sect_id
+     * @return JsonResponse
+     */
+    public function work_std_for_registered_index_by_date(
+        Section $sect_id,
+        Request $request
+    ): JsonResponse {
+        $rules = [
+            'sch_start_date' => 'required|date',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            Config::get('constants.kor.work_std_for.index.failure')
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $time = [
+            'sect_start_date' => $request->input('sch_start_date'),
+            'sect_end_date' => $sect_id['sect_end_date']
+        ];
+
+        try {
+            $work_std_for_list = $this->work_std_for->get_sect_work_std_for_list($sect_id);
+            $is_no_work_std_for = !$work_std_for_list->count();
+            $sect_name = $sect_id['sect_name'];
+            $sch_start_date = $request->input('sch_start_date');
+
+            // <<-- 조회 결과 없음
+            if ($is_no_work_std_for) {
+                $message = $sect_name . Config::get('constants.kor.work_std_for.index.no_value');
+                return $this->response_json_time($message, $time);
+            }
+            // -->>
+
+            // <<-- 해당학기 스케줄 등록여부 반환
+            foreach ($work_std_for_list as $work_std_for_id) {
+                $std_for_id = $work_std_for_id['std_for_id'];
+
+                $get_sect_by_sch_count = $this->schedule
+                    ->get_sch_by_sect_start_date((int)$sect_id['sect_id'], $std_for_id, $sch_start_date)->count();
+
+                $work_std_for_id['is_schedules_inputed'] = $get_sect_by_sch_count > 0;
+            }
+            // -->>
+        } catch (\Exception $e) {
+            // <<-- 조회 실패
+            $message = Config::get('constants.kor.work_std_for.index.failure');
+            return $this->response_json_time($message, $time);
+            // -->>
+        }
+
+        // <<-- 조회 성공
+        $message = $sect_name . Config::get('constants.kor.work_std_for.index.success');
+        return $this->response_json_time($message, $time, $work_std_for_list);
+        // -->>
+    }
 
     /**
      * 해당 학기 등록되지 않은 근로 유학생 정보 조회
@@ -136,15 +201,6 @@ class WorkStudentForeignerController extends Controller
         Request $request,
         Section $sect_id
     ): JsonResponse {
-        /*
-         * 성공 시, 출력 메세지
-         *  -> 0000 학기의 근로유학생 목록 추가에 성공하였습니다.
-         * $message = $sect_id['sect_name'] . Config::get('constants.kor.work_std_for.store.success');
-         *
-         * 실패 시, 출력 메세지
-         *  -> 근로유학생 목록 추가에 실패하였습니다.
-         * $message = Config::get('constants.kor.work_std_for.store.failure');
-        */
         $rules = [
             'foreigners' => 'required|array',
             'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
