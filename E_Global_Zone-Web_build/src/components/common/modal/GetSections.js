@@ -93,7 +93,9 @@ export default function GetSections({ handleClose }) {
 													src="/global/img/enrol_del_btn.gif"
 													alt="학기 삭제 버튼"
 												/>
-											) : (
+											) : moment(v.sect_end_date).isAfter(
+													moment(Date.now())
+											  ) ? (
 												<img
 													onClick={() => {
 														setSelectSect(v.sect_name);
@@ -102,6 +104,8 @@ export default function GetSections({ handleClose }) {
 													src="/global/img/modify_ico.gif"
 													alt="학기 수정 버튼"
 												/>
+											) : (
+												<></>
 											)}
 										</td>
 									</tr>

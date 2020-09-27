@@ -29,13 +29,10 @@ Modal.setAppElement(document.getElementById("modal-root"));
  * @param handleClose
  * @returns {JSX.Element}
  */
-export default function ({ children, isOpen, handleClose }) {
+export default function ({ children, isOpen, handleClose, btn = true }) {
 	return (
 		<Modal style={modalStyle} isOpen={isOpen}>
-			<div onClick={handleClose} className="modal_close">
-				{/* <img src="/global/img/modalClose_ico.png" alt="모달 삭제 버튼" /> */}
-			</div>
-
+			{btn && <div onClick={handleClose} className="modal_close" />}
 			{children}
 		</Modal>
 	);

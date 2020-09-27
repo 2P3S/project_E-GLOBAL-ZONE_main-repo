@@ -5,12 +5,6 @@ import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import ModifyForeignerStudent from "../../../../components/common/modal/ModifyForeignerStudent";
-// import {
-// 	getAdminForeignerWork,
-// 	getAdminSection,
-// 	getAdminForeignerAccountFavorite,
-// 	patchAdminForeignerAccount,
-// } from "../../../../modules/hooks/useAxios";
 import {
 	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
@@ -149,7 +143,7 @@ export default function Foreigner() {
 	};
 
 	useEffect(() => {
-		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
+		getAdminSection({ year: `${moment("2021-09-01").format("YYYY")}` }).then((res) => {
 			setSectOfYear(res.data);
 			let index = 0;
 			res.data.data.forEach((v, i) => {

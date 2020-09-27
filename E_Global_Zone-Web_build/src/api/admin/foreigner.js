@@ -15,6 +15,8 @@ export const deleteAdminForeignerAccount = (std_for_id) =>
 	admin.delete(foreigner(`account/${std_for_id}`));
 
 export const getAdminForeignerWork = (sect_id) => admin.get(foreigner(`work/${sect_id}`));
+export const getAdminForeignerWorkSpecial = (sect_id, params) =>
+	admin.get(foreigner(`work/special/${sect_id}`), { params });
 // export const postAdminForeignerWork = (data) => admin.post(foreigner("work"), data);
 export const postAdminForeignerWork = (sect_id, data) =>
 	admin.post(foreigner(`work/${sect_id}`), data);
