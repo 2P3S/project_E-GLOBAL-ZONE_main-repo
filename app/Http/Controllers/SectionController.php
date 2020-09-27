@@ -48,7 +48,7 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_SEARCH_RES_FAILURE
+            Config::get('constants.kor.section.index_year.failure')
         );
 
         if (is_object($validated_result)) {
@@ -67,7 +67,7 @@ class SectionController extends Controller
             }
         }
 
-        return self::response_json(self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
+        return self::response_json(Config::get('constants.kor.section.index_year.success'), 200, $section_data);
     }
 
     /**
@@ -90,9 +90,10 @@ class SectionController extends Controller
 
         $is_non_attendanced_data = $attendanced_section_data->count() == 0;
 
-        if ($is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);
+        if ($is_non_attendanced_data)
+            return self::response_json(Config::get('constants.kor.section.index_kor.failure'), 202);
 
-        return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS1, 200, $attendanced_section_data);
+        return self::response_json(Config::get('constants.kor.section.index_kor.success'), 200, $attendanced_section_data);
     }
 
     /**
@@ -112,7 +113,7 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_STORE_RES_FAILURE
+            Config::get('constants.kor.section.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -125,7 +126,7 @@ class SectionController extends Controller
             'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
-        return self::response_json(self::_SECTION_STORE_RES_SUCCESS, 201, $create_section);
+        return self::response_json(Config::get('constants.kor.section.store.success'), 201, $create_section);
     }
 
     /**
@@ -146,7 +147,7 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_UPDATE_RES_FAILURE
+            Config::get('constants.kor.section.update.failure')
         );
 
         if (is_object($validated_result)) {
@@ -169,7 +170,7 @@ class SectionController extends Controller
         $now_date = strtotime("Now");
         // dd($old_sect_start_date < $now_date, $old_sect_start_date < strtotime($new_sect_start_date));
         if (($old_sect_start_date < $now_date) && ($old_sect_start_date < strtotime($new_sect_start_date))) {
-            return self::response_json_error(self::_SECTION_UPDATE_RES_FAILURE_OVER_DATE);
+            return self::response_json_error(Config::get('constants.kor.section.update.over_date'));
         }
 
         if ($old_sect_end_date > $new_sect_end_date) {
@@ -183,7 +184,7 @@ class SectionController extends Controller
             'sect_end_date' => $new_sect_end_date,
         ]);
 
-        return self::response_json(self::_SECTION_UPDATE_RES_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.section.update.success'), 200);
     }
 
     /**
@@ -207,14 +208,14 @@ class SectionController extends Controller
         $now_date = strtotime("Now");
 
         if ($sect_start_date < $now_date) {
-            return self::response_json_error(self::_SECTION_DELETE_RES_FAILURE_OVER_DATE);
+            return self::response_json_error(Config::get('constants.kor.section.destroy.over_date'));
         }
 
         try {
             $sect_id->delete();
-            return self::response_json(self::_SECTION_DELETE_RES_SUCCESS, 200);
+            return self::response_json(Config::get('constants.kor.section.destroy.success'), 200);
         } catch (Exception $e) {
-            return self::response_json(self::_SECTION_DELETE_RES_FAILURE, 200);
+            return self::response_json(Config::get('constants.kor.section.destroy.failure'), 200);
         }
     }
 
@@ -238,7 +239,7 @@ class SectionController extends Controller
         $last_schedule_date = date("Y-m-d", strtotime($last_schedule['sch_start_date']));
 
         return response()->json([
-            'message' => "해당 학기의 입력된 마지막 스케줄 날짜를 반환합니다.",
+            'message' => Config::get('constants.kor.section.index_date.success'),
             'data' => $last_schedule_date
         ], 200);
     }
