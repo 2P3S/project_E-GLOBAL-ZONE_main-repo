@@ -10,7 +10,7 @@ export const confSlice = createSlice({
 	initialState: {
 		dept: {},
 		today: moment(Date.now()).format("YYYY-MM-DD"),
-		selectDate: moment(new Date(Date.now())).format("YYYY-MM-DD"),
+		selectDate: moment(Date.now()).format("YYYY-MM-DD"),
 		language: "korean",
 	},
 	reducers: {
@@ -28,7 +28,7 @@ export const confSlice = createSlice({
 		 * @param {Date} action.payload
 		 */
 		setSelectDate: (state, action) => {
-			state.selectDate = action.payload;
+			state.selectDate = moment(action.payload, "YYYY-MM-DD").format("YYYY-MM-DD");
 		},
 		setLanguage: (state, action) => {
 			state.language = action.payload;

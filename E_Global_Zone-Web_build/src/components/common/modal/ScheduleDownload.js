@@ -7,7 +7,7 @@ import { getAdminSection, patchAdminSection, postAdminSection } from "../../../a
 
 export default function ScheduleDownload() {
 	const changeDate = (input) => {
-		let output = moment(input).format("YYYY-MM-DD");
+		let output = moment(input, "YYYY-MM-DD").format("YYYY-MM-DD");
 		if (input.length === 8) {
 			input.substr(7, 1) === "-" && (output = "");
 		}
