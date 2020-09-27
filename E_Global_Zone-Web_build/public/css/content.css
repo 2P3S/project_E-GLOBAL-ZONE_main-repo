@@ -1782,10 +1782,19 @@ table.work_time thead th {
 
 .modal_close {
 	position: absolute;
-	right: 0;
-	top: 0;
+	right: -37px;
+	top: -22px;
 	cursor: pointer;
 	z-index: 10;
+	width: 95px;
+	height: 65px;
+	transform: rotate( 45deg );
+	background: #eee url(/global/img/modalClose_ico.png) no-repeat center 41px;
+}
+
+.modal_close:hover {
+	background: #dbdbdb url(/global/img/modalClose_ico.png) no-repeat center 41px;
+	transition-duration: 0.3s;
 }
 
 .popup p.tit {
@@ -2587,6 +2596,10 @@ ul.img_file li p.file_name:hover {
 .popup.regist {
 	width: 925px;
 	position: relative;
+}
+.popup.regist .edd-root {
+	height:42px;
+	line-height:42px;
 }
 .popup.regist table {
 	font-size: 12px;
