@@ -111,6 +111,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 학기 삭제 */
             Route::delete('{sect_id}', 'SectionController@destroy')->name('sections.destroy');
+
+            /* 해당 학기의 가장 마지막 스케줄 날짜 리턴 */
+            Route::get('/lastday/{sect_id}', 'SectionController@last_schedule_date_by_sect')->name('sections.last_schedule_date_by_sect');
         });
 
         /* 스케줄 관리 라우터 */
@@ -126,6 +129,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
             Route::delete('/date', 'ScheduleController@destroy_by_date')->name('schedules.destroy_by_date');
+
+            /* 학기 수정 후 스케줄 추가 */
+
 
             /* 특정 스케줄 추가 */
             Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
