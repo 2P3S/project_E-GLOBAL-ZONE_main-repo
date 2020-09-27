@@ -179,9 +179,10 @@ class ScheduleController extends Controller
             'ecept_date' => 'array',
             'ecept_date.*' => 'date',
             'guard' => 'required|string|in:admin',
-            // <<-- 학기 시작 후 스케줄 조정일 경우 사용 + 서로 존재여부 체크 + 크고 작음 설정해야함.
-            // 'sch_start_date' => 'date|',
-            // 'exception_mode' => 'required|bool',
+            // <<-- 학기 시작 후 스케줄 조정일 경우 사용
+            'sch_start_date' => 'date',
+            'sch_end_date' => 'date|after_or_equal:sect_start_date',
+            'exception_mode' => 'required|bool',
             // -->>
         ];
 
@@ -197,7 +198,7 @@ class ScheduleController extends Controller
         }
 
         $setting_value = $preference_instance->getPreference();                                  /* 환경설정 변수 */
-        // $exception_mode = $request->input('exception_mode');                                     /* 예외 모드 ( 학기 시작 후 전체 수정 ) */
+        $exception_mode = $request->input('exception_mode');                                     /* 예외 모드 ( 학기 시작 후 전체 수정 ) */
 
         $schedule_data = $request->input('schedule');                                            /* 스케줄 데이터 */
         $ecept_date = $request->input('ecept_date');                                             /* 제외날짜 */
@@ -205,34 +206,50 @@ class ScheduleController extends Controller
         $std_for_id = $request->input('std_for_id');                                             /* 외국인 유학생 학번 */
         $sect_start_date = strtotime($sect->sect_start_date);
 
-        // if ($exception_mode) {
-        //     /**
-        //      * 학기 시작날짜 X -> 커스텀 시작 날짜로 변경.
-        //      *
-        //      * (예외처리 리스트)
-        //      * 1. 관리자 실수 해당 날짜 스케줄이 존재하는 경우.
-        //      * 1-1. 해당 날짜 스케줄에 예약이 존재하는 경우.
-        //      */
-        // } else {
-        // <<-- 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
-        $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->input('sect_id'), $std_for_id);
+        if ($exception_mode) {
+            /**
+             * 학기 시작날짜 X -> 커스텀 시작 날짜로 변경.
+             *
+             * (예외처리 리스트)
+             * 1. 관리자 실수 해당 날짜 스케줄이 존재하는 경우.
+             * 1-1. 해당 날짜 스케줄에 예약이 존재하는 경우.
+             */
+            $last_schedule = Schedule::where('sch_sect', $sect['sect_id'])
+                ->orderBy('sch_start_date', 'DESC')
+                ->get()->first();
 
-        $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
-        if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
-        // -->>
+            $last_schedule_date = strtotime($last_schedule['sch_start_date']);
+            $sch_start_date = strtotime($request->input('sch_start_date'));
 
-        // <<--이미 학기가 시작 된 경우 에러 반환.
-        $now_date = strtotime("Now");
-        if ($now_date >= $sect_start_date) {
-            return self::response_json(Config::get('constants.kor.schedule.store.section_err'), 422);
+            // 입력한 시작일 이전에 스케줄이 존재하는 경우
+            if ($sch_start_date <= $last_schedule_date) {
+                $msg = date("Y-m-d", strtotime("{$last_schedule['sch_start_date']} +1 day")) . " 이후의 스케줄만 등록 가능합니다. ( 입력한 시작일 이전 날짜에 스케줄이 존재합니다. )";
+                return self::response_json($msg, 422);
+            }
+
+            $sect_start_date = date("Y-m-d", strtotime($request->input('sch_start_date')));
+
+            // 입력한 종료일이 해당 학기 종료일을 넘을 경우 => 자동으로 종료일자에 셋팅.
+            $is_over_date = strtotime($request->input('sch_end_date')) > strtotime($sect->sect_end_date);
+            $sect_end_date = $is_over_date ? date("Y-m-d", strtotime($sect->sect_end_date)) : date("Y-m-d", strtotime($request->input('sch_end_date')));
+        } else {
+            // <<-- 이미 등록된 스케줄이 있을 경우 삭제 후 재등록.
+            $get_sect_by_schedule = $this->schedule->get_sch_by_sect($request->input('sect_id'), $std_for_id);
+
+            $is_already_inserted_schedule = $get_sect_by_schedule->count() > 0;
+            if ($is_already_inserted_schedule) $get_sect_by_schedule->delete();
+            // -->>
+
+            // <<--이미 학기가 시작 된 경우 에러 반환.
+            $now_date = strtotime("Now");
+            if ($now_date >= $sect_start_date) {
+                return self::response_json(Config::get('constants.kor.schedule.store.section_err'), 422);
+            }
+            // -->>
+
+            $sect_start_date = date("Y-m-d", $sect_start_date);
+            $sect_end_date = date("Y-m-d", strtotime($sect->sect_end_date));
         }
-        // -->>
-        // }
-
-
-        $sect_start_date = date("Y-m-d", $sect_start_date);
-        $sect_end_date = strtotime($sect->sect_end_date);
-        $sect_end_date = date("Y-m-d", $sect_end_date);
 
         $yoil = array("일", "월", "화", "수", "목", "금", "토");
 
@@ -576,7 +593,7 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($unapproved_list as $schedule) {
-            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
+            $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_permission', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
@@ -650,7 +667,15 @@ class ScheduleController extends Controller
 
             // 해당 스케줄에 대한 한국인 학생 결석 횟수 업데이트
             foreach ($update_absent_id_list as $std_kor_id) {
-                $this->restrict->set_korean_absent_count($std_kor_id);
+                // 유학생 승인을 받지 못해 결석으로 처리 된 학생은 제외.
+                $reservation = Reservation::where('res_sch', $sch_id['sch_id'])
+                    ->where('res_std_kor', $std_kor_id)
+                    ->get()
+                    ->first();
+                $has_permission = $reservation['res_state_of_permission'];
+
+                if ($has_permission)
+                    $this->restrict->set_korean_absent_count($std_kor_id);
             }
         }
         // -->>
