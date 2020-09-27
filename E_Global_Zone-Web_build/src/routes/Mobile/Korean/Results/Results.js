@@ -71,7 +71,7 @@ export default function Results() {
 				<div className="point_info">
 					<p>
 						<div>
-							<span className="name">{user.name}</span> 학생의{" "}<br />
+							<span className="name">{user.name}</span> 학생의{" "}
 							{selectSect ? selectSect.sect_name : "학기별"}
 						</div>
 						글로벌 존 이용 횟수

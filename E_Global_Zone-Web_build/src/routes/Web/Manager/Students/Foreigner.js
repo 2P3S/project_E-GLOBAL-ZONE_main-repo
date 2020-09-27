@@ -174,7 +174,7 @@ export default function Foreigner() {
 			// 	setDefaultData(res.data);
 			// });
 			setSelectSect(sectOfYear.data[index].sect_id);
-			// setSelectSectName(sectOfYear.data[index].sect_name);
+			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear, index]);
 
@@ -297,6 +297,7 @@ export default function Foreigner() {
 										<col width="7%" />
 									</colgroup>
 									<thead>
+										{/* 총원:{dataSet.data.length} */}
 										<tr>
 											<th rowSpan="2">
 												<div className="table_check">
@@ -719,6 +720,7 @@ export default function Foreigner() {
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
 						<SetSectForeigner
 							sect_id={selectSect}
+							sect_name={selectSectName}
 							handleClose={handleCloseForAdd}
 							reRender={reRender}
 						/>
