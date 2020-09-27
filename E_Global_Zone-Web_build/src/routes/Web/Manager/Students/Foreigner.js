@@ -143,7 +143,7 @@ export default function Foreigner() {
 	};
 
 	useEffect(() => {
-		getAdminSection({ year: `${moment("2021-09-01").format("YYYY")}` }).then((res) => {
+		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
 			setSectOfYear(res.data);
 			let index = 0;
 			res.data.data.forEach((v, i) => {

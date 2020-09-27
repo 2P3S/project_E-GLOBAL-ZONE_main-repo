@@ -214,12 +214,31 @@ export default function CreateSection({
 											});
 									  }
 									: () => {
-											patchAdminSection(
-												currentSect.sect_id,
-												currentSect
-											).then((res) => {
-												setIsDone(true);
-											});
+											if (window.confirm("학기를 수정하시겠습니까?"))
+												patchAdminSection(
+													currentSect.sect_id,
+													currentSect
+												).then((res) => {
+													alert(res.data.message);
+													if (
+														moment(currentSect.sect_end_date).isAfter(
+															moment(previousSect.sect_end_date)
+														)
+													) {
+														alert(
+															"새로 생성된 기간에 스케줄을 입력합니다."
+														);
+														history.push(
+															`/modify/section/${
+																currentSect.sect_id
+															}/${moment(previousSect.sect_end_date)
+																.add(1, "day")
+																.format("YYYY-MM-DD")}/0`
+														);
+													} else {
+														setIsDone(true);
+													}
+												});
 									  }
 							}
 						>
