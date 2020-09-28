@@ -73,8 +73,12 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 			let date = document.createElement("td");
 			date.innerText = _data[i].date;
 			let time = document.createElement("td");
-			time.innerText = `${moment(`1996-02-27 ${_data[i].startTime}:00`).hour()}:00 ~ ${moment(
-				`1996-02-27 ${_data[i].endTime}:00`
+			time.innerText = `${moment(
+				`1996-02-27 ${_data[i].startTime}:00`,
+				"YYYY-MM-DD hh:mm"
+			).hour()}:00 ~ ${moment(
+				`1996-02-27 ${_data[i].endTime}:00`,
+				"YYYY-MM-DD hh:mm"
 			).hour()}:00`;
 			let name = document.createElement("td");
 			name.innerText = _data[i].std_for_name;
@@ -136,7 +140,8 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 						{_startTime.map((v) => {
 							return (
 								<option value={v}>{`${moment(
-									`2020-09-1 ${v}:00`
+									`2020-09-01 ${v}:00`,
+									"YYYY-MM-DD hh:mm"
 								).hours()}:00`}</option>
 							);
 						})}
@@ -162,7 +167,8 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 						{_endTiem.map((v) => {
 							return (
 								<option value={v}>{`${moment(
-									`2020-09-1 ${v}:00`
+									`2020-09-01 ${v}:00`,
+									"YYYY-MM-DD hh:mm"
 								).hour()}:00`}</option>
 							);
 						})}

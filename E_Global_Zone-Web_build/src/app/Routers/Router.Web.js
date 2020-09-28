@@ -10,6 +10,7 @@ import ForeignerSchedules from "../../routes/Web/Foreigner/Schedules/Schedules";
 import { useSelector } from "react-redux";
 import { selectToday } from "../../redux/confSlice/confSlice";
 import { selectUser } from "../../redux/userSlice/userSlice";
+import ModifySection from "../../routes/Web/Manager/Section/ModifySection";
 
 /**
  * ManagerRouter - Router for Manager
@@ -41,9 +42,15 @@ export function ManagerRouter() {
 					<Route exact path="/students/:sect_id/foreigner" component={Foreigner} />
 					{/* category => foreigner, Korean */}
 
-					<Route path="/settings" component={Settings} />
+					<Route exact path="/settings" component={Settings} />
 
-					<Route path="/section/:sect_id/:std_for_id" component={Section} />
+					<Route exact path="/section/:sect_id/:std_for_id" component={Section} />
+					<Route
+						exact
+						path="/modify/section/:sect_id/:sch_start_date/:std_for_id"
+						component={ModifySection}
+					/>
+
 					<Redirect path="/" to={`/schedules/${today}`} />
 				</Switch>
 			</div>

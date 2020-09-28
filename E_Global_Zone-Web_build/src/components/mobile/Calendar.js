@@ -144,7 +144,7 @@ const Week = (props) => {
 				select={() => {
 					select(day);
 
-					dispatch(setSelectDate(parseDate(day.date._d)));
+					dispatch(setSelectDate(moment(day.date._d, "YYYY-MM-DD").format("YYYY-MM-DD")));
 				}}
 			/>
 		);

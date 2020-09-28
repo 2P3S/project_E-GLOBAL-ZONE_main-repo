@@ -10,7 +10,7 @@ class Calendar extends React.Component {
 
 		this.state = {
 			month: moment(),
-			selected: moment(props.selectedDate),
+			selected: moment(props.selectedDate, "YYYY-MM-DD"),
 		};
 
 		this.previous = this.previous.bind(this);

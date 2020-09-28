@@ -22,6 +22,7 @@ import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 import Loader from "../../../../components/common/Loader";
 import ShowResult from "../../../../components/common/modal/ShowResult";
+import ScheduleDownload from "../../../../components/common/modal/ScheduleDownload";
 
 /**
  * Manager :: 스케줄 조회
@@ -42,6 +43,11 @@ export default function Schedules() {
 		isOpen: scheduleIsOpen,
 		handleClose: scheduleClose,
 		handleOpen: scheduleOpen,
+	} = useModal();
+	const {
+		isOpen: downloadIsOpen,
+		handleClose: handleCloseForDownload,
+		handleOpen: handleOpenForDownload,
 	} = useModal();
 	const [selectedSchedule, setSelectedSchedule] = useState({});
 	const [pending, setPending] = useState(false);
@@ -669,12 +675,15 @@ export default function Schedules() {
 								스케줄 삭제
 							</div>
 						)}
-						{/* <div style={{ cursor: "default", backgroundColor: "gray" }}>CSV 다운</div> */}
+						<div onClick={handleOpenForDownload}>활동내역 저장</div>
 					</div>
 				</div>
 
 				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
+			<Modal isOpen={downloadIsOpen} handleClose={handleCloseForDownload}>
+				<ScheduleDownload></ScheduleDownload>
+			</Modal>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (
 					<ShowList

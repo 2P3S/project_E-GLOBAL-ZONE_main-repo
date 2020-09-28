@@ -5,12 +5,6 @@ import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import ModifyForeignerStudent from "../../../../components/common/modal/ModifyForeignerStudent";
-// import {
-// 	getAdminForeignerWork,
-// 	getAdminSection,
-// 	getAdminForeignerAccountFavorite,
-// 	patchAdminForeignerAccount,
-// } from "../../../../modules/hooks/useAxios";
 import {
 	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
@@ -174,7 +168,7 @@ export default function Foreigner() {
 			// 	setDefaultData(res.data);
 			// });
 			setSelectSect(sectOfYear.data[index].sect_id);
-			// setSelectSectName(sectOfYear.data[index].sect_name);
+			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear, index]);
 
@@ -297,6 +291,7 @@ export default function Foreigner() {
 										<col width="7%" />
 									</colgroup>
 									<thead>
+										{/* 총원:{dataSet.data.length} */}
 										<tr>
 											<th rowSpan="2">
 												<div className="table_check">
@@ -712,13 +707,14 @@ export default function Foreigner() {
 								getAdminExportForeignerSect(selectSect, selectSectName);
 							}}
 						>
-							csv 출력
+							근로 유학생 목록 저장
 						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
 						<SetSectForeigner
 							sect_id={selectSect}
+							sect_name={selectSectName}
 							handleClose={handleCloseForAdd}
 							reRender={reRender}
 						/>
