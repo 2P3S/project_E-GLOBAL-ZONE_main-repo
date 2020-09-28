@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { deleteAdminScheduleAdd, postAdminScheduleAdd } from "../../../api/admin/schedule";
+import {
+	deleteAdminScheduleAdd,
+	deleteAdminScheduleSome,
+	postAdminScheduleAdd,
+} from "../../../api/admin/schedule";
 import {
 	getForeignerReservation,
 	patchForeignerReservationPermission,
@@ -27,6 +31,7 @@ export default function ShowList({
 	std_for_name,
 	sch_start_date,
 	sch_end_date,
+	sch_for_zoom_pw,
 	reRender: thisReRender = () => {},
 }) {
 	const [data, setData] = useState();
@@ -57,6 +62,7 @@ export default function ShowList({
 				array.push(v.std_kor_id);
 			});
 			setStudentList(array);
+			console.log(data);
 		}
 		window.easydropdown.all();
 	}, [data]);
@@ -65,7 +71,7 @@ export default function ShowList({
 	}, [pending]);
 
 	const handleDelete = () => {
-		postAdminScheduleAdd(selectedResId).then((res) => {
+		deleteAdminScheduleAdd(selectedResId).then((res) => {
 			handleCloseForDelete();
 			alert(res.data.message);
 		});
@@ -79,11 +85,9 @@ export default function ShowList({
 	};
 
 	const reRender = () => {
-		getForeignerReservation(
-			sch_id,
-			user.userClass === conf.userClass.MANAGER ? std_for_id : user.id,
-			setData
-		);
+		user.userClass === conf.userClass.MANAGER
+			? getAdminReservation(sch_id).then((res) => setData(res.data))
+			: getForeignerReservation(sch_id, std_for_id, setData);
 	};
 
 	return (
@@ -99,7 +103,8 @@ export default function ShowList({
 					</p>
 				</div>
 				<p className="name">
-					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
+					{user.userClass === conf.userClass.MANAGER ? std_for_name : user.name} / PW :{" "}
+					{sch_for_zoom_pw}
 				</p>
 			</div>
 
@@ -108,6 +113,22 @@ export default function ShowList({
 					{data && data.data ? (
 						<>
 							{data.data.map((v, index) => {
+								if (v === null || v === "null" || typeof v !== "object") {
+									return (
+										<li key={index + "null"}>
+											<div className="student">
+												<p className="name">삭제된 학생</p>
+												<select
+													name={"catgo"}
+													className={"dropdown"}
+													disabled
+												>
+													<option>---</option>
+												</select>
+											</div>
+										</li>
+									);
+								}
 								let permission = v.res_state_of_permission;
 								return (
 									<li key={v.std_kor_id + "index"}>
@@ -219,9 +240,9 @@ export default function ShowList({
 					>
 						저장
 					</div>
-					<div className="bbtn darkGray" onClick={handleClose}>
+					{/* <div className="bbtn darkGray" onClick={handleClose}>
 						닫기
-					</div>
+					</div> */}
 				</div>
 			</div>
 			<Modal isOpen={isOpen} handleClose={thisHandleClose}>

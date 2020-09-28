@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-// import {
-// 	getAdminForeignerWork,
-// 	getAdminSection,
-// 	postAdminSchedule,
-// 	deleteAdminSchedule,
-// 	getAdminForeigner,
-// } from "../../../../modules/hooks/useAxios";
 
 import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
 import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
-import { getAdminSection } from "../../../../api/admin/section";
+import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
 import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
@@ -20,12 +13,12 @@ import Loader from "../../../../components/common/Loader";
 export default function Section(props) {
 	const params = useParams();
 	const history = useHistory();
-	const [keysOfParams, setKeysOfParams] = useState(Object.keys(params));
-	const [valuesOfParams, setValuesOfParams] = useState(Object.values(params));
+
 	const [forList, setForList] = useState();
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
 	const [forName, setForName] = useState();
+	const [time, setTime] = useState();
 
 	const { isOpen, handleOpen, handleClose } = useModal();
 	const {
@@ -91,6 +84,7 @@ export default function Section(props) {
 	};
 
 	function handleOnClick() {
+		if (!window.confirm("저장하시겠습니까?")) return;
 		let schedule = { 월: [], 화: [], 수: [], 목: [], 금: [] };
 		Object.keys(schedule).forEach((v, i) => {
 			for (let j = 9; j <= 17; j++) {
@@ -106,49 +100,89 @@ export default function Section(props) {
 			std_for_id: params["std_for_id"],
 			schedule: schedule,
 			ecept_date: [],
+			sch_start_date: time.sch_start_date,
+			sch_end_date: time.sch_end_date,
+			exception_mode: 0,
 		};
-		postAdminSchedule(data).then((res) => setIsDone(true));
+		postAdminSchedule(data).then((res) => {
+			getAdminForeignerWork(params["sect_id"]).then((res) => {
+				setForList(res.data);
+				redirectToFirst(res.data.data);
+			});
+		});
 
 		handleOpen();
 	}
-
-	useEffect(() => {
-		handleOpenForLoader();
-		getAdminForeignerWork(params["sect_id"]).then((res) => {
-			setForList(res.data);
+	const redirectToFirst = (data) => {
+		let first = true;
+		data.forEach((v) => {
+			if (!v.is_schedules_inputed && first) {
+				first = false;
+				history.push(`/section/${params["sect_id"]}/${v.std_for_id}`);
+			}
 		});
-		getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
-		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) =>
-			setForName(res.data)
-		);
+		first && history.push(`/section/${params["sect_id"]}/${data[0].std_for_id}`);
+		window.location.reload();
+	};
 
-		buildTable();
+	const rendering = (std_for_id = params["std_for_id"]) => {
+		handleOpenForLoader();
+		if (std_for_id !== params["std_for_id"]) {
+			history.push(`/section/${params["sect_id"]}/${std_for_id}`);
+		}
+		!forList &&
+			getAdminForeignerWork(params["sect_id"]).then((res) => {
+				setForList(res.data);
+				setTime(res.data.time);
+				if (params["std_for_id"] === "0") {
+					redirectToFirst(res.data.data);
+				}
+			});
+		!sectName &&
+			getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
+		if (std_for_id !== "0") {
+			getAdminForeigner({
+				foreigners: [std_for_id],
+			}).then((res) => {
+				setForName(res.data.data[0].std_for_name);
+				handleCloseForLoader();
+			});
+			buildTable();
+		} else {
+			// window.location.reload();
+		}
+	};
+	useEffect(() => {
+		rendering();
 	}, []);
 	useEffect(() => {
+		document
+			.getElementsByName("stdList")
+			.forEach((v) => v.classList.contains("selected") && v.classList.remove("selected"));
+
+		forName &&
+			document.getElementById(forName) &&
+			document.getElementById(forName).classList.add("selected");
+	}, [forName]);
+	useEffect(() => {
 		if (forList && forList.data) {
-			handleCloseForLoader();
 			setForList(forList.data);
 		}
 	}, [forList]);
 
-	useEffect(() => {
-		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
-			setForName(res.data);
-			buildTable();
-		});
-	}, [params]);
+	// useEffect(() => {
+	// 	// 	handleOpenForLoader();
+	// 	// 	if ([params["std_for_id"]] !== "0" && forList) {
+	// 	// 		console.log(params);
+	// 	// 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
+	// 	// 			setForName(res.data);
+	// 	// 			buildTable();
+	// 	// 			handleCloseForLoader();
+	// 	// 		});
+	// 	// 	}
+	// 	rendering();
+	// }, [params]);
 
-	useEffect(() => {
-		if (isDone) {
-			handleClose();
-			forList.forEach((v) => {
-				if (v.std_for_name !== forName && !v.is_schedules_inputed) {
-					history.push(`/section/${params["sect_id"]}/${v.std_for_id}`);
-				}
-			});
-			history.push("/reload");
-		}
-	});
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -164,14 +198,16 @@ export default function Section(props) {
 						<input type="submit" value="검색" />
 					</div>
 					<div className="not_enter">
-						<p className="tit">미입력 리스트</p>
+						<p className="tit">
+							<span>미입력 리스트</span>
+						</p>
 						<div className="scroll_area">
 							<table>
 								<thead>
 									<tr>
 										<th scope="col">학번</th>
 										<th scope="col">이름</th>
-										<th scope="col">근무시간</th>
+										{/* <th scope="col">근무시간</th> */}
 									</tr>
 								</thead>
 								<tbody>
@@ -181,15 +217,15 @@ export default function Section(props) {
 											if (!v.is_schedules_inputed) {
 												return (
 													<tr
+														name="stdList"
 														onClick={() => {
-															history.push(
-																`/section/${params["sect_id"]}/${v.std_for_id}`
-															);
+															rendering(v.std_for_id);
 														}}
+														id={v.std_for_name}
 													>
 														<td>{v.std_for_id}</td>
 														<td className="name">{v.std_for_name}</td>
-														<td></td>
+														{/* <td></td> */}
 													</tr>
 												);
 											}
@@ -200,14 +236,16 @@ export default function Section(props) {
 					</div>
 
 					<div className="enter">
-						<p className="tit">입력 완료 리스트</p>
+						<p className="tit">
+							<span>입력 완료 리스트</span>
+						</p>
 						<div className="scroll_area">
 							<table>
 								<thead>
 									<tr>
 										<th scope="col">학번</th>
 										<th scope="col">이름</th>
-										<th scope="col">근무시간</th>
+										<th scope="col">삭제</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -216,18 +254,26 @@ export default function Section(props) {
 										forList.map((v, index) => {
 											if (v.is_schedules_inputed) {
 												return (
-													<tr>
+													<tr id={v.std_for_name}>
 														<td>{v.std_for_id}</td>
 														<td>{v.std_for_name}</td>
 														<td>
 															<button
 																onClick={() => {
+																	handleOpen();
 																	deleteAdminSchedule({
 																		sect_id: params["sect_id"],
 																		std_for_id: v.std_for_id,
-																	}).then((res) =>
-																		setIsDone(true)
-																	);
+																	}).then((res) => {
+																		getAdminForeignerWork(
+																			params["sect_id"]
+																		).then((res) => {
+																			setForList(res.data);
+																			redirectToFirst(
+																				res.data.data
+																			);
+																		});
+																	});
 																}}
 															>
 																삭제
@@ -244,9 +290,7 @@ export default function Section(props) {
 				</div>
 
 				<div className="right_wrap">
-					<p className="tit">
-						[{forName && forName.data && forName.data[0].std_for_name}] 스케줄 등록
-					</p>
+					<p className="tit">[{forName}] 스케줄 등록</p>
 					<div className="section_btn">
 						<div className="reset btn" onClick={buildTable}>
 							초기화

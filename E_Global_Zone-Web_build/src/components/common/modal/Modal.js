@@ -17,6 +17,7 @@ const modalStyle = {
 		padding: "0",
 		border: "none",
 		borderRadius: "20px",
+		background: "#fff url(/global/img/modalClose_bg.png) no-repeat right 0",
 	},
 };
 Modal.setAppElement(document.getElementById("modal-root"));
@@ -28,9 +29,10 @@ Modal.setAppElement(document.getElementById("modal-root"));
  * @param handleClose
  * @returns {JSX.Element}
  */
-export default function ({ children, isOpen, handleClose }) {
+export default function ({ children, isOpen, handleClose, btn = true }) {
 	return (
-		<Modal style={modalStyle} isOpen={isOpen} onRequestClose={handleClose}>
+		<Modal style={modalStyle} isOpen={isOpen}>
+			{btn && <div onClick={handleClose} className="modal_close" />}
 			{children}
 		</Modal>
 	);

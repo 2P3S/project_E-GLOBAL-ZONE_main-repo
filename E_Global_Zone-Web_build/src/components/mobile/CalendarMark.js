@@ -10,7 +10,7 @@ class Calendar extends React.Component {
 
 		this.state = {
 			month: moment(),
-			selected: moment().startOf("day"),
+			selected: moment(props.selectedDate, "YYYY-MM-DD"),
 		};
 
 		this.previous = this.previous.bind(this);
@@ -182,14 +182,17 @@ class Day extends React.Component {
 			schedule &&
 				schedule.forEach((v) => {
 					let div = document.getElementById(`schImg-${sameDate.toString()}`);
+					let day = document.getElementById(`sch-${sameDate.toString()}`);
+					day.addEventListener("click", () => this.props.select(day));
+					div.parentElement.classList.add("scheduled");
 					let img = document.createElement("img");
 					img.src =
 						v === "영어"
-							? "/global/mobile/img/sch_tab_eng.gif"
+							? "/global/mobile/img/sch_tab_eng.png"
 							: v === "중국어"
-							? "/global/mobile/img/sch_tab_ch.gif"
+							? "/global/mobile/img/sch_tab_ch.png"
 							: v === "일본어"
-							? "/global/mobile/img/sch_tab_jp.gif"
+							? "/global/mobile/img/sch_tab_jp.png"
 							: "";
 					div.appendChild(img);
 				});
@@ -208,11 +211,11 @@ class Day extends React.Component {
 			<span
 				key={date.toString()}
 				className={
-					"day" + (isToday ? " today" : "")
-					// (isCurrentMonth ? "" : " different-month") +
-					// (date.isSame(selected) ? " selected" : "")
+					"day" +
+					(isCurrentMonth ? "" : " different-month") +
+					(date.isSame(selected) ? " selected_" : "")
 				}
-				onClick={() => select(day)}
+				id={`sch-${date.toString()}`}
 			>
 				{number}
 				<div id={`schImg-${date.toString()}`} className="calendar_lang_img"></div>

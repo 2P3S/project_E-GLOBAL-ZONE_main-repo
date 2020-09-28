@@ -6,11 +6,11 @@ import Modal from "./Modal";
 import CreateSection from "./CreateSection";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
 
-export default function GetSections() {
+export default function GetSections({ handleClose }) {
 	const [sectList, setSectList] = useState({});
 	const [selectSect, setSelectSect] = useState();
 
-	// const { isOpen, handleClose, handleOpen } = useModal();
+	const { isOpen, handleClose: handleCloseForModal, handleOpen } = useModal();
 
 	useEffect(() => {
 		getAdminSection({ year: moment().format("YYYY") }).then((res) => setSectList(res.data));
@@ -47,11 +47,11 @@ export default function GetSections() {
 					</colgroup>
 					<thead>
 						<tr>
-							<th scope="col">구분</th>
+							<th scope="col">학기 명</th>
 							<th scope="col">시작일</th>
 							<th scope="col">종료일</th>
 							<th scope="col">근무 학생 수</th>
-							<th scope="col">삭제</th>
+							<th scope="col"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -59,16 +59,22 @@ export default function GetSections() {
 							sectList.data.map((v) => {
 								return (
 									<tr>
+										<td>{v.sect_name}</td>
 										<td>
-											<div className="cursor">{v.sect_name}</div>
+											{moment(v.sect_start_date, "YYYY-MM-DD").format(
+												"YYYY-MM-DD"
+											)}
 										</td>
-										<td>{moment(v.sect_start_date).format("YYYY-MM-DD")}</td>
-										<td>{moment(v.sect_end_date).format("YYYY-MM-DD")}</td>
+										<td>
+											{moment(v.sect_end_date, "YYYY-MM-DD").format(
+												"YYYY-MM-DD"
+											)}
+										</td>
 										<td>{v.std_for_count}명</td>
 										<td>
-											{moment(v.sect_start_date).isAfter(
+											{moment(v.sect_start_date, "YYYY-MM-DD").isAfter(
 												moment(Date.now())
-											) && (
+											) ? (
 												<img
 													onClick={() => {
 														if (
@@ -76,12 +82,30 @@ export default function GetSections() {
 																"정말 삭제 하시겠습니까?"
 															)
 														)
-															deleteAdminSection(v.sect_id);
+															deleteAdminSection(v.sect_id).then(
+																(res) => {
+																	alert(res.data.message);
+																	handleClose();
+																}
+															);
 														// handleOpen();
 													}}
 													src="/global/img/enrol_del_btn.gif"
+													alt="학기 삭제 버튼"
+												/>
+											) : moment(v.sect_end_date).isAfter(
+													moment(Date.now())
+											  ) ? (
+												<img
+													onClick={() => {
+														setSelectSect(v.sect_name);
+														handleOpen();
+													}}
+													src="/global/img/modify_ico.gif"
 													alt="학기 수정 버튼"
 												/>
+											) : (
+												<></>
 											)}
 										</td>
 									</tr>
@@ -90,9 +114,9 @@ export default function GetSections() {
 					</tbody>
 				</table>
 			</div>
-			{/* <Modal isOpen={isOpen} handleClose={handleClose}>
-				<CreateSection handleClose={handleClose} selectSect={selectSect} />
-			</Modal> */}
+			<Modal isOpen={isOpen} handleClose={handleCloseForModal}>
+				<CreateSection handleClose={handleCloseForModal} selectSect={selectSect} />
+			</Modal>
 		</div>
 	);
 }

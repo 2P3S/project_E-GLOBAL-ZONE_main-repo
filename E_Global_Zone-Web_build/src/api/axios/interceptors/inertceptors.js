@@ -28,12 +28,13 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 			return response;
 		},
 		function (error) {
-			const { status } = error.response;
-			const { message } = error.response.data;
+			const { status } = error.response ? error.response : {};
+			const { message } = error.response ? error.response.data : {};
 			switch (status) {
 				case 401:
 					alert(message, 401);
 					window.localStorage.clear();
+					window.location.reload();
 					break;
 				default:
 					message && alert(message);

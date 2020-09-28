@@ -10,7 +10,7 @@ import {
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 
-import { getAdminSchedule } from "../../../../api/admin/schedule";
+import { deleteAdminScheduleDate, getAdminSchedule } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
 
@@ -22,6 +22,7 @@ import DeleteSchedule from "../../../../components/common/modal/DeleteSchedule";
 import PermissionScheduleResult from "../../../../components/common/modal/PermissionScheduleResult";
 import Loader from "../../../../components/common/Loader";
 import ShowResult from "../../../../components/common/modal/ShowResult";
+import ScheduleDownload from "../../../../components/common/modal/ScheduleDownload";
 
 /**
  * Manager :: 스케줄 조회
@@ -43,6 +44,11 @@ export default function Schedules() {
 		handleClose: scheduleClose,
 		handleOpen: scheduleOpen,
 	} = useModal();
+	const {
+		isOpen: downloadIsOpen,
+		handleClose: handleCloseForDownload,
+		handleOpen: handleOpenForDownload,
+	} = useModal();
 	const [selectedSchedule, setSelectedSchedule] = useState({});
 	const [pending, setPending] = useState(false);
 	const [schedules, setSchedules] = useState();
@@ -63,35 +69,46 @@ export default function Schedules() {
 		setCalIsOpen(!calIsOpen);
 	};
 
-	const handleCheck = (className, isAdd) => {
+	const handleCheck = (className) => {
 		if (className === "checkAll") {
-			document.getElementsByName("checkBox").forEach((v) => {
-				v.checked = isAdd;
-			});
-			handleCheck("state1", isAdd);
-			handleCheck("state2", isAdd);
-			handleCheck("state3", isAdd);
-			handleCheck("state4", isAdd);
-			handleCheck("state5", isAdd);
-			handleCheck("state6", isAdd);
-			handleCheck("state7", isAdd);
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.remove("off");
+				}
+			}
 		} else {
+			for (const key in document.getElementsByClassName("state_box")) {
+				if (document.getElementsByClassName("state_box").hasOwnProperty(key)) {
+					const element = document.getElementsByClassName("state_box")[key];
+					element.classList.add("off");
+				}
+			}
 			for (const key in document.getElementsByClassName(`state_box ${className}`)) {
 				if (document.getElementsByClassName(`state_box ${className}`).hasOwnProperty(key)) {
 					const element = document.getElementsByClassName(`state_box ${className}`)[key];
-					isAdd ? element.classList.remove("off") : element.classList.add("off");
+					element.classList.remove("off");
 				}
 			}
 		}
 	};
+	const handleChange = (e) => {
+		console.log(e.target);
+		handleCheck(e.target.value);
+	};
 
 	const handleClick = (e) => {
-		if (e.target.value === "state1") {
-			handleCheck(e.target.value, e.target.checked);
-			handleCheck("state2", e.target.checked);
-		} else {
-			handleCheck(e.target.value, e.target.checked);
-		}
+		document
+			.getElementsByName("checkBox")
+			.forEach((v) => v.value !== e.target.value && (v.checked = false));
+		e.target.checked = true;
+		// alert(e.target.value);
+		// if (e.target.value === "state1") {
+		// 	handleCheck(e.target.value, true);
+		// 	handleCheck("state2", true);
+		// } else {
+		// 	handleCheck(e.target.value, e.target.checked);
+		// }
 	};
 	useMemo(() => {
 		if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
@@ -103,20 +120,17 @@ export default function Schedules() {
 	}, [params]);
 
 	useEffect(() => {
-		// document.getElementById("allCheck").checked = true;
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			// v.checked = false;
 			v.addEventListener("click", handleClick);
+			v.addEventListener("change", handleChange);
 		});
 	}, []);
-	useMemo(() => {
+	useEffect(() => {
 		if (!firstRendering) {
 			history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
 			setSelectDate(_selectDate);
 		} else {
-			console.log(params.date !== _selectDate);
-			// if (_selectDate !== today) {
-			// 	dispatch(_setSelectDate(moment(today).format("YYYY-MM-DD")));
 			if (params.date !== _selectDate) {
 				let { date } = params;
 				dispatch(_setSelectDate(moment(date).format("YYYY-MM-DD")));
@@ -126,8 +140,9 @@ export default function Schedules() {
 	useEffect(() => {
 		setPending(true);
 		document.getElementsByName("checkBox").forEach((v) => {
-			v.checked = true;
+			v.checked = false;
 		});
+		document.getElementById("allCheck").checked = true;
 	}, [selectDate]);
 
 	useEffect(() => {
@@ -189,13 +204,24 @@ export default function Schedules() {
 											"h"
 										)}`
 									);
+
 									let div = document.createElement("div");
+									// if(moment(schedule.sch_start_date))
+									if (
+										moment(schedule.sch_start_date).minute() !== 0 &&
+										td.childNodes.length === 0
+									) {
+										// td.style.backgroundColor = "red";
+										let blank = document.createElement("div");
+										blank.className = "state_box";
+										td.appendChild(blank);
+									}
 									div.classList.add("state_box");
 									if (
 										schedule.un_permission_count === 0 &&
 										schedule.reservated_count === 0
 									) {
-										if (moment(schedule.sch_end_date) > moment(Date.now())) {
+										if (moment(schedule.sch_start_date) > moment(Date.now())) {
 											div.classList.add("state7");
 											setCountOfState({
 												...countOfstate,
@@ -207,11 +233,9 @@ export default function Schedules() {
 												...countOfstate,
 												state7: ++countOfstate.state7,
 											});
-											/*********************************
-											 * 종료 아이콘 추가 예정
-											 *********************************/
-											// div.style.visibility = "hidden";
-											div.innerText = "종료";
+											let close = document.createElement("div");
+											close.className = "close";
+											div.appendChild(close);
 										}
 									} else {
 										if (
@@ -278,6 +302,7 @@ export default function Schedules() {
 											div.classList.contains("state1")
 										) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowList",
 												std_for_id: v.std_for_id,
@@ -288,6 +313,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state3")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowListDone",
 												std_for_id: v.std_for_id,
@@ -298,6 +324,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state5")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "PermissionScheduleResult",
 												std_for_id: v.std_for_id,
@@ -308,6 +335,7 @@ export default function Schedules() {
 											scheduleOpen();
 										} else if (div.classList.contains("state6")) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowResult",
 												std_for_id: v.std_for_id,
@@ -321,6 +349,7 @@ export default function Schedules() {
 											!div.classList.contains("done")
 										) {
 											setSelectedSchedule({
+												sch_for_zoom_pw: schedule.sch_for_zoom_pw,
 												sch_id: schedule.sch_id,
 												component: "ShowList",
 												std_for_id: v.std_for_id,
@@ -403,6 +432,7 @@ export default function Schedules() {
 				<div className="select_date" onClick={handleOpenForCalendar}>
 					<img src="/global/img/select_date_ico.gif" alt="날짜 선택" />
 				</div>
+
 				<div
 					style={{ position: "absolute", zIndex: "9999" }}
 					onMouseLeave={() => setCalIsOpen(false)}
@@ -436,10 +466,7 @@ export default function Schedules() {
 							/>
 							<label htmlFor="no_app_reservation">
 								<span>
-									예약 미승인{" "}
-									<span className="blue">
-										{countOfstate.state1 + countOfstate.state2}
-									</span>
+									예약 미승인 <span className="blue">{countOfstate.state1}</span>
 									건
 								</span>
 							</label>
@@ -495,6 +522,8 @@ export default function Schedules() {
 					<li className="ico02">[예약 승인 완료]</li>
 				</ul>
 				<ul>
+					{/* 여기에 미승인 목록 모달 달아야함 */}
+					{/* 화이팅ㅋㅋ */}
 					<li className="ico03">[결과 미입력] 출석 학생</li>
 					{/* <li className="ico04">[결과 입력 완료]</li> 2020-09-09 삭제 */}
 				</ul>
@@ -516,7 +545,7 @@ export default function Schedules() {
 					<li>5PM</li>
 					<li>6PM</li>
 				</ul>
-				<div className="scroll_area pt40">
+				<div className="scroll_area">
 					{!pending ? (
 						<table className="sch_table">
 							<colgroup>
@@ -625,13 +654,40 @@ export default function Schedules() {
 							<Loader />
 						</div>
 					)}
+					<div className="table_btn">
+						{moment(selectDate).isAfter(Date.now()) && (
+							<div
+								onClick={() => {
+									if (
+										window.confirm(
+											moment(selectDate).format("YYYY년 MM월 DD일") +
+												"의 스케줄을 삭제하시겠습니까?"
+										)
+									) {
+										deleteAdminScheduleDate({
+											date: moment(selectDate).format("YYYY-MM-DD"),
+										}).then((res) => {
+											reRender();
+										});
+									}
+								}}
+							>
+								스케줄 삭제
+							</div>
+						)}
+						<div onClick={handleOpenForDownload}>활동내역 저장</div>
+					</div>
 				</div>
 
 				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
+			<Modal isOpen={downloadIsOpen} handleClose={handleCloseForDownload}>
+				<ScheduleDownload></ScheduleDownload>
+			</Modal>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (
 					<ShowList
+						sch_for_zoom_pw={selectedSchedule && selectedSchedule.sch_for_zoom_pw}
 						sch_id={selectedSchedule && selectedSchedule.sch_id}
 						handleClose={scheduleClose}
 						std_for_id={selectedSchedule && selectedSchedule.std_for_id}
@@ -654,6 +710,7 @@ export default function Schedules() {
 					<PermissionScheduleResult
 						handleClose={scheduleClose}
 						date={params.date}
+						sch_id={selectedSchedule && selectedSchedule.sch_id}
 						reRender={reRender}
 					/>
 				) : selectedSchedule.component === "ShowResult" ? (

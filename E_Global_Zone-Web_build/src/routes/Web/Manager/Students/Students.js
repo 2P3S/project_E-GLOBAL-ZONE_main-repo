@@ -16,6 +16,7 @@ import { selectData, setData } from "../../../../redux/managerSlice/managerSlice
 import conf from "../../../../conf/conf";
 import { useParams, useHistory } from "react-router-dom";
 import { handleEnterKey } from "../../../../modules/handleEnterKey";
+import { getAdminExportKorean } from "../../../../api/admin/export";
 
 class Student {
 	dept;
@@ -110,7 +111,8 @@ export default function Students() {
 	const data = useSelector(selectData);
 	const dispatch = useDispatch();
 
-	const [isOpen, setIsOpen] = useState(false);
+	// const [isOpen, setIsOpen] = useState(false);
+	const { isOpen, handleClose, handleOpen } = useModal();
 	const [selectedKor, setSelectedKor] = useState({ std_kor_id: "", std_kor_name: "" });
 	const [pending, setPending] = useState(false);
 	const [column, setColumn] = useState("std_kor_name");
@@ -165,15 +167,19 @@ export default function Students() {
 					const pagenation = document.getElementById("pagenation");
 					pagenation.innerHTML = "";
 					let first = document.createElement("button");
-					first.innerText = "<<";
+					// first.innerText = "<<";
+					first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 					first.addEventListener("click", () => {
 						history.push(`/students/1/korean`);
-						history.push("/reload");
+						setPending(true);
 					});
 					pagenation.appendChild(first);
 					for (let i = 0; i < resData.data.last_page; i++) {
 						let btn = document.createElement("button");
 						btn.innerText = i + 1;
+						if (i + 1 == params.page) {
+							btn.classList.add("on");
+						}
 						btn.addEventListener("click", () => {
 							history.push(`/students/${i + 1}/korean`);
 							setPending(true);
@@ -181,10 +187,12 @@ export default function Students() {
 						pagenation.appendChild(btn);
 					}
 					let last = document.createElement("button");
-					last.innerText = ">>";
+					// last.innerText = ">>";
+					last.innerHTML += '<img src="/global/img/paging_next_ico.gif" />';
 					pagenation.appendChild(last);
 					last.addEventListener("click", () => {
 						history.push(`/students/${resData.data.last_page}/korean`);
+						setPending(true);
 					});
 				}
 			}
@@ -318,19 +326,19 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											onClick={() => {
-												if (
-													window.confirm(
-														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
-													) === true
-												) {
-													deleteAdminKoreanAccount(v.std_id).then(
-														(res) => {
-															setPending(true);
-														}
-													);
-												}
-											}}
+											// onClick={() => {
+											// 	if (
+											// 		window.confirm(
+											// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+											// 		) === true
+											// 	) {
+											// 		deleteAdminKoreanAccount(v.std_id).then(
+											// 			(res) => {
+											// 				setPending(true);
+											// 			}
+											// 		);
+											// 	}
+											// }}
 										>
 											{v.name}
 											{/* <div className="hover_off" id={`hover_btn_${index}`}>
@@ -420,12 +428,13 @@ export default function Students() {
 				<span id="pagenation"></span>
 
 				<div className="table_btn">
+					<div onClick={handleOpen}>신청 승인</div>
 					<div
-						ref={useClick(() => {
-							setIsOpen(true);
-						})}
+						onClick={() => {
+							getAdminExportKorean();
+						}}
 					>
-						신청 승인
+						한국인 학생 목록 저장
 					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
@@ -436,20 +445,14 @@ export default function Students() {
 					{/*</div>*/}
 				</div>
 			</div>
-			<Modal
-				isOpen={isOpen}
-				hadleClose={() => {
-					setIsOpen(false);
-				}}
-			>
-				<ConfirmStudent
-					reRender={reRender}
-					handleClose={() => {
-						setIsOpen(false);
-					}}
-				/>
+			<Modal isOpen={isOpen} handleClose={handleClose}>
+				<ConfirmStudent reRender={reRender} handleClose={handleClose} />
 			</Modal>
-			<Modal isOpen={isUnrestrict} onRequestClose={handleCloseForUnrestrict}>
+			<Modal
+				isOpen={isUnrestrict}
+				onRequestClose={handleCloseForUnrestrict}
+				handleClose={handleCloseForUnrestrict}
+			>
 				<ConfirmUnrestriction
 					std_kor_name={selectedKor.std_kor_name}
 					std_kor_id={selectedKor.std_kor_id}
@@ -458,7 +461,11 @@ export default function Students() {
 					reRender={reRender}
 				/>
 			</Modal>
-			<Modal isOpen={isRestrict} onRequestClose={handleCloseForRestrict}>
+			<Modal
+				isOpen={isRestrict}
+				onRequestClose={handleCloseForRestrict}
+				handleClose={handleCloseForRestrict}
+			>
 				<ConfirmRestriction
 					handleClose={handleCloseForRestrict}
 					std_kor_id={selectedKor.std_kor_id}

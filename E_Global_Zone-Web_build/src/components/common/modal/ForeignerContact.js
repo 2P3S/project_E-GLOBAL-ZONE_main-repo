@@ -45,9 +45,9 @@ export default function ForeignerContact({ list, handleClose }) {
 			</div>
 
 			<div className="btn_area right">
-				<div className="bbtn darkGray" onClick={handleClose}>
+				{/* <div className="bbtn darkGray" onClick={handleClose}>
 					닫기
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

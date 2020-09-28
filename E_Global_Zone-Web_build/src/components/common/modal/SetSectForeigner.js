@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { getAdminForeignerNoWork, postAdminForeignerWork } from "../../../api/admin/foreigner";
+import ModifyForeignerStudent from "./ModifyForeignerStudent";
+import Modal from "./Modal";
+import useModal from "../../../modules/hooks/useModal";
 import { useSelector } from "react-redux";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
-export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
+export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_name = "" }) {
 	const dept = useSelector(selectDept);
 	const [forList, setForList] = useState();
 	const [defaultList, setDefaultList] = useState();
 	const [isDone, setIsDone] = useState(false);
+	const [currentInfo, setCurrentInfo] = useState();
 	const [pending, setPending] = useState(false);
+	const [searchMode, setSearchMode] = useState("std_for_name");
+	const { isOpen, handleOpen, handleClose: handleCloseForModify } = useModal();
 	useEffect(() => {
 		getAdminForeignerNoWork(sect_id).then((res) => {
 			setForList(res.data.data);
 			setDefaultList(res.data.data);
+			console.log(res.data.data);
 			setPending(true);
 		});
 		return reRender;
@@ -32,6 +39,9 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 			setPending(true);
 		}
 	}, [pending]);
+	useEffect(() => {
+		window.easydropdown.all();
+	});
 
 	const handleSave = () => {
 		let array = [];
@@ -64,7 +74,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 			setForList(defaultList);
 		} else {
 			defaultList.forEach((v) => {
-				if (v.std_for_name.match(term)) {
+				if (v[searchMode].match(term)) {
 					array.push(v);
 				}
 			});
@@ -74,12 +84,24 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 
 	return (
 		<div className="popup regist">
-			<p className="tit">유학생 등록</p>
+			<p className="tit">{sect_name} 근로 유학생 등록</p>
 
-			<div className="search_box">
-				<input type="text" id="term" onChange={handleSearch} />
-
-				<button>검색</button>
+			<div className="top_search">
+				<div className="search_box">
+					<select
+						name="catgo"
+						className="dropdown"
+						onChange={(e) => {
+							console.log(e.target.value);
+							setSearchMode(e.target.value);
+						}}
+					>
+						<option value="std_for_name">이름</option>
+						<option value="std_for_lang">언어</option>
+					</select>
+					<input type="text" id="term" onChange={handleSearch} />
+					<button>검색</button>
+				</div>
 			</div>
 
 			<div className="scroll_area mt20">
@@ -103,6 +125,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 							<th scope="col">연락처</th>
 							<th scope="col">이메일</th>
 							<th scope="col">ZoomID</th>
+							<th scope="col">수정</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -128,6 +151,16 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 									<td>{v.std_for_phone}</td>
 									<td>{v.std_for_mail}</td>
 									<td>{v.std_for_zoom_id}</td>
+									<td>
+										<img
+											onClick={() => {
+												setCurrentInfo(v);
+												handleOpen();
+											}}
+											src="/global/img/modify_ico.gif"
+											style={{ cursor: "pointer" }}
+										/>
+									</td>
 								</tr>
 							))}
 					</tbody>
@@ -138,6 +171,13 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender }) {
 					저장
 				</div>
 			</div>
+			<Modal isOpen={isOpen} handleClose={handleCloseForModify}>
+				<ModifyForeignerStudent
+					handleClose={handleCloseForModify}
+					currentInfo={currentInfo}
+					reRender={handleClose}
+				/>
+			</Modal>
 		</div>
 	);
 }

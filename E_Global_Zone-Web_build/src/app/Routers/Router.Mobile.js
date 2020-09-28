@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Redirect, Route, Link, useHistory } from "react-router-dom";
+import { Switch, Redirect, Route, Link, useHistory, useLocation } from "react-router-dom";
 import MobileHeader from "../../components/mobile/Header";
 import {
 	Reservation,
@@ -18,6 +18,7 @@ import useClick from "../../modules/hooks/useClick";
 export default () => {
 	const [pathname, setPathname] = useState(useHistory().location.pathname);
 	let useClicks;
+	const location = useLocation();
 	const { reservation, schedule, result } = (useClicks = {
 		home: useClick(() => setPathname("/reservation")),
 		reservation: useClick(() => setPathname("/reservation")),
@@ -52,6 +53,28 @@ export default () => {
 		}
 		e.target.classList.add("on");
 	};
+	useEffect(() => {
+		switch (location.pathname) {
+			case "/reservation":
+				reservation.current.className = "on";
+				schedule.current.className = "";
+				result.current.className = "";
+				break;
+			case "/schedule":
+				reservation.current.className = "";
+				schedule.current.className = "on";
+				result.current.className = "";
+				break;
+			case "/result":
+				reservation.current.className = "";
+				schedule.current.className = "";
+				result.current.className = "on";
+				break;
+
+			default:
+				break;
+		}
+	});
 
 	return (
 		<>
@@ -79,8 +102,6 @@ export default () => {
 					</div>
 
 					<Switch>
-						<Redirect exact path="/" to={`/reservation`} />
-
 						{/* 예약 조회 페이지 */}
 						<Route exact path="/reservation" component={Reservation} />
 						<Route path="/schedule/:id" component={ApplicationForm} />
@@ -94,6 +115,8 @@ export default () => {
 
 						{/* 임시 로그인 */}
 						<Route path="/login" component={MobileLogin} />
+
+						<Redirect path="/" to={`/reservation`} />
 					</Switch>
 				</div>
 				<Footer />

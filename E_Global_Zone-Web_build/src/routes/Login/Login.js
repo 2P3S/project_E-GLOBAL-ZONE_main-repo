@@ -13,7 +13,8 @@ import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
 import { postAdminLogin, postReset } from "../../api/admin";
 import { handleEnterKey } from "../../modules/handleEnterKey";
-
+import { selectLanguage } from "../../redux/confSlice/confSlice";
+import language from "../../conf/language";
 const Login = () => {
 	const id = useRef();
 	const pw = useRef();
@@ -22,9 +23,11 @@ const Login = () => {
 	const [pending, setPending] = useState(false);
 
 	useEffect(() => {
-		if (window.localStorage.getItem("global-zone-korean-token")) {
-			// useGoogleLogin();
-		}
+		let link = document.getElementById("content");
+		link.innerHTML = "";
+		link.rel = "stylesheet";
+		link.href = "/css/content.css";
+		document.head.appendChild(link);
 	}, []);
 
 	useEffect(() => {
@@ -60,13 +63,22 @@ const Login = () => {
 	};
 
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
+					<LoginHeader />
+				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Login</p>
-				<LoginHeader />
+				<p class="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
+				<p className="txt">
+					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+				</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -83,8 +95,11 @@ const Login = () => {
 						ref={pw}
 					/>
 					<div className="submit" onClick={handleLogin}>
-						로그인
+						Login
 					</div>
+				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
 				</div>
 			</div>
 		</div>
@@ -103,70 +118,18 @@ export const MobileLogin = () => {
 			postKoreanLogin()
 				.then((response) => {
 					if (response.status === 202) {
-						history.push("/korean/signup", { email: res.profileObj.email });
+						history.push("/korean/signup", {
+							email: res.profileObj.email,
+							name: res.profileObj.name,
+						});
 					} else if (response.status === 200) {
 						alert(response.data.message);
 						const { std_kor_id, std_kor_name } = response.data.data;
 						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
-						dispatch(logIn());
-						history.push("/");
-					} else if (response.status === 203) {
-						alert(response.data.message);
-						window.localStorage.clear();
-					}
-				})
-				.catch((e) => alert(e.res.data.message));
-		}
-	};
-	const onFailure = (e) => {};
-	useEffect(() => {
-		getDepartment().then((res) => dispatch(setDept(res.data)));
-	}, []);
-
-	return (
-		<div className="wrap mobile_login">
-			<GoogleLogin
-				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-				buttonText="Google"
-				render={(renderProps) => (
-					<div
-						className="btn"
-						onClick={renderProps.onClick}
-						disabled={renderProps.disabled}
-					>
-						G-suite 계정으로 로그인하기
-					</div>
-				)}
-				onSuccess={onSuccess}
-				onFailure={onFailure}
-				isSignedIn={true}
-			/>
-			<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
-		</div>
-	);
-};
-
-export const KoreanLogin = () => {
-	const dispatch = useDispatch();
-	const history = useHistory();
-	const onSuccess = (res) => {
-		window.localStorage.clear();
-		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
-		} else {
-			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
-			postKoreanLogin()
-				.then((response) => {
-					if (response.status === 202) {
-						history.push("/korean/signup", { email: res.profileObj.email });
-					} else if (response.status === 200) {
-						alert(response.data.message);
-						const { std_kor_id, std_kor_name } = response.data.data;
-						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
-						// window.localStorage.setItem("global-zone-loginId", std_kor_id);
-						// window.localStorage.setItem("global-zone-loginName", std_kor_name);
-						// window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
-						// window.localStorage.setItem("global-zone-isLogin", true);
+						window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						window.localStorage.setItem("global-zone-isLogin", true);
 						dispatch(logIn());
 						history.push("/");
 					} else if (response.status === 203) {
@@ -182,15 +145,105 @@ export const KoreanLogin = () => {
 	};
 	useEffect(() => {
 		getDepartment().then((res) => dispatch(setDept(res.data)));
+		let link = document.getElementById("content");
+		document.head.removeChild(link);
+		let link_ = document.createElement("link");
+		link_.rel = "stylesheet";
+		console.log(link);
+		link_.href = "/css/mobile/content.css";
+		link_.id = "content";
+		document.head.appendChild(link_);
 	}, []);
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="wrap mobile_login">
+			<LoginHeader />
+
+			<p class="tit">
+				Global Zone <span>Reservation Service</span>
+			</p>
+			<p class="txt">
+				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
+			</p>
+			<GoogleLogin
+				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+				buttonText="Google"
+				render={(renderProps) => (
+					<div
+						className="btn"
+						onClick={renderProps.onClick}
+						disabled={renderProps.disabled}
+					>
+						G-suite 계정으로 로그인하기
+					</div>
+				)}
+				onSuccess={onSuccess}
+				onFailure={onFailure}
+			/>
+			<p className="info">@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
+		</div>
+	);
+};
+
+export const KoreanLogin = () => {
+	const dispatch = useDispatch();
+	const history = useHistory();
+	const selectedLanguage = useSelector(selectLanguage);
+	const onSuccess = (res) => {
+		window.localStorage.clear();
+		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
+			alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
+		} else {
+			window.localStorage.setItem("global-zone-korean-token", res.accessToken);
+			postKoreanLogin()
+				.then((response) => {
+					if (response.status === 202) {
+						history.push("/korean/signup", {
+							email: res.profileObj.email,
+							name: res.profileObj.name,
+						});
+					} else if (response.status === 200) {
+						alert(response.data.message);
+						const { std_kor_id, std_kor_name } = response.data.data;
+						dispatch(setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name]));
+						window.localStorage.setItem("global-zone-loginId", std_kor_id);
+						window.localStorage.setItem("global-zone-loginName", std_kor_name);
+						window.localStorage.setItem("global-zone-userClass", conf.userClass.KOREAN);
+						window.localStorage.setItem("global-zone-isLogin", true);
+						dispatch(logIn());
+						// history.push("/");
+						window.location.replace("/");
+					} else if (response.status === 203) {
+						alert(response.data.message);
+						window.localStorage.clear();
+					}
+				})
+				.catch((e) => window.localStorage.clear());
+		}
+	};
+	const onFailure = (e) => {
+		window.localStorage.clear();
+	};
+	useEffect(() => {
+		getDepartment().then((res) => dispatch(setDept(res.data)));
+	}, []);
+	return (
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
+					<LoginHeader />
+				</div>
 			</div>
 			<div className="login_wrap">
-				<p className="tit">Login</p>
-				<LoginHeader />
+				<p className="tit">
+					Global Zone <span>Reservation Service</span>
+				</p>
+				<p className="txt">
+					{language[`${selectedLanguage}`].login.body.subTitle}
+					{/* <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다. */}
+				</p>
 				<div className="gsuite_login">
 					{/* <div className="btn"> */}
 					{/* {" "} */}
@@ -203,15 +256,18 @@ export const KoreanLogin = () => {
 								onClick={renderProps.onClick}
 								disabled={renderProps.disabled}
 							>
-								G-suite 계정으로 로그인하기
+								{language[`${selectedLanguage}`].login.body.korLogin.loginBtn}
 							</div>
 						)}
 						onSuccess={onSuccess}
 						onFailure={onFailure}
-						isSignedIn={true}
+						// isSignedIn={true}
 					/>
 					{/* </div> */}
-					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
+					<p>{language[`${selectedLanguage}`].login.body.korLogin.nofication}</p>
+				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
 				</div>
 			</div>
 		</div>
@@ -222,7 +278,7 @@ function LoginHeader() {
 	const history = useHistory();
 	const location = useLocation();
 	return (
-		<ul className="tab no2">
+		<ul className="top_tab">
 			<li
 				className={location.pathname === "/student" && "on"}
 				onClick={() => {
@@ -286,12 +342,24 @@ export function AdminLogin() {
 	};
 
 	return (
-		<div className="content">
-			<div className="sub_title">
-				<p className="tit">글로벌존 서비스 로그인</p>
+		<div className="login_content">
+			<div className="head">
+				<div className="head_w">
+					<div className="logo">
+						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+					</div>
+					<LoginHeader />
+				</div>
 			</div>
-			<div className="login_wrap">
-				<p className="tit">관리자 계정 로그인</p>
+			<div className="login_wrap admin">
+				<p className="tit">
+					Global Zone Reservation Service
+					<br />
+					<span>Admin Login</span>
+				</p>
+				<p className="txt">
+					관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+				</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -308,9 +376,15 @@ export function AdminLogin() {
 						ref={pw}
 					/>
 					<div className="submit" onClick={handleLogin}>
-						로그인
+						Login
 					</div>
-					<button onClick={handleReset}>비밀번호 초기화</button>
+
+					{/* <button onClick={handleReset} className="pwReset">
+						비밀번호를 초기화하시겠습니까?
+					</button> 2020-09-20 삭제 처리 */}
+				</div>
+				<div className="login_footer">
+					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
 				</div>
 			</div>
 		</div>

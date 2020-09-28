@@ -47,6 +47,7 @@ body {
 	width: 100%;
 	height: 80px;
 	background: #373a44;
+	min-width: 1200px;
 }
 
 .head .head_area {
@@ -89,6 +90,7 @@ body {
 	width: 100%;
 	text-align: center;
 	background: url(/global/img/sub_title_bg.gif) no-repeat 50% 0px;
+	min-width: 1200px;
 }
 
 .wrapper .content {
@@ -152,41 +154,114 @@ body {
 
 /* 로그인 */
 .login_wrap {
-	width: 400px;
-	margin: 30px auto;
-	padding: 30px 40px;
-	text-align: left;
+	width: 1200px;
+	margin: 100px auto;
+	text-align: center;
 }
 
 .login_wrap .tit {
-	display: inline-block;
-	padding-right: 15px;
-	font-size: 40px;
-	font-family: "Lato", sans-serif;
-	margin-bottom: 25px;
-	font-weight: 600;
-	color: #373a44;
-	background: url(/global/img/login_tit_ico.gif) no-repeat right 36px;
+	font-size: 43px;
+	font-family: "Roboto", sans-serif;
+	margin-bottom: 10px;
+	font-weight: 200;
+	color: #8d8f94;
+}
+
+.login_wrap.admin .tit {
+	margin-bottom: 15px;
+	line-height: 110%;
+}
+
+.login_wrap .tit span {
+	color: #30addc;
+}
+
+.login_wrap .txt {
+	font-size: 14px;
+	color: #787878;
+	margin-bottom: 55px;
 }
 
 /* 로그인 - 유학생 */
 .login_wrap .login_input {
 	position: relative;
-	width: 100%;
+	width: 330px;
 	margin-top: 15px;
 	display: inline-block;
+	text-align: center;
+}
+
+.login_wrap .login_input .pwReset {
+	background: none;
+	border: none;
+	text-decoration: underline;
+	color: #30addc;
+	font-size: 12px;
+	letter-spacing: -0.05em;
+	margin-top: 5px;
+}
+
+.login_content {
+	width: 100%;
+	display: inline-block;
+	background: #fbfafb;
+	height: 100vh;
+}
+.login_content .head {
+	height: 70px;
+	background: #fff;
+	border-bottom: 1px solid #f8f7f9;
+	text-align: right;
+}
+.login_content .head .head_w {
+	width: 1200px;
+	margin: 0 auto; /* padding-top: 24px; */
+}
+.login_content .head .head_w .logo {
+	float: left;
+	margin-top: 19px;
+}
+.login_content .head ul {
+	display: inline-block;
+	margin-top: 26px;
+}
+.login_content .head ul li {
+	float: left;
+	font-size: 13px;
+	color: #9c9c9c;
+	margin-left: 20px;
+	cursor: pointer;
+}
+.login_content .head ul li.on {
+	padding-left: 12px;
+	background: url(/global/img/login_tab_on.gif) no-repeat left 50%;
+	color: #30addc;
+	font-weight: 600;
 }
 
 .login_wrap .login_input input[type="text"],
 .login_wrap .login_input input[type="password"] {
-	float: left;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	height: 50px;
-	line-height: 50px;
-	width: 250px;
-	padding: 0 12px;
-	margin-top: 5px;
+	border: 1px solid #e0e0e0;
+	border-radius: 100px;
+	height: 55px;
+	line-height: 55px;
+	width: 265px;
+	padding: 0 30px;
+	margin-top: 10px;
+	display: inline-block;
+	background: #fbfafb;
+}
+.login_wrap .login_input input[type="text"]:hover,
+.login_wrap .login_input input[type="password"]:hover {
+	background: #f1f6f6;
+	transition-duration: 0.3s;
+	border: 1px solid #30addc;
+}
+
+.login_wrap .login_input input[type="text"]::placeholder,
+.login_wrap .login_input input[type="password"]::placeholder {
+	color: #aaa;
+	font-size: 13px;
 }
 
 .login_wrap .login_input input[type="text"]:first-child {
@@ -199,49 +274,54 @@ body {
 }
 
 .login_wrap .login_input .submit {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 115px;
-	height: 104px;
-	background: #2050e6;
+	width: 330px;
+	height: 52px;
+	background: #30addc;
 	color: #fff;
-	line-height: 105px;
-	border-radius: 9px;
-	font-size: 14px;
+	line-height: 52px;
+	border-radius: 100px;
+	font-size: 17px;
 	text-align: center;
+	margin-top: 30px;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-weight: 400;
+}
+
+.login_footer {
+	position: absolute;
+	bottom: 3%;
+	text-align: center;
+	width: 1200px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 300;
+	color: #aaa;
+	font-size: 13px;
+	padding-top: 25px;
+	border-top: 1px solid #eaeaea;
 }
 
 /* 로그인 - 한국인 학생 */
 .gsuite_login {
 	width: 100%;
 	text-align: center;
-	padding-top: 265px;
-	background: url(/global/img/login_gsuite.jpg) no-repeat center 44px;
+	padding-top: 215px;
+	background: url(/global/img/login_gsuite.png) no-repeat center 5px;
 }
 
 .gsuite_login .btn {
 	cursor: pointer;
 	display: inline-block;
 	padding: 0 145px 0 40px;
-	color: #373a44;
+	color: #737373;
 	font-size: 13px;
-	background: url(/global/img/gsuite_arrow.gif) no-repeat 90% 50%;
+	background: #efefef url(/global/img/gsuite_arrow.gif) no-repeat 90% 50%;
 	font-weight: 600;
 	text-align: left;
-	height: 50px;
-	line-height: 50px;
-	border: 2px solid #cdced0;
+	height: 54px;
+	line-height: 54px;
 	border-radius: 100px;
 }
-
-.gsuite_login .btn:hover {
-	background: #373a44 url(/global/img/gsuite_arrow_on.gif) no-repeat 90% 50%;
-	color: #fff;
-	border: 2px solid #373a44;
-	transition-duration: 0.3s;
-}
-
 .gsuite_login p {
 	font-size: 12px;
 	color: #5c606c;
@@ -394,6 +474,15 @@ table.sch_table tbody td:first-child {
 .state_box.state7 {
 	background: #e1e1ea;
 	color: #373a44;
+	/* overflow: hidden; */
+}
+
+.state_box.state7 .close {
+	width: 0px;
+	height: 0px;
+	border-bottom: 42px solid #c3cad6;
+	border-right: 55px solid rgba(0, 0, 0, 0);
+	background: #dadfe8;
 }
 
 table.sch_table tbody tr:hover {
@@ -729,6 +818,38 @@ table.sch_table tbody tr:hover td:first-child {
 	color: #fff;
 }
 
+#pagenation {
+	/* width:100%; */
+	display: inline-block;
+	text-align: center;
+	margin-top: 30px;
+}
+#pagenation button {
+	background: none;
+	border: none;
+	float: left;
+	height: 32px;
+	line-height: 32px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #666;
+	cursor: pointer;
+	padding: 0 5px;
+	outline: none;
+}
+#pagenation button img {
+	height: 32px;
+	line-height: 0;
+}
+#pagenation button.on {
+	color: #ff8421;
+	text-decoration: underline;
+}
+
+#pagenation button:checked {
+	border: none !important;
+	color: none !important;
+}
 /* 스케줄관리 hover button [2020-08-29 추가] 
 .hover_btn.sch {
 	width: 53px;
@@ -1245,12 +1366,13 @@ table.student_manage_table td:first-child {
 	font-weight: 600;
 	letter-spacing: -1px;
 	margin-bottom: 20px;
+	line-height: 125%;
 }
 
 .search_student .right_wrap .section_btn {
 	position: absolute;
 	right: 0;
-	top: 5px;
+	top: 1px;
 }
 
 .search_student .right_wrap .section_btn .btn {
@@ -1327,6 +1449,11 @@ table.student_manage_table td:first-child {
 	border-radius: 8px;
 	margin-bottom: 15px;
 }
+
+.search_student .not_enter .selected {
+	background-color: #f5f7ff;
+}
+
 .search_student .not_enter .scroll_area,
 .search_student .enter .scroll_area {
 	margin-top: 10px;
@@ -1335,10 +1462,26 @@ table.student_manage_table td:first-child {
 .search_student .not_enter p.tit,
 .search_student .enter p.tit {
 	font-size: 15px;
-	padding: 15px 25px;
 	font-weight: 600;
 	border-radius: 5px;
 	text-align: left;
+	padding-left: 25px;
+}
+
+.search_student .not_enter p.tit span,
+.search_student .enter p.tit span {
+	padding: 20px 0;
+	width: 100%;
+	height: 100%;
+	display: inline-block;
+}
+
+.search_student .not_enter p.tit span {
+	background: url(/global/img/not_enter_ico.gif) no-repeat 67% 9px;
+}
+
+.search_student .enter p.tit span {
+	background: url(/global/img/enter_ico.gif) no-repeat 66% 7px;
 }
 
 .search_student .not_enter p.tit {
@@ -1466,7 +1609,7 @@ table.work_time td {
 }
 table.work_time td {
 	cursor: pointer;
-	height: 65px;
+	height: 99px;
 }
 table.work_time td.time {
 	color: #463fbd;
@@ -1486,8 +1629,8 @@ table.work_time td.time.none {
 table.work_time td .time_area {
 	position: relative;
 	width: 100%;
-	height: 35px;
-	line-height: 35px;
+	height: 40px;
+	line-height: 40px;
 	background: #463fbd;
 	border: 1px solid #463fbd;
 	margin-left: -1px;
@@ -1558,30 +1701,34 @@ table.work_time thead th {
 
 /* /* 회원가입 시 정보 추가입력 mobile로 이동 */
 .join_add_wrap {
+	text-align: center;
 }
 .join_add_wrap .input_area {
-	width: 350px;
+	/* width: 350px; */
 	padding: 160px 40px 40px 40px;
 	margin: 50px auto;
 	border: 1px solid #ddd;
 	border-radius: 10px;
 	font-size: 14px;
 	background: url(/global/img/join_ico.gif) no-repeat center 45px;
+	display: inline-block;
+	/* text-align: center; */
 }
 .join_add_wrap .input_area .box {
 	text-align: left;
 	margin-bottom: 10px;
 }
 .join_add_wrap .input_area .box label {
-	display: inline-block;
+	display: block;
 	color: #373a44;
 	font-weight: 600;
 	margin-bottom: 4px;
 }
 .join_add_wrap .input_area input,
 .join_add_wrap .input_area button,
+.join_add_wrap .input_area select,
 .join_add_wrap .input_area .edd-root {
-	width: 100%;
+	width: 318px;
 	margin: 0;
 	height: 45px;
 	border: 1px solid #cacaca;
@@ -1591,6 +1738,10 @@ table.work_time thead th {
 	color: #373a44;
 	font-size: 13px;
 	font-weight: 600;
+}
+
+.join_add_wrap .input_area .edd-root {
+	width: 350px;
 }
 .join_add_wrap .input_area .edd-value {
 	height: 45px;
@@ -1617,14 +1768,30 @@ table.work_time thead th {
 	border-radius: 7px;
 	margin-top: 10px;
 	font-weight: 600;
+	width: 100%;
+	cursor: pointer;
 }
 
 /********************* POPUP *********************/
 .popup {
 	padding: 40px;
-	background: #fff;
-	border-radius: 100px;
+	/* background: #fff;
+	border-radius: 100px; */
+	overflow: hidden;
 }
+
+.modal_close {
+	position: absolute;
+	right: 15px;
+	top: 12px;
+	cursor: pointer;
+	z-index: 10;
+	width:15px;
+	height: 15px;
+	background: url(/global/img/modalClose_ico.png) no-repeat 50% center;
+}
+
+
 
 .popup p.tit {
 	font-size: 25px;
@@ -1737,8 +1904,10 @@ table.work_time thead th {
 
 .popup.restriction p.txt {
 	font-size: 16px;
-	letter-spacing: -1px;
-	margin-bottom: 20px;
+	/* letter-spacing: -1px; */
+	/* margin-bottom: 20px; */
+	/* border-bottom: 1px solid #ddd; */
+	/* padding-bottom: 30px; */
 }
 
 .popup.restriction p.date {
@@ -1746,11 +1915,12 @@ table.work_time thead th {
 	margin-bottom: 10px;
 	font-family: "Lato", sans-serif;
 	font-weight: 600;
-	color: #0e9284;
+	color: #ffa400;
 	padding: 5px 15px;
-	background: #d4f5f1;
+	background: #fdf0d6;
 	display: inline-block;
 	border-radius: 5px;
+	margin-top: 23px;
 }
 
 .popup.restriction p.txt span {
@@ -2122,7 +2292,12 @@ table.pop_table3 td {
 	width: 950px;
 	padding: 40px 0;
 	display: inline-block;
+	border-radius: 40px;
 	background: url(/global/img/not_attend_bg.gif) repeat-y 0px 50%;
+}
+
+.popup.not_attend .scroll_area {
+	height:425px;
 }
 
 .popup.not_attend .left_wrap,
@@ -2204,11 +2379,22 @@ table.pop_table3 td {
 	font-weight: 600;
 }
 
+.img_info {
+	margin-top: 10px;
+}
+
+.img_info li {
+	font-size: 11px;
+	color: #ff6308;
+	font-weight: 600;
+	margin-top: 2px;
+}
+
 /* [관리자]출석결과 미입력, 미승인 / [유학생] 출석결과 입력 동일 */
 .student_list {
 	width: 100%;
 	border: 1px solid #e8e8ee;
-	background: #f7f7f9;
+	background: #fff;
 	font-weight: 600;
 	border-radius: 10px;
 }
@@ -2216,10 +2402,6 @@ table.pop_table3 td {
 .student_list ul {
 	display: inline-block;
 	padding-top: 10px;
-}
-
-.popup.not_attend .right_wrap .student_list ul {
-	background: #fff;
 }
 
 .student_list ul li {
@@ -2410,6 +2592,10 @@ ul.img_file li p.file_name:hover {
 .popup.regist {
 	width: 925px;
 	position: relative;
+}
+.popup.regist .edd-root {
+	height:42px;
+	line-height:42px;
 }
 .popup.regist table {
 	font-size: 12px;
@@ -2622,11 +2808,12 @@ ul.img_file li p.file_name:hover {
 	border-radius: 3px;
 	font-size: 12px;
 	color: #373a44;
-	min-width: 115px;
+	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
 	font-weight: 600;
 	margin-left: 5px;
+	padding: 0 15px;
 }
 
 .setting_btn_wrap div.gray {
@@ -2638,7 +2825,7 @@ ul.img_file li p.file_name:hover {
 .setting_btn_wrap div.save {
 	float: right;
 	padding-left: 18px;
-	background: #fff url(/global/img/setting_save_btn.png) no-repeat 38px 50%;
+	/* background: #fff url(/global/img/setting_save_btn.png) no-repeat 38px 50%; */
 }
 .setting_btn_wrap div.save:hover {
 	background-color: #f5f5f5;
@@ -2791,8 +2978,9 @@ ul.img_file li p.file_name:hover {
 	background: #f4f8fb;
 	padding-top: 30px;
 	border-radius: inherit;
+	overflow: unset;
 }
-.popup.account .input_area {
+.account_insert .input_area {
 	padding: 25px 20px 20px 20px;
 	background: #ffffff;
 	text-align: center;
@@ -2802,20 +2990,33 @@ ul.img_file li p.file_name:hover {
 	-moz-box-shadow: 2px 3px 12px 0px rgba(122, 144, 204, 0.2);
 	box-shadow: 2px 3px 12px 0px rgba(122, 144, 204, 0.2);
 }
-.popup.account table {
+.account_insert table {
 	display: inline-block;
 	font-size: 12px;
+	width: 100%;
 }
-.popup.account table td {
+.account_insert table td {
 	padding: 0 10px;
 }
-.popup.account table td p {
+.account_insert table td p {
 	color: #373a44;
 	font-weight: 600;
 	margin-bottom: 5px;
 	text-align: left;
 }
-.popup.account table td input {
+
+.account_insert p.warn_txt {
+	margin: 0;
+	font-weight: 500;
+	font-size: 11px;
+	width: 100%;
+	border: 2px solid #ffd8d5;
+	border-radius: 8px;
+	padding: 8px 0px;
+	color: #ff6367;
+	background: #fff1f1;
+}
+.account_insert table td input {
 	border: none;
 	margin-bottom: 14px;
 	border: 1px solid #dadbde;
@@ -2825,22 +3026,61 @@ ul.img_file li p.file_name:hover {
 	padding: 0 10px;
 	width: 160px;
 }
-.popup.account .input_area table td .edd-root {
+
+.account_insert table td input::placeholder {
+	font-size: 11px;
+	color: #515f68;
+	font-weight: 600;
+}
+
+.account_insert .input_area table td .edd-root {
 	margin: 0;
 	width: 170px;
 	border: 1px solid #ced9e0;
 	border-radius: 5px;
 	color: #373a44;
 }
-.popup.account table td input:focus {
+.account_insert table td input:focus {
 	outline: none !important;
 	border: 1px solid #373a44;
 	transition-duration: 0.3s;
 }
-.popup.account .btn_area {
+.account_insert .btn_area {
 	position: absolute;
 	right: 45px;
 	top: 5px;
+	width: auto;
+}
+
+.account_table .table_area {
+	margin-top: 20px;
+}
+.account_table .table_area table {
+	display: table;
+	width: 100%;
+}
+.account_table .table_area table thead tr,
+.account_table .table_area table thead th {
+	background: #dee7f1;
+}
+
+.account_table .table_area table th:first-child {
+	border-radius: 7px 0 0 7px;
+}
+.account_table .table_area table th:last-child {
+	border-radius: 0 7px 7px 0;
+}
+
+.account_table .table_area table th,
+.account_table .table_area table td {
+	padding: 16px 0;
+	text-align: center;
+}
+.account_table .table_area table td {
+	border-bottom: 1px solid #ddd;
+}
+.account_table .table_area table td img {
+	cursor: pointer;
 }
 
 /* 학과명 입력*/
@@ -2883,7 +3123,9 @@ ul.img_file li p.file_name:hover {
 	padding-top: 160px;
 	background: url(/global/img/Loding_ball.gif) no-repeat center 0px;
 	background-size: 110%;
-	margin: 70px auto;
+	margin: 0 auto;
+	border-radius: 20px;
+	background-color: #fff;
 }
 .popup.loading p {
 	font-size: 17px;
@@ -2929,7 +3171,7 @@ ul.img_file li p.file_name:hover {
 	color: #fff;
 	border: none;
 	padding: 15px;
-	right: 25px;
+	right: 55px;
 	top: 26px;
 	font-size: 12px;
 	font-weight: 600;
@@ -2994,11 +3236,12 @@ ul.img_file li p.file_name:hover {
 	border-radius: 3px;
 	font-size: 12px;
 	color: #373a44;
-	min-width: 115px;
+	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
 	font-weight: 600;
 	margin-left: 5px;
+	padding: 0 20px;
 }
 
 .table_btn a:hover,
@@ -3201,6 +3444,7 @@ ul.tab.no5 li {
 	width: 100%;
 	border-top: 1px solid #e6e6e6;
 	text-align: center;
+	min-width: 1200px;
 }
 
 .footer .footer_area {

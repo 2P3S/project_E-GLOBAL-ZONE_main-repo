@@ -9,6 +9,8 @@ import Foreigner from "../../routes/Web/Manager/Students/Foreigner";
 import ForeignerSchedules from "../../routes/Web/Foreigner/Schedules/Schedules";
 import { useSelector } from "react-redux";
 import { selectToday } from "../../redux/confSlice/confSlice";
+import { selectUser } from "../../redux/userSlice/userSlice";
+import ModifySection from "../../routes/Web/Manager/Section/ModifySection";
 
 /**
  * ManagerRouter - Router for Manager
@@ -31,8 +33,6 @@ export function ManagerRouter() {
 			<Header />
 			<div className="wrapper">
 				<Switch>
-					<Redirect exact path="/" to={`/schedules/${today}`} />
-
 					{/* <Route exact path="/" component={Schedules} /> */}
 
 					<Route exact path="/schedules/:date" component={Schedules} />
@@ -42,9 +42,16 @@ export function ManagerRouter() {
 					<Route exact path="/students/:sect_id/foreigner" component={Foreigner} />
 					{/* category => foreigner, Korean */}
 
-					<Route path="/settings" component={Settings} />
+					<Route exact path="/settings" component={Settings} />
 
-					<Route path="/section/:sect_id/:std_for_id" component={Section} />
+					<Route exact path="/section/:sect_id/:std_for_id" component={Section} />
+					<Route
+						exact
+						path="/modify/section/:sect_id/:sch_start_date/:std_for_id"
+						component={ModifySection}
+					/>
+
+					<Redirect path="/" to={`/schedules/${today}`} />
 				</Switch>
 			</div>
 			<Footer />
@@ -58,6 +65,7 @@ export function ManagerRouter() {
  * @constructor
  */
 export function ForeignerRouter() {
+	const user = useSelector(selectUser);
 	useEffect(() => {
 		let link = document.getElementById("content");
 		link.innerHTML = "";
@@ -69,8 +77,8 @@ export function ForeignerRouter() {
 		<>
 			<Header /> {/* 유학생용 헤더로 대체해야함 */}
 			<Switch>
-				<Redirect exact path="/" to={`/1`} />
-				<Route exact path="/:id" component={ForeignerSchedules} />
+				<Route exact path="/" component={ForeignerSchedules} />
+				<Redirect path="/" to={`/`} />
 			</Switch>
 			<Footer />
 		</>

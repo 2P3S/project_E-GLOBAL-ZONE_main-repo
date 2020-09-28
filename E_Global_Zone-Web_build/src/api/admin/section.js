@@ -7,3 +7,5 @@ export const patchAdminSection = (sect_id, data) => admin.patch(`section/${sect_
 export const deleteAdminSection = (sect_id) => admin.delete(`section/${sect_id}`);
 
 export const postAdminSection = (data) => admin.post("section", data);
+
+export const getAdminSectionLastday = (sect_id) => admin.get(`section/lastday/${sect_id}`);
