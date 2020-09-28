@@ -215,6 +215,7 @@ class ScheduleController extends Controller
              * 1-1. 해당 날짜 스케줄에 예약이 존재하는 경우.
              */
             $last_schedule = Schedule::where('sch_sect', $sect['sect_id'])
+                ->where('sch_std_for', $std_for_id)
                 ->orderBy('sch_start_date', 'DESC')
                 ->get()->first();
 
@@ -397,6 +398,53 @@ class ScheduleController extends Controller
             return self::response_json(Config::get('constants.kor.schedule.destroy.no_value'), 202);
         }
     }
+
+    /**
+     * 입력받은 시작 날짜부터 학기 종료일까지의 전체 스케줄 삭제
+     *
+     * @return JsonResponse
+     */
+    public function destroy_for_schedules_from_special_date_to_section_end_date(
+        Section $sect_id,
+        Request $request
+    ): JsonResponse {
+        $rules = [
+            'sch_start_date' => 'required|date',
+            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            Config::get('constants.kor.schedule.destroy.failure')
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $std_for_id = $request->input('std_for_id');
+        $sch_start_date = $request->input('sch_start_date');
+
+        // 입력 받은 시작 날짜가 해당 section 에 포함되는 날짜인지 검사
+        if(!(strtotime($sect_id->sect_start_date) <= strtotime($sch_start_date) && strtotime($sch_start_date) <= strtotime($sect_id->sect_end_date)))
+            return $this->response_json_error(Config::get('constants.kor.schedule.destroy.date_err'));
+
+        try {
+            // 입력받은 시작 날짜부터 학기 종료일까지 전체 스케줄 삭제
+            $this->schedule->get_sch_by_sect_start_date((int)$sect_id['sect_id'], $std_for_id, $sch_start_date)
+                ->delete();
+        } catch (\Exception $e) {
+            // <<-- 삭제 실패
+            $message = Config::get('constants.kor.work_std_for.index.failure');
+            return $this->response_json_error(Config::get('constants.kor.schedule.destroy.failure'));
+            // -->>
+        }
+
+        return self::response_json(Config::get('constants.kor.schedule.destroy.success'), 200);
+    }
+
 
     /**
      * 관리자 - 특정 스케줄 추가
