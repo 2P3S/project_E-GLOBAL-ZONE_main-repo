@@ -130,8 +130,11 @@ Route::middleware('auth.multi')->group(static function () {
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
             Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
-            /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
+            /* 해당 날짜 해당 유학생 전체 스케줄 삭제 */
             Route::delete('/date', 'ScheduleController@destroy_by_date')->name('schedules.destroy_by_date');
+
+            /* 입력받은 시작 날짜부터 학기 종료일까지의 전체 스케줄 삭제 */
+            Route::delete('/special/{sect_id}', 'ScheduleController@destroy_for_schedules_from_special_date_to_section_end_date')->name('schedules.destroy_for_schedules_from_special_date_to_section_end_date');
 
             /* 특정 스케줄 추가 */
             Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
