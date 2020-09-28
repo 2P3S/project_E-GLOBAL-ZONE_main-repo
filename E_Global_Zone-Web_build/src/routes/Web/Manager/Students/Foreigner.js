@@ -5,12 +5,6 @@ import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";
 import InsertForeignerStudent from "../../../../components/common/modal/InsertForeignerStudent";
 import ModifyForeignerStudent from "../../../../components/common/modal/ModifyForeignerStudent";
-// import {
-// 	getAdminForeignerWork,
-// 	getAdminSection,
-// 	getAdminForeignerAccountFavorite,
-// 	patchAdminForeignerAccount,
-// } from "../../../../modules/hooks/useAxios";
 import {
 	getAdminForeigner,
 	getAdminForeignerAccountFavorite,
@@ -71,7 +65,7 @@ export default function Foreigner() {
 	const [contactList, setContactList] = useState([]);
 	const [pending, setPending] = useState(false);
 	const [toggle, setToggle] = useState(true);
-	const [index, setIndex] = useState(0);
+	const [index, setIndex] = useState();
 	const [modifyInfo, setModifyInfo] = useState();
 
 	const {
@@ -152,25 +146,31 @@ export default function Foreigner() {
 		getAdminSection({ year: `${moment().format("YYYY")}` }).then((res) => {
 			setSectOfYear(res.data);
 			let index = 0;
-			res.data.data.forEach((v, index) => {
-				if (moment(Date.now()).isBetween(v.sect_start_date, v.sect_end_date)) {
-					index = index;
+			res.data.data.forEach((v, i) => {
+				console.log(
+					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
+				);
+				if (
+					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
+				) {
+					index = i;
 				}
 			});
-			setIndex(index);
+			console.log(res.data.data[index].sect_id);
 			history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
+			setIndex(index);
 		});
 	}, []);
 	useEffect(() => {
-		if (sectOfYear && sectOfYear.data) {
-			getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
-				setDataSet(res.data);
-				setDefaultData(res.data);
-			});
+		if (index !== undefined && sectOfYear && sectOfYear.data) {
+			// getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
+			// 	setDataSet(res.data);
+			// 	setDefaultData(res.data);
+			// });
 			setSelectSect(sectOfYear.data[index].sect_id);
 			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
-	}, [sectOfYear]);
+	}, [sectOfYear, index]);
 
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
@@ -249,9 +249,13 @@ export default function Foreigner() {
 						<select name="catgo" className="dropdown" onChange={handleChange}>
 							{sectOfYear &&
 								sectOfYear.data &&
-								sectOfYear.data.map((v) => {
+								sectOfYear.data.map((v, i) => {
 									return (
-										<option value={v.sect_id} id={v.sect_name}>
+										<option
+											value={v.sect_id}
+											id={v.sect_name}
+											selected={index === i}
+										>
 											{v.sect_name}
 										</option>
 									);
@@ -287,6 +291,7 @@ export default function Foreigner() {
 										<col width="7%" />
 									</colgroup>
 									<thead>
+										{/* 총원:{dataSet.data.length} */}
 										<tr>
 											<th rowSpan="2">
 												<div className="table_check">
@@ -702,13 +707,14 @@ export default function Foreigner() {
 								getAdminExportForeignerSect(selectSect, selectSectName);
 							}}
 						>
-							csv 출력
+							근로 유학생 목록 저장
 						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
 						<SetSectForeigner
 							sect_id={selectSect}
+							sect_name={selectSectName}
 							handleClose={handleCloseForAdd}
 							reRender={reRender}
 						/>

@@ -71,22 +71,24 @@ export default function Schedules() {
 	const handleClick = (e) => {
 		document.getElementsByName("tabview").forEach((v) => v.classList.remove("on"));
 		e.target.classList.add("on");
-		if (e.target.innerText !== "전체") {
-			setData(
-				group(
+		try {
+			if (e.target.innerText !== "전체") {
+				setData(
+					group(
+						group(defaultData, (v) =>
+							moment(v.sch_start_date).format("YYYY-MM-DD")
+						).get(selectedDate),
+						(v) => v.std_for_lang
+					).get(e.target.innerText)
+				);
+			} else {
+				setData(
 					group(defaultData, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
 						selectedDate
-					),
-					(v) => v.std_for_lang
-				).get(e.target.innerText)
-			);
-		} else {
-			setData(
-				group(defaultData, (v) => moment(v.sch_start_date).format("YYYY-MM-DD")).get(
-					selectedDate
-				)
-			);
-		}
+					)
+				);
+			}
+		} catch {}
 	};
 
 	return (
@@ -95,7 +97,7 @@ export default function Schedules() {
 				<div className="wrap">
 					{calset ? <Loader /> : <Calendar dates={dates} selectedDate={selectedDate} />}
 
-					{data && data.length > 0 && (
+					{
 						<ul className="sch_tab" style={{ cursor: "pointer" }}>
 							<li>
 								<div
@@ -123,7 +125,7 @@ export default function Schedules() {
 								</div>
 							</li>
 						</ul>
-					)}
+					}
 
 					<div className="reservation_boxs tab_wrap">
 						{data && setting && data.length > 0 ? (

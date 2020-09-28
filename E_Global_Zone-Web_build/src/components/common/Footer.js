@@ -13,8 +13,7 @@ export default function Footer() {
 					대표전화 053-940-511441527 대구광역시 북구 복현로 35 (복현2동 218)
 					영진전문대학교
 					<span>COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.</span>
-					<span></span>
-					CONTRIBUTORS : LEEGUSEUL, LEEJAEWON, JUNGJAESOON, CHOSEUNGHYUN
+					{/* CONTRIBUTORS : LEEGUSEUL, LEEJAEWON, JUNGJAESOON, CHOSEUNGHYUN */}
 				</p>
 				<div className="family_site">
 					<select name="catgo" className="dropdown">

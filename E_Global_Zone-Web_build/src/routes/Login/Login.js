@@ -13,7 +13,8 @@ import { getDepartment } from "../../api/axios";
 import { setDept } from "../../redux/confSlice/confSlice";
 import { postAdminLogin, postReset } from "../../api/admin";
 import { handleEnterKey } from "../../modules/handleEnterKey";
-
+import { selectLanguage } from "../../redux/confSlice/confSlice";
+import language from "../../conf/language";
 const Login = () => {
 	const id = useRef();
 	const pw = useRef();
@@ -155,6 +156,8 @@ export const MobileLogin = () => {
 	}, []);
 	return (
 		<div className="wrap mobile_login">
+			<LoginHeader />
+
 			<p class="tit">
 				Global Zone <span>Reservation Service</span>
 			</p>
@@ -184,6 +187,7 @@ export const MobileLogin = () => {
 export const KoreanLogin = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
+	const selectedLanguage = useSelector(selectLanguage);
 	const onSuccess = (res) => {
 		window.localStorage.clear();
 		if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
@@ -237,7 +241,8 @@ export const KoreanLogin = () => {
 					Global Zone <span>Reservation Service</span>
 				</p>
 				<p className="txt">
-					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+					{language[`${selectedLanguage}`].login.body.subTitle}
+					{/* <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다. */}
 				</p>
 				<div className="gsuite_login">
 					{/* <div className="btn"> */}
@@ -251,7 +256,7 @@ export const KoreanLogin = () => {
 								onClick={renderProps.onClick}
 								disabled={renderProps.disabled}
 							>
-								G-suite 계정으로 로그인하기
+								{language[`${selectedLanguage}`].login.body.korLogin.loginBtn}
 							</div>
 						)}
 						onSuccess={onSuccess}
@@ -259,7 +264,7 @@ export const KoreanLogin = () => {
 						// isSignedIn={true}
 					/>
 					{/* </div> */}
-					<p>@g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.</p>
+					<p>{language[`${selectedLanguage}`].login.body.korLogin.nofication}</p>
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
@@ -273,7 +278,7 @@ function LoginHeader() {
 	const history = useHistory();
 	const location = useLocation();
 	return (
-		<ul>
+		<ul className="top_tab">
 			<li
 				className={location.pathname === "/student" && "on"}
 				onClick={() => {

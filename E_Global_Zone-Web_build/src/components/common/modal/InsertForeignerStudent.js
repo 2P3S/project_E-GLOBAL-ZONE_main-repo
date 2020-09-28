@@ -356,9 +356,9 @@ const InsertForeignerStudent = ({ handleClose }) => {
 						<div className="bbtn blue" onClick={handleSave}>
 							계정 생성하기
 						</div>
-						<div className="bbtn darkGray" onClick={handleClose}>
+						{/* <div className="bbtn darkGray" onClick={handleClose}>
 							닫기
-						</div>
+						</div> */}
 					</div>
 				</div>
 			) : (

@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-
-import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
+import moment from "moment";
+import {
+	getAdminForeigner,
+	getAdminForeignerWork,
+	getAdminForeignerWorkSpecial,
+} from "../../../../api/admin/foreigner";
 import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
 import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
-import deepmerge from "deepmerge";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import Loader from "../../../../components/common/Loader";
+import validator from "validator";
 
-export default function Section(props) {
+export default function ModifySection({}) {
 	const params = useParams();
 	const history = useHistory();
 
 	const [forList, setForList] = useState();
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
+	const [time, setTime] = useState({ sect_start_date: "", sect_end_date: "" });
+
 	const [forName, setForName] = useState();
-	const [time, setTime] = useState();
 
 	const { isOpen, handleOpen, handleClose } = useModal();
 	const {
@@ -95,14 +100,15 @@ export default function Section(props) {
 			}
 		});
 
+		console.log(time);
 		let data = {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
 			schedule: schedule,
 			ecept_date: [],
-			sch_start_date: time.sch_start_date,
-			sch_end_date: time.sch_end_date,
-			exception_mode: 0,
+			sch_start_date: time.sect_start_date,
+			sch_end_date: time.sect_end_date,
+			exception_mode: true,
 		};
 		postAdminSchedule(data).then((res) => {
 			getAdminForeignerWork(params["sect_id"]).then((res) => {
@@ -118,20 +124,33 @@ export default function Section(props) {
 		data.forEach((v) => {
 			if (!v.is_schedules_inputed && first) {
 				first = false;
-				history.push(`/section/${params["sect_id"]}/${v.std_for_id}`);
+				history.push(
+					`/modify/section/${params["sect_id"]}/${params["sch_start_date"]}/${v.std_for_id}`
+				);
 			}
 		});
-		first && history.push(`/section/${params["sect_id"]}/${data[0].std_for_id}`);
+		first &&
+			history.push(
+				`/modify/section/${params["sect_id"]}/${params["sch_start_date"]}/${data[0].std_for_id}`
+			);
 		window.location.reload();
 	};
 
 	const rendering = (std_for_id = params["std_for_id"]) => {
 		handleOpenForLoader();
+		if (validator.toDate(moment(params["sch_start_date"]).format("YYYYMMDD"))) {
+			// history.push("/");
+		}
 		if (std_for_id !== params["std_for_id"]) {
-			history.push(`/section/${params["sect_id"]}/${std_for_id}`);
+			history.push(
+				`/modify/section/${params["sect_id"]}/${params["sch_start_date"]}/${std_for_id}`
+			);
 		}
 		!forList &&
-			getAdminForeignerWork(params["sect_id"]).then((res) => {
+			getAdminForeignerWorkSpecial(params["sect_id"], {
+				sch_start_date: moment(params["sch_start_date"]).format("YYYY-MM-DD"),
+			}).then((res) => {
+				console.log(res.data);
 				setForList(res.data);
 				setTime(res.data.time);
 				if (params["std_for_id"] === "0") {
@@ -170,30 +189,17 @@ export default function Section(props) {
 		}
 	}, [forList]);
 
-	// useEffect(() => {
-	// 	// 	handleOpenForLoader();
-	// 	// 	if ([params["std_for_id"]] !== "0" && forList) {
-	// 	// 		console.log(params);
-	// 	// 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
-	// 	// 			setForName(res.data);
-	// 	// 			buildTable();
-	// 	// 			handleCloseForLoader();
-	// 	// 		});
-	// 	// 	}
-	// 	rendering();
-	// }, [params]);
-
 	return (
 		<div className="content">
 			<div className="sub_title">
 				<p className="tit">
-					{sectName && sectName.data && sectName.data.sect_name} 근무 시간표 편성
+					{sectName && sectName.data && sectName.data.sect_name} 근무 시간표 추가입력
 				</p>
 			</div>
 
 			<div className="search_student">
 				<div className="left_wrap">
-					<div className="tsearch">
+					<div className="tsearch" style={{ visibility: "hidden" }}>
 						<input type="text" />
 						<input type="submit" value="검색" />
 					</div>
@@ -234,7 +240,6 @@ export default function Section(props) {
 							</table>
 						</div>
 					</div>
-
 					<div className="enter">
 						<p className="tit">
 							<span>입력 완료 리스트</span>
@@ -245,7 +250,7 @@ export default function Section(props) {
 									<tr>
 										<th scope="col">학번</th>
 										<th scope="col">이름</th>
-										<th scope="col">삭제</th>
+										{/* <th scope="col">삭제</th> */}
 									</tr>
 								</thead>
 								<tbody>
@@ -257,7 +262,7 @@ export default function Section(props) {
 													<tr id={v.std_for_name}>
 														<td>{v.std_for_id}</td>
 														<td>{v.std_for_name}</td>
-														<td>
+														{/* <td>
 															<button
 																onClick={() => {
 																	handleOpen();
@@ -278,7 +283,7 @@ export default function Section(props) {
 															>
 																삭제
 															</button>
-														</td>
+														</td> */}
 													</tr>
 												);
 											}
@@ -298,6 +303,10 @@ export default function Section(props) {
 						<div className="save btn" onClick={handleOnClick}>
 							저장
 						</div>
+						<p className>
+							{moment(time.sect_start_date).format("YYYY년 MM월 DD일")}~
+							{moment(time.sect_end_date).format("YYYY년 MM월 DD일")}
+						</p>
 					</div>
 					<table className="work_time">
 						<colgroup>

@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 
 import dotenv from "dotenv";
 dotenv.config();
-console.log("test");
+
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>

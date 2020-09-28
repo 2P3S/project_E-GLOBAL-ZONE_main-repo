@@ -25,7 +25,7 @@ export default function DeleteSchedule({
 					<span className="date">{sch_start_date}</span>
 					일정을 삭제하시겠습니까?
 				</p>
-				<button
+				{/* <button
 					onClick={() => {
 						// deleteAdminScheduleSome(sch_id, setPending);
 						deleteAdminScheduleSome(sch_id).then((res) => {
@@ -34,7 +34,7 @@ export default function DeleteSchedule({
 					}}
 				>
 					삭제
-				</button>
+				</button> */}
 			</div>
 		</>
 	);

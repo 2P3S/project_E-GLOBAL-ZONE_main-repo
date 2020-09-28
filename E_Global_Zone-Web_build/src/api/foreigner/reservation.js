@@ -21,7 +21,7 @@ export const postForeignerReservationResult = (sch_id, data, setState) => {
 		}
 		if (ajax.readyState === 4) {
 			console.log(ajax);
-			if (ajax.status === 201) {
+			if (ajax.status === 201 || ajax.status === 202) {
 				setState(true);
 				alert("결과 입력에 성공하였습니다.");
 			}
