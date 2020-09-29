@@ -184,6 +184,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 환경변수 저장 */
             Route::post('', 'SettingController@store')->name('settings.store');
+
+            /** 한국인 && 유학생 정보 초기화 */
+            Route::get('/reset', 'SettingController@reset_restriction_info')->name('settings.reset_restriction_info');
         });
 
         // <<-- DataExport : DB 엑셀 출력
