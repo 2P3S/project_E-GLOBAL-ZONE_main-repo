@@ -23,7 +23,7 @@ export const getAdminExportForeignerSect = (sect_id, sect_name) =>
 			var blob = new Blob([response.data], {
 				type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 			});
-			console.log(response.data);
+			console.log(response);
 			var blobURL = window.URL.createObjectURL(blob);
 			var tempLink = document.createElement("a");
 			tempLink.style.display = "none";
