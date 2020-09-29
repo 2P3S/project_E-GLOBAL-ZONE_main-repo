@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @method join(string $string, string $string1, string $string2)
@@ -85,25 +86,23 @@ class Schedule extends Model
         $is_exist_sch_res = $result->count();
         if (!$is_exist_sch_res) {
             return $flag_make_json ?
-                Controller::response_json(self::_STD_FOR_RES_SHOW_NO_DATA, 202) :
+                Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.failure'), 202) :
                 null;
         }
 
         $lookup_columns = [
             'res_id', 'std_kor_id',
             'std_kor_name', 'std_kor_phone',
-            'sch_start_date', 'sch_end_date',
+            'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw',
             'res_state_of_permission', 'res_state_of_attendance'
         ];
 
         $response_data = $result->select($lookup_columns)->get();
 
         return $flag_make_json ?
-            Controller::response_json(self::_STD_FOR_RES_SHOW_SUCCESS, 200, $response_data) :
+            Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.success'), 200, $response_data) :
             $response_data;
     }
-
-    private const _STD_KOR_SCH_SHOW = "스케줄 목록 조회에 성공하였습니다.";
 
     /**
      * 스케줄 id 값으로 스케줄 정보 조회
@@ -142,7 +141,7 @@ class Schedule extends Model
         ];
 
         return
-            Controller::response_json(self::_STD_KOR_SCH_SHOW, 200, $response_data);
+            Controller::response_json(Config::get('constants.kor.reservation.for_index.success'), 200, $response_data);
     }
 
     /**
@@ -150,7 +149,6 @@ class Schedule extends Model
      * @param string $search_date
      * @param int $std_for_id
      */
-
     public function get_sch_by_date(
         string $search_date,
         int $std_for_id = 0
@@ -179,6 +177,22 @@ class Schedule extends Model
     ): ?object
     {
         return self::where('sch_sect', $sect_id)->where('sch_std_for', $std_for_id);
+    }
+
+    /**
+     * 학기 특정 날짜 기준 스케줄 정보 조회
+     *
+     * @param int $sect_id
+     * @param int $std_for_id
+     * @return object|null
+     */
+    public function get_sch_by_sect_start_date(
+        int $sect_id,
+        int $std_for_id = 0,
+        string $sch_start_date
+    ): ?object
+    {
+        return self::where('sch_sect', $sect_id)->whereDate('sch_start_date', '>=' ,$sch_start_date)->where('sch_std_for', $std_for_id);
     }
 
     public function get_sch_count_by_std_for(

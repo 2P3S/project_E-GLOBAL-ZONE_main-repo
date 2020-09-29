@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
 
 class SettingController extends Controller
 {
@@ -16,7 +17,7 @@ class SettingController extends Controller
     public function index()
     {
         return response()->json([
-            'message' => '환경변수를 조회합니다.',
+            'message' => Config::get('constants.kor.setting.index.success'),
             'result' => Setting::orderBy('setting_date', 'DESC')->get()->first(),
         ], 200);
     }
@@ -54,7 +55,7 @@ class SettingController extends Controller
         $create_setting = Setting::create($request);
 
         return response()->json([
-            'message' => '환경변수 저장 완료',
+            'message' => Config::get('constants.kor.setting.store.success'),
             'result' => $create_setting,
         ], 201);
     }
