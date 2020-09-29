@@ -14,17 +14,6 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    private const _LOGIN_FAILURE = "로그인에 실패하였습니다.";
-    private const _AUTH_FAILURE = "G-Suite 계정이 아닙니다.";
-    private const _ACCESS_FAILURE = "회원 가입 후 이용 가능합니다.";
-    private const _AUTH_NO_PERMISSION = "관리자 승인 후 서비스 이용이 가능합니다.";
-    private const _AUTH_HAS_RESTRICT = "이용제한 학생으로 사용할 수 없습니다.";
-
-    private const _LOGIN_ERROR = "아이디 또는 비밀번호를 다시 확인하세요.";
-    private const _LOGIN_SUCCESS = " 님 로그인 됐습니다. 어서오세요";
-    private const _LOGOUT_SUCCESS = "로그아웃되었습니다.";
-    private const _PASSWORD_CHANGE_REQUIRE = "초기 비밀번호로 로그인하였습니다. 비밀번호 변경 후, 재접속 해주세요.";
-
     /**
      * @var Authenticator
      */
@@ -87,7 +76,7 @@ class LoginController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_LOGIN_FAILURE
+            Config::get('constants.kor.login.log_in.failure')
         );
 
         if (is_object($validated_result)) {
@@ -97,7 +86,7 @@ class LoginController extends Controller
         // <<-- 로그인 실패 시
         if (empty($admin = $this->login_authenticator($request, 'account'))) {
             return
-                self::response_json(self::_LOGIN_ERROR, 401);
+                self::response_json(Config::get('constants.kor.login.log_in.wrong_value'), 401);
         }
         // -->>
 
@@ -124,7 +113,7 @@ class LoginController extends Controller
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $admin['info']['name'] . self::_LOGIN_SUCCESS;
+        $message_template = $admin['info']['name'] . Config::get('constants.kor.login.log_in.success');
 
         return
             self::response_json($message_template, 200, (object)$admin);
@@ -147,7 +136,7 @@ class LoginController extends Controller
             // 헤더에 토큰이 없는 경우
             if (empty($header_token) || empty($std_kor_user))
                 return response()->json([
-                    'message' => self::_LOGIN_FAILURE,
+                    'message' => Config::get('constants.kor.login.log_in.failure'),
                 ], 422);
 
             $check_email = explode('@', $std_kor_user['email'])[1];
@@ -159,12 +148,12 @@ class LoginController extends Controller
             // 지슈트 메일이 아닌 경우
             if ($is_not_g_suite_mail) {
                 return response()->json([
-                    'message' => self::_AUTH_FAILURE,
+                    'message' => Config::get('constants.kor.login.log_in.no_g_suite'),
                 ], 422);
             } // 회원가입을 하지 않은 경우
             else if (empty($std_kor_info)) {
                 return response()->json([
-                    'message' => self::_ACCESS_FAILURE,
+                    'message' => Config::get('constants.kor.login.log_in.no_access'),
                 ], 202);
             }
 
@@ -174,24 +163,24 @@ class LoginController extends Controller
             // 관리자 승인을 받지 않은 경우
             if (!$is_kor_state_of_permission) {
                 return response()->json([
-                    'message' => self::_AUTH_NO_PERMISSION,
+                    'message' => Config::get('constants.kor.login.log_in.no_permission'),
                 ], 203);
             } // 이용 제한 학생인 경우
             else if ($is_kor_state_of_restricted) {
                 return response()->json([
-                    'message' => self::_AUTH_HAS_RESTRICT,
+                    'message' => Config::get('constants.kor.login.log_in.has_restrict'),
                 ], 203);
             } // 회원인 경우 로그인 성공과 함께 회원정보 전달
             else {
                 return response()->json([
-                    'message' => $std_kor_info['std_kor_name'] . self::_LOGIN_SUCCESS,
+                    'message' => $std_kor_info['std_kor_name'] . Config::get('constants.kor.login.log_in.success'),
                     'data' => $std_kor_info
                 ], 200);
             }
         } catch (Exception $e) {
             // 토큰이 만료 된 경우
             return response()->json([
-                'message' => self::_LOGIN_FAILURE,
+                'message' => Config::get('constants.kor.login.log_in.failure'),
             ], 422);
         }
     }
@@ -213,7 +202,7 @@ class LoginController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_LOGIN_FAILURE
+            Config::get('constants.kor.login.log_in.failure')
         );
 
         if (is_object($validated_result)) {
@@ -223,7 +212,7 @@ class LoginController extends Controller
         // <<-- 로그인 실패 시
         if (empty($foreigner = $this->login_authenticator($request, 'std_for_id'))) {
             return
-                self::response_json(self::_LOGIN_ERROR, 401);
+                self::response_json(Config::get('constants.kor.login.log_in.wrong_value'), 401);
         }
         // -->>
 
@@ -250,7 +239,7 @@ class LoginController extends Controller
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $foreigner['info']['std_for_name'] . self::_LOGIN_SUCCESS;
+        $message_template = $foreigner['info']['std_for_name'] . Config::get('constants.kor.login.log_in.success');
 
         return
             self::response_json($message_template, 200, (object)$foreigner);
@@ -268,7 +257,7 @@ class LoginController extends Controller
         $this->request_user_data($request, false)->token()->revoke();
 
         return
-            self::response_json(self::_LOGOUT_SUCCESS, 200);
+            self::response_json(Config::get('constants.kor.login.log_out.success'), 200);
     }
 
     public function request_user_data(

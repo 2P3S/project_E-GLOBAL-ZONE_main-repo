@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticateMulti
 {
-    private const _LOGIN_FAILURE = "로그인에실패하였습니다.";
-    private const _ACCESS_ERROR = "잘못된 접근입니다.";
-
     /**
      * Handle an incoming request.
      *

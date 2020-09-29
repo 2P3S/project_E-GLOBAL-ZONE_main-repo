@@ -47,7 +47,8 @@ class Student_foreigner extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
     public function set_user_info(

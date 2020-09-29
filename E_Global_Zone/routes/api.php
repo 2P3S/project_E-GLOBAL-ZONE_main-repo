@@ -35,6 +35,9 @@ Route::middleware('auth.multi')->group(static function () {
                 /** 학기별 전체 유학생 정보 조회 */
                 Route::get('{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_sect')->name('foreigners.index');
 
+                /** 해당 학기 특정 날짜로 부터 등록되지 않은 근로 유학생 정보 조회 */
+                Route::get('/special/{sect_id}', 'WorkStudentForeignerController@work_std_for_registered_index_by_date')->name('foreigners.index');
+
                 /** 학기별 유학생 등록 */
                 Route::post('{sect_id}', 'WorkStudentForeignerController@store')->name('foreigners.store');
 
@@ -111,6 +114,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 학기 삭제 */
             Route::delete('{sect_id}', 'SectionController@destroy')->name('sections.destroy');
+
+            /* 해당 학기의 가장 마지막 스케줄 날짜 리턴 */
+            Route::get('/lastday/{sect_id}', 'SectionController@last_schedule_date_by_sect')->name('sections.last_schedule_date_by_sect');
         });
 
         /* 스케줄 관리 라우터 */
@@ -118,14 +124,17 @@ Route::middleware('auth.multi')->group(static function () {
             /* 특정 날짜 전체 유학생 스케줄 조회 */
             Route::get('', 'ScheduleController@showForeignerSchedules')->name('schedules.showForeignerSchedules');
 
-            /* 스케줄 등록 */
+            /* 스케줄 등록 && 학기 수정 후 스케줄 등록 */
             Route::post('', 'ScheduleController@store')->name('schedules.store');
 
             /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
             Route::delete('', 'ScheduleController@destroy_all_schedule')->name('schedules.destroy_all_schedule');
 
-            /* 해당 학기 해당 유학생 전체 스케줄 삭제 */
+            /* 해당 날짜 해당 유학생 전체 스케줄 삭제 */
             Route::delete('/date', 'ScheduleController@destroy_by_date')->name('schedules.destroy_by_date');
+
+            /* 입력받은 시작 날짜부터 학기 종료일까지의 전체 스케줄 삭제 */
+            Route::delete('/special/{sect_id}', 'ScheduleController@destroy_for_schedules_from_special_date_to_section_end_date')->name('schedules.destroy_for_schedules_from_special_date_to_section_end_date');
 
             /* 특정 스케줄 추가 */
             Route::post('some', 'ScheduleController@store_some_schedule')->name('schedules.store_some_schedule');
@@ -148,6 +157,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 해당 날짜 출석 결과 (승인, 미승인)건 조회 */
             Route::get('unapproved/{date}', 'ScheduleController@indexApprovedList')->name('schedules.indexApprovedList');
+
+            /** 완료된 스케줄의 사진 불러오기 */
+            Route::get('image/{sch_id}', 'SchedulesResultImgController@index_result_img')->name('schedulesresultimgs.index_result_img');
 
             /** 출석 결과 미승인 건 승인 */
             Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
@@ -176,10 +188,12 @@ Route::middleware('auth.multi')->group(static function () {
 
         // <<-- DataExport : DB 엑셀 출력
         Route::prefix('export')->group(function () {
-            Route::get('department', 'DataExportController@index_dept')->name('dept.export');
-            Route::get('korean', 'DataExportController@index_std_kor')->name('kor.export');
-            Route::get('foreigner', 'DataExportController@index_std_for')->name('for.export');
-            Route::get('foreigner/sect/{sect_id}', 'DataExportController@index_std_for_by_section')->name('sch.export');
+            Route::get('department', 'DataExportController@export_dept');
+            Route::get('korean', 'DataExportController@export_std_kor');
+            Route::get('foreigner', 'DataExportController@export_std_for');
+            Route::get('foreigner/sect/{sect_id}', 'DataExportController@export_std_for_by_section');
+            Route::get('schedule', 'DataExportController@export_sch_by_date');
+            Route::get('reservation', 'DataExportController@export_res_by_date');
         });
         // -->>
 
