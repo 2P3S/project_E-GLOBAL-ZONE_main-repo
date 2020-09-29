@@ -19,7 +19,8 @@ class Admin extends Authenticatable
     ];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
     public function set_user_info(
