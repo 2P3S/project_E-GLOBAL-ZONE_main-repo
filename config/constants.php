@@ -132,7 +132,9 @@ return [
             'std_kor' => '글로벌 존 이용 학생 목록.xlsx',
             'std_for' => '글로벌 존 유학생 목록.xlsx',
             'work_std_for' => '글로벌 존 근로 유학생 목록.xlsx',
-            'failure' => '엑셀 파일 출력에 실패하였습니다.'
+            'sch' => '스케줄 목록.xlsx',
+            'res' => '예약 목록.xlsx',
+            'failure' => '엑셀 파일 저장에 실패하였습니다.'
         ],
         'result_img' => [
             'index' => [
