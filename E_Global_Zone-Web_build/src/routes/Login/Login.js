@@ -327,7 +327,7 @@ export function AdminLogin() {
 	}, [pending, data]);
 
 	const handleReset = () => {
-		postReset().then((res) => process.env.REACT_APP_DEVELOP_MODE && console.log(res));
+		postReset().then((res) => alert(res.data.message));
 	};
 
 	const handleLogin = () => {
@@ -378,10 +378,9 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						Login
 					</div>
-
-					{/* <button onClick={handleReset} className="pwReset">
+					<button onClick={handleReset} className="pwReset" style={{ cursor: "pointer" }}>
 						비밀번호를 초기화하시겠습니까?
-					</button> 2020-09-20 삭제 처리 */}
+					</button>
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.
