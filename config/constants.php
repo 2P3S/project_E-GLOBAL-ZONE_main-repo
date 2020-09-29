@@ -116,6 +116,7 @@ return [
             'log_in' => [
                 'success' => ' 님 로그인되었습니다.',
                 'failure' => '로그인에 실패하였습니다.',
+                'illegal' => '잘못된 접근입니다.',
                 'wrong_value' => '아이디 또는 비밀번호를 다시 확인하세요.',
                 'no_permission' => '관리자 승인 후 서비스 이용이 가능합니다.',
                 'no_g_suite' => 'G-Suite 계정이 아닙니다.',
