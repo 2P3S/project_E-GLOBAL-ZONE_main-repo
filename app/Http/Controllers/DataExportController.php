@@ -19,15 +19,13 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class DataExportController extends Controller
 {
-    private $department;
-
     private function get_download_error(): JsonResponse
     {
         $message = Config::get('constants.kor.data_export.failure');
         return self::response_json_error($message);
     }
 
-    public function index_dept(Request $request)
+    public function export_dept(Request $request)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
@@ -51,8 +49,7 @@ class DataExportController extends Controller
         }
     }
 
-    // TODO 조건 검색 추가 필요
-    public function index_std_kor(Request $request)
+    public function export_std_kor(Request $request)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
@@ -88,7 +85,7 @@ class DataExportController extends Controller
         }
     }
 
-    public function index_std_for(Request $request)
+    public function export_std_for(Request $request)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
@@ -126,7 +123,7 @@ class DataExportController extends Controller
         }
     }
 
-    public function index_std_for_by_section(Request $request, Section $sect_id)
+    public function export_std_for_by_section(Request $request, Section $sect_id)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
@@ -165,7 +162,7 @@ class DataExportController extends Controller
         }
     }
 
-    public function index_sch_by_date(Request $request)
+    public function export_sch_by_date(Request $request)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);
@@ -224,7 +221,7 @@ class DataExportController extends Controller
         }
     }
 
-    public function index_res_by_date(Request $request)
+    public function export_res_by_date(Request $request)
     {
         // <<-- Request 요청 관리자 권한 검사.
         $is_admin = self::is_admin($request);

@@ -188,12 +188,12 @@ Route::middleware('auth.multi')->group(static function () {
 
         // <<-- DataExport : DB 엑셀 출력
         Route::prefix('export')->group(function () {
-            Route::get('department', 'DataExportController@index_dept')->name('dept.export');
-            Route::get('korean', 'DataExportController@index_std_kor')->name('kor.export');
-            Route::get('foreigner', 'DataExportController@index_std_for')->name('for.export');
-            Route::get('foreigner/sect/{sect_id}', 'DataExportController@index_std_for_by_section')->name('work_std_for.export');
-            Route::get('schedule', 'DataExportController@index_sch_by_date')->name('sch.export');
-            Route::get('reservation', 'DataExportController@index_res_by_date')->name('res.export');
+            Route::get('department', 'DataExportController@export_dept');
+            Route::get('korean', 'DataExportController@export_std_kor');
+            Route::get('foreigner', 'DataExportController@export_std_for');
+            Route::get('foreigner/sect/{sect_id}', 'DataExportController@export_std_for_by_section');
+            Route::get('schedule', 'DataExportController@export_sch_by_date');
+            Route::get('reservation', 'DataExportController@export_res_by_date');
         });
         // -->>
 
