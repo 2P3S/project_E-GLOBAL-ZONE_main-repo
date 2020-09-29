@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Reservation;
+use App\Schedule;
 use App\Section;
 use App\Work_student_foreigner;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Config;
 
 class SectionController extends Controller
 {
@@ -21,7 +22,7 @@ class SectionController extends Controller
 
     private const _SECTION_UPDATE_RES_SUCCESS = "학기 정보 변경에 성공하였습니다.";
     private const _SECTION_UPDATE_RES_FAILURE = "학기 정보 변경에 실패하였습니다.";
-    private const _SECTION_UPDATE_RES_FAILURE_OVER_DATE = "해당 학기가 시작하여 변경할 수 없습니다.";
+    private const _SECTION_UPDATE_RES_FAILURE_OVER_DATE = "학기가 시작한 이후에는 시작날짜를 변경할 수 없습니다. 스케줄 및 예약관리 → 해당 날짜 → 해당 날짜 전체 스케줄 삭제 를 이용해주세요.";
 
     private const _SECTION_DELETE_RES_SUCCESS = "학기 정보 삭제에 성공하였습니다.";
     private const _SECTION_DELETE_RES_FAILURE = "학기 정보 삭제에 실패하였습니다.";
@@ -47,7 +48,7 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_SEARCH_RES_FAILURE
+            Config::get('constants.kor.section.index_year.failure')
         );
 
         if (is_object($validated_result)) {
@@ -66,7 +67,7 @@ class SectionController extends Controller
             }
         }
 
-        return self::response_json(self::_SECTION_SEARCH_RES_SUCCESS, 200, $section_data);
+        return self::response_json(Config::get('constants.kor.section.index_year.success'), 200, $section_data);
     }
 
     /**
@@ -87,13 +88,12 @@ class SectionController extends Controller
             ->orderBy('sect_start_date', 'DESC')
             ->get();
 
-        //TODO 상위 % 인지 계산 후 반영.
-
         $is_non_attendanced_data = $attendanced_section_data->count() == 0;
 
-        if ($is_non_attendanced_data) return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS2, 202);
+        if ($is_non_attendanced_data)
+            return self::response_json(Config::get('constants.kor.section.index_kor.failure'), 202);
 
-        return self::response_json(self::_SECTION_KOR_ATTENDANCED_RES_SUCCESS1, 200, $attendanced_section_data);
+        return self::response_json(Config::get('constants.kor.section.index_kor.success'), 200, $attendanced_section_data);
     }
 
     /**
@@ -113,7 +113,7 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_STORE_RES_FAILURE
+            Config::get('constants.kor.section.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -126,7 +126,7 @@ class SectionController extends Controller
             'sect_end_date' => $request->input('sect_end_date'),
         ]);
 
-        return self::response_json(self::_SECTION_STORE_RES_SUCCESS, 201, $create_section);
+        return self::response_json(Config::get('constants.kor.section.store.success'), 201, $create_section);
     }
 
     /**
@@ -138,14 +138,6 @@ class SectionController extends Controller
      */
     public function update(Request $request, Section $sect_id): JsonResponse
     {
-        // 학기 시작 날짜 검사.
-        $sect_start_date = strtotime($sect_id['sect_start_date']);
-        $now_date = strtotime("Now");
-
-        if ($sect_start_date < $now_date) {
-            return self::response_json_error(self::_SECTION_UPDATE_RES_FAILURE_OVER_DATE);
-        }
-
         $rules = [
             'sect_start_date' => 'required|date',
             'sect_end_date' => 'required|date|after_or_equal:sect_start_date',
@@ -155,19 +147,44 @@ class SectionController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_SECTION_UPDATE_RES_FAILURE
+            Config::get('constants.kor.section.update.failure')
         );
 
         if (is_object($validated_result)) {
             return $validated_result;
         }
 
+        /**
+         * [IF] 학기 시작 후 학기 일자를 당길 경우
+         * 기존 스케줄 삭제.
+         * [ELSE]
+         * 날짜 연장.
+         */
+        // 학기 시작 날짜 검사.
+        $old_sect_end_date = strtotime($sect_id['sect_end_date']);
+        $new_sect_end_date = $request->input('sect_end_date');
+
+        $old_sect_start_date = strtotime($sect_id['sect_start_date']);
+        $new_sect_start_date = $request->input('sect_start_date');
+
+        $now_date = strtotime("Now");
+        // dd($old_sect_start_date < $now_date, $old_sect_start_date < strtotime($new_sect_start_date));
+        if (($old_sect_start_date < $now_date) && ($old_sect_start_date < strtotime($new_sect_start_date))) {
+            return self::response_json_error(Config::get('constants.kor.section.update.over_date'));
+        }
+
+        if ($old_sect_end_date > $new_sect_end_date) {
+            Schedule::where('sch_sect', $sect_id['sect_id'])
+                ->whereDate('sch_start_date', '>=', date("Y-m-d", strtotime($new_sect_end_date . "+1 day")))
+                ->delete();
+        }
+
         $sect_id->update([
-            'sect_start_date' => $request->input('sect_start_date'),
-            'sect_end_date' => $request->input('sect_end_date'),
+            'sect_start_date' => $new_sect_start_date,
+            'sect_end_date' => $new_sect_end_date,
         ]);
 
-        return self::response_json(self::_SECTION_UPDATE_RES_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.section.update.success'), 200);
     }
 
     /**
@@ -191,15 +208,40 @@ class SectionController extends Controller
         $now_date = strtotime("Now");
 
         if ($sect_start_date < $now_date) {
-            return self::response_json_error(self::_SECTION_DELETE_RES_FAILURE_OVER_DATE);
+            return self::response_json_error(Config::get('constants.kor.section.destroy.over_date'));
         }
 
         try {
             $sect_id->delete();
-            return self::response_json(self::_SECTION_DELETE_RES_SUCCESS, 200);
+            return self::response_json(Config::get('constants.kor.section.destroy.success'), 200);
         } catch (Exception $e) {
-            return self::response_json(self::_SECTION_DELETE_RES_FAILURE, 200);
+            return self::response_json(Config::get('constants.kor.section.destroy.failure'), 200);
         }
+    }
+
+    /***
+     * 해당 학기의 가장 마지막 스케줄 날짜 리턴
+     */
+    public function last_schedule_date_by_sect(Request $request, Section $sect_id): JsonResponse
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        $last_schedule = Schedule::where('sch_sect', $sect_id['sect_id'])
+            ->orderBy('sch_start_date', 'DESC')
+            ->get()->first();
+
+        $last_schedule_date = date("Y-m-d", strtotime($last_schedule['sch_start_date']));
+
+        return response()->json([
+            'message' => Config::get('constants.kor.section.index_date.success'),
+            'data' => $last_schedule_date
+        ], 200);
     }
 
     public function validate_request_section(

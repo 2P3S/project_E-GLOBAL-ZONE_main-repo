@@ -16,37 +16,6 @@ use phpDocumentor\Reflection\Types\Self_;
 
 class ForeignerController extends Controller
 {
-    /*
-     * [Refactoring]
-     * TODO RESPONSE 수정
-     * TODO 접근 가능 범위 수정
-     */
-
-    // 000 유학생이 등록되었습니다.
-    // 000 유학생 등록에 실패하였습니다.
-    private const _STD_FOR_STORE_SUCCESS = " 유학생이 등록되었습니다.";
-    private const _STD_FOR_STORE_FAILURE = " 유학생 등록에 실패하였습니다.";
-
-    private const _STD_FOR_UPDATE_SUCCESS = " 유학생 정보 변경에 성공하였습니다.";
-    private const _STD_FOR_UPDATE_FAILURE = " 유학생 정보 변경에 실패하였습니다.";
-
-    // 000 유학생의 비밀번호가 초기화가 성공하였습니다. (초기 비밀번호 : 1q2w3e4r!)
-    // 000 유학생의 비밀번호가 초기화에 실패하였습니다.
-    private const _STD_FOR_RESET_SUCCESS = " 비밀번호 초기화가 성공하였습니다.";
-    private const _STD_FOR_RESET_FAILURE = " 비밀번호 변경에 실패하였습니다.";
-
-    private const _STD_FOR_FAVORITE_SUCCESS = "유학생 즐겨찾기 변경에 성공하였습니다.";
-    private const _STD_FOR_FAVORITE_FAILURE = "유학생 즐겨찾기 변경에 실패하였습니다.";
-
-    // 000 유학생이 삭제되었습니다.
-    // 000 유학생 삭제에 실패하였습니다.
-    private const _STD_FOR_DELETE_SUCCESS = " 유학생이 삭제되었습니다.";
-    private const _STD_FOR_DELETE_FAILURE = " 유학생 삭제에 실패하였습니다.";
-
-    // 000 학번의 학생의 데이터가 중복입니다.
-    private const _STD_FOR_DUPLICATED_DATA = " 학번의 학생의 데이터가 중복입니다.";
-
-
     private $std_for;
     private $std_for_contact;
 
@@ -99,8 +68,8 @@ class ForeignerController extends Controller
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
-            'std_for_phone' => 'required|phone_number|unique:student_foreigners_contacts,std_for_phone',
-            'std_for_mail' => 'required|email|unique:student_foreigners_contacts,std_for_mail',
+            'std_for_phone' => 'phone_number|unique:student_foreigners_contacts,std_for_phone|nullable',
+            'std_for_mail' => 'kakao_id|unique:student_foreigners_contacts,std_for_mail|nullable',
             'std_for_zoom_id' => 'required|integer|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
             'guard' => 'required|string|in:admin'
         ];
@@ -108,7 +77,7 @@ class ForeignerController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_STORE_FAILURE
+            Config::get('constants.kor.std_for.store.failure')
         );
 
         if (is_object($validated_result)) {
@@ -117,7 +86,7 @@ class ForeignerController extends Controller
 
         $std_for_data = [
             'std_for_id' => $request->input('std_for_id'),
-            'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
+            'password' => Hash::make(env('FOREIGN_INITIAL_PASSWORD')),
             'std_for_dept' => $request->input('std_for_dept'),
             'std_for_name' => $request->input('std_for_name'),
             'std_for_lang' => $request->input('std_for_lang'),
@@ -161,14 +130,14 @@ class ForeignerController extends Controller
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
             'std_for_phone' => [
-                'required',
                 'phone_number',
-                Rule::unique('student_foreigners_contacts', 'std_for_phone')->ignore($contact_data['std_for_phone'], 'std_for_phone')
+                Rule::unique('student_foreigners_contacts', 'std_for_phone')->ignore($contact_data['std_for_phone'], 'std_for_phone'),
+                'nullable'
             ],
             'std_for_mail' => [
-                'required',
-                'email',
-                Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail')
+                'kakao_id',
+                Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail'),
+                'nullable'
             ],
             'std_for_zoom_id' => [
                 'required',
@@ -181,7 +150,7 @@ class ForeignerController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_UPDATE_FAILURE
+            Config::get('constants.kor.std_for.update.failure')
         );
 
         if (is_object($validated_result)) {
@@ -197,7 +166,7 @@ class ForeignerController extends Controller
             'std_for_zoom_id' => $request->input('std_for_zoom_id'),
         ]);
 
-        return self::response_json(self::_STD_FOR_UPDATE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.std_for.update.success'), 200);
     }
 
     /**
@@ -217,7 +186,7 @@ class ForeignerController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_RESET_FAILURE
+            Config::get('constants.kor.std_for.passwordinit.failure')
         );
 
         if (is_object($validated_result)) {
@@ -231,11 +200,11 @@ class ForeignerController extends Controller
             ]);
         } else {
             $std_for_id->update([
-                'password' => Hash::make(Config::get('constants.initial_password.foreigner')),
+                'password' => Hash::make(env('FOREIGN_INITIAL_PASSWORD')),
             ]);
         }
 
-        return self::response_json(self::_STD_FOR_RESET_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.std_for.passwordinit.success'), 200);
     }
 
     /**
@@ -289,7 +258,7 @@ class ForeignerController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            self::_STD_FOR_FAVORITE_FAILURE
+            Config::get('constants.kor.std_for.favorite.failure')
         );
 
         if (is_object($validated_result)) {
@@ -298,6 +267,6 @@ class ForeignerController extends Controller
 
         $std_for_id->update(['std_for_state_of_favorite' => (int)$request->input('favorite_bool')]);
 
-        return self::response_json(self::_STD_FOR_FAVORITE_SUCCESS, 200);
+        return self::response_json(Config::get('constants.kor.std_for.favorite.success'), 200);
     }
 }

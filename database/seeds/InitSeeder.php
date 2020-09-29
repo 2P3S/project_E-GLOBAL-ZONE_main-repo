@@ -15,7 +15,7 @@ class InitSeeder extends Seeder
     {
         DB::table('admins')->insert([
             "account" => "oic_yju",
-            "password" => Hash::make(Config::get('constants.initial_password.admin')),
+            "password" => Hash::make(env('ADMIN_INITIAL_PASSWORD')),
             "name" => "국제교류원"
         ]);
 
