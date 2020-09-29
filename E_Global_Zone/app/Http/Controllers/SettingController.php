@@ -3,12 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Setting;
+use App\Restricted_student_korean;
+use App\Student_foreigner;
+use App\Student_korean;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Config;
 
 class SettingController extends Controller
 {
+    private $restrict;
+
+    public function __construct()
+    {
+        $this->restrict = new Restricted_student_korean();
+    }
+
     /**
      * 등록된 환경변수 조회
      *
@@ -16,10 +26,9 @@ class SettingController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'message' => Config::get('constants.kor.setting.index.success'),
-            'result' => Setting::orderBy('setting_date', 'DESC')->get()->first(),
-        ], 200);
+        $setting_data = Setting::orderBy('setting_date', 'DESC')->get()->first();
+
+        return self::response_json(Config::get('constants.kor.setting.index.success'), 200, $setting_data);
     }
 
     /**
@@ -54,9 +63,49 @@ class SettingController extends Controller
 
         $create_setting = Setting::create($request);
 
-        return response()->json([
-            'message' => Config::get('constants.kor.setting.store.success'),
-            'result' => $create_setting,
-        ], 201);
+        return self::response_json(Config::get('constants.kor.setting.store.success'), 201, $create_setting);
+    }
+
+    /**
+     * 한국인 / 유학생 정보 초기화
+     *
+     * 유학생 -> std_for_num_of_delay_permission, std_for_num_of_delay_input
+     * 한국인 학생 -> std_kor_num_of_absent, std_kor_state_of_restriction
+     *
+     * [IF] 한국인 학생 has std_kor_state_of_restriction -> restricted_student_koreans -> orderBy 날짜 풀기.
+     */
+    public function reset_restriction_info(Request $request)
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        // 유학생 정보 초기화
+        Student_foreigner::query()->update([
+            'std_for_num_of_delay_permission' => 0,
+            'std_for_num_of_delay_input' => 0
+        ]);
+
+        // 한국인 학생 정보 초기화
+        $std_kor_data = Student_korean::where('std_kor_state_of_permission', true)->get();
+
+        foreach ($std_kor_data as $std_kor) {
+            if ($std_kor['std_kor_state_of_restriction']) {
+                $restricted_info = $this->restrict->get_korean_restricted_info($std_kor['std_kor_id']);
+
+                $restricted_info->update([
+                    'restrict_end_date' => now()
+                ]);
+            }
+
+            $std_kor->update([
+                'std_kor_num_of_absent' => 0,
+                'std_kor_state_of_restriction' => 0
+            ]);
+        }
     }
 }
