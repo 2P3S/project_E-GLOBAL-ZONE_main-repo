@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,9 @@ Route::middleware('auth.multi')->group(static function () {
 
     /* 관리자 라우터 */
     Route::prefix('/admin')->group(function () {
+
+        Route::get('holiday', 'ScheduleController@index_holiday');
+
         /* 유학생 관리 */
         Route::prefix('/foreigner')->group(function () {
             /** 특정 유학생 정보 조회 */
