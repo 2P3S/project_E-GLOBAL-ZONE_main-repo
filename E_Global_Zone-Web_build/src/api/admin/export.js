@@ -1,8 +1,8 @@
 import { admin } from "../axios";
 
 const decoder = (string) => {
-	if (browserCheck() === "Chrome") {
-		return decodeURIComponent(escape(decodeURIComponent(escape(string))));
+	if (browserCheck() === "Safari") {
+		return string;
 	}
 	return decodeURIComponent(escape(string));
 };
