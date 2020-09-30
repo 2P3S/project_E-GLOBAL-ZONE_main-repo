@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Config;
 
 class ScheduleController extends Controller
 {
-    private const _ZOOM_RAN_NUM_START   = 1000;
-    private const _ZOOM_RAN_NUM_END     = 9999;
+    private const _ZOOM_RAN_NUM_START = 1000;
+    private const _ZOOM_RAN_NUM_END = 9999;
 
     private $schedule;
     private $resultImage;
@@ -61,12 +61,14 @@ class ScheduleController extends Controller
         {
             return
                 Schedule::select('std_for_id', 'std_for_name', 'std_for_lang')
-                ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
-                ->whereDate('sch_start_date', '=', $date)
-                ->where('std_for_lang', $std_for_lang)
-                ->groupBy('for.std_for_id')
-                ->get();
-        };
+                    ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+                    ->whereDate('sch_start_date', '=', $date)
+                    ->where('std_for_lang', $std_for_lang)
+                    ->groupBy('for.std_for_id')
+                    ->get();
+        }
+
+        ;
 
         function std_for_add_schedule_data($response_data, $date)
         {
@@ -407,7 +409,8 @@ class ScheduleController extends Controller
     public function destroy_for_schedules_from_special_date_to_section_end_date(
         Section $sect_id,
         Request $request
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $rules = [
             'sch_start_date' => 'required|date',
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
@@ -428,7 +431,7 @@ class ScheduleController extends Controller
         $sch_start_date = $request->input('sch_start_date');
 
         // 입력 받은 시작 날짜가 해당 section 에 포함되는 날짜인지 검사
-        if(!(strtotime($sect_id->sect_start_date) <= strtotime($sch_start_date) && strtotime($sch_start_date) <= strtotime($sect_id->sect_end_date)))
+        if (!(strtotime($sect_id->sect_start_date) <= strtotime($sch_start_date) && strtotime($sch_start_date) <= strtotime($sect_id->sect_end_date)))
             return $this->response_json_error(Config::get('constants.kor.schedule.destroy.date_err'));
 
         try {
@@ -783,7 +786,7 @@ class ScheduleController extends Controller
     }
 
     // 스케줄 생성 커스텀 함수.
-    public function set_custom_schedule(bool $is_first_time, Object $setting_value, string $date, string $hour, int $sect_id, int $std_for_id)
+    public function set_custom_schedule(bool $is_first_time, object $setting_value, string $date, string $hour, int $sect_id, int $std_for_id)
     {
         // 줌 비밀번호 생성
         $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
@@ -792,8 +795,7 @@ class ScheduleController extends Controller
         if ($is_first_time) {
             $sch_start_date = strtotime($date . " " . $hour . ":00:00");
             $sch_end_date = strtotime($date . " " . $hour . ":{$setting_value->once_meet_time}:00");
-        }
-        // 뒷타임 스케줄 정의.
+        } // 뒷타임 스케줄 정의.
         else {
             $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
             $end_time = $start_time + $setting_value->once_meet_time;
@@ -811,5 +813,35 @@ class ScheduleController extends Controller
             'sch_end_date' => $sch_end_date,
             'sch_for_zoom_pw' => $zoom_pw,
         ]);
+    }
+
+    public function index_holiday(Request $request)
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        $validated_result = self::request_validator(
+            $request,
+            ['year' => 'nullable|integer'],
+            "공휴일 목록 조회에 실패했습니다."
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $key = $_ENV['HOLIDAY_API_KEY'];
+        $year = $request->input('year') ?? date("Y");
+        $URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey={$key}&solYear={$year}&_type=json&numOfRows=50";
+
+        $result = json_decode(file_get_contents($URL), true, 512, JSON_THROW_ON_ERROR);
+        $holiday_list = (object)array_column($result['response']['body']['items']['item'], 'locdate');
+
+        return Controller::response_json('공휴일 목록 조회에 성공했습니다.', 200, $holiday_list);
     }
 }

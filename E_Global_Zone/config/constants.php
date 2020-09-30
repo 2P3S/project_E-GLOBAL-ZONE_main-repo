@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://gzone.yjuweb.org/',
-        'admin' => 'http://gzone.yjuweb.org/admin',
-        'reset' => 'http://gzone.yjuweb.org/api/reset',
+        'main' => $_ENV['MAIN_URL'],
+        'admin' => $_ENV['ADMIN_URL'],
+        'reset' => $_ENV['RESET_URL'],
     ],
     'kor' => [
         'access' => [
