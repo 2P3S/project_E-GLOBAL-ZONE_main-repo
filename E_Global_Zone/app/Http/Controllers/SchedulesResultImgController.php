@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\Config;
 class SchedulesResultImgController extends Controller
 {
     private $resultImage;
+    private $controller;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->resultImage = new SchedulesResultImg();
+        $this->controller = new Controller($request);
     }
 
     private function set_img(
@@ -42,19 +44,26 @@ class SchedulesResultImgController extends Controller
         $file_name_start = date("Ymd-{$std_for_id}-Hi_\S", strtotime($schedule['sch_start_date']));
         $file_name_end = date("Ymd-{$std_for_id}-Hi_\E", strtotime($schedule['sch_end_date']));
 
-        // 로컬 스토리지에 이미지 파일 저장 -> 경로 반환
-        $self_obj = new self();
-        $start_img_url = $self_obj->set_img($start_img_file, $file_name_start);
-        $end_img_url = $self_obj->set_img($end_img_file, $file_name_end);
+        // 로컬 스토리지에 이미지 파일 저장 -> 경로 반환 -> DB 에 이미지 파일 경로 저장
+        try {
+            SchedulesResultImg::create([
+                'sch_id' => $sch_id,
+                'start_img_url' => $this->set_img($start_img_file, $file_name_start),
+                'end_img_url' => $this->set_img($end_img_file, $file_name_end),
+            ]);
+        } catch (QueryException $queryException) {
+            switch ($queryException->getCode()) {
+                case 23000:
+                    return
+                        Controller::response_json($this->controller->custom_msg('reservation.for_input_result.completed'), 202);
+                default:
+                    return
+                        Controller::response_json($this->controller->custom_msg('reservation.for_input_result.failure'), 422);
+            }
+        }
 
-        // DB 에 이미지 파일 경로 저장
-        $store_data = [
-            'sch_id' => $sch_id,
-            'start_img_url' => $start_img_url,
-            'end_img_url' => $end_img_url,
-        ];
-
-        return $this->resultImage->store_result_img_url($store_data);
+        return
+            Controller::response_json($this->controller->custom_msg('reservation.for_input_result.success'), 201);
     }
 
     /**
