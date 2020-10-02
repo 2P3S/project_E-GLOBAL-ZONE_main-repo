@@ -15,12 +15,19 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    protected $lang = 'kor';
+
+    public function __construct(Request $request)
+    {
+        if (!empty($request->server('HTTP_ACCEPT_LANGUAGE')) && $request->server('HTTP_ACCEPT_LANGUAGE') != 'kor')
+            $this->lang = $request->server('HTTP_ACCEPT_LANGUAGE');
+    }
+
     public static function response_json(
         string $message,
         int $http_response_code = 202,
         object $data = null
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $is_no_data = !(bool)$data;
 
         if ($is_no_data) {
@@ -37,8 +44,7 @@ class Controller extends BaseController
 
     public static function response_json_error(
         string $message
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return self::response_json($message);
     }
 
@@ -46,8 +52,7 @@ class Controller extends BaseController
         Request $request,
         array $rules,
         string $error_msg
-    )
-    {
+    ) {
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -73,5 +78,12 @@ class Controller extends BaseController
         }
 
         return true;
+    }
+
+    public function custom_msg($config_msg)
+    {
+        $language = $this->lang;
+
+        return Config::get("constants.{$language}.{$config_msg}");
     }
 }
