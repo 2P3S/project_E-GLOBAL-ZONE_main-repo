@@ -297,11 +297,8 @@ class ScheduleController extends Controller
 
                 // 시간 리스트 목록
                 foreach ($day as $hour) {
-                    // 앞타임 스케줄 생성
-                    $this->set_custom_schedule(true, $setting_value, $sect_start_date, $hour, $sect->sect_id, $std_for_id);
-
-                    // 뒷타임 스케줄 생성
-                    $this->set_custom_schedule(false, $setting_value, $sect_start_date, $hour, $sect->sect_id, $std_for_id);
+                    // 스케줄 생성
+                    $this->set_custom_schedule($setting_value, $sect_start_date, $hour, $sect->sect_id, $std_for_id);
                 }
 
                 // 종료 날짜에 맞춰 반복문 종료.
@@ -428,7 +425,7 @@ class ScheduleController extends Controller
         $sch_start_date = $request->input('sch_start_date');
 
         // 입력 받은 시작 날짜가 해당 section 에 포함되는 날짜인지 검사
-        if(!(strtotime($sect_id->sect_start_date) <= strtotime($sch_start_date) && strtotime($sch_start_date) <= strtotime($sect_id->sect_end_date)))
+        if (!(strtotime($sect_id->sect_start_date) <= strtotime($sch_start_date) && strtotime($sch_start_date) <= strtotime($sect_id->sect_end_date)))
             return $this->response_json_error(Config::get('constants.kor.schedule.destroy.date_err'));
 
         try {
@@ -503,11 +500,8 @@ class ScheduleController extends Controller
                 // 중복된 스케줄인 경우 뛰어넘기
                 if ($is_duplicated_schedule) continue;
 
-                // 앞타임 스케줄 생성
-                $this->set_custom_schedule(true, $setting_value, $date, $hour, $sect_id, $std_for_id);
-
-                // 뒷타임 스케줄 생성
-                $this->set_custom_schedule(false, $setting_value, $date, $hour, $sect_id, $std_for_id);
+                // 스케줄 생성
+                $this->set_custom_schedule($setting_value, $date, $hour, $sect_id, $std_for_id);
             }
         }
 
@@ -785,26 +779,14 @@ class ScheduleController extends Controller
     }
 
     // 스케줄 생성 커스텀 함수.
-    public function set_custom_schedule(bool $is_first_time, Object $setting_value, string $date, string $hour, int $sect_id, int $std_for_id)
+    public function set_custom_schedule(Object $setting_value, string $date, string $hour, int $sect_id, int $std_for_id)
     {
         // 줌 비밀번호 생성
         $zoom_pw = mt_rand(self::_ZOOM_RAN_NUM_START, self::_ZOOM_RAN_NUM_END);
 
-        // 앞타임 스케줄 정의.
-        if ($is_first_time) {
-            $sch_start_date = strtotime($date . " " . $hour . ":00:00");
-            $sch_end_date = strtotime($date . " " . $hour . ":{$setting_value->once_meet_time}:00");
-        }
-        // 뒷타임 스케줄 정의.
-        else {
-            $start_time = $setting_value->once_meet_time + $setting_value->once_rest_time;
-            $end_time = $start_time + $setting_value->once_meet_time;
-            $sch_start_date = strtotime($date . " " . $hour . ":{$start_time}:00");
-            $sch_end_date = strtotime($date . " " . $hour . ":{$end_time}:00");
-        }
-
-        $sch_start_date = date("Y-m-d H:i:s", $sch_start_date);
-        $sch_end_date = date("Y-m-d H:i:s", $sch_end_date);
+        // 스케줄 시간 설정.
+        $sch_start_date = date("Y-m-d H:i:s", strtotime($date . " " . $hour . ":00:00"));
+        $sch_end_date = date("Y-m-d H:i:s", strtotime($date . " " . $hour . ":{$setting_value->once_meet_time}:00"));
 
         return Schedule::create([
             'sch_sect' => $sect_id,
