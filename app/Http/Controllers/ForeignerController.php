@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Student_foreigner;
 use App\Student_foreigners_contact;
-use App\Student_korean;
-use App\Work_student_foreigner;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use phpDocumentor\Reflection\Types\Self_;
 
 class ForeignerController extends Controller
 {

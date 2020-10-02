@@ -782,7 +782,9 @@ class ScheduleController extends Controller
      */
     public function std_kor_show_sch(Schedule $sch_id): JsonResponse
     {
-        return $this->schedule->get_sch_by_id($sch_id);
+        $schedule_data = $this->schedule->get_sch_by_id($sch_id);
+
+        return self::response_json(Config::get('constants.kor.reservation.for_index.success'), 200, $schedule_data);
     }
 
     // 스케줄 생성 커스텀 함수.

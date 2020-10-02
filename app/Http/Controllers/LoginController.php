@@ -19,14 +19,16 @@ class LoginController extends Controller
      */
     private $authenticator;
     private $initial_password;
+    private $controller;
 
-    public function __construct(Authenticator $authenticator)
+    public function __construct(Authenticator $authenticator, Request $request)
     {
         $this->authenticator = $authenticator;
         $this->initial_password = [
             'admins' => env('ADMIN_INITIAL_PASSWORD'),
             'foreigners' => env('FOREIGN_INITIAL_PASSWORD'),
         ];
+        $this->controller = new Controller($request);
     }
 
     /**
@@ -202,7 +204,7 @@ class LoginController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            Config::get('constants.kor.login.log_in.failure')
+            $this->controller->custom_msg('login.log_in.failure')
         );
 
         if (is_object($validated_result)) {
@@ -212,7 +214,7 @@ class LoginController extends Controller
         // <<-- 로그인 실패 시
         if (empty($foreigner = $this->login_authenticator($request, 'std_for_id'))) {
             return
-                self::response_json(Config::get('constants.kor.login.log_in.wrong_value'), 401);
+                self::response_json($this->controller->custom_msg('login.log_in.wrong_value'), 401);
         }
         // -->>
 
@@ -239,7 +241,7 @@ class LoginController extends Controller
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $foreigner['info']['std_for_name'] . Config::get('constants.kor.login.log_in.success');
+        $message_template = $foreigner['info']['std_for_name'] . $this->controller->custom_msg('login.log_in.success');
 
         return
             self::response_json($message_template, 200, (object)$foreigner);
@@ -257,7 +259,7 @@ class LoginController extends Controller
         $this->request_user_data($request, false)->token()->revoke();
 
         return
-            self::response_json(Config::get('constants.kor.login.log_out.success'), 200);
+            self::response_json(self::custom_msg('login.log_out.success'), 200);
     }
 
     public function request_user_data(
