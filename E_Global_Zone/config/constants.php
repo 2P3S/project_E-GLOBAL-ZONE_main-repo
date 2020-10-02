@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => 'http://gzone.yjuweb.org/',
-        'admin' => 'http://gzone.yjuweb.org/admin',
-        'reset' => 'http://gzone.yjuweb.org/api/reset',
+        'main' => $_ENV['MAIN_URL'],
+        'admin' => $_ENV['ADMIN_URL'],
+        'reset' => $_ENV['RESET_URL'],
     ],
     'kor' => [
         'access' => [
@@ -116,6 +116,7 @@ return [
             'log_in' => [
                 'success' => ' 님 로그인되었습니다.',
                 'failure' => '로그인에 실패하였습니다.',
+                'illegal' => '잘못된 접근입니다.',
                 'wrong_value' => '아이디 또는 비밀번호를 다시 확인하세요.',
                 'no_permission' => '관리자 승인 후 서비스 이용이 가능합니다.',
                 'no_g_suite' => 'G-Suite 계정이 아닙니다.',
@@ -132,7 +133,9 @@ return [
             'std_kor' => '글로벌 존 이용 학생 목록.xlsx',
             'std_for' => '글로벌 존 유학생 목록.xlsx',
             'work_std_for' => '글로벌 존 근로 유학생 목록.xlsx',
-            'failure' => '엑셀 파일 출력에 실패하였습니다.'
+            'sch' => '스케줄 목록.xlsx',
+            'res' => '예약 목록.xlsx',
+            'failure' => '엑셀 파일 저장에 실패하였습니다.'
         ],
         'result_img' => [
             'index' => [
@@ -276,5 +279,4 @@ return [
             ]
         ],
     ]
-
 ];
