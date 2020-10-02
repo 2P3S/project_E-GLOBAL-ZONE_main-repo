@@ -68,7 +68,7 @@ body {
 
 .head .head_area .menu li {
 	float:left;
-	margin-left:100px;
+	margin-left:80px;
 }
 
 .head .head_area .menu li a {
@@ -206,6 +206,7 @@ body {
 	display:inline-block;
 	background:#fbfafb;
 	height:100vh;
+	min-width: 1200px;
 }
 .login_content .head {
 	height:70px;
@@ -215,7 +216,7 @@ body {
 }
 .login_content .head .head_w {
 	width:1200px;
-	margin:0 auto; /* padding-top:24px; */
+	margin:0 auto;
 }
 .login_content .head .head_w .logo {
 	float:left;
@@ -328,26 +329,6 @@ body {
 	margin-top:8px;
 }
 
-/* 스케줄 관리 _bak
-ul.sch_time {margin:0 0 20px 220px;overflow:hidden;}
-ul.sch_time li {float:left;font-family:'Lato', sans-serif; font-weight:600; font-size:12px;margin-left:75px;}
-ul.sch_time li:first-child {margin-left:0;}
-table.sch_table { width:100%; border-collapse:collapse; color:#182337; font-size:12px; font-weight:500; text-align:center;}
-table.sch_table th,
-table.sch_table td {border:1px solid #d5d5db;}
-table.sch_table tbody th {background:#364969; color:#fff;}
-table.sch_table tbody td {height:72px; letter-spacing:-0.05em;}
-table.sch_table tbody td .status {width:100%; min-height:42px; line-height:42px;}
-table.sch_table tbody td .status p {position:relative; margin-left:-1px; padding:7px 0; line-height:13px; font-size:10px; color:#fff; letter-spacing:0; font-weight:500;}
-table.sch_table tbody td .status p.blue {background:#2050e6; border:1px solid #2050e6;}
-table.sch_table tbody td .status p.mint {background:#34bcad; border:1px solid #34bcad;}
-table.sch_table tbody td .status p.yellow {background:#ffa400; border:1px solid #ffa400;}
-table.sch_table tbody td .status p.puple {background:#6e4bdd; border:1px solid #6e4bdd;}
-table.sch_table tbody td .status p.gray  {background:#e1e1ea; border:1px solid #e1e1ea; color:#182337;}
-table.sch_table tbody td .status p.oneline {min-height:42px; line-height:42px; padding:0; border:none;}
-table.sch_table tbody tr:hover {background:#f7f7f7;}
-table.sch_table tbody tr:hover td:first-child {color:#2050e6; text-decoration:underline;} */
-
 /* 스케줄 관리  */
 ul.sch_time {
 	margin:0px 0 15px 189px;
@@ -398,20 +379,12 @@ table.sch_table tbody td:first-child {
 
 .state_box {
 	float:left;
-	width:50%;
+	width: 100%;
 	min-height:42px;
 	line-height:41px;
 	color:#fff;
 	position:relative;
 }
-
-/* .state_box.left {
-	float:left;
-}
-
-.state_box.right {
-	float:right;
-} */
 
 .state_box p {
 	padding-left:20px;
@@ -474,14 +447,13 @@ table.sch_table tbody td:first-child {
 .state_box.state7 {
 	background:#e1e1ea;
 	color:#182337;
-	/* overflow:hidden; */
 }
 
 .state_box.state7 .close {
 	width:0px;
 	height:0px;
 	border-bottom:42px solid #c3cad6;
-	border-right:55px solid rgba(0, 0, 0, 0);
+	border-right: 106px solid rgba(0, 0, 0, 0);
 	background:#dadfe8;
 }
 
@@ -819,7 +791,6 @@ table.sch_table tbody tr:hover td:first-child {
 }
 
 #pagenation {
-	/* width:100%; */
 	display:inline-block;
 	text-align:center;
 	margin-top:30px;
@@ -850,13 +821,6 @@ table.sch_table tbody tr:hover td:first-child {
 	border:none !important;
 	color:none !important;
 }
-/* 스케줄관리 hover button [2020-08-29 추가] 
-.hover_btn.sch {
-	width:53px;
-}
-.hover_btn.sch .area {
-	background-position:50% bottom;
-}*/
 
 /* 유학생 관리, 한국인 학생 관리 공용 테이블 */
 table.student_manage_table {
@@ -906,7 +870,7 @@ table.student_manage_table thead th.align {
 }
 
 table.student_manage_table thead th.align:hover {
-	background:#dae0e9;
+	background:#eceff3;
 }
 
 table.student_manage_table thead th.align img {
@@ -1243,8 +1207,13 @@ table.student_manage_table td:first-child {
 	color:#000;
 }
 
+.set_wrap .input .select_input .edd-head,
+.set_wrap .input .select_input .edd-value {
+    height:38px;
+    line-height:38px;
+}
 .set_wrap .input .select_input .edd-arrow {
-	top:calc(50% - 9px);
+    top: calc(50% - 5px);
 }
 
 .set_wrap .input .select_input input[type="number"] {
@@ -1282,7 +1251,6 @@ table.student_manage_table td:first-child {
 	width:300px;
 	background:#f7f7f7;
 	border-radius:10px;
-	overflow:hidden;
 	padding:35px 40px;
 	min-height:453px;
 }
@@ -1704,7 +1672,6 @@ table.work_time thead th {
 	text-align:center;
 }
 .join_add_wrap .input_area {
-	/* width:350px; */
 	padding:160px 40px 40px 40px;
 	margin:50px auto;
 	border:1px solid #ddd;
@@ -1712,7 +1679,6 @@ table.work_time thead th {
 	font-size:14px;
 	background:url(/global/img/join_ico.gif) no-repeat center 45px;
 	display:inline-block;
-	/* text-align:center; */
 }
 .join_add_wrap .input_area .box {
 	text-align:left;
@@ -1775,8 +1741,6 @@ table.work_time thead th {
 /********************* POPUP *********************/
 .popup {
 	padding:40px;
-	/* background:#fff;
-	border-radius:100px; */
 	overflow:hidden;
 }
 
@@ -1904,10 +1868,6 @@ table.work_time thead th {
 
 .popup.restriction p.txt {
 	font-size:16px;
-	/* letter-spacing:-1px; */
-	/* margin-bottom:20px; */
-	/* border-bottom:1px solid #ddd; */
-	/* padding-bottom:30px; */
 }
 
 .popup.restriction p.date {
@@ -1944,7 +1904,6 @@ table.work_time thead th {
 }
 
 .popup.restriction textarea:-moz-read-only {
-	/* For Firefox */
 	background-color:#f1f1f1;
 }
 
@@ -2708,10 +2667,6 @@ ul.img_file li p.file_name:hover {
 	width:615px;
 }
 
-/* .popup.semester .calendar.modal {
-	left:50%;
-	margin-left:-145px;
-} */
 .popup.semester .top_select {
 	position:absolute;
 	top:40px;
@@ -2786,6 +2741,7 @@ ul.img_file li p.file_name:hover {
 	font-size:13px;
 	border-radius:5px;
 	font-family:"Lato", sans-serif;
+	border:1px solid #ededed;
 	-webkit-box-shadow:2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	-moz-box-shadow:2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	box-shadow:2px 3px 12px 0px rgba(48, 152, 127, 0.25);
@@ -2825,7 +2781,6 @@ ul.img_file li p.file_name:hover {
 .setting_btn_wrap div.save {
 	float:right;
 	padding-left:18px;
-	/* background:#fff url(/global/img/setting_save_btn.png) no-repeat 38px 50%; */
 }
 .setting_btn_wrap div.save:hover {
 	background-color:#f5f5f5;
@@ -3210,6 +3165,20 @@ ul.img_file li p.file_name:hover {
 
 .del_modal button.ok {
 	background:#e2574c;
+}
+
+/* 스케줄 목록 저장, 예약 목록 저장*/
+.save_exInfo {
+    height:22px;
+    line-height:22px;
+    padding: 10px 10px 10px 50px;
+    background: #fff4e8 url(/global/img/save_exInfo_ico.png) no-repeat 15px 50%;
+    color: #e48d23;
+    font-size:13px;
+    font-weight:500;
+    border-radius: 5px;
+    margin-top: 11px;
+    border: 1px solid #ffae27;
 }
 
 /********************* DEFAULT *********************/
