@@ -69,8 +69,7 @@ class Schedule extends Model
     public function get_sch_res_std_kor_list(
         Schedule $schedule,
         string $column_name = "",
-        int $std_id = 0,
-        bool $flag_make_json = false
+        int $std_id = 0
     ): ?object
     {
         $result = $schedule
@@ -83,13 +82,6 @@ class Schedule extends Model
                 $result :
                 $result->where($column_name, $std_id);
 
-        $is_exist_sch_res = $result->count();
-        if (!$is_exist_sch_res) {
-            return $flag_make_json ?
-                Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.failure'), 202) :
-                null;
-        }
-
         $lookup_columns = [
             'res_id', 'std_kor_id',
             'std_kor_name', 'std_kor_phone',
@@ -99,20 +91,18 @@ class Schedule extends Model
 
         $response_data = $result->select($lookup_columns)->get();
 
-        return $flag_make_json ?
-            Controller::response_json(Config::get('constants.kor.reservation.for_show_kor_list.success'), 200, $response_data) :
-            $response_data;
+        return $response_data;
     }
 
     /**
      * 스케줄 id 값으로 스케줄 정보 조회
      *
      * @param Schedule $sch_id
-     * @return JsonResponse
+     * @return Collection
      */
     public function get_sch_by_id(
         Schedule $sch_id
-    ): JsonResponse
+    ): Collection
     {
         // 환경변수
         $setting_obj = new Preference();
@@ -140,8 +130,7 @@ class Schedule extends Model
             'sch_time' => $sch_time,
         ];
 
-        return
-            Controller::response_json(Config::get('constants.kor.reservation.for_index.success'), 200, $response_data);
+        return $response_data;
     }
 
     /**
