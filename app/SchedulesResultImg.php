@@ -22,31 +22,6 @@ class SchedulesResultImg extends Model
         'end_img_url'
     ];
 
-    /**
-     * DB 에 이미지 파일 경로 저장
-     *
-     * @param array $store_data
-     * @return JsonResponse
-     */
-    public function store_result_img_url(
-        array $store_data
-    ): JsonResponse {
-        try {
-            self::create($store_data);
-        } catch (QueryException $queryException) {
-            switch ($queryException->getCode()) {
-                case 23000:
-                    return
-                        Controller::response_json(Config::get('constants.kor.reservation.for_input_result.completed'), 202);
-                default:
-                    return
-                        Controller::response_json(Config::get('constants.kor.reservation.for_input_result.failure'), 422);
-            }
-        }
-
-        return
-            Controller::response_json(Config::get('constants.kor.reservation.for_input_result.success'), 201);
-    }
 
     /*
      * 결과 조회 시, 스케줄 아이디로 이미지 url 조회
