@@ -15,10 +15,9 @@ class SchedulesResultImgController extends Controller
     private $resultImage;
     private $controller;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
         $this->resultImage = new SchedulesResultImg();
-        $this->controller = new Controller($request);
     }
 
     private function set_img(
@@ -36,7 +35,8 @@ class SchedulesResultImgController extends Controller
     public function store_result_img(
         Schedule $schedule,
         object $start_img_file,
-        object $end_img_file
+        object $end_img_file,
+        String $language
     ): JsonResponse {
         // 파일 이름 규칙 정의.
         $sch_id = $schedule['sch_id'];
@@ -55,15 +55,15 @@ class SchedulesResultImgController extends Controller
             switch ($queryException->getCode()) {
                 case 23000:
                     return
-                        Controller::response_json($this->controller->custom_msg('reservation.for_input_result.completed'), 202);
+                        self::response_json(self::custom_msg($language, 'reservation.for_input_result.completed'), 202);
                 default:
                     return
-                        Controller::response_json($this->controller->custom_msg('reservation.for_input_result.failure'), 422);
+                        self::response_json(self::custom_msg($language, 'reservation.for_input_result.failure'), 422);
             }
         }
 
         return
-            Controller::response_json($this->controller->custom_msg('reservation.for_input_result.success'), 201);
+            self::response_json(self::custom_msg($language, 'reservation.for_input_result.success'), 201);
     }
 
     /**

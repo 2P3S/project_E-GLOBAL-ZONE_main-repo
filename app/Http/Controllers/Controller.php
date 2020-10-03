@@ -15,14 +15,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $lang = 'kor';
-
-    public function __construct(Request $request)
-    {
-        if (!empty($request->server('HTTP_ACCEPT_LANGUAGE')) && $request->server('HTTP_ACCEPT_LANGUAGE') != 'kor')
-            $this->lang = $request->server('HTTP_ACCEPT_LANGUAGE');
-    }
-
     public static function response_json(
         string $message,
         int $http_response_code = 202,
@@ -80,10 +72,21 @@ class Controller extends BaseController
         return true;
     }
 
-    public function custom_msg($config_msg)
+    public static function get_http_accept_language(Request $request): String
     {
-        $language = $this->lang;
+        $language_arr = array("kor", "eng", "jp");
 
+        $language = 'kor';
+
+        if (!empty($request->server('HTTP_ACCEPT_LANGUAGE')) && in_array($request->server('HTTP_ACCEPT_LANGUAGE'), $language_arr) ) {
+            $language = $request->server('HTTP_ACCEPT_LANGUAGE');
+        }
+
+        return $language;
+    }
+
+    public static function custom_msg($language, $config_msg)
+    {
         return Config::get("constants.{$language}.{$config_msg}");
     }
 }
