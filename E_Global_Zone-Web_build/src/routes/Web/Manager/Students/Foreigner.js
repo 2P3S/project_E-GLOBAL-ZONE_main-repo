@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import d3 from "d3-array";
 import conf from "conf/conf";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
@@ -177,6 +178,13 @@ export default function Foreigner() {
 		setLoading(true);
 		selectSect &&
 			getAdminForeignerWork(selectSect).then((res) => {
+				res.data.data.forEach((v) => {
+					let total = 0;
+					Object.keys(v["work_time"]).forEach((m) => {
+						total += v["work_time"][`${m}`];
+					});
+					Object.defineProperty(v["work_time"], "total", { value: total });
+				});
 				setDataSet(res.data);
 				setDefaultData(res.data);
 			});
@@ -222,20 +230,38 @@ export default function Foreigner() {
 		return returnValue;
 	};
 
-	const sort = (sortBy) => {
+	const sort = (sortBy, isMonth = false) => {
 		setDataSet({ ...dataSet, data: [] }); // reset
-
-		if (toggle) {
-			setDataSet({
-				...dataSet,
-				data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
-			});
-			// mockup.sort = null;
+		if (isMonth) {
+			if (toggle) {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) =>
+						a["work_time"][sortBy] > b["work_time"][sortBy] ? -1 : 1
+					),
+				});
+				// mockup.sort = null;
+			} else {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) =>
+						a["work_time"][sortBy] > b["work_time"][sortBy] ? 1 : -1
+					),
+				});
+			}
 		} else {
-			setDataSet({
-				...dataSet,
-				data: defaultData.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)),
-			});
+			if (toggle) {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
+				});
+				// mockup.sort = null;
+			} else {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1)),
+				});
+			}
 		}
 		setToggle(!toggle);
 	};
@@ -432,9 +458,9 @@ export default function Foreigner() {
 											<th
 												rowSpan="2"
 												className="align"
-												// onClick={() => {
-												// 		sort("");
-												// 	}}
+												onClick={() => {
+													sort("total", true);
+												}}
 											>
 												{/* <input type="hidden" id="" value={false}/> */}
 												합계
@@ -454,7 +480,7 @@ export default function Foreigner() {
 														rowSpan="2"
 														className="align"
 														onClick={() => {
-															sort(`${v}`);
+															sort(`${v}`, true);
 														}}
 													>
 														<input
@@ -629,16 +655,7 @@ export default function Foreigner() {
 																	deptList
 																)}
 															</td>
-															<td>
-																{(() => {
-																	let sum = 0;
-																	Object.values(
-																		value.work_time
-																	).map((v) => (sum += v));
-																	return sum * 60;
-																})()}
-																분
-															</td>
+															<td>{value.work_time.total * 60}분</td>
 															{Object.values(value.work_time).map(
 																(v) => {
 																	return <td>{v * 60}분</td>;
