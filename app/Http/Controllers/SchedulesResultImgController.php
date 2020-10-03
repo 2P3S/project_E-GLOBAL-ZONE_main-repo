@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Schedule;
 use App\SchedulesResultImg;
+use App\Section;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,10 +23,11 @@ class SchedulesResultImgController extends Controller
 
     private function set_img(
         object $upload_img_file,
-        string $img_file_name
+        string $img_file_name,
+        string $folder_name
     ): string {
         $extension = $upload_img_file->extension();                                        /* 확장자 얻기 */
-        $storage_path = "{$img_file_name}.{$extension}";
+        $storage_path = "{$folder_name}/{$img_file_name}.{$extension}";
 
         Storage::putFileAs('public', $upload_img_file, $storage_path);                     /* 파일 저장 후 경로 반환 */
 
@@ -43,13 +45,14 @@ class SchedulesResultImgController extends Controller
         $std_for_id = $schedule['sch_std_for'];
         $file_name_start = date("Ymd-{$std_for_id}-Hi_\S", strtotime($schedule['sch_start_date']));
         $file_name_end = date("Ymd-{$std_for_id}-Hi_\E", strtotime($schedule['sch_end_date']));
+        $sect_name = Section::find($schedule['sch_sect'])['sect_name'];
 
         // 로컬 스토리지에 이미지 파일 저장 -> 경로 반환 -> DB 에 이미지 파일 경로 저장
         try {
             SchedulesResultImg::create([
                 'sch_id' => $sch_id,
-                'start_img_url' => $this->set_img($start_img_file, $file_name_start),
-                'end_img_url' => $this->set_img($end_img_file, $file_name_end),
+                'start_img_url' => $this->set_img($start_img_file, $file_name_start, $sect_name),
+                'end_img_url' => $this->set_img($end_img_file, $file_name_end, $sect_name),
             ]);
         } catch (QueryException $queryException) {
             switch ($queryException->getCode()) {
@@ -61,6 +64,10 @@ class SchedulesResultImgController extends Controller
                         self::response_json(self::custom_msg($language, 'reservation.for_input_result.failure'), 422);
             }
         }
+
+        // <<-- 스케줄 결과 입력 결과 업데이트
+        $schedule->update(['sch_state_of_result_input' => true]);
+        // -->>
 
         return
             self::response_json(self::custom_msg($language, 'reservation.for_input_result.success'), 201);
