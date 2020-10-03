@@ -60,7 +60,7 @@ export default function Foreigner() {
 	const [searchFor, setSearchFor] = useState("std_for_name");
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
-	const [selectYear, setSelectYear] = useState(moment().format("YYYY-MM-DD"));
+	const [selectYear, setSelectYear] = useState(parseInt(moment().format("YYYY")));
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
@@ -317,8 +317,14 @@ export default function Foreigner() {
 						<p className="tit" style={{ marginLeft: "40px" }}>
 							<img src="/global/img/calender_arrow_prev.gif" />
 						</p>
-						<p className="tit" style={{ marginLeft: "5px", fontSize: "14px" }}>
+						<p
+							className="tit"
+							style={{ marginLeft: "10px", marginTop: "3px", fontSize: "14px" }}
+						>
 							2020학년도
+						</p>
+						<p className="tit" style={{ marginLeft: "10px" }}>
+							<img src="/global/img/calender_arrow_next.gif" />
 						</p>
 						<select name="catgo" className="dropdown" onChange={handleChange}>
 							{sectOfYear &&
