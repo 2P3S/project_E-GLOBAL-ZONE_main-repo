@@ -296,3 +296,9 @@ Route::get('department', 'DepartmentController@index')->name('departments.index'
 Route::post('/password/update', function () {
     return view('password_update');
 });
+
+/** 공지사항 불러오기 */
+Route::get('notice', 'NoticeController@index');
+
+/** 공지사항 이미지 불러오기 */
+Route::get('notice/{noti_id}', 'NoticeController@index_imgs');

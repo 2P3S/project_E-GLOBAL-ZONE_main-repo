@@ -13,9 +13,4 @@ class Notice extends Model
     protected $primaryKey = 'noti_id';
 
     protected $guarded = [];
-
-    public function noti_imgs()
-    {
-        return $this->hasMany(Schedule::class, 'noti_id');
-    }
 }

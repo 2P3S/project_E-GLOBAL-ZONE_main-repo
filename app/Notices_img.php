@@ -21,7 +21,7 @@ class Notices_img extends Model
         $img_controller = new SchedulesResultImgController();
 
         try {
-            foreach($imgs as $key => $img_file) {
+            foreach ($imgs as $key => $img_file) {
                 $file_name = "{$notice['noti_id']}-{$key}";
 
                 self::create([
@@ -36,5 +36,10 @@ class Notices_img extends Model
         }
 
         return true;
+    }
+
+    public function get_imgs(Notice $notice): Object
+    {
+        return self::where('noti_id', $notice['noti_id'])->select('id','noti_id','noti_img_url as noti_img')->get();
     }
 }
