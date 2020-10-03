@@ -107,6 +107,9 @@ class NoticeController extends Controller
      */
     public function index_imgs(Notice $noti_id): JsonResponse
     {
+        // 조회수 증가
+        $noti_id->increment('noti_views', 1);
+
         $imgs = $this->notice_img->get_imgs($noti_id);
 
         foreach($imgs as $img) {
