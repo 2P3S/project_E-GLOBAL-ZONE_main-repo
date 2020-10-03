@@ -60,6 +60,7 @@ export default function Foreigner() {
 	const [searchFor, setSearchFor] = useState("std_for_name");
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
+	const [selectYear, setSelectYear] = useState(moment().format("YYYY-MM-DD"));
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
@@ -162,6 +163,37 @@ export default function Foreigner() {
 			setIndex(index);
 		});
 	}, []);
+	useEffect(() => {
+		getAdminSection({ year: `${moment(selectYear).format("YYYY")}` }).then((res) => {
+			const { data } = res;
+			if (data.data.length === 0) {
+				alert("해당년도에 학기가 없습니다.");
+			} else {
+				setSectOfYear(res.data);
+				let index = 0;
+				res.data.data.forEach((v, i) => {
+					console.log(
+						moment(Date.now()).isBetween(
+							moment(v.sect_start_date),
+							moment(v.sect_end_date)
+						)
+					);
+					if (
+						moment(Date.now()).isBetween(
+							moment(v.sect_start_date),
+							moment(v.sect_end_date)
+						)
+					) {
+						index = i;
+					}
+				});
+				console.log(res.data.data[index].sect_id);
+				history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
+				setIndex(index);
+			}
+		});
+	}, [selectYear]);
+
 	useEffect(() => {
 		if (index !== undefined && sectOfYear && sectOfYear.data) {
 			// getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
@@ -266,12 +298,28 @@ export default function Foreigner() {
 		setToggle(!toggle);
 	};
 
+	const handleYearChange = () => {
+		const year = document.getElementById("year").value;
+		try {
+			moment(year + "-01-01", "YYYY-MM-DD");
+			console.log(moment(year + "-01-01", "YYYY-MM-DD"));
+		} catch (error) {
+			alert("error");
+		}
+		// setSelectYear("2021");
+	};
 	return sectOfYear ? (
 		<div>
 			<div className="content">
 				<div className="sub_title">
 					<div className="top_semester">
 						<p className="tit">유학생 관리</p>
+						<p className="tit" style={{ marginLeft: "40px" }}>
+							<img src="/global/img/calender_arrow_prev.gif" />
+						</p>
+						<p className="tit" style={{ marginLeft: "5px", fontSize: "14px" }}>
+							2020학년도
+						</p>
 						<select name="catgo" className="dropdown" onChange={handleChange}>
 							{sectOfYear &&
 								sectOfYear.data &&
@@ -282,7 +330,7 @@ export default function Foreigner() {
 											id={v.sect_name}
 											selected={index === i}
 										>
-											{v.sect_name}
+											{v.sect_name.substr(8, 20)}
 										</option>
 									);
 								})}
