@@ -19,16 +19,14 @@ class LoginController extends Controller
      */
     private $authenticator;
     private $initial_password;
-    private $controller;
 
-    public function __construct(Authenticator $authenticator, Request $request)
+    public function __construct(Authenticator $authenticator)
     {
         $this->authenticator = $authenticator;
         $this->initial_password = [
             'admins' => env('ADMIN_INITIAL_PASSWORD'),
             'foreigners' => env('FOREIGN_INITIAL_PASSWORD'),
         ];
-        $this->controller = new Controller($request);
     }
 
     /**
@@ -41,8 +39,7 @@ class LoginController extends Controller
     private function login_authenticator(
         Request $request,
         string $key
-    ): ?array
-    {
+    ): ?array {
         $credentials = array_values($request->only($key, 'password', 'provider'));
         $credentials[] = $key;
 
@@ -195,6 +192,8 @@ class LoginController extends Controller
      */
     public function login_std_for(Request $request): object
     {
+        $language = self::get_http_accept_language($request);
+
         $rules = [
             'std_for_id' => 'required|string',
             'password' => 'required|string|min:8',
@@ -204,7 +203,7 @@ class LoginController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            $this->controller->custom_msg('login.log_in.failure')
+            self::custom_msg($language, 'login.log_in.failure')
         );
 
         if (is_object($validated_result)) {
@@ -214,7 +213,7 @@ class LoginController extends Controller
         // <<-- 로그인 실패 시
         if (empty($foreigner = $this->login_authenticator($request, 'std_for_id'))) {
             return
-                self::response_json($this->controller->custom_msg('login.log_in.wrong_value'), 401);
+                self::response_json(self::custom_msg($language, 'login.log_in.wrong_value'), 401);
         }
         // -->>
 
@@ -241,7 +240,7 @@ class LoginController extends Controller
         // -->>
 
         // <<-- 로그인 성공 시
-        $message_template = $foreigner['info']['std_for_name'] . $this->controller->custom_msg('login.log_in.success');
+        $message_template = $foreigner['info']['std_for_name'] . self::custom_msg($language, 'login.log_in.success');
 
         return
             self::response_json($message_template, 200, (object)$foreigner);
@@ -256,17 +255,18 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
+        $language = self::get_http_accept_language($request);
+
         $this->request_user_data($request, false)->token()->revoke();
 
         return
-            self::response_json(self::custom_msg('login.log_out.success'), 200);
+            self::response_json(self::custom_msg($language, 'login.log_out.success'), 200);
     }
 
     public function request_user_data(
         Request $request,
         bool $is_response_json = true
-    )
-    {
+    ) {
         $user_data = $request->user($request->input('guard'));
 
         if (!$is_response_json) {
@@ -279,8 +279,7 @@ class LoginController extends Controller
 
     public function remeber_token(
         array $request
-    )
-    {
+    ) {
         $provider = $request['provider'];
         $users = [
             'admins' => new Admin(),
@@ -293,8 +292,7 @@ class LoginController extends Controller
     public function update_password_url(
         array $request,
         string $expire_time
-    )
-    {
+    ) {
         $is_possible_password = $this->validate_password($request, $expire_time);
 
         $provider = $request['provider'];
@@ -322,8 +320,7 @@ class LoginController extends Controller
     private function validate_password(
         array $request,
         string $expire_time
-    ): bool
-    {
+    ): bool {
 
         $provider = $request['provider'];
         $password = trim($request['password']);
@@ -336,7 +333,7 @@ class LoginController extends Controller
         $is_password_confirm = $password === $password_confirmation;
 
         $pattern = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/";
-//        $pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/";
+
         $is_possible_password = preg_match($pattern, $password);
 
         return

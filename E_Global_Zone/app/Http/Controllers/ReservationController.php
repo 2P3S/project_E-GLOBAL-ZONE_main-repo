@@ -17,13 +17,11 @@ class ReservationController extends Controller
 {
     private $schedule;
     private $reservation;
-    private $controller;
 
-    public function __construct(Request $request)
+    public function __construct()
     {
         $this->schedule = new Schedule();
         $this->reservation = new Reservation();
-        $this->controller = new Controller($request);
     }
 
     /**
@@ -87,8 +85,11 @@ class ReservationController extends Controller
      * @return JsonResponse
      */
     public function std_for_show_res_by_id(
-        Schedule $sch_id
+        Schedule $sch_id,
+        Request $request
     ): JsonResponse {
+        $language = self::get_http_accept_language($request);
+
         $std_for_id = $sch_id['sch_std_for'];
 
         // <<-- 스케줄에 대한 예약 학생 명단 조회
@@ -97,10 +98,10 @@ class ReservationController extends Controller
         $is_exist_sch_res = $res_std_kor_data->count();
 
         if (!$is_exist_sch_res) {
-            return self::response_json($this->controller->custom_msg('reservation.for_show_kor_list.failure'), 202);
+            return self::response_json(self::custom_msg($language, 'reservation.for_show_kor_list.failure'), 202);
         }
 
-        return Controller::response_json($this->controller->custom_msg('reservation.for_show_kor_list.success'), 200, $res_std_kor_data);
+        return self::response_json(self::custom_msg($language, 'reservation.for_show_kor_list.success'), 200, $res_std_kor_data);
     }
 
     /**
@@ -114,6 +115,8 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
+        $language = self::get_http_accept_language($request);
+
         $rules = [
             'permission_std_kor_id_list' => 'nullable|array',
             'permission_std_kor_id_list.*' => 'integer|distinct|min:1000000|max:9999999',
@@ -125,7 +128,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            $this->controller->custom_msg('reservation.for_update_permission.failure')
+            self::custom_msg($language, 'reservation.for_update_permission.failure')
         );
 
         if (is_object($validated_result)) {
@@ -155,7 +158,9 @@ class ReservationController extends Controller
         // -->>
 
         return self::response_json(
-            $this->controller->custom_msg('reservation.for_update_permission.success'), 200);
+            self::custom_msg($language, 'reservation.for_update_permission.success'),
+            200
+        );
     }
 
     /**
@@ -169,12 +174,14 @@ class ReservationController extends Controller
         Request $request,
         Schedule $sch_id
     ): JsonResponse {
+        $language = self::get_http_accept_language($request);
+
         // <<-- 기존 결과 입력 여부 확인
         $sch_state_of_result_input = $sch_id['sch_state_of_result_input'];
 
         if ($sch_state_of_result_input) {
             return
-                self::response_json($this->controller->custom_msg('reservation.for_input_result.completed'), 202);
+                self::response_json(self::custom_msg($language, 'reservation.for_input_result.completed'), 202);
         }
         // -->>
 
@@ -182,7 +189,7 @@ class ReservationController extends Controller
         $is_sch_no_res = $this->schedule->get_sch_res_std_kor_list($sch_id) === null;
         if ($is_sch_no_res) {
             return
-                self::response_json($this->controller->custom_msg('reservation.for_index.failure'), 202);
+                self::response_json(self::custom_msg($language, 'reservation.for_index.failure'), 202);
         }
         // -->>
 
@@ -199,7 +206,7 @@ class ReservationController extends Controller
         $validated_result = self::request_validator(
             $request,
             $rules,
-            $this->controller->custom_msg('reservation.for_input_result.failure')
+            self::custom_msg($language, 'reservation.for_input_result.failure')
         );
 
         if (is_object($validated_result)) {
@@ -236,7 +243,8 @@ class ReservationController extends Controller
             $sch_result_img->store_result_img(
                 $sch_id,
                 $request->file('result_start_img'),
-                $request->file('result_end_img')
+                $request->file('result_end_img'),
+                $language
             );
     }
 
