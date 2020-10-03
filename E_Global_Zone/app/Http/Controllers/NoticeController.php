@@ -4,16 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Notice;
 use App\Notices_img;
+use App\SchedulesResultImg;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class NoticeController extends Controller
 {
     private $notice_img;
+    private $result_img;
 
     public function __construct()
     {
         $this->notice_img = new Notices_img();
+        $this->result_img = new SchedulesResultImg();
     }
 
     /**
@@ -64,5 +67,52 @@ class NoticeController extends Controller
         // -->>
 
         return self::response_json("공지사항 업로드에 성공하였습니다.", 201);
+    }
+
+    /**
+     * 전체 - 공지사항 불러오기 (페이지네이션)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $rules = [
+            'noti_url' => 'required|string|in:zone,center',
+            'num_of_notice' => 'required|integer|distinct|min:1|max:20'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            "공지사항 조회에 실패하였습니다. 다시 시도 해주세요."
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $notices = Notice::where('noti_url', $request->input('noti_url'))
+            ->orderBy('created_at', 'DESC')
+            ->paginate($request->input('num_of_notice'));
+
+        return self::response_json("공지사항 조회에 성공하였습니다.", 201, $notices);
+    }
+
+    /**
+     * 전체 - 공지사항 게시글 사진 불러오기
+     *
+     * @param Notice $notice
+     * @return JsonResponse
+     */
+    public function index_imgs(Notice $noti_id): JsonResponse
+    {
+        $imgs = $this->notice_img->get_imgs($noti_id);
+
+        foreach($imgs as $img) {
+            $img['noti_img'] = $this->result_img->get_base64_img($img['noti_img']);
+        }
+
+        return self::response_json("공지사항 게시글 사진 조회에 성공하였습니다.", 200, $imgs);
     }
 }
