@@ -32,25 +32,7 @@ let j = 0;
  * @todo sorting
  */
 export default function Foreigner() {
-	let mockup = {
-		sort: null,
-		data: [
-			{
-				std_for_lang: conf.language.ENGLISH,
-				country: "미국",
-				favorite: false,
-				std_id: i++,
-				name: "Emma Stone",
-				dept: conf.shortDepartment[1],
-				curruntMonth: 120,
-				lastMonth: 150,
-				thePastMonth: 560,
-				count: j++,
-				delay: 0,
-				check: false,
-			},
-		],
-	};
+
 	const history = useHistory();
 	const params = useParams();
 
@@ -60,7 +42,7 @@ export default function Foreigner() {
 	const [searchFor, setSearchFor] = useState("std_for_name");
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
-	const [selectYear, setSelectYear] = useState(parseInt(moment().format("YYYY")));
+	const [selectYear, setSelectYear] = useState(moment().format("YYYY"));
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
@@ -69,6 +51,7 @@ export default function Foreigner() {
 	const [toggle, setToggle] = useState(true);
 	const [index, setIndex] = useState();
 	const [modifyInfo, setModifyInfo] = useState();
+	const [yearChange, setYearChange] = useState(false);
 
 	const {
 		isOpen: contactIsOpen,
@@ -149,45 +132,27 @@ export default function Foreigner() {
 			setSectOfYear(res.data);
 			let index = 0;
 			res.data.data.forEach((v, i) => {
-				console.log(
-					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
-				);
+			
 				if (
 					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
 				) {
 					index = i;
 				}
 			});
-			console.log(res.data.data[index].sect_id);
+		
 			history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 			setIndex(index);
 		});
 	}, []);
 	useEffect(() => {
-		getAdminSection({ year: `${moment(selectYear).format("YYYY")}` }).then((res) => {
+		setYearChange(true)
+		getAdminSection({ year: `${moment(`${selectYear}-01-01`,"YYYY-MM-DD").format("YYYY")}` }).then((res) => {
 			const { data } = res;
 			if (data.data.length === 0) {
 				alert("해당년도에 학기가 없습니다.");
 			} else {
 				setSectOfYear(res.data);
-				let index = 0;
-				res.data.data.forEach((v, i) => {
-					console.log(
-						moment(Date.now()).isBetween(
-							moment(v.sect_start_date),
-							moment(v.sect_end_date)
-						)
-					);
-					if (
-						moment(Date.now()).isBetween(
-							moment(v.sect_start_date),
-							moment(v.sect_end_date)
-						)
-					) {
-						index = i;
-					}
-				});
-				console.log(res.data.data[index].sect_id);
+				let index = 0;				
 				history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 				setIndex(index);
 			}
@@ -196,21 +161,24 @@ export default function Foreigner() {
 
 	useEffect(() => {
 		if (index !== undefined && sectOfYear && sectOfYear.data) {
-			// getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
-			// 	setDataSet(res.data);
-			// 	setDefaultData(res.data);
-			// });
 			setSelectSect(sectOfYear.data[index].sect_id);
 			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear, index]);
+
+	useEffect(()=>{
+		setYearChange(false)
+		window.easydropdown.all();
+		//easydropdown 에러 잡아야함
+	},[sectOfYear])
+
 
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
 		selectSect &&
 			getAdminForeignerWork(selectSect).then((res) => {
-				res.data.data.forEach((v) => {
+				res.data.hasOwnProperty('data') && res.data.data.forEach((v) => {
 					let total = 0;
 					Object.keys(v["work_time"]).forEach((m) => {
 						total += v["work_time"][`${m}`];
@@ -220,7 +188,8 @@ export default function Foreigner() {
 				setDataSet(res.data);
 				setDefaultData(res.data);
 			});
-		history.push(`/students/${selectSect}/foreigner`);
+			
+		// history.push(`/students/${selectSect}/foreigner`);
 	}, [selectSect]);
 
 	useEffect(() => {
@@ -247,7 +216,7 @@ export default function Foreigner() {
 		}
 	});
 	useEffect(() => {
-		window.easydropdown.all();
+		
 	});
 
 	const returnDept = (deptId, deptList) => {
@@ -302,7 +271,6 @@ export default function Foreigner() {
 		const year = document.getElementById("year").value;
 		try {
 			moment(year + "-01-01", "YYYY-MM-DD");
-			console.log(moment(year + "-01-01", "YYYY-MM-DD"));
 		} catch (error) {
 			alert("error");
 		}
@@ -314,29 +282,34 @@ export default function Foreigner() {
 				<div className="sub_title">
 					<div className="top_semester">
 						<p className="tit">유학생 관리</p>
-						<p className="tit" style={{ marginLeft: "40px" }}>
+						<p className="tit" style={{ marginLeft: "40px", cursor:'pointer' }} onClick={()=>{
+							setSelectYear(parseInt(selectYear)-1)
+						}} >
 							<img src="/global/img/calender_arrow_prev.gif" />
 						</p>
 						<p
 							className="tit"
 							style={{ marginLeft: "10px", marginTop: "3px", fontSize: "14px" }}
 						>
-							2020학년도
+							{selectYear}학년도
 						</p>
-						<p className="tit" style={{ marginLeft: "10px" }}>
+						<p className="tit" style={{ marginLeft: "10px", cursor:'pointer' }} onClick={()=>{
+							setSelectYear(parseInt(selectYear)+1)
+						}} >
 							<img src="/global/img/calender_arrow_next.gif" />
 						</p>
-						<select name="catgo" className="dropdown" onChange={handleChange}>
-							{sectOfYear &&
+						<select name="" className="" onChange={handleChange}>
+							{yearChange ? <option>----</option> : sectOfYear &&
 								sectOfYear.data &&
 								sectOfYear.data.map((v, i) => {
+									console.log(sectOfYear.data)
 									return (
 										<option
 											value={v.sect_id}
 											id={v.sect_name}
-											selected={index === i}
+											selected={index === i || i===0}
 										>
-											{v.sect_name.substr(8, 20)}
+											{v.sect_name}
 										</option>
 									);
 								})}
