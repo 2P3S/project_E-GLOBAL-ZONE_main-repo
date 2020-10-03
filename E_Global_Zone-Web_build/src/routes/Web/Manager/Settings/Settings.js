@@ -82,11 +82,12 @@ export default function Settings() {
 	}, []);
 	useEffect(() => {
 		if (settings) {
-			setPostSettings(settings.result);
+			setPostSettings(settings.data);
 		}
 	}, [settings]);
 	useEffect(() => {
 		window.easydropdown.all();
+		console.log(settings, postSettings);
 	});
 
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -118,8 +119,7 @@ export default function Settings() {
 											<option
 												id={`day-${v}`}
 												selected={
-													settings &&
-													settings.result.max_res_per_day === v
+													settings && settings.data.max_res_per_day === v
 														? true
 														: false
 												}
@@ -149,7 +149,7 @@ export default function Settings() {
 											<option
 												id={`day-${v}`}
 												selected={
-													settings && settings.result.max_std_once === v
+													settings && settings.data.max_std_once === v
 														? true
 														: false
 												}
@@ -187,12 +187,12 @@ export default function Settings() {
 											<option
 												id={`day-${v}`}
 												selected={
-													settings && settings.result.res_end_period === v
+													settings && settings.data.res_end_period === v
 														? true
 														: false
 												}
 												disabled={
-													settings && settings.result.res_start_period < v
+													settings && settings.data.res_start_period < v
 														? true
 														: false
 												}
@@ -230,13 +230,12 @@ export default function Settings() {
 											<option
 												id={`day-${v}`}
 												selected={
-													settings &&
-													settings.result.res_start_period === v
+													settings && settings.data.res_start_period === v
 														? true
 														: false
 												}
 												disabled={
-													settings && settings.result.res_end_period > v
+													settings && settings.data.res_end_period > v
 														? true
 														: false
 												}
@@ -272,7 +271,7 @@ export default function Settings() {
 									{/*</select>*/}
 									<input
 										type="number"
-										defaultValue={settings.result.once_meet_time}
+										defaultValue={settings.data.once_meet_time}
 										onChange={handleChangeMeet}
 										id="time_input_meet"
 									/>
@@ -286,7 +285,7 @@ export default function Settings() {
 								<div className="select_input">
 									<input
 										type="number"
-										defaultValue={settings.result.once_rest_time}
+										defaultValue={settings.data.once_rest_time}
 										onChange={handleChangeRest}
 										id="time_input_rest"
 									/>
@@ -320,7 +319,7 @@ export default function Settings() {
 										<option
 											id={`day-${v}`}
 											selected={
-												settings && settings.result.max_absent === v
+												settings && settings.data.max_absent === v
 													? true
 													: false
 											}
@@ -350,7 +349,7 @@ export default function Settings() {
 										<option
 											id={`day-${v}`}
 											selected={
-												settings && settings.result.min_absent === v
+												settings && settings.data.min_absent === v
 													? true
 													: false
 											}
@@ -380,7 +379,7 @@ export default function Settings() {
 										<option
 											id={`day-${v}`}
 											selected={
-												settings && settings.result.once_limit_period === v
+												settings && settings.data.once_limit_period === v
 													? true
 													: false
 											}
@@ -418,7 +417,7 @@ export default function Settings() {
 											id={`day-${v}`}
 											selected={
 												settings &&
-												settings.result.result_input_deadline === v
+												settings.data.result_input_deadline === v
 													? true
 													: false
 											}
