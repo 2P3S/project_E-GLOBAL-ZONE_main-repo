@@ -14,14 +14,13 @@ use Illuminate\Support\Facades\Config;
 class SchedulesResultImgController extends Controller
 {
     private $resultImage;
-    private $controller;
 
     public function __construct()
     {
         $this->resultImage = new SchedulesResultImg();
     }
 
-    private function set_img(
+    public function set_img(
         object $upload_img_file,
         string $img_file_name,
         string $folder_name

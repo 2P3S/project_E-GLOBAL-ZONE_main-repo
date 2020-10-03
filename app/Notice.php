@@ -14,7 +14,7 @@ class Notice extends Model
 
     protected $guarded = [];
 
-    public function schedule()
+    public function noti_imgs()
     {
         return $this->hasMany(Schedule::class, 'noti_id');
     }
