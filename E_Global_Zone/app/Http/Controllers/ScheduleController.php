@@ -820,7 +820,7 @@ class ScheduleController extends Controller
             return $validated_result;
         }
 
-        $key = $_ENV['HOLIDAY_API_KEY'];
+        $key = env('HOLIDAY_API_KEY');
         $year = $request->input('year') ?? date("Y");
         $URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey={$key}&solYear={$year}&_type=json&numOfRows=50";
 
