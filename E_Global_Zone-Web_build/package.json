@@ -8,6 +8,7 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"axios": "^0.20.0",
+		"browser-image-compression": "^1.0.12",
 		"d3-array": "^2.7.1",
 		"deepmerge": "^4.2.2",
 		"dotenv": "^8.2.0",
@@ -24,7 +25,6 @@
 		"react-scripts": "^3.4.3",
 		"styled-components": "^5.1.1",
 		"styled-reset": "^4.2.1",
-		"browser-image-compression": "^1.0.12",
 		"validator": "^13.1.1"
 	},
 	"scripts": {

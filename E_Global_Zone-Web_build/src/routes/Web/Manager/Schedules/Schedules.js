@@ -38,6 +38,7 @@ export default function Schedules() {
 	const _selectDate = useSelector(selectSelectDate);
 	const [selectDate, setSelectDate] = useState(params.date);
 	const [calIsOpen, setCalIsOpen] = useState(false);
+	const [kindOfData, setKindOfData] = useState(false);
 	const [firstRendering, setFirstRendering] = useState(true);
 	const {
 		isOpen: scheduleIsOpen,
@@ -675,14 +676,29 @@ export default function Schedules() {
 								스케줄 삭제
 							</div>
 						)}
-						<div onClick={handleOpenForDownload}>활동내역 저장</div>
+						<div
+							onClick={() => {
+								handleOpenForDownload();
+								setKindOfData("schedule");
+							}}
+						>
+							스케줄 목록 저장
+						</div>
+						<div
+							onClick={() => {
+								handleOpenForDownload();
+								setKindOfData("reservation");
+							}}
+						>
+							예약 목록 저장
+						</div>
 					</div>
 				</div>
 
 				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
 			</div>
 			<Modal isOpen={downloadIsOpen} handleClose={handleCloseForDownload}>
-				<ScheduleDownload></ScheduleDownload>
+				<ScheduleDownload kindOfData={kindOfData}></ScheduleDownload>
 			</Modal>
 			<Modal isOpen={scheduleIsOpen} handleClose={scheduleClose}>
 				{selectedSchedule && selectedSchedule.component === "ShowList" ? (
