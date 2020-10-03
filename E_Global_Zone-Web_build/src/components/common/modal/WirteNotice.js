@@ -21,7 +21,7 @@ export default function WirteNotice() {
 		console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
 		const options = {
-			maxSizeMB: 1,
+			maxSizeMB: 2,
 			maxWidthOrHeight: 1920,
 			useWebWorker: true,
 		};
@@ -29,11 +29,11 @@ export default function WirteNotice() {
 			const compressedFile = await imageCompression(imageFile, options);
 			console.log("compressedFile instanceof Blob", compressedFile instanceof Blob); // true
 			console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+			setNoti_imgs([...noti_imgs, new File([compressedFile], imageFile.name)]);
 		} catch (error) {
 			console.log(error);
 		}
 		// let file = e.target.files[0];
-		// setNoti_imgs([...noti_imgs, new File([await imageCompression(file, option)], file.name)]);
 	};
 	const handleSubmit = () => {
 		data.append("noti_url", "zone");
