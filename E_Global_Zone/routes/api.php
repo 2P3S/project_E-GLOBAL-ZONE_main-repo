@@ -209,6 +209,9 @@ Route::middleware('auth.multi')->group(static function () {
 
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('reservation/permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
+
+        /** 공지사항 작성 */
+        Route::post('notice', 'NoticeController@store');
     });
 
 

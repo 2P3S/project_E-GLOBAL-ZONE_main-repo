@@ -14,11 +14,10 @@ class CreateNoticesImgsTable extends Migration
     public function up()
     {
         Schema::create('notices_imgs', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('noti_id');
-            $table->string('img_url')->unique();
+            $table->string('noti_img_url')->unique();
             $table->timestamps();
-
-            $table->primary('noti_id');
 
             $table->foreign('noti_id')
                 ->references('noti_id')

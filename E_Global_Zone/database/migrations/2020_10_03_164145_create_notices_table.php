@@ -15,6 +15,7 @@ class CreateNoticesTable extends Migration
     {
         Schema::create('notices', function (Blueprint $table) {
             $table->bigIncrements('noti_id');
+            $table->string('noti_url')->default('zone');
             $table->string('noti_title');
             $table->text('noti_content');
             $table->unsignedBigInteger('noti_views')->default(0);
