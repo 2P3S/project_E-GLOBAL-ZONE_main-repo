@@ -841,7 +841,7 @@ class ScheduleController extends Controller
         $year = $request->input('year') ?? date("Y");
         $URL = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?serviceKey={$key}&solYear={$year}&_type=json&numOfRows=50";
 
-        $result = json_decode(file_get_contents($URL), true, 512, JSON_THROW_ON_ERROR);
+        $result = json_decode(file_get_contents($URL), true);
         $holiday_list = (object)array_column($result['response']['body']['items']['item'], 'locdate');
 
         return Controller::response_json('공휴일 목록 조회에 성공했습니다.', 200, $holiday_list);
