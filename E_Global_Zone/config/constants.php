@@ -2,9 +2,9 @@
 
 return [
     'uri' => [
-        'main' => $_ENV['MAIN_URL'],
-        'admin' => $_ENV['ADMIN_URL'],
-        'reset' => $_ENV['RESET_URL'],
+        'main' => env('MAIN_URL'),
+        'admin' => env('ADMIN_URL'),
+        'reset' => env('RESET_URL'),
     ],
     'kor' => [
         'access' => [

@@ -10,7 +10,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
 
 class ReservationController extends Controller
@@ -234,10 +233,8 @@ class ReservationController extends Controller
         }
         // -->>
 
-        // <<-- 스케줄 결과 입력 결과 업데이트
-        $sch_id->update(['sch_state_of_result_input' => true]);
-        // -->>
         $sch_result_img = new SchedulesResultImgController($request);
+
         // 이미지 저장 후 결과 반환
         return
             $sch_result_img->store_result_img(

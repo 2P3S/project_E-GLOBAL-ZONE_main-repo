@@ -209,6 +209,9 @@ Route::middleware('auth.multi')->group(static function () {
 
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('reservation/permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
+
+        /** 공지사항 작성 */
+        Route::post('notice', 'NoticeController@store');
     });
 
 
@@ -293,3 +296,9 @@ Route::get('department', 'DepartmentController@index')->name('departments.index'
 Route::post('/password/update', function () {
     return view('password_update');
 });
+
+/** 공지사항 불러오기 */
+Route::get('notice', 'NoticeController@index');
+
+/** 공지사항 이미지 불러오기 */
+Route::get('notice/{noti_id}', 'NoticeController@index_imgs');
