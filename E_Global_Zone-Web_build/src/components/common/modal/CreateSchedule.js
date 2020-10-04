@@ -175,7 +175,7 @@ export default function CreateSchedule({ sect_id, std_for_list, handleClose, reR
 					</select>
 				</div>
 				<div className="area student">
-					<p>유학생 선택</p>
+					<p>교수 선택</p>
 					<select
 						name="catgo3"
 						className="dropdown"

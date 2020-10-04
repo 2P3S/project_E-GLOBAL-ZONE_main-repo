@@ -208,7 +208,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 			{insertMode ? (
 				<div className="popup account">
 					<div className="account_insert">
-						<p className="tit">유학생 계정 생성</p>
+						<p className="tit">교수 계정 생성</p>
 						<div className="input_area">
 							<table>
 								<colgroup>

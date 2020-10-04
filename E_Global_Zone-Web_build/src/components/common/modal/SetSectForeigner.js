@@ -84,7 +84,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_
 
 	return (
 		<div className="popup regist">
-			<p className="tit">{sect_name} 근로 유학생 등록</p>
+			<p className="tit">{sect_name} 교수진 등록</p>
 
 			<div className="top_search">
 				<div className="search_box">
