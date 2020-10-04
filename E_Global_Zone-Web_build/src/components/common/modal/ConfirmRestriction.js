@@ -81,7 +81,7 @@ export default function ConfirmRestriction({ std_kor_id, std_kor_name, handleClo
 
 			<div className="btn_area">
 				<div className="bbtn mint" onClick={handleConfirm}>
-					등록
+					등록하기
 				</div>
 				{/* <div className="bbtn white" ref={useClick(handleClose)}>
                     닫기

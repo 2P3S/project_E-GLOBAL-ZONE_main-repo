@@ -47,7 +47,11 @@ export default function Header() {
 			<div className="head_area">
 				<div className="logo">
 					<Link to="/">
-						<img src="/global/img/logo.gif" alt="영진전문대학교 로고" />
+						<img src="/global/img/logo_globalzone.gif" alt="영진전문대학교 글로벌존 로고" />
+						{/* 
+							/global/img/logo_globalzone.gif 글로벌존 로고
+							/global/img/logo_globalcenter.gif 글로벌센터 로고
+						*/}
 					</Link>
 				</div>
 				{user.userClass === conf.userClass.MANAGER ? (
