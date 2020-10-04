@@ -64,7 +64,7 @@ export default function ScheduleDownload({ kindOfData }) {
 					/>
 				</div>
 			</div>
-			<p style={{ color: "red" }}>※ 8자리 숫자로 입력해주세요.</p>
+			<p className="save_exInfo">8자리 숫자로 입력해주세요. ex) 20201020</p>
 		</div>
 	);
 }

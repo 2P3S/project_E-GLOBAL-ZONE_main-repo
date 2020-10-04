@@ -21,6 +21,7 @@ export default function Schedules() {
 	useEffect(() => {
 		getKoreanSchedule().then((res) => {
 			const { data } = res.data;
+			console.log(data);
 			if (data.length === 0) {
 				alert("예약 가능한 스케줄이 없습니다.");
 				// history.push("/reservation");
@@ -53,7 +54,7 @@ export default function Schedules() {
 			setDates(dateObj);
 			setPending(false);
 		});
-		getKoreanSetting().then((res) => setSetting(res.data.result));
+		getKoreanSetting().then((res) => setSetting(res.data.data));
 	}, []);
 
 	useEffect(() => {
