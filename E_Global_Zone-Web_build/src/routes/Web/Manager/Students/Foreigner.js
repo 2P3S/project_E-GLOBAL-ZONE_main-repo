@@ -32,7 +32,6 @@ let j = 0;
  * @todo sorting
  */
 export default function Foreigner() {
-
 	const history = useHistory();
 	const params = useParams();
 
@@ -132,27 +131,28 @@ export default function Foreigner() {
 			setSectOfYear(res.data);
 			let index = 0;
 			res.data.data.forEach((v, i) => {
-			
 				if (
 					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
 				) {
 					index = i;
 				}
 			});
-		
+
 			history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 			setIndex(index);
 		});
 	}, []);
 	useEffect(() => {
-		setYearChange(true)
-		getAdminSection({ year: `${moment(`${selectYear}-01-01`,"YYYY-MM-DD").format("YYYY")}` }).then((res) => {
+		setYearChange(true);
+		getAdminSection({
+			year: `${moment(`${selectYear}-01-01`, "YYYY-MM-DD").format("YYYY")}`,
+		}).then((res) => {
 			const { data } = res;
 			if (data.data.length === 0) {
 				alert("해당년도에 학기가 없습니다.");
 			} else {
 				setSectOfYear(res.data);
-				let index = 0;				
+				let index = 0;
 				history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 				setIndex(index);
 			}
@@ -166,29 +166,29 @@ export default function Foreigner() {
 		}
 	}, [sectOfYear, index]);
 
-	useEffect(()=>{
-		setYearChange(false)
+	useEffect(() => {
+		setYearChange(false);
 		window.easydropdown.all();
 		//easydropdown 에러 잡아야함
-	},[sectOfYear])
-
+	}, [sectOfYear]);
 
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
 		selectSect &&
 			getAdminForeignerWork(selectSect).then((res) => {
-				res.data.hasOwnProperty('data') && res.data.data.forEach((v) => {
-					let total = 0;
-					Object.keys(v["work_time"]).forEach((m) => {
-						total += v["work_time"][`${m}`];
+				res.data.hasOwnProperty("data") &&
+					res.data.data.forEach((v) => {
+						let total = 0;
+						Object.keys(v["work_time"]).forEach((m) => {
+							total += v["work_time"][`${m}`];
+						});
+						Object.defineProperty(v["work_time"], "total", { value: total });
 					});
-					Object.defineProperty(v["work_time"], "total", { value: total });
-				});
 				setDataSet(res.data);
 				setDefaultData(res.data);
 			});
-			
+
 		// history.push(`/students/${selectSect}/foreigner`);
 	}, [selectSect]);
 
@@ -216,7 +216,7 @@ export default function Foreigner() {
 		}
 	});
 	useEffect(() => {
-		
+		window.easydropdown.all();
 	});
 
 	const returnDept = (deptId, deptList) => {
@@ -282,9 +282,13 @@ export default function Foreigner() {
 				<div className="sub_title">
 					<div className="top_semester">
 						<p className="tit">유학생 관리</p>
-						<p className="tit" style={{ marginLeft: "40px", cursor:'pointer' }} onClick={()=>{
-							setSelectYear(parseInt(selectYear)-1)
-						}} >
+						<p
+							className="tit"
+							style={{ marginLeft: "40px", cursor: "pointer" }}
+							onClick={() => {
+								setSelectYear(parseInt(selectYear) - 1);
+							}}
+						>
 							<img src="/global/img/calender_arrow_prev.gif" />
 						</p>
 						<p
@@ -293,27 +297,37 @@ export default function Foreigner() {
 						>
 							{selectYear}학년도
 						</p>
-						<p className="tit" style={{ marginLeft: "10px", cursor:'pointer' }} onClick={()=>{
-							setSelectYear(parseInt(selectYear)+1)
-						}} >
+						<p
+							className="tit"
+							style={{ marginLeft: "10px", cursor: "pointer" }}
+							onClick={() => {
+								setSelectYear(parseInt(selectYear) + 1);
+							}}
+						>
 							<img src="/global/img/calender_arrow_next.gif" />
 						</p>
-						<select name="" className="" onChange={handleChange}>
-							{yearChange ? <option>----</option> : sectOfYear &&
-								sectOfYear.data &&
-								sectOfYear.data.map((v, i) => {
-									console.log(sectOfYear.data)
-									return (
-										<option
-											value={v.sect_id}
-											id={v.sect_name}
-											selected={index === i || i===0}
-										>
-											{v.sect_name}
-										</option>
-									);
-								})}
-						</select>
+						{yearChange ? (
+							<></>
+						) : (
+							<div>
+								<select name="" className="" onChange={handleChange}>
+									{sectOfYear &&
+										sectOfYear.data &&
+										sectOfYear.data.map((v, i) => {
+											console.log(sectOfYear.data);
+											return (
+												<option
+													value={v.sect_id}
+													id={v.sect_name}
+													selected={index === i || i === 0}
+												>
+													{v.sect_name}
+												</option>
+											);
+										})}
+								</select>
+							</div>
+						)}
 					</div>
 
 					<div className="top_search">

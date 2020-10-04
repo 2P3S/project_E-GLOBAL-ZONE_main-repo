@@ -136,8 +136,8 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 			</div>
 
 			<div className="btn_area">
-				<div href="" className="bbtn mint" onClick={handleConfirm}>
-					등록
+				<div href="" className="bbtn blue" onClick={handleConfirm}>
+					등록하기
 				</div>
 				{/* <div className="bbtn white" onClick={handleClose}>
 					닫기
