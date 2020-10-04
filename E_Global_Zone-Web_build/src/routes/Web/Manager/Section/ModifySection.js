@@ -6,7 +6,11 @@ import {
 	getAdminForeignerWork,
 	getAdminForeignerWorkSpecial,
 } from "../../../../api/admin/foreigner";
-import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
+import {
+	postAdminSchedule,
+	deleteAdminSchedule,
+	getAdminHoliday,
+} from "../../../../api/admin/schedule";
 import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
 import useModal from "../../../../modules/hooks/useModal";
@@ -20,6 +24,7 @@ export default function ModifySection({}) {
 
 	const [forList, setForList] = useState();
 	const [sectName, setSectName] = useState();
+	const [eceptDate, setEceptDate] = useState([]);
 	const [isDone, setIsDone] = useState(false);
 	const [time, setTime] = useState({ sect_start_date: "", sect_end_date: "" });
 
@@ -105,7 +110,7 @@ export default function ModifySection({}) {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
 			schedule: schedule,
-			ecept_date: [],
+			ecept_date: eceptDate,
 			sch_start_date: time.sect_start_date,
 			sch_end_date: time.sect_end_date,
 			exception_mode: true,
@@ -135,7 +140,17 @@ export default function ModifySection({}) {
 			);
 		window.location.reload();
 	};
-
+	const setHoliday = (date) => {
+		getAdminHoliday({ year: moment(date).format("YYYY") }).then((res) => {
+			console.log(res.data.data);
+			for (const key in res.data.data) {
+				if (res.data.data.hasOwnProperty(key)) {
+					const element = res.data.data[key];
+					eceptDate.push(moment(element).format("YYYY-MM-DD"));
+				}
+			}
+		});
+	};
 	const rendering = (std_for_id = params["std_for_id"]) => {
 		handleOpenForLoader();
 		if (validator.toDate(moment(params["sch_start_date"]).format("YYYYMMDD"))) {
@@ -158,7 +173,13 @@ export default function ModifySection({}) {
 				}
 			});
 		!sectName &&
-			getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
+			getAdminSection({ sect_id: params["sect_id"] }).then((res) => {
+				const { sect_start_date, sect_end_date } = res.data.data;
+				setHoliday(sect_start_date);
+				setHoliday(sect_end_date);
+
+				setSectName(res.data);
+			});
 		if (std_for_id !== "0") {
 			getAdminForeigner({
 				foreigners: [std_for_id],
@@ -173,6 +194,9 @@ export default function ModifySection({}) {
 	};
 	useEffect(() => {
 		rendering();
+		getAdminHoliday().then((res) => {
+			console.log(res);
+		});
 	}, []);
 	useEffect(() => {
 		document
