@@ -68,8 +68,8 @@ const InsertForeignerStudent = ({ handleClose }) => {
 		let _validator = false;
 		setPending(true);
 		document.getElementsByName("std_info").forEach((v) => {
-			if (v.value === "" && _validator === false) {
-				// alert("값을 입력해주세요");
+			if (v.value === "" && _validator === false && v.id !== "std_for_phone") {
+				alert("값을 입력해주세요");
 				_validator = true;
 			} else {
 				array.push(validator.unescape(v.value));
