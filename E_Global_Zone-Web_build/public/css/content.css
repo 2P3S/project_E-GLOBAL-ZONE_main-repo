@@ -1786,12 +1786,10 @@ table.work_time thead th {
 	top: 12px;
 	cursor: pointer;
 	z-index: 10;
-	width:15px;
+	width: 15px;
 	height: 15px;
 	background: url(/global/img/modalClose_ico.png) no-repeat 50% center;
 }
-
-
 
 .popup p.tit {
 	font-size: 25px;
@@ -2297,7 +2295,7 @@ table.pop_table3 td {
 }
 
 .popup.not_attend .scroll_area {
-	height:425px;
+	height: 425px;
 }
 
 .popup.not_attend .left_wrap,
@@ -2594,8 +2592,8 @@ ul.img_file li p.file_name:hover {
 	position: relative;
 }
 .popup.regist .edd-root {
-	height:42px;
-	line-height:42px;
+	height: 42px;
+	line-height: 42px;
 }
 .popup.regist table {
 	font-size: 12px;
@@ -3484,4 +3482,144 @@ ul.tab.no5 li {
 
 .hover_off {
 	display: none;
+}
+
+/* 게시판 글쓰기, 글보기*/
+.popup.board {
+	width: 900px;
+}
+.popup.board p.tit {
+	margin-bottom: 30px;
+}
+.popup.board .board_form_row {
+	width: 100%;
+	margin-bottom: 10px;
+}
+.popup.board .board_form_row p {
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 3px;
+}
+.popup.board .board_form_row input[type="text"],
+.popup.board .board_form_row textarea {
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 15px 20px;
+	outline: none;
+	font-size: 13px;
+	color: #333;
+}
+.popup.board .board_form_row input[type="text"]::placeholder,
+.popup.board .board_form_row textarea::placeholder {
+	color: #a5a5a5;
+	font-size: 13px;
+}
+
+.popup.board .board_form_row textarea {
+	height: 400px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-right: 10px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar {
+	width: 5px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar-thumb {
+	background-color: #373a44;
+	border-radius: 10px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar-track {
+	background-color: #e1e1ea;
+	border-radius: 10px;
+}
+.board_file_row {
+	width: 100%;
+	display: inline-block;
+	border: 1px solid #ccc;
+	background: #f5f5f5;
+	border-radius: 5px; /* height: 160px; */
+	font-size: 13px;
+}
+.board_file_row .tit {
+	float: left;
+	width: 200px;
+	text-align: center;
+	min-height: 160px;
+	line-height: 160px;
+	background: #fff;
+	border-right: 1px solid #ccc; /* height: 100%; */
+}
+.file_area {
+	width: 679px;
+	display: inline-block;
+	margin: 20px 0 0 20px;
+}
+.file_area ul {
+	float: left;
+	width: 535px;
+	margin-left: 15px;
+}
+.file_area ul li {
+	float: left;
+	height: 37px;
+	line-height: 37px;
+	padding: 0 15px;
+	width: 225px;
+	background: #fff;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	margin: 0 0 5px 10px;
+	overflow: hidden;
+}
+.file_area ul li span {
+	display: inline-block;
+	font-size: 12px;
+	color: #666;
+	display: inline-block;
+	width: 180px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.file_area ul li .del_btn {
+	float: right;
+	cursor: pointer;
+	margin-top: 13px;
+}
+.file_area .filebox {
+	float: left;
+}
+.file_area .filebox label {
+	display: inline-block;
+	padding: 8px 25px;
+	color: #fff;
+	font-size: inherit;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #34bcad;
+	cursor: pointer;
+	border: 1px solid #2eb1a1;
+	border-radius: 0.25em;
+	-webkit-transition: background-color 0.2s;
+	transition: background-color 0.2s;
+}
+
+.file_area .filebox label:hover {
+	background-color: #2fb1a2;
+}
+
+.file_area .filebox label:active {
+	background-color: #2fb1a2;
+}
+
+.file_area .filebox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
 }

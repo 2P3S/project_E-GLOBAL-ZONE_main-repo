@@ -10,6 +10,7 @@ import InsertForeignerStudent from "../../../../components/common/modal/InsertFo
 import Loader from "../../../../components/common/Loader";
 import CreateDept from "../../../../components/common/modal/CreateDept";
 import { getAdminExportForeigner } from "../../../../api/admin/export";
+import WirteNotice from "../../../../components/common/modal/WirteNotice";
 
 /**
  * Manager :: 시스템 환경설정
@@ -39,6 +40,11 @@ export default function Settings() {
 		isOpen: isOpenForCreateDept,
 		handleOpen: handleOpenForCreateDept,
 		handleClose: handleCloseForCreateDept,
+	} = useModal();
+	const {
+		isOpen: isOpenForWriteNotice,
+		handleOpen: handleOpenForWriteNotice,
+		handleClose: handleCloseForWriteNotice,
 	} = useModal();
 
 	const handleChange = (key, value) => {
@@ -450,6 +456,9 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
 					학기 기간 조회
 				</div>
+				<div className="gray" onClick={handleOpenForWriteNotice}>
+					공지사항 작성
+				</div>
 				{/* <div className="gray" onClick={handleOpenForCreateDept}>
 					학과 등록
 				</div> */}
@@ -465,6 +474,9 @@ export default function Settings() {
 					저장
 				</div>
 			</div>
+			<Modal isOpen={isOpenForWriteNotice} handleClose={handleCloseForWriteNotice}>
+				<WirteNotice handleClose={handleCloseForWriteNotice} />
+			</Modal>
 			<Modal isOpen={isOpenForCreateDept} handleClose={handleCloseForCreateDept}>
 				<CreateDept handleClose={handleCloseForCreateDept} />
 			</Modal>
