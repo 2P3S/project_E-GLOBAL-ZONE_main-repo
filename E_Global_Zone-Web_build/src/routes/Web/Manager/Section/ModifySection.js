@@ -6,7 +6,11 @@ import {
 	getAdminForeignerWork,
 	getAdminForeignerWorkSpecial,
 } from "../../../../api/admin/foreigner";
-import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
+import {
+	postAdminSchedule,
+	deleteAdminSchedule,
+	getAdminHoliday,
+} from "../../../../api/admin/schedule";
 import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
 import useModal from "../../../../modules/hooks/useModal";
@@ -173,6 +177,9 @@ export default function ModifySection({}) {
 	};
 	useEffect(() => {
 		rendering();
+		getAdminHoliday().then((res) => {
+			console.log(res);
+		});
 	}, []);
 	useEffect(() => {
 		document

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
-import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
+import {
+	postAdminSchedule,
+	deleteAdminSchedule,
+	getAdminHoliday,
+} from "../../../../api/admin/schedule";
 import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
 import deepmerge from "deepmerge";
@@ -154,6 +158,9 @@ export default function Section(props) {
 	};
 	useEffect(() => {
 		rendering();
+		getAdminHoliday().then((res) => {
+			console.log(res);
+		});
 	}, []);
 	useEffect(() => {
 		document
@@ -169,19 +176,6 @@ export default function Section(props) {
 			setForList(forList.data);
 		}
 	}, [forList]);
-
-	// useEffect(() => {
-	// 	// 	handleOpenForLoader();
-	// 	// 	if ([params["std_for_id"]] !== "0" && forList) {
-	// 	// 		console.log(params);
-	// 	// 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
-	// 	// 			setForName(res.data);
-	// 	// 			buildTable();
-	// 	// 			handleCloseForLoader();
-	// 	// 		});
-	// 	// 	}
-	// 	rendering();
-	// }, [params]);
 
 	return (
 		<div className="content">
