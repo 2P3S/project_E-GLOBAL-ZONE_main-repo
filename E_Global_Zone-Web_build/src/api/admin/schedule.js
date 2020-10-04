@@ -18,4 +18,4 @@ export const getAdminScheduleUnapproved = (date, sch_state_of_permission) =>
 export const patchAdminScheduleApproval = (sch_id, data) =>
 	admin.patch(`schedule/approval/${sch_id}`, data);
 
-export const getAdminHoliday = () => admin.get("holiday");
+export const getAdminHoliday = (params) => admin.get("holiday", { params });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-
+import moment from "moment";
 import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
 import {
 	postAdminSchedule,
@@ -17,7 +17,7 @@ import Loader from "../../../../components/common/Loader";
 export default function Section(props) {
 	const params = useParams();
 	const history = useHistory();
-
+	const [eceptDate, setEceptDate] = useState([]);
 	const [forList, setForList] = useState();
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
@@ -103,7 +103,7 @@ export default function Section(props) {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
 			schedule: schedule,
-			ecept_date: [],
+			ecept_date: eceptDate,
 			sch_start_date: time.sch_start_date,
 			sch_end_date: time.sch_end_date,
 			exception_mode: 0,
@@ -143,7 +143,20 @@ export default function Section(props) {
 				}
 			});
 		!sectName &&
-			getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
+			getAdminSection({ sect_id: params["sect_id"] }).then((res) => {
+				const { sect_start_date, sect_end_date } = res.data.data;
+				getAdminHoliday({ year: moment(sect_start_date).format("YYYY") }).then((res) => {
+					console.log(res.data.data);
+					for (const key in res.data.data) {
+						if (res.data.data.hasOwnProperty(key)) {
+							const element = res.data.data[key];
+							eceptDate.push(element);
+						}
+					}
+				});
+				getAdminHoliday({ year: moment(sect_end_date).format("YYYY") }).then((res) => {});
+				setSectName(res.data);
+			});
 		if (std_for_id !== "0") {
 			getAdminForeigner({
 				foreigners: [std_for_id],
@@ -158,9 +171,6 @@ export default function Section(props) {
 	};
 	useEffect(() => {
 		rendering();
-		getAdminHoliday().then((res) => {
-			console.log(res);
-		});
 	}, []);
 	useEffect(() => {
 		document
