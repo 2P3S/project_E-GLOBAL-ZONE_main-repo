@@ -119,7 +119,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_
 							</th>
 							<th scope="col">언어</th>
 							<th scope="col">국가</th>
-							<th scope="col">학번</th>
+							<th scope="col">교번</th>
 							<th scope="col">이름</th>
 							<th scope="col">계열학과</th>
 							<th scope="col">연락처</th>

@@ -163,7 +163,7 @@ const InsertForeignerStudent = ({
 										/>
 									</td>
 									<td>
-										<p>학번</p>
+										<p>교번</p>
 										<input
 											onKeyUp={(e) => handleEnterKey(e, handleSave)}
 											type="text"

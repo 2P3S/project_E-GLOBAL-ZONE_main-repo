@@ -84,7 +84,7 @@ const Login = () => {
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="text"
 						name="id"
-						placeholder="학번을 입력해주세요."
+						placeholder="교번을 입력해주세요."
 						ref={id}
 					/>
 					<input
