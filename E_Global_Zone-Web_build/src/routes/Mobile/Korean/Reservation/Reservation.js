@@ -155,6 +155,30 @@ export default function Reservation() {
 														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
+
+												{moment(v.sch_start_date)
+													.subtract(setting.res_end_period, "day")
+													.isAfter(
+														moment(Date.now()).format("YYYY-MM-DD")
+													) ? (
+													<div className="reserv_del_btn">
+														<img
+															onClick={() => {
+																if (window)
+																	deleteKoreanReservation(
+																		v.res_id
+																	).then((res) => {
+																		alert(res.data.message);
+																		window.location.reload();
+																	});
+															}}
+															src="/global/img/reservation_del.gif"
+															alt="예약 삭제 버튼"
+														/>
+													</div>
+												) : (
+													<div></div>
+												)}
 												<p
 													className="right zoom_info"
 													onClick={() => {
