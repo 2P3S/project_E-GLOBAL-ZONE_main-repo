@@ -347,7 +347,7 @@ export default function Foreigner() {
 							}}
 						>
 							<option value="std_for_name">이름</option>
-							<option value="std_for_id">학번</option>
+							<option value="std_for_id">교번</option>
 						</select>
 						<input type="text" id="term" onChange={handleSearch} />
 						<input type="submit" value="검색" onClick={handleSearch} />

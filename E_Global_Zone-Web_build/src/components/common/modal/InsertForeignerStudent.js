@@ -241,7 +241,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 											/>
 										</td>
 										<td>
-											<p>학번</p>
+											<p>교번</p>
 											<input
 												onKeyUp={(e) => handleEnterKey(e, handleSave)}
 												type="text"
@@ -254,7 +254,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 													}
 												}}
 												maxLength={7}
-												key="학번"
+												key="교번"
 											/>
 										</td>
 										<td>
@@ -391,7 +391,7 @@ const InsertForeignerStudent = ({ handleClose }) => {
 								<tr>
 									<th scope="col">언어</th>
 									<th scope="col">국가</th>
-									<th scope="col">학번</th>
+									<th scope="col">교번</th>
 									<th scope="col">이름</th>
 									<th scope="col">계열학과</th>
 									<th scope="col">연락처</th>

@@ -20,6 +20,7 @@ import WirteNotice from "../../../../components/common/modal/WirteNotice";
  */
 export default function Settings() {
 	const [settings, setSettings] = useState();
+	const [pending, setPending] = useState(false);
 	const [postSettings, setPostSettings] = useState();
 	const {
 		isOpen: creatSectIsOpen,
@@ -53,10 +54,11 @@ export default function Settings() {
 	const handleChangeMeet = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (meet.value < 30 && meet.value >= 0) {
-			rest.value = 30 - meet.value;
+		if (meet.value < 60 && meet.value >= 30) {
+			rest.value = 60 - meet.value;
 		} else {
-			meet.value = 0;
+			meet.value = 30;
+			rest.value = 30;
 		}
 		setPostSettings({
 			...postSettings,
@@ -67,9 +69,10 @@ export default function Settings() {
 	const handleChangeRest = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (rest.value < 30 && rest.value >= 0) {
-			meet.value = 30 - rest.value;
+		if (rest.value < 31 && rest.value >= 0) {
+			meet.value = 60 - rest.value;
 		} else {
+			meet.value = 60;
 			rest.value = 0;
 		}
 		setPostSettings({
@@ -96,9 +99,15 @@ export default function Settings() {
 		console.log(settings, postSettings);
 	});
 
+	useEffect(() => {
+		if (settings && postSettings) {
+			setPending(true);
+		}
+	}, [settings, postSettings]);
+
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	let arrayDate = [1, 2, 3, 4, 5, 6, 7];
-	return settings && postSettings ? (
+	return pending ? (
 		<div className="content">
 			<div className="sub_title">
 				<p className="tit">시스템 환경설정</p>
