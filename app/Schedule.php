@@ -98,6 +98,7 @@ class Schedule extends Model
      * 스케줄 id 값으로 스케줄 정보 조회
      *
      * @param Schedule $sch_id
+     * @return object
      */
     public function get_sch_by_id(
         Schedule $sch_id
