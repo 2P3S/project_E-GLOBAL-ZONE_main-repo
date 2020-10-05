@@ -32,21 +32,23 @@ export default function Reservation() {
 
 	useEffect(() => {
 		setPending(true);
-		asyncSetSetting(); // async
+		getKoreanSetting().then((res) => setSetting(res.data.data));
 	}, []);
-
-	const asyncSetSetting = async () => {
-		await getKoreanSetting().then((res) => setSetting(res.data.data));
-	};
 
 	useEffect(() => console.log(setting));
 	useEffect(() => {
 		pending &&
 			getKoreanReservation().then((res) => {
 				setData(res.data);
-				setPending(false);
 			});
 	}, [pending]);
+
+	useEffect(() => {
+		if (data && setting) {
+			setPending(false);
+		}
+	}, [data, setting]);
+
 	useEffect(() => {
 		let arrayOfWatingForResult = [];
 		let arrayOfWatingForPermission = [];
