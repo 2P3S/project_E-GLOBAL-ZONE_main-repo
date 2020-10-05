@@ -32,7 +32,7 @@ export default function Reservation() {
 
 	useEffect(() => {
 		setPending(true);
-		getKoreanSetting().then((res) => setSetting(res.data.result));
+		getKoreanSetting().then((res) => setSetting(res.data.data));
 	}, []);
 
 	useEffect(() => console.log(setting));
