@@ -10,7 +10,7 @@ const language = {
 				},
 				forLogin: {
 					loginBtn: "Login",
-					placeholderId: "학번을 입력해주세요.",
+					placeholderId: "교번을 입력해주세요.",
 					placeholderPw: "비밀번호를 입력해주세요",
 				},
 				adminLogin: {
@@ -81,7 +81,6 @@ const language = {
 					resultNotEnter: "[결과 미입력] 출석 학생",
 					adminNotApp: "[관리자 미승인] 출석 학생",
 					adminApp: "[관리자 승인 완료]",
-
 				},
 				notdataInfo: {
 					text: "데이터가 없습니다.",
@@ -314,9 +313,8 @@ const language = {
 				endTime: "종료시간",
 				attendance: "출석",
 				absent: "결석",
-
 			},
-			// 
+			//
 			korStudentManage: {
 				pageTitle: {
 					title: "한국인 학생 관리",
@@ -347,12 +345,12 @@ const language = {
 					btnText: "한국인 학생 목록 저장",
 				},
 			},
-			// 
-			foreignStudentManage : {
+			//
+			foreignStudentManage: {
 				pageTitle: {
 					title: "유학생 관리",
 				},
-				searchStudentSelect : {
+				searchStudentSelect: {
 					name: "이름",
 					studentNum: "학번",
 				},
@@ -372,26 +370,26 @@ const language = {
 					count: "회",
 					min: "분",
 				},
-				foreignStdTooltip : {
-					resetPassword : "비밀번호 초기화",
-					resetPasswdAlert : "비밀번호를 초기화 시키겠습니까?",
-					resetPasswdCompletAlert : "비밀번호 초기화가 완료되었습니다.",
-					modify : "수정",
-					ok : "확인",
+				foreignStdTooltip: {
+					resetPassword: "비밀번호 초기화",
+					resetPasswdAlert: "비밀번호를 초기화 시키겠습니까?",
+					resetPasswdCompletAlert: "비밀번호 초기화가 완료되었습니다.",
+					modify: "수정",
+					ok: "확인",
 				},
-				semesterNotStudent : {
+				semesterNotStudent: {
 					alertText: "해당 학기에 등록 된 학생이 없습니다.",
 				},
-				foreignStdBtn : {
-					ContactInfo : "연락처 정보",
-					foreignStdRegist : "근로 유학생 등록",
-					semesterSchRegist : "학기 스케줄 등록",
-					schIndividualInput : "스케줄 개별 입력",
-					foreignStdListSave : "근로 유학생 목록 저장",
+				foreignStdBtn: {
+					ContactInfo: "연락처 정보",
+					foreignStdRegist: "근로 유학생 등록",
+					semesterSchRegist: "학기 스케줄 등록",
+					schIndividualInput: "스케줄 개별 입력",
+					foreignStdListSave: "근로 유학생 목록 저장",
 				},
 			},
 			//
-			systemSetting : {
+			systemSetting: {
 				pageTitle: {
 					title: "시스템 환경설정",
 				},
@@ -401,7 +399,7 @@ const language = {
 					num: "번",
 					oneTimeMaxRes: "한 타임 최대 예약",
 					person: "명",
-					resAppAndCancel : "예약 승인 및 취소는",
+					resAppAndCancel: "예약 승인 및 취소는",
 					currentCriterion: "현재 기준",
 					CompleteBy: "24:00까지 완료",
 					daysAgo: "일 전까지",
@@ -409,14 +407,15 @@ const language = {
 					AvailableFrom: "24:00부터 가능",
 					sinceDaysAgo: "일 전부터",
 				},
-				schSetting : {
+				schSetting: {
 					Description: "스케줄 한 타임의 기준시간은 30분으로 자동계산됩니다.",
-					warningText : "설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 변경 불가",
-					meetingTime : "미팅 시간",
-					breakTime : "쉬는 시간",
+					warningText:
+						"설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 변경 불가",
+					meetingTime: "미팅 시간",
+					breakTime: "쉬는 시간",
 					min: "분",
 				},
-				regulationManage : {
+				regulationManage: {
 					// Description: "노쇼 최대",
 					// Description: "까지",
 					// Description: "패널티 부여",
@@ -427,8 +426,8 @@ const language = {
 					// Description: "결석 3회 부터 결석 시, 3일간 이용제한 5회 이상 결석 시, 해당 학기 이용 제한",
 					// Description: "유학생 결과입력",
 					// Description: "일 이내",
-				}
-			}
+				},
+			},
 		},
 	},
 };
