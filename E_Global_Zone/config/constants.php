@@ -278,5 +278,39 @@ return [
                 'success' => '환경설정 변경에 성공하였습니다.'
             ]
         ],
+    ],
+    'eng' => [
+        'login' => [
+            'log_in' => [
+                'success' => ', you have successfully logged in!',
+                'failure' => 'Login Failed',
+                'illegal' => 'Wrong Access',
+                'wrong_value' => 'Check your ID and Password.',
+                'no_access' => 'After completing registration, you will be able to continue.'
+            ],
+            'log_out' => [
+                'success' => 'You have logged out.',
+                'failure' => 'Log out failed.'
+            ]
+        ],
+        'reservation' => [
+            'for_index' => [
+                'success' => 'Schedule search complete.',
+                'failure' => 'No reservation(s) listed in the schedule.'
+            ],
+            'for_show_kor_list' => [
+                'success' => 'Schedule search for student reservations is complete.',
+                'failure' => 'There are no student applications.'
+            ],
+            'for_update_permission' => [
+                'success' => 'Schedule reservation approval for Korean students is sucessfully updated.',
+                'failure' => 'Schedule reservation approval for Korean students failed to update.'
+            ],
+            'for_input_result' => [
+                'success' => 'Attendance was sucessfully recorded.',
+                'failure' => 'Attendance failed to be recorded.',
+                'completed' => 'This has already been completed and cannot be modified.'
+            ]
+        ],
     ]
 ];
