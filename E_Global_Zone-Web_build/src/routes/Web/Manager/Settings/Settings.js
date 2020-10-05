@@ -53,8 +53,8 @@ export default function Settings() {
 	const handleChangeMeet = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (meet.value < 30 && meet.value >= 0) {
-			rest.value = 30 - meet.value;
+		if (meet.value < 60 && meet.value >= 0) {
+			rest.value = 60 - meet.value;
 		} else {
 			meet.value = 0;
 		}
@@ -67,8 +67,8 @@ export default function Settings() {
 	const handleChangeRest = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (rest.value < 30 && rest.value >= 0) {
-			meet.value = 30 - rest.value;
+		if (rest.value < 60 && rest.value >= 0) {
+			meet.value = 60 - rest.value;
 		} else {
 			rest.value = 0;
 		}
