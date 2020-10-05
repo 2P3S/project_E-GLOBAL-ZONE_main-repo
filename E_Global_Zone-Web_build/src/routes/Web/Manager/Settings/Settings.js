@@ -407,7 +407,7 @@ export default function Settings() {
 
 					<div className="input">
 						<div className="select_tit">
-							<span className="bold">유학생 결과입력</span>
+							<span className="bold">교수 결과입력</span>
 						</div>
 						<div className="select_input">
 							<select
@@ -440,7 +440,7 @@ export default function Settings() {
 			</div>
 			<div className="setting_btn_wrap">
 				<div className="gray" onClick={handleOpenForInsertForeignerStudent}>
-					유학생 등록
+					교수 등록
 				</div>
 				<div
 					className="gray"
@@ -448,7 +448,7 @@ export default function Settings() {
 						getAdminExportForeigner();
 					}}
 				>
-					유학생 목록 저장
+					교수진 목록 저장
 				</div>
 				<div className="gray" onClick={handleOpenForCreatSectIsOpen}>
 					학기 기간 설정

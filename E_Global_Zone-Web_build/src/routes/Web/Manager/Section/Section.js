@@ -129,6 +129,18 @@ export default function Section(props) {
 		window.location.reload();
 	};
 
+	const setHoliday = (date) => {
+		getAdminHoliday({ year: moment(date).format("YYYY") }).then((res) => {
+			console.log(res.data.data);
+			for (const key in res.data.data) {
+				if (res.data.data.hasOwnProperty(key)) {
+					const element = res.data.data[key];
+					eceptDate.push(moment(element, "YYYYMMDD").format("YYYY-MM-DD"));
+				}
+			}
+		});
+	};
+
 	const rendering = (std_for_id = params["std_for_id"]) => {
 		handleOpenForLoader();
 		if (std_for_id !== params["std_for_id"]) {
@@ -145,16 +157,8 @@ export default function Section(props) {
 		!sectName &&
 			getAdminSection({ sect_id: params["sect_id"] }).then((res) => {
 				const { sect_start_date, sect_end_date } = res.data.data;
-				getAdminHoliday({ year: moment(sect_start_date).format("YYYY") }).then((res) => {
-					console.log(res.data.data);
-					for (const key in res.data.data) {
-						if (res.data.data.hasOwnProperty(key)) {
-							const element = res.data.data[key];
-							eceptDate.push(element);
-						}
-					}
-				});
-				getAdminHoliday({ year: moment(sect_end_date).format("YYYY") }).then((res) => {});
+				setHoliday(sect_start_date);
+				setHoliday(sect_end_date);
 				setSectName(res.data);
 			});
 		if (std_for_id !== "0") {
@@ -197,9 +201,14 @@ export default function Section(props) {
 
 			<div className="search_student">
 				<div className="left_wrap">
-					<div className="tsearch">
-						<input type="text" />
+					<div className="tsearch" style={{ visibility: "hidden" }}>
+						<input type="text" disabled />
 						<input type="submit" value="검색" />
+						{/* <input
+							type="submit"
+							value="공휴일 및 학교행사 등록"
+							style={{ cursor: "pointer" }}
+						/> */}
 					</div>
 					<div className="not_enter">
 						<p className="tit">
