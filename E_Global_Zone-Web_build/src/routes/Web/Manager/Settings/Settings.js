@@ -53,10 +53,11 @@ export default function Settings() {
 	const handleChangeMeet = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (meet.value < 60 && meet.value >= 0) {
+		if (meet.value < 60 && meet.value >= 30) {
 			rest.value = 60 - meet.value;
 		} else {
-			meet.value = 0;
+			meet.value = 30;
+			rest.value = 30;
 		}
 		setPostSettings({
 			...postSettings,
@@ -67,9 +68,10 @@ export default function Settings() {
 	const handleChangeRest = () => {
 		let meet = document.getElementById("time_input_meet");
 		let rest = document.getElementById("time_input_rest");
-		if (rest.value < 60 && rest.value >= 0) {
+		if (rest.value < 31 && rest.value >= 0) {
 			meet.value = 60 - rest.value;
 		} else {
+			meet.value = 60;
 			rest.value = 0;
 		}
 		setPostSettings({
