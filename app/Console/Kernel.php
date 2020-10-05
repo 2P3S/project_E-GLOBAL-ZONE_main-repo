@@ -68,20 +68,13 @@ class Kernel extends ConsoleKernel
             // -->>
 
             // <<-- 예약 미승인 횟수 카운팅
-            $res_start_period_day = $setting_values['res_start_period'];              // => 예약 신청 시작 기준
-            $res_end_period_day   = $setting_values['res_end_period'] == 0 ?          // => 예약 신청 마감 기준
-                $setting_values['res_end_period'] :
-                $setting_values['res_end_period'] - 1;
-
-            $start_date  = date("Y-m-d", strtotime("-{$res_start_period_day} days"));
-            $end_date    = date("Y-m-d", strtotime("-{$res_end_period_day} days"));
+            $now_date = date("Y-m-d");
 
             $student_foreigners = ScheduleList::select('sch_id', 'std_for_id')
                 ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
                 ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
                 ->where('res_state_of_permission', 0)
-                ->where('sch_start_date', '>=', $start_date)
-                ->where('sch_start_date', '<', $end_date)
+                ->whereDate('sch_start_date', '=', $now_date)
                 ->groupBy('sch_id')
                 ->get();
 
