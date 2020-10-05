@@ -98,11 +98,11 @@ class Schedule extends Model
      * 스케줄 id 값으로 스케줄 정보 조회
      *
      * @param Schedule $sch_id
-     * @return Collection
+     * @return object
      */
     public function get_sch_by_id(
         Schedule $sch_id
-    ): Collection
+    ): object
     {
         // 환경변수
         $setting_obj = new Preference();
@@ -181,7 +181,7 @@ class Schedule extends Model
         string $sch_start_date
     ): ?object
     {
-        return self::where('sch_sect', $sect_id)->whereDate('sch_start_date', '>=' ,$sch_start_date)->where('sch_std_for', $std_for_id);
+        return self::where('sch_sect', $sect_id)->whereDate('sch_start_date', '>=', $sch_start_date)->where('sch_std_for', $std_for_id);
     }
 
     public function get_sch_count_by_std_for(
