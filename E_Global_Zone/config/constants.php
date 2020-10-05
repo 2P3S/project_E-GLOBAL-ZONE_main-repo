@@ -130,9 +130,9 @@ return [
         ],
         'data_export' => [
             'dept' => '계열, 학과 목록.xlsx',
-            'std_kor' => '글로벌 존 이용 학생 목록.xlsx',
-            'std_for' => '글로벌 존 유학생 목록.xlsx',
-            'work_std_for' => '글로벌 존 근로 유학생 목록.xlsx',
+            'std_kor' => '글로벌 센터 이용 학생 목록.xlsx',
+            'std_for' => '글로벌 센터 유학생 목록.xlsx',
+            'work_std_for' => '글로벌 센터 근로 유학생 목록.xlsx',
             'sch' => '스케줄 목록.xlsx',
             'res' => '예약 목록.xlsx',
             'failure' => '엑셀 파일 저장에 실패하였습니다.'
