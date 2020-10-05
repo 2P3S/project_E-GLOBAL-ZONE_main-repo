@@ -32,7 +32,7 @@ export default function Reservation() {
 
 	useEffect(() => {
 		setPending(true);
-		asyncSetSetting();
+		asyncSetSetting(); // async
 	}, []);
 
 	const asyncSetSetting = async () => {
