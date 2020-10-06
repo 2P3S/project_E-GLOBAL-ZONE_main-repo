@@ -8,6 +8,7 @@ import Modal from "./modal/Modal";
 import { patchAdminForeignerAccount } from "../../api/admin/foreigner";
 import { postForeignerLogout, patchPassword } from "../../api/foreigner";
 import { postAdminLogout } from "../../api/admin";
+import { LANGUAGE } from "../../conf/language";
 /**
  * Header for Manager
  * @returns {JSX.Element}
@@ -42,12 +43,16 @@ export default function Header() {
 				alert(res.data.message);
 			});
 	};
+
 	return (
 		<div className="head">
-			<div className="head_area">
+			<div className="head_area" style={{ overflow: "visible" }}>
 				<div className="logo">
 					<Link to="/">
-						<img src="/global/img/logo_globalzone.gif" alt="영진전문대학교 글로벌존 로고" />
+						<img
+							src="/global/img/logo_globalzone.gif"
+							alt="영진전문대학교 글로벌존 로고"
+						/>
 						{/* 
 							/global/img/logo_globalzone.gif 글로벌존 로고
 							/global/img/logo_globalcenter.gif 글로벌센터 로고
@@ -72,8 +77,12 @@ export default function Header() {
 							<div
 								onClick={() => {
 									postAdminLogout().then(() => {
+										alert(
+											LANGUAGE[
+												window.localStorage.getItem("global-zone-lang")
+											].logout
+										);
 										window.localStorage.clear();
-										alert("로그아웃 되었습니다.");
 										window.location.replace("/");
 									});
 								}}
@@ -85,16 +94,76 @@ export default function Header() {
 				) : (
 					<ul className="menu">
 						<li>
+							<select
+								name="catgo"
+								className="dropdown"
+								onChange={(e) => {
+									console.log(e.target.value);
+									window.localStorage.setItem("global-zone-lang", e.target.value);
+									window.location.reload();
+								}}
+							>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "kor"
+									}
+									value="kor"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.korean
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "eng"
+									}
+									value="eng"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.english
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "jp"
+									}
+									value="jp"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.japanese
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "cn"
+									}
+									value="cn"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.chinese
+									}
+								</option>
+							</select>
+						</li>
+						<li>
 							<div
 								onClick={() => {
 									postForeignerLogout().then(() => {
+										alert(
+											LANGUAGE[
+												window.localStorage.getItem("global-zone-lang")
+											].logout
+										);
 										window.localStorage.clear();
-										alert("로그아웃 되었습니다.");
 										window.location.replace("/");
 									});
 								}}
 							>
-								로그아웃
+								{LANGUAGE[window.localStorage.getItem("global-zone-lang")].logout}
 							</div>
 						</li>
 					</ul>

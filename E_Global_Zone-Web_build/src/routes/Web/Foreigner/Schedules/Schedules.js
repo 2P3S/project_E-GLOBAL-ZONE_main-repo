@@ -13,6 +13,7 @@ import InsertResult from "../../../../components/common/modal/InsertResult";
 import Loader from "../../../../components/common/Loader";
 
 import { getForeignerSchedule } from "../../../../api/foreigner/schedule";
+import { LANGUAGE } from "../../../../conf/language";
 
 const STATE_PENDING = "pending";
 const STATE_RESERVED = "reserved";
@@ -308,27 +309,38 @@ export default function Schedules() {
 		}
 		if (typeof value === "object") {
 			let p = document.createElement("p");
-			p.innerText = `신청한 학생 : ${value[0]}명
-            예약 미승인 : ${parseInt(value[0]) - parseInt(value[1])}명`;
+			p.innerText = LANGUAGE[
+				window.localStorage.getItem("global-zone-lang")
+			].numberReservationsCount(value[0], parseInt(value[0]) - parseInt(value[1]));
+
 			div.appendChild(p);
 		} else {
 			let p = document.createElement("p");
 			switch (state) {
 				case STATE_RESERVED:
-					p.innerText = `${value}명 예약 완료`;
+					p.innerText = LANGUAGE[
+						window.localStorage.getItem("global-zone-lang")
+					].numberReservationsComplete(value);
 					break;
 				case STATE_DONE:
-					p.innerText = `참가 학생 : ${value}명
-                    [결과 미입력]
-                    `;
+					p.innerText = LANGUAGE[
+						window.localStorage.getItem("global-zone-lang")
+					].numberPresentStudents(value);
 					break;
 				case STATE_CONFIRM:
-					p.innerText = `결과 입력 완료`;
+					p.innerText =
+						LANGUAGE[
+							window.localStorage.getItem("global-zone-lang")
+						].reseultInputComplete;
 					break;
 				case STATE_NOTHING:
 					Date.now() > new Date(sch_end_date)
-						? (p.innerText = `종료`)
-						: (p.innerText = `예약 없음`);
+						? (p.innerText =
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")].shutDown)
+						: (p.innerText =
+								LANGUAGE[
+									window.localStorage.getItem("global-zone-lang")
+								].noReservations);
 					break;
 			}
 			div.appendChild(p);
@@ -683,7 +695,12 @@ export default function Schedules() {
 		<div className="wrapper">
 			<div className="content">
 				<div className="sub_title">
-					<p className="tit">스케줄 및 예약관리</p>
+					<p className="tit">
+						{
+							LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+								.scheduleAndReservationManagement
+						}
+					</p>
 				</div>
 				<div className="status_wrap">
 					<div className="mt50 mr20">
@@ -691,33 +708,48 @@ export default function Schedules() {
 					</div>
 					<div className="status_box">
 						<div className="gray">
-							이번주 스케줄
+							{
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+									.thisWeeksSchedule
+							}
 							<p>
-								<span>{scheduleData ? scheduleData.countOfWeek : 0}</span>건
+								<span>{scheduleData ? scheduleData.countOfWeek : 0}</span>
 							</p>
 						</div>
 						<div className="blue">
-							예약 승인 대기
+							{
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+									.waitingForReservationConfirmation
+							}
 							<p>
-								<span>{scheduleData ? scheduleData.countOfPending : 0}</span>건
+								<span>{scheduleData ? scheduleData.countOfPending : 0}</span>
 							</p>
 						</div>
 						<div className="mint">
-							예약 승인 완료
+							{
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+									.reservationConfirmationComplete
+							}
 							<p>
-								<span>{scheduleData ? scheduleData.countOfReserved : 0}</span>건
+								<span>{scheduleData ? scheduleData.countOfReserved : 0}</span>
 							</p>
 						</div>
 						<div className="yellow">
-							출석 결과 미입력
+							{
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+									.attendanceWasNotRecorded
+							}
 							<p>
-								<span>{scheduleData ? scheduleData.countOfDone : 0}</span>건
+								<span>{scheduleData ? scheduleData.countOfDone : 0}</span>
 							</p>
 						</div>
 						<div className="puple">
-							출석 결과 입력완료
+							{
+								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+									.noReservations
+							}
 							<p>
-								<span>{scheduleData ? scheduleData.countOfConfirm : 0}</span>건
+								<span>{scheduleData ? scheduleData.countOfConfirm : 0}</span>
 							</p>
 						</div>
 					</div>
@@ -728,7 +760,10 @@ export default function Schedules() {
 						{!pending ? (
 							<>
 								<li>
-									일
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.sunday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[0], "days") === 0
@@ -740,7 +775,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									월
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.monday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[1], "days") === 0
@@ -752,7 +790,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									화
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.tuesday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[2], "days") === 0
@@ -764,7 +805,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									수
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.wednesday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[3], "days") === 0
@@ -776,7 +820,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									목
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.thursday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[4], "days") === 0
@@ -788,7 +835,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									금
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.friday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[5], "days") === 0
@@ -800,7 +850,10 @@ export default function Schedules() {
 									</span>
 								</li>
 								<li>
-									토
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.saturday
+									}
 									<span
 										className={
 											moment(selectedDate).diff(week[6], "days") === 0
