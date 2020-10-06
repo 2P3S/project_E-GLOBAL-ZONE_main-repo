@@ -707,7 +707,15 @@ export default function Schedules() {
 						<Calendar />
 					</div>
 					<div className="status_box">
-						<div className="gray">
+						<div
+							className="gray"
+							style={{
+								fontSize:
+									window.localStorage.getItem("global-zone-lang") === "eng"
+										? "10px"
+										: "",
+							}}
+						>
 							{
 								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
 									.thisWeeksSchedule
@@ -767,7 +775,15 @@ export default function Schedules() {
 								<span>{scheduleData ? scheduleData.countOfDone : 0}</span>
 							</p>
 						</div>
-						<div className="puple">
+						<div
+							className="puple"
+							style={{
+								fontSize:
+									window.localStorage.getItem("global-zone-lang") === "eng"
+										? "10px"
+										: "",
+							}}
+						>
 							{
 								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
 									.noReservations
