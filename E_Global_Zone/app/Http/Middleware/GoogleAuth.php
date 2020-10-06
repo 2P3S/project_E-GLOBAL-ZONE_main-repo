@@ -10,7 +10,7 @@ use Exception;
 
 class GoogleAuth
 {
-    private const _AUTH_FAILURE = "사용자 인증에 실패하였습니다.";
+    private const _AUTH_FAILURE = "유효시간이 만료되거나, 다른 기기에서 로그인하여 로그아웃 되었습니다.";
     private const _AUTH_NO_PERMISSION = "관리자 승인 후 서비스 이용이 가능합니다.";
 
     private const _ACCESS_FAILURE = "회원 가입 후 이용 가능합니다.";
@@ -21,8 +21,8 @@ class GoogleAuth
     /**
      * Handle an incoming request.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -48,14 +48,12 @@ class GoogleAuth
                 return response()->json([
                     'message' => self::_STD_KOR_RGS_MAIL_FAILURE,
                 ], 422);
-            }
-            // 회원가입을 하지 않은 경우
+            } // 회원가입을 하지 않은 경우
             else if (empty($std_kor_info)) {
                 return response()->json([
                     'message' => self::_ACCESS_FAILURE,
                 ], 422);
-            }
-            // 관리자 승인을 받지 않은 경우
+            } // 관리자 승인을 받지 않은 경우
             else if (!$is_kor_state_of_permission) {
                 return response()->json([
                     'message' => self::_AUTH_NO_PERMISSION,
