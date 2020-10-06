@@ -20,6 +20,7 @@ import WirteNotice from "../../../../components/common/modal/WirteNotice";
  */
 export default function Settings() {
 	const [settings, setSettings] = useState();
+	const [pending, setPending] = useState(false);
 	const [postSettings, setPostSettings] = useState();
 	const {
 		isOpen: creatSectIsOpen,
@@ -96,9 +97,15 @@ export default function Settings() {
 		console.log(settings, postSettings);
 	});
 
+	useEffect(() => {
+		if (settings && postSettings) {
+			setPending(true);
+		}
+	}, [settings, postSettings]);
+
 	let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 	let arrayDate = [1, 2, 3, 4, 5, 6, 7];
-	return settings && postSettings ? (
+	return pending ? (
 		<div className="content">
 			<div className="sub_title">
 				<p className="tit">시스템 환경설정</p>

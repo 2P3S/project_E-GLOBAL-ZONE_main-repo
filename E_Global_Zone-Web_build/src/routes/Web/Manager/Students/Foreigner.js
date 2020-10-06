@@ -88,6 +88,14 @@ export default function Foreigner() {
 	}
 	const reRender = () => {
 		getAdminForeignerWork(selectSect).then((res) => {
+			res.data.hasOwnProperty("data") &&
+				res.data.data.forEach((v) => {
+					let total = 0;
+					Object.keys(v["work_time"]).forEach((m) => {
+						total += v["work_time"][`${m}`];
+					});
+					Object.defineProperty(v["work_time"], "total", { value: total });
+				});
 			setDataSet(res.data);
 			setDefaultData(res.data);
 		});
@@ -696,10 +704,10 @@ export default function Foreigner() {
 																	deptList
 																)}
 															</td>
-															<td>{value.work_time.total * 60}분</td>
+															<td>{value.work_time.total * 30}분</td>
 															{Object.values(value.work_time).map(
 																(v) => {
-																	return <td>{v * 60}분</td>;
+																	return <td>{v * 30}분</td>;
 																}
 															)}
 															<td>

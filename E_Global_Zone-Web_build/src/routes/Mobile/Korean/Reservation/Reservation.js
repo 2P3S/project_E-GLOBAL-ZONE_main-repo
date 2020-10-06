@@ -32,7 +32,7 @@ export default function Reservation() {
 
 	useEffect(() => {
 		setPending(true);
-		getKoreanSetting().then((res) => setSetting(res.data.result));
+		getKoreanSetting().then((res) => setSetting(res.data.data));
 	}, []);
 
 	useEffect(() => console.log(setting));
@@ -40,9 +40,15 @@ export default function Reservation() {
 		pending &&
 			getKoreanReservation().then((res) => {
 				setData(res.data);
-				setPending(false);
 			});
 	}, [pending]);
+
+	useEffect(() => {
+		if (data && setting) {
+			setPending(false);
+		}
+	}, [data, setting]);
+
 	useEffect(() => {
 		let arrayOfWatingForResult = [];
 		let arrayOfWatingForPermission = [];
@@ -155,6 +161,30 @@ export default function Reservation() {
 														~ {moment(v.sch_end_date).format("hh:mm")}
 													</span>
 												</p>
+
+												{moment(v.sch_start_date)
+													.subtract(setting.res_end_period, "day")
+													.isAfter(
+														moment(Date.now()).format("YYYY-MM-DD")
+													) ? (
+													<div className="reserv_del_btn">
+														<img
+															onClick={() => {
+																if (window)
+																	deleteKoreanReservation(
+																		v.res_id
+																	).then((res) => {
+																		alert(res.data.message);
+																		window.location.reload();
+																	});
+															}}
+															src="/global/img/reservation_del.gif"
+															alt="예약 삭제 버튼"
+														/>
+													</div>
+												) : (
+													<div></div>
+												)}
 												<p
 													className="right zoom_info"
 													onClick={() => {
