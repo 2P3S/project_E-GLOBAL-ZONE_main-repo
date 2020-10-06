@@ -86,6 +86,7 @@ const Login = () => {
 						name="id"
 						placeholder="학번을 입력해주세요."
 						ref={id}
+						maxLength="7"
 					/>
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
