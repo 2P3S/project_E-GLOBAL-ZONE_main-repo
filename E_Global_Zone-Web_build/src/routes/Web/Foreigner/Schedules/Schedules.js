@@ -716,7 +716,15 @@ export default function Schedules() {
 								<span>{scheduleData ? scheduleData.countOfWeek : 0}</span>
 							</p>
 						</div>
-						<div className="blue">
+						<div
+							className="blue"
+							style={{
+								fontSize:
+									window.localStorage.getItem("global-zone-lang") === "eng"
+										? "10px"
+										: "",
+							}}
+						>
 							{
 								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
 									.waitingForReservationConfirmation
@@ -725,7 +733,15 @@ export default function Schedules() {
 								<span>{scheduleData ? scheduleData.countOfPending : 0}</span>
 							</p>
 						</div>
-						<div className="mint">
+						<div
+							className="mint"
+							style={{
+								fontSize:
+									window.localStorage.getItem("global-zone-lang") === "eng"
+										? "10px"
+										: "",
+							}}
+						>
 							{
 								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
 									.reservationConfirmationComplete
@@ -734,7 +750,15 @@ export default function Schedules() {
 								<span>{scheduleData ? scheduleData.countOfReserved : 0}</span>
 							</p>
 						</div>
-						<div className="yellow">
+						<div
+							className="yellow"
+							style={{
+								fontSize:
+									window.localStorage.getItem("global-zone-lang") === "eng"
+										? "10px"
+										: "",
+							}}
+						>
 							{
 								LANGUAGE[window.localStorage.getItem("global-zone-lang")]
 									.attendanceWasNotRecorded
