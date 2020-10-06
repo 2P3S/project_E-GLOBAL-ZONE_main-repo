@@ -312,5 +312,73 @@ return [
                 'completed' => 'This has already been completed and cannot be modified.'
             ]
         ],
+    ],
+    'jp' => [
+        'login' => [
+            'log_in' => [
+                'success' => '様 ログインしました',
+                'failure' => 'ログインに失敗しました',
+                'illegal' => 'Wrong Access',
+                'wrong_value' => 'IDまたはパスワードをもう一度確認してください',
+                'no_access' => '会員加入後、利用可能です'
+            ],
+            'log_out' => [
+                'success' => 'ログアウトしました',
+                'failure' => 'ログアウトに失敗しました'
+            ]
+        ],
+        'reservation' => [
+            'for_index' => [
+                'success' => 'スケジュールリスト照会に成功しました',
+                'failure' => 'スケジュールに対して予約リストがありません'
+            ],
+            'for_show_kor_list' => [
+                'success' => 'スケジュール予約学生名簿の照会に成功しました',
+                'failure' => '申請した学生がいません'
+            ],
+            'for_update_permission' => [
+                'success' => 'スケジュール予約に対して韓国人学生の承認結果アップデートに成功しました',
+                'failure' => 'スケジュール予約に対して韓国人学生の承認結果アップデートに失敗しました'
+            ],
+            'for_input_result' => [
+                'success' => 'スケジュール出席結果入力に成功しました',
+                'failure' => 'スケジュール出席結果入力に失敗しました',
+                'completed' => 'すでに結果入力が完了しており修正不可能です'
+            ]
+        ],
+    ],
+    'cn' => [
+        'login' => [
+            'log_in' => [
+                'success' => '登录好了',
+                'failure' => '登录失败',
+                'illegal' => 'Wrong Access',
+                'wrong_value' => '重新输入ID及密码',
+                'no_access' => '加入会员后可以使用'
+            ],
+            'log_out' => [
+                'success' => '注销了',
+                'failure' => '注销失败'
+            ]
+        ],
+        'reservation' => [
+            'for_index' => [
+                'success' => '成功查询了日程表',
+                'failure' => '没有关于日程的预约目录'
+            ],
+            'for_show_kor_list' => [
+                'success' => '成功查询了预约日程的学生名单',
+                'failure' => '没有申请的学生'
+            ],
+            'for_update_permission' => [
+                'success' => '成功更新了预约日程的韩国学生认可结果',
+                'failure' => '日程预约的韩国学生认可结果更新失败'
+            ],
+            'for_input_result' => [
+                'success' => '日程出席结果输入成功',
+                'failure' => '日程出席结果输入失败',
+                'completed' => '已完成结果输入，不能修改'
+            ]
+        ],
     ]
 ];
