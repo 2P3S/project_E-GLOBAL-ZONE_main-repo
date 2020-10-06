@@ -21,6 +21,11 @@ const App = () => {
 	useEffect(() => {
 		getDepartment().then((res) => setData(res.data));
 	}, []);
+	useEffect(() => {
+		if (window.localStorage.getItem("global-zone-lang") === null) {
+			window.localStorage.setItem("global-zone-lang", "kor");
+		}
+	});
 
 	useEffect(() => {
 		if (data && data.data) {

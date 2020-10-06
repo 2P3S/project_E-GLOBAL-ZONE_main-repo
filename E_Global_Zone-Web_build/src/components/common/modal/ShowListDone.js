@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice/userSlice";
 
 import conf from "../../../conf/conf";
+import { LANGUAGE } from "../../../conf/language";
 
 /**
  * Modal - 신청 학생 명단보기
@@ -50,12 +51,23 @@ export default function ShowList({
 		<div className="popup enrol">
 			<div className="top_tit">
 				<div className="left">
-					<p className="tit">참가 학생 명단보기</p>
-					<p className="txt">
-						<span>시작시간</span> {sch_start_date}
+					<p className="tit">
+						{
+							LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+								.viewStudentParticipationRegistry
+						}
 					</p>
 					<p className="txt">
-						<span>종료시간</span> {sch_end_date}
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].startTime}
+						</span>{" "}
+						{sch_start_date}
+					</p>
+					<p className="txt">
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].endTime}
+						</span>{" "}
+						{sch_end_date}
 					</p>
 				</div>
 				<p className="name">
@@ -97,7 +109,17 @@ export default function ShowList({
 												disabled={true}
 											>
 												<option value={true}>
-													{v.res_state_of_attendance ? "참석" : "미참석"}
+													{v.res_state_of_attendance
+														? LANGUAGE[
+																window.localStorage.getItem(
+																	"global-zone-lang"
+																)
+														  ].attendance
+														: LANGUAGE[
+																window.localStorage.getItem(
+																	"global-zone-lang"
+																)
+														  ].absence}
 												</option>
 											</select>
 										</div>
