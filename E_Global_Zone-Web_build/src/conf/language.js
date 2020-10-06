@@ -470,8 +470,9 @@ export const LANGUAGE = {
 		startPicture: "시작 사진",
 		endPicture: "종료 사진",
 		upload: "업로드",
-		zoomNotice: "줌 시작 및 종료 화면 캡쳐 사진은 날짜 및 시간이 잘 보이는 사진이어야 합니다.",
-		imgNotice: "이미지 사이즈 및 크기 : 900X900 / 2MB 이하",
+		zoomNotice:
+			"· 줌 시작 및 종료 화면 캡쳐 사진은 날짜 및 시간이 잘 보이는 사진이어야 합니다.",
+		imgNotice: "· 이미지 사이즈 및 크기 : 900X900 / 2MB 이하",
 	},
 	eng: {
 		language: {
@@ -517,8 +518,8 @@ export const LANGUAGE = {
 		endPicture: "End Picture",
 		upload: "Upload",
 		zoomNotice:
-			"At the start and end of the Zoom Meeting, please take a screenshot that shows the date and time.",
-		imgNotice: "Image Size: 900 x 900 / 2MB or smaller.",
+			"· At the start and end of the Zoom Meeting, please take a screenshot that shows the date and time.",
+		imgNotice: "· Image Size: 900 x 900 / 2MB or smaller.",
 	},
 	jp: {
 		language: { korean: "韓国語", english: "英語", japanese: "日本語", chinese: "中国語" },
@@ -558,8 +559,8 @@ export const LANGUAGE = {
 		endPicture: "終了時間",
 		upload: "アップロード",
 		zoomNotice:
-			"ズーム開始及び終了画面をキャプチャー写真は日付と時間がよく見える写真でなければならない",
-		imgNotice: "イメージサイズ及び大きさ：900×900 / 2MB 以下",
+			"· ズーム開始及び終了画面をキャプチャー写真は日付と時間がよく見える写真でなければならない",
+		imgNotice: "· イメージサイズ及び大きさ：900×900 / 2MB 以下",
 	},
 	cn: {
 		language: { korean: "韩语", english: "英语", japanese: "日本", chinese: "中文" },
@@ -598,8 +599,8 @@ export const LANGUAGE = {
 		startPicture: "开始照片",
 		endPicture: "结束照片",
 		upload: "上传",
-		zoomNotice: "Zoom 开始与结束画面截图照片必须是能看到日期与时间的照片。",
-		imgNotice: "照片尺寸及大小900X900 / 2MB以下",
+		zoomNotice: "· Zoom 开始与结束画面截图照片必须是能看到日期与时间的照片。",
+		imgNotice: "· 照片尺寸及大小900X900 / 2MB以下",
 	},
 };
 

@@ -17,6 +17,7 @@ import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 import AddScheduleStudent from "./AddScheduleStudent";
 import DeleteModal from "./DeleteModal";
+import { LANGUAGE } from "../../../conf/language";
 
 /**
  * Modal - 신청 학생 명단보기
@@ -94,12 +95,23 @@ export default function ShowList({
 		<div className="popup enrol">
 			<div className="top_tit">
 				<div className="left">
-					<p className="tit">신청 학생 명단보기</p>
-					<p className="txt">
-						<span>시작시간</span> {sch_start_date}
+					<p className="tit">
+						{
+							LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+								.viewStudentApplicationRegistry
+						}
 					</p>
 					<p className="txt">
-						<span>종료시간</span> {sch_end_date}
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].startTime}
+						</span>{" "}
+						{sch_start_date}
+					</p>
+					<p className="txt">
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].endTime}
+						</span>{" "}
+						{sch_end_date}
 					</p>
 				</div>
 				<p className="name">
@@ -155,7 +167,13 @@ export default function ShowList({
 												key={`${v.std_kor_id}`}
 											>
 												<option value={true} selected={permission}>
-													동의
+													{
+														LANGUAGE[
+															window.localStorage.getItem(
+																"global-zone-lang"
+															)
+														].agree
+													}
 												</option>
 
 												<option
@@ -165,7 +183,13 @@ export default function ShowList({
 														user.userClass !== conf.userClass.MANAGER
 													}
 												>
-													미동의
+													{
+														LANGUAGE[
+															window.localStorage.getItem(
+																"global-zone-lang"
+															)
+														].disagree
+													}
 												</option>
 											</select>
 										</div>
@@ -176,7 +200,11 @@ export default function ShowList({
 								<li>
 									{user.userClass === conf.userClass.MANAGER && (
 										<div onClick={handleOpen} class="add_student">
-											학생 추가{" "}
+											{
+												LANGUAGE[
+													window.localStorage.getItem("global-zone-lang")
+												].addAStudent
+											}
 											<img
 												src="/global/img/add_student_ico.gif"
 												alt="학생 추가 아이콘"
@@ -191,7 +219,11 @@ export default function ShowList({
 							{user.userClass === conf.userClass.MANAGER && (
 								<li>
 									<div onClick={handleOpen} class="add_student">
-										학생 추가{" "}
+										{
+											LANGUAGE[
+												window.localStorage.getItem("global-zone-lang")
+											].addAStudent
+										}
 										<img
 											src="/global/img/add_student_ico.gif"
 											alt="학생 추가 아이콘"
@@ -206,7 +238,7 @@ export default function ShowList({
 
 			<div className="btn_area">
 				<div className="bbtn white left" onClick={handlePermissionAll}>
-					일괄동의
+					{LANGUAGE[window.localStorage.getItem("global-zone-lang")].agreeToAll}
 				</div>
 				<div className="right">
 					<div
@@ -238,7 +270,7 @@ export default function ShowList({
 								  });
 						}}
 					>
-						저장
+						{LANGUAGE[window.localStorage.getItem("global-zone-lang")].save}
 					</div>
 					{/* <div className="bbtn darkGray" onClick={handleClose}>
 						닫기
