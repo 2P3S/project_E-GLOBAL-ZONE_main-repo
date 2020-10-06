@@ -704,10 +704,10 @@ export default function Foreigner() {
 																	deptList
 																)}
 															</td>
-															<td>{value.work_time.total * 60}분</td>
+															<td>{value.work_time.total * 30}분</td>
 															{Object.values(value.work_time).map(
 																(v) => {
-																	return <td>{v * 60}분</td>;
+																	return <td>{v * 30}분</td>;
 																}
 															)}
 															<td>
