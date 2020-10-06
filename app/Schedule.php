@@ -194,6 +194,6 @@ class Schedule extends Model
                 ->where('sch_sect', $section['sect_id'])
                 ->where('sch_state_of_permission', true)
                 ->whereMonth('sch_start_date', $tmp_sect_mont)
-                ->count() / 2;
+                ->count();
     }
 }
