@@ -108,4 +108,8 @@ To create a production bundle, use `npm run build` or `yarn build`.
 		<div id="modal-root"></div>
 		<div id="password"></div>
 	</body>
+	<script>
+		if (window.localStorage.getItem("global-zone-lang") === null)
+			window.localStorage.setItem("global-zone-lang", "kor");
+	</script>
 </html>
