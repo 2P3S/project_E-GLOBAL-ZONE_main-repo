@@ -10,6 +10,7 @@ import conf from "../../../conf/conf";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
 import Loader from "../Loader";
+import { LANGUAGE } from "../../../conf/language";
 
 const InsertResult = ({
 	sch_id,
@@ -124,13 +125,21 @@ const InsertResult = ({
 		<div className="popup list">
 			<div className="top_tit">
 				<div className="left">
-					<p className="tit">출석 결과 입력하기</p>
+					<p className="tit">
+						{LANGUAGE[window.localStorage.getItem("global-zone-lang")].recordAttendance}
+					</p>
 
 					<p className="txt">
-						<span>시작시간</span> {sch_start_date}
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].startTime}
+						</span>{" "}
+						{sch_start_date}
 					</p>
 					<p className="txt">
-						<span>종료시간</span> {sch_end_date}
+						<span>
+							{LANGUAGE[window.localStorage.getItem("global-zone-lang")].endTime}
+						</span>{" "}
+						{sch_end_date}
 					</p>
 				</div>
 				<p className="name">
@@ -154,10 +163,22 @@ const InsertResult = ({
 											key={`${v.std_kor_id}`}
 										>
 											<option value={true} selected={attendance}>
-												출석
+												{
+													LANGUAGE[
+														window.localStorage.getItem(
+															"global-zone-lang"
+														)
+													].attendance
+												}
 											</option>
 											<option value={false} selected={!attendance}>
-												불참
+												{
+													LANGUAGE[
+														window.localStorage.getItem(
+															"global-zone-lang"
+														)
+													].absence
+												}
 											</option>
 										</select>
 									</div>
@@ -188,27 +209,31 @@ const InsertResult = ({
 			{/* <input type="file" name="img" onChange={handleInputImage} /> */}
 
 			<div class="filebox">
-				<p>시작 사진</p>
+				<p>{LANGUAGE[window.localStorage.getItem("global-zone-lang")].startPicture}</p>
 				<input type="text" id="startImg" class="upload-name" defaultValue="파일선택" />
-				<label htmlFor="file1">업로드</label>
+				<label htmlFor="file1">
+					{LANGUAGE[window.localStorage.getItem("global-zone-lang")].upload}
+				</label>
 				<input type="file" accept="image/*" id="file1" onChange={handleInputStartImage} />
 			</div>
 
 			<div class="filebox">
-				<p>종료 사진</p>
+				<p>{LANGUAGE[window.localStorage.getItem("global-zone-lang")].endPicture}</p>
 				<input id="endImg" class="upload-name" defaultValue="파일선택" />
-				<label htmlFor="file">업로드</label>
+				<label htmlFor="file">
+					{LANGUAGE[window.localStorage.getItem("global-zone-lang")].upload}
+				</label>
 				<input type="file" accept="image/*" id="file" onChange={handleInputEndImage} />
 			</div>
 
 			<ul className="img_info">
-				<li>· 줌 출석 및 종료 캡쳐 사진은 일시 및 시간이 잘 보이는 사진이어야 합니다.</li>
-				<li>· 이미지 사이즈 및 크기 : 900 x 900 / 2MB 이하</li>
+				<li>{LANGUAGE[window.localStorage.getItem("global-zone-lang")].zoomNotice}</li>
+				<li>{LANGUAGE[window.localStorage.getItem("global-zone-lang")].imgNotice}</li>
 			</ul>
 
 			<div className="btn_area right">
 				<div className="bbtn mint" onClick={handleConfirm}>
-					저장
+					{LANGUAGE[window.localStorage.getItem("global-zone-lang")].save}
 				</div>
 				{/* <div className="bbtn red" onClick={handleConfirm}>
 					삭제

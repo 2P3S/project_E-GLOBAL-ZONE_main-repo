@@ -7,6 +7,10 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 					? `Bearer ${window.localStorage.getItem("global-zone-foreigner-token")}`
 					: `Bearer ${window.localStorage.getItem("global-zone-admin-token")}`
 				: `${window.localStorage.getItem("global-zone-korean-token")}`;
+			if (window.localStorage.getItem("global-zone-lang") === null) {
+				window.localStorage.setItem("global-zone-lang", "kor");
+			}
+			config.headers["Accept-Language"] = window.localStorage.getItem("global-zone-lang");
 			if (guard)
 				config.params = {
 					guard,

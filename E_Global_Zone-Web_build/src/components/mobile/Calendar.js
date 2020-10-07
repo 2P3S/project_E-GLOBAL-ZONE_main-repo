@@ -77,8 +77,10 @@ class Calendar extends React.Component {
 
 		return (
 			<span className="month-label">
-				<span class="num">{month.format("YYYY")}</span>년{" "}
-				<span class="num">{month.format("M")}</span>월
+				<span class="num">{month.format("YYYY")}</span>
+				{window.localStorage.getItem("global-zone-lang") === "kor" ? "년" : " -"}{" "}
+				<span class="num">{month.format("M")}</span>
+				{window.localStorage.getItem("global-zone-lang") === "kor" ? "월" : ""}
 			</span>
 		);
 	}
@@ -109,14 +111,54 @@ class DayNames extends React.Component {
 		return (
 			<div className="row day-names">
 				<span className="day" style={{ color: "red" }}>
-					일
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "일"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "SUN"
+						: "日"}
 				</span>
-				<span className="day">월</span>
-				<span className="day">화</span>
-				<span className="day">수</span>
-				<span className="day">목</span>
-				<span className="day">금</span>
-				<span className="day">토</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "월"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "MON"
+						: "月"}
+				</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "화"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "TUE"
+						: "火"}
+				</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "수"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "WED"
+						: "水"}
+				</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "목"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "THU"
+						: "木"}
+				</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "금"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "FRI"
+						: "金"}
+				</span>
+				<span className="day">
+					{window.localStorage.getItem("global-zone-lang") === "kor"
+						? "토"
+						: window.localStorage.getItem("global-zone-lang") === "eng"
+						? "SAT"
+						: "土"}
+				</span>
 			</div>
 		);
 	}
