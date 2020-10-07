@@ -815,6 +815,7 @@ table.sch_table tbody tr:hover td:first-child {
 	cursor: pointer;
 	padding: 0 5px;
 	outline: none;
+	font-family: "Lato", sans-serif;
 }
 #pagenation button img {
 	height: 32px;
