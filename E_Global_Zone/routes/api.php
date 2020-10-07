@@ -167,6 +167,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 출석 결과 미승인 건 승인 */
             Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+
+            /* 출석 결과 완료 된 학생의 상태 변경 로직 */
+            Route::patch('update/{sch_id}', 'ScheduleController@update_attendance_result');
         });
 
         /* 계열 / 학과 관리 라우터 */
