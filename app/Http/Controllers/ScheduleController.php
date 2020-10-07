@@ -6,7 +6,6 @@ use App\Library\Services\Preference;
 use App\Reservation;
 use App\Restricted_student_korean;
 use App\Schedule;
-use App\SchedulesResultImg;
 use App\Section;
 use App\Student_korean;
 use Illuminate\Http\JsonResponse;
@@ -19,15 +18,56 @@ class ScheduleController extends Controller
     private const _ZOOM_RAN_NUM_END = 9999;
 
     private $schedule;
-    private $resultImage;
     private $restrict;
 
     public function __construct()
     {
         $this->schedule = new Schedule();
-        $this->resultImage = new SchedulesResultImg();
         $this->restrict = new Restricted_student_korean();
         $this->reservation = new Reservation();
+    }
+
+    // 출석 결과 완료 된 학생의 상태 변경 로직.
+    public function update_attendance_result(Request $request, Schedule $sch_id): JsonResponse
+    {
+        $rules = [
+            'guard' => 'required|string|in:admin',
+            'std_kor_id' => 'required|integer|distinct|min:1000000|max:9999999',
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            Config::get('constants.kor.schedule.update_attendance.failure')
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+        // -->>
+
+        // 해당 스케줄의 학생 예약 정보 가져오기
+        $reservation_data = Reservation::where('res_sch', $sch_id['sch_id'])
+            ->where('res_std_kor', $request->input('std_kor_id'))
+            ->get()
+            ->first();
+
+        $res_state_of_attendance = $reservation_data['res_state_of_attendance'];
+        $std_kor_data = Student_korean::find($request->input('std_kor_id'));
+
+        $absent_value = $res_state_of_attendance ? "increment" : "decrement";
+        $attendance_value = $res_state_of_attendance ? "decrement" : "increment";
+
+        // 참석 <-> 미참석
+        $std_kor_data->$absent_value('std_kor_num_of_absent', 1);
+        $std_kor_data->$attendance_value('std_kor_num_of_attendance', 1);
+
+        $reservation_data->update([
+            'res_state_of_attendance' => !$res_state_of_attendance
+        ]);
+
+        return self::response_json($std_kor_data['std_kor_name'] . Config::get('constants.kor.schedule.update_attendance.success'), 200);
     }
 
     /**
@@ -61,14 +101,12 @@ class ScheduleController extends Controller
         {
             return
                 Schedule::select('std_for_id', 'std_for_name', 'std_for_lang')
-                    ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
-                    ->whereDate('sch_start_date', '=', $date)
-                    ->where('std_for_lang', $std_for_lang)
-                    ->groupBy('for.std_for_id')
-                    ->get();
-        }
-
-        ;
+                ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+                ->whereDate('sch_start_date', '=', $date)
+                ->where('std_for_lang', $std_for_lang)
+                ->groupBy('for.std_for_id')
+                ->get();
+        };
 
         function std_for_add_schedule_data($response_data, $date)
         {
@@ -409,8 +447,7 @@ class ScheduleController extends Controller
     public function destroy_for_schedules_from_special_date_to_section_end_date(
         Section $sect_id,
         Request $request
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $rules = [
             'sch_start_date' => 'required|date',
             'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
