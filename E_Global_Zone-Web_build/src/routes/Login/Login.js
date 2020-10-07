@@ -67,25 +67,26 @@ const Login = () => {
 			<div className="head">
 				<div className="head_w">
 					<div className="logo">
-						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+						<img src="/global/img/intro_logo.gif" alt="로그인 화면 로고" />
 					</div>
 					<LoginHeader />
 				</div>
 			</div>
 			<div className="login_wrap">
 				<p class="tit">
-					Global Zone <span>Reservation Service</span>
+					Global Center <span>Reservation Service</span>
 				</p>
 				<p className="txt">
-					<span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+					<span>글로벌센터 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
 				<div className="login_input">
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
 						type="text"
 						name="id"
-						placeholder="학번을 입력해주세요."
+						placeholder="교번을 입력해주세요."
 						ref={id}
+						maxLength="7"
 					/>
 					<input
 						onKeyUp={(e) => handleEnterKey(e, handleLogin)}
@@ -159,10 +160,10 @@ export const MobileLogin = () => {
 			<LoginHeader />
 
 			<p class="tit">
-				Global Zone <span>Reservation Service</span>
+				Global Center <span>Reservation Service</span>
 			</p>
 			<p class="txt">
-				<span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
+				<span>영진전문대학교 글로벌센터</span>예약시스템에 오신 것을 환영합니다.
 			</p>
 			<GoogleLogin
 				clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
@@ -231,14 +232,14 @@ export const KoreanLogin = () => {
 			<div className="head">
 				<div className="head_w">
 					<div className="logo">
-						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+						<img src="/global/img/intro_logo.gif" alt="로그인 화면 로고" />
 					</div>
 					<LoginHeader />
 				</div>
 			</div>
 			<div className="login_wrap">
 				<p className="tit">
-					Global Zone <span>Reservation Service</span>
+					Global Center <span>Reservation Service</span>
 				</p>
 				<p className="txt">
 					{language[`${selectedLanguage}`].login.body.subTitle}
@@ -293,7 +294,7 @@ function LoginHeader() {
 					history.push("/foreigner");
 				}}
 			>
-				유학생
+				외국인 교수
 			</li>
 		</ul>
 	);
@@ -327,7 +328,7 @@ export function AdminLogin() {
 	}, [pending, data]);
 
 	const handleReset = () => {
-		postReset().then((res) => process.env.REACT_APP_DEVELOP_MODE && console.log(res));
+		postReset().then((res) => alert(res.data.message));
 	};
 
 	const handleLogin = () => {
@@ -346,19 +347,19 @@ export function AdminLogin() {
 			<div className="head">
 				<div className="head_w">
 					<div className="logo">
-						<img src="/global/img/login_logo.gif" alt="로그인 화면 로고" />
+						<img src="/global/img/intro_logo.gif" alt="로그인 화면 로고" />
 					</div>
 					<LoginHeader />
 				</div>
 			</div>
 			<div className="login_wrap admin">
 				<p className="tit">
-					Global Zone Reservation Service
+					Global Center Reservation Service
 					<br />
 					<span>Admin Login</span>
 				</p>
 				<p className="txt">
-					관리자님 <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다.
+					관리자님 <span>글로벌센터 예약시스템</span>에 오신 것을 환영합니다.
 				</p>
 				<div className="login_input">
 					<input
@@ -378,10 +379,9 @@ export function AdminLogin() {
 					<div className="submit" onClick={handleLogin}>
 						Login
 					</div>
-
-					{/* <button onClick={handleReset} className="pwReset">
+					<button onClick={handleReset} className="pwReset" style={{ cursor: "pointer" }}>
 						비밀번호를 초기화하시겠습니까?
-					</button> 2020-09-20 삭제 처리 */}
+					</button>
 				</div>
 				<div className="login_footer">
 					COPYRIGHT© YEUNGJIN UNIVERSITY. All RIGHTS RESERVED.

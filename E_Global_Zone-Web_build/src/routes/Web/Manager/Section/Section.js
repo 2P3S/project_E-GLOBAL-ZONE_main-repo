@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-
+import moment from "moment";
 import { getAdminForeigner, getAdminForeignerWork } from "../../../../api/admin/foreigner";
-import { postAdminSchedule, deleteAdminSchedule } from "../../../../api/admin/schedule";
+import {
+	postAdminSchedule,
+	deleteAdminSchedule,
+	getAdminHoliday,
+} from "../../../../api/admin/schedule";
 import { getAdminSection, getAdminSectionLastday } from "../../../../api/admin/section";
 
 import deepmerge from "deepmerge";
@@ -13,7 +17,7 @@ import Loader from "../../../../components/common/Loader";
 export default function Section(props) {
 	const params = useParams();
 	const history = useHistory();
-
+	const [eceptDate, setEceptDate] = useState([]);
 	const [forList, setForList] = useState();
 	const [sectName, setSectName] = useState();
 	const [isDone, setIsDone] = useState(false);
@@ -99,7 +103,7 @@ export default function Section(props) {
 			sect_id: params["sect_id"],
 			std_for_id: params["std_for_id"],
 			schedule: schedule,
-			ecept_date: [],
+			ecept_date: eceptDate,
 			sch_start_date: time.sch_start_date,
 			sch_end_date: time.sch_end_date,
 			exception_mode: 0,
@@ -125,6 +129,18 @@ export default function Section(props) {
 		window.location.reload();
 	};
 
+	const setHoliday = (date) => {
+		getAdminHoliday({ year: moment(date).format("YYYY") }).then((res) => {
+			console.log(res.data.data);
+			for (const key in res.data.data) {
+				if (res.data.data.hasOwnProperty(key)) {
+					const element = res.data.data[key];
+					eceptDate.push(moment(element, "YYYYMMDD").format("YYYY-MM-DD"));
+				}
+			}
+		});
+	};
+
 	const rendering = (std_for_id = params["std_for_id"]) => {
 		handleOpenForLoader();
 		if (std_for_id !== params["std_for_id"]) {
@@ -139,7 +155,12 @@ export default function Section(props) {
 				}
 			});
 		!sectName &&
-			getAdminSection({ sect_id: params["sect_id"] }).then((res) => setSectName(res.data));
+			getAdminSection({ sect_id: params["sect_id"] }).then((res) => {
+				const { sect_start_date, sect_end_date } = res.data.data;
+				setHoliday(sect_start_date);
+				setHoliday(sect_end_date);
+				setSectName(res.data);
+			});
 		if (std_for_id !== "0") {
 			getAdminForeigner({
 				foreigners: [std_for_id],
@@ -170,19 +191,6 @@ export default function Section(props) {
 		}
 	}, [forList]);
 
-	// useEffect(() => {
-	// 	// 	handleOpenForLoader();
-	// 	// 	if ([params["std_for_id"]] !== "0" && forList) {
-	// 	// 		console.log(params);
-	// 	// 		getAdminForeigner({ foreigners: [params["std_for_id"]] }).then((res) => {
-	// 	// 			setForName(res.data);
-	// 	// 			buildTable();
-	// 	// 			handleCloseForLoader();
-	// 	// 		});
-	// 	// 	}
-	// 	rendering();
-	// }, [params]);
-
 	return (
 		<div className="content">
 			<div className="sub_title">
@@ -193,9 +201,14 @@ export default function Section(props) {
 
 			<div className="search_student">
 				<div className="left_wrap">
-					<div className="tsearch">
-						<input type="text" />
+					<div className="tsearch" style={{ visibility: "hidden" }}>
+						<input type="text" disabled />
 						<input type="submit" value="검색" />
+						{/* <input
+							type="submit"
+							value="공휴일 및 학교행사 등록"
+							style={{ cursor: "pointer" }}
+						/> */}
 					</div>
 					<div className="not_enter">
 						<p className="tit">
@@ -205,7 +218,7 @@ export default function Section(props) {
 							<table>
 								<thead>
 									<tr>
-										<th scope="col">학번</th>
+										<th scope="col">교번</th>
 										<th scope="col">이름</th>
 										{/* <th scope="col">근무시간</th> */}
 									</tr>
@@ -243,7 +256,7 @@ export default function Section(props) {
 							<table>
 								<thead>
 									<tr>
-										<th scope="col">학번</th>
+										<th scope="col">교번</th>
 										<th scope="col">이름</th>
 										<th scope="col">삭제</th>
 									</tr>

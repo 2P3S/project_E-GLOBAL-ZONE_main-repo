@@ -3,18 +3,18 @@ const language = {
 		login: {
 			header: { btnKor: "한국인 학생", btnFor: "유학생" },
 			body: {
-				subTitle: "글로벌존 예약시스템에 오신 것을 환영합니다.",
+				subTitle: "글로벌센터 예약시스템에 오신 것을 환영합니다.",
 				korLogin: {
 					loginBtn: "G-suite 계정으로 로그인하기",
 					nofication: "@g.yju.ac.kr로 끝나는 G-suite 계정만 사용이 가능합니다.",
 				},
 				forLogin: {
 					loginBtn: "Login",
-					placeholderId: "학번을 입력해주세요.",
+					placeholderId: "교번을 입력해주세요.",
 					placeholderPw: "비밀번호를 입력해주세요",
 				},
 				adminLogin: {
-					subTitle: "관리자님 글로벌존 예약시스템에 오신 것을 환영합니다.",
+					subTitle: "관리자님 글로벌센터 예약시스템에 오신 것을 환영합니다.",
 					placeholderId: "관리자 계정을 입력해주세요.",
 					placeholderPw: "비밀번호를 입력해주세요",
 				},
@@ -81,7 +81,6 @@ const language = {
 					resultNotEnter: "[결과 미입력] 출석 학생",
 					adminNotApp: "[관리자 미승인] 출석 학생",
 					adminApp: "[관리자 승인 완료]",
-
 				},
 				notdataInfo: {
 					text: "데이터가 없습니다.",
@@ -314,9 +313,8 @@ const language = {
 				endTime: "종료시간",
 				attendance: "출석",
 				absent: "결석",
-
 			},
-			// 
+			//
 			korStudentManage: {
 				pageTitle: {
 					title: "한국인 학생 관리",
@@ -347,12 +345,12 @@ const language = {
 					btnText: "한국인 학생 목록 저장",
 				},
 			},
-			// 
-			foreignStudentManage : {
+			//
+			foreignStudentManage: {
 				pageTitle: {
 					title: "유학생 관리",
 				},
-				searchStudentSelect : {
+				searchStudentSelect: {
 					name: "이름",
 					studentNum: "학번",
 				},
@@ -372,26 +370,26 @@ const language = {
 					count: "회",
 					min: "분",
 				},
-				foreignStdTooltip : {
-					resetPassword : "비밀번호 초기화",
-					resetPasswdAlert : "비밀번호를 초기화 시키겠습니까?",
-					resetPasswdCompletAlert : "비밀번호 초기화가 완료되었습니다.",
-					modify : "수정",
-					ok : "확인",
+				foreignStdTooltip: {
+					resetPassword: "비밀번호 초기화",
+					resetPasswdAlert: "비밀번호를 초기화 시키겠습니까?",
+					resetPasswdCompletAlert: "비밀번호 초기화가 완료되었습니다.",
+					modify: "수정",
+					ok: "확인",
 				},
-				semesterNotStudent : {
+				semesterNotStudent: {
 					alertText: "해당 학기에 등록 된 학생이 없습니다.",
 				},
-				foreignStdBtn : {
-					ContactInfo : "연락처 정보",
-					foreignStdRegist : "근로 유학생 등록",
-					semesterSchRegist : "학기 스케줄 등록",
-					schIndividualInput : "스케줄 개별 입력",
-					foreignStdListSave : "근로 유학생 목록 저장",
+				foreignStdBtn: {
+					ContactInfo: "연락처 정보",
+					foreignStdRegist: "근로 유학생 등록",
+					semesterSchRegist: "학기 스케줄 등록",
+					schIndividualInput: "스케줄 개별 입력",
+					foreignStdListSave: "근로 유학생 목록 저장",
 				},
 			},
 			//
-			systemSetting : {
+			systemSetting: {
 				pageTitle: {
 					title: "시스템 환경설정",
 				},
@@ -401,7 +399,7 @@ const language = {
 					num: "번",
 					oneTimeMaxRes: "한 타임 최대 예약",
 					person: "명",
-					resAppAndCancel : "예약 승인 및 취소는",
+					resAppAndCancel: "예약 승인 및 취소는",
 					currentCriterion: "현재 기준",
 					CompleteBy: "24:00까지 완료",
 					daysAgo: "일 전까지",
@@ -409,14 +407,15 @@ const language = {
 					AvailableFrom: "24:00부터 가능",
 					sinceDaysAgo: "일 전부터",
 				},
-				schSetting : {
+				schSetting: {
 					Description: "스케줄 한 타임의 기준시간은 30분으로 자동계산됩니다.",
-					warningText : "설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 변경 불가",
-					meetingTime : "미팅 시간",
-					breakTime : "쉬는 시간",
+					warningText:
+						"설정 이후에 생성되는 스케줄부터 적용되며, 학기 시작 중에는 변경 불가",
+					meetingTime: "미팅 시간",
+					breakTime: "쉬는 시간",
 					min: "분",
 				},
-				regulationManage : {
+				regulationManage: {
 					// Description: "노쇼 최대",
 					// Description: "까지",
 					// Description: "패널티 부여",
@@ -427,21 +426,182 @@ const language = {
 					// Description: "결석 3회 부터 결석 시, 3일간 이용제한 5회 이상 결석 시, 해당 학기 이용 제한",
 					// Description: "유학생 결과입력",
 					// Description: "일 이내",
-				}
-			}
+				},
+			},
 		},
 	},
 };
-/**
- 
- {
-	 title:"",
-	 subTitle:"",
-	 btn:"",
-	 input:"",
-	 btnConfirm:"등록"
- }
 
- */
+export const LANGUAGE = {
+	kor: {
+		language: { korean: "한국어", english: "영어", japanese: "일본어", chinese: "중국어" },
+		logout: "로그아웃",
+		scheduleAndReservationManagement: "스케줄 및 예약관리",
+		sunday: "일",
+		monday: "월",
+		tuesday: "화",
+		wednesday: "수",
+		thursday: "목",
+		friday: "금",
+		saturday: "토",
+		thisWeeksSchedule: "이번주 스케줄",
+		waitingForReservationConfirmation: "예약 승인 대기",
+		reservationConfirmationComplete: "예약 승인 완료",
+		attendanceWasNotRecorded: "출석 결과 미입력",
+		attendanceWasRecorded: "출석 결과 입력완료",
+		noReservations: "예약 없음",
+		numberReservationsCount: (n, n2) => `신청한 학생 : ${n}명\n예약 미승인 : ${n2}명`,
+		numberReservationsComplete: (n) => `${n}명 예약완료`,
+		numberPresentStudents: (n) => `참가 학생:${n}명\n[결과 미입력]`,
+		resultInputComplete: "결과 입력 완료",
+		shutDown: "종료",
+		viewStudentApplicationRegistry: "신청학생 명단보기",
+		startTime: "시작시간",
+		endTime: "종료시간",
+		agree: "동의",
+		disagree: "미동의",
+		agreeToAll: "일괄동의",
+		addAStudent: "학생 추가",
+		save: "저장",
+		viewStudentParticipationRegistry: "참가학생 명단보기",
+		attendance: "출석",
+		absence: "결석",
+		recordAttendance: "출석 결과 입력하기",
+		startPicture: "시작 사진",
+		endPicture: "종료 사진",
+		upload: "업로드",
+		zoomNotice:
+			"· 줌 시작 및 종료 화면 캡쳐 사진은 날짜 및 시간이 잘 보이는 사진이어야 합니다.",
+		imgNotice: "· 이미지 사이즈 및 크기 : 900X900 / 2MB 이하",
+	},
+	eng: {
+		language: {
+			korean: "Korean",
+			english: "English",
+			japanese: "Japanese",
+			chinese: "Chinese",
+		},
+		logout: "Log Out",
+		scheduleAndReservationManagement: "Schedule and Reservation Management",
+		sunday: "Sun",
+		monday: "Mon",
+		tuesday: "Tues",
+		wednesday: "Wednes",
+		thursday: "Thurs",
+		friday: "Fri",
+		saturday: "Satur",
+		thisWeeksSchedule: "This Week’s Schedule",
+		waitingForReservationConfirmation: "Waiting for Reservation Confirmation",
+		reservationConfirmationComplete: "Reservation Confirmation Complete",
+		attendanceWasNotRecorded: "Attendance was NOT Recorded",
+		attendanceWasRecorded: "Attendance was Recorded",
+		noReservations: "No Reservations",
+		numberReservationsCount: (n, n2) => `Reservations: ${n}\nWaiting: ${n2}`,
+		numberReservationsComplete: (n) =>
+			`${n} ${n === 1 ? "Reservation" : "Reservations"} Complete`,
+		numberPresentStudents: (n) => `Present Students: ${n}\n[Not Recorded]`,
+		resultInputComplete: "Result Input Complete",
+		shutDown: "Shut Down",
+		viewStudentApplicationRegistry: "View Student Application Registry",
+		startTime: "Start Time",
+		endTime: "End Time",
+		agree: "Agree",
+		disagree: "Disagree",
+		agreeToAll: "Agree to All",
+		addAStudent: "Add a Student",
+		save: "Save",
+		viewStudentParticipationRegistry: "View Student Participation Registry",
+		attendance: "Attendance",
+		absence: "Absence",
+		recordAttendance: "Record Attendance",
+		startPicture: "Start Picture",
+		endPicture: "End Picture",
+		upload: "Upload",
+		zoomNotice:
+			"· At the start and end of the Zoom Meeting, please take a screenshot that shows the date and time.",
+		imgNotice: "· Image Size: 900 x 900 / 2MB or smaller.",
+	},
+	jp: {
+		language: { korean: "韓国語", english: "英語", japanese: "日本語", chinese: "中国語" },
+		logout: "ログアウト",
+		scheduleAndReservationManagement: "スケジュール及び予約管理",
+		sunday: "日",
+		monday: "月",
+		tuesday: "火",
+		wednesday: "水",
+		thursday: "木",
+		friday: "金",
+		saturday: "土",
+		thisWeeksSchedule: "今週のスケジュール",
+		waitingForReservationConfirmation: "予約承認待機",
+		reservationConfirmationComplete: "予約承認完了",
+		attendanceWasNotRecorded: "出席結果未入力",
+		attendanceWasRecorded: "出席結果入力完了",
+		noReservations: "予約なし",
+		numberReservationsCount: (n, n2) => `予約: ${n}\n予約承認待機: ${n2}`,
+		numberReservationsComplete: (n) => `${n}名 予約完了`,
+		numberPresentStudents: (n) => `参加学生:${n}名\n[結果未入力]`,
+		resultInputComplete: "結果入力完了",
+		shutDown: "終了",
+		viewStudentApplicationRegistry: "申請学生名簿を見る　",
+		startTime: "開始時間",
+		endTime: "終了時間",
+		agree: "同意",
+		disagree: "不同意",
+		agreeToAll: "一括同意",
+		addAStudent: "学生追加",
+		save: "保存",
+		viewStudentParticipationRegistry: "参加学生名簿を見る",
+		attendance: "出席",
+		absence: "欠席",
+		recordAttendance: "出席結果を入力する",
+		startPicture: "開始時間",
+		endPicture: "終了時間",
+		upload: "アップロード",
+		zoomNotice:
+			"· ズーム開始及び終了画面をキャプチャー写真は日付と時間がよく見える写真でなければならない",
+		imgNotice: "· イメージサイズ及び大きさ：900×900 / 2MB 以下",
+	},
+	cn: {
+		language: { korean: "韩语", english: "英语", japanese: "日本", chinese: "中文" },
+		logout: "注销",
+		scheduleAndReservationManagement: "日程及预约管理",
+		sunday: "周日",
+		monday: "周一",
+		tuesday: "周二",
+		wednesday: "周三",
+		thursday: "周四",
+		friday: "周五",
+		saturday: "周六",
+		thisWeeksSchedule: "这周的行程",
+		waitingForReservationConfirmation: "预约等待批准",
+		reservationConfirmationComplete: "预约批准完毕",
+		attendanceWasNotRecorded: "未输入出席结果",
+		attendanceWasRecorded: "出席结果输入完毕",
+		noReservations: "无预约",
+		numberReservationsCount: (n, n2) => `预约: ${n}\n等待批准: ${n2}`,
+		numberReservationsComplete: (n) => `${n} 名预约完成`,
+		numberPresentStudents: (n) => `参加学生：${n}名\n[未输入结果]`,
+		resultInputComplete: "结果输入完毕",
+		shutDown: "结束",
+		viewStudentApplicationRegistry: "查看申请学生名单",
+		startTime: "开始时间",
+		endTime: "终止时间",
+		agree: "同意",
+		disagree: "未同意",
+		agreeToAll: "统一同意",
+		addAStudent: "追加学生",
+		save: "储存",
+		viewStudentParticipationRegistry: "查看参加学生名单",
+		attendance: "出席",
+		absence: "缺席",
+		recordAttendance: "输入出席结果",
+		startPicture: "开始照片",
+		endPicture: "结束照片",
+		upload: "上传",
+		zoomNotice: "· Zoom 开始与结束画面截图照片必须是能看到日期与时间的照片。",
+		imgNotice: "· 照片尺寸及大小900X900 / 2MB以下",
+	},
+};
 
 export default language;

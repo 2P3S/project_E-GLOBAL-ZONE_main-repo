@@ -68,8 +68,8 @@ const InsertForeignerStudent = ({ handleClose }) => {
 		let _validator = false;
 		setPending(true);
 		document.getElementsByName("std_info").forEach((v) => {
-			if (v.value === "" && _validator === false) {
-				// alert("값을 입력해주세요");
+			if (v.value === "" && _validator === false && v.id !== "std_for_phone") {
+				alert("값을 입력해주세요");
 				_validator = true;
 			} else {
 				array.push(validator.unescape(v.value));
@@ -204,161 +204,163 @@ const InsertForeignerStudent = ({ handleClose }) => {
 	}, [errorMsg]);
 
 	return (
-		<div className="popup account">
+		<>
 			{insertMode ? (
-				<div className="account_insert">
-					<p className="tit">유학생 계정 생성</p>
-					<div className="input_area">
-						<table>
-							<colgroup>
-								<col width="25%" span="4" />
-							</colgroup>
-							<tbody>
-								<tr>
-									<td>
-										<p>언어</p>
+				<div className="popup account">
+					<div className="account_insert">
+						<p className="tit">교수 계정 생성</p>
+						<div className="input_area">
+							<table>
+								<colgroup>
+									<col width="25%" span="4" />
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>
+											<p>언어</p>
 
-										<select id="std_for_lang" name="std_info">
-											<option value="영어">영어</option>
-											<option value="일본어">일본어</option>
-											<option value="중국어">중국어</option>
-										</select>
-									</td>
-									<td>
-										<p>국가</p>
-										<input
-											type="text"
-											id="std_for_country"
-											name="std_info"
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											onChange={(e) => {
-												e.target.value = validator.blacklist(
-													e.target.value,
-													specialChar
-												);
-											}}
-										/>
-									</td>
-									<td>
-										<p>학번</p>
-										<input
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											type="text"
-											id="std_for_id"
-											name="std_info"
-											onChange={(e) => {
-												if (validator.isNumeric(e.target.value)) {
-												} else {
-													e.target.value = "";
-												}
-											}}
-											maxLength={7}
-											key="학번"
-										/>
-									</td>
-									<td>
-										<p>이름</p>
-										<input
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											type="text"
-											id="std_for_name"
-											name="std_info"
-											onChange={(e) => {
-												e.target.value = validator.blacklist(
-													e.target.value,
-													specialChar
-												);
-											}}
-										/>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<p>학과</p>
-										<select
-											onChange={(e) => {
-												handleChange(e);
-											}}
-											id="std_for_dept"
-											name="std_info"
-										>
-											{departmentList &&
-												departmentList.map((v) => {
-													return (
-														<option value={v.dept_id}>
-															{v.dept_name[1]}
-														</option>
-													);
-												})}
-										</select>
-									</td>
-									<td>
-										<p>연락처</p>
-										<input
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											type="text"
-											id="std_for_phone"
-											name="std_info"
-											onChange={(e) => {
-												if (
-													validator.isMobilePhone(
+											<select id="std_for_lang" name="std_info">
+												<option value="영어">영어</option>
+												<option value="일본어">일본어</option>
+												<option value="중국어">중국어</option>
+											</select>
+										</td>
+										<td>
+											<p>국가</p>
+											<input
+												type="text"
+												id="std_for_country"
+												name="std_info"
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												onChange={(e) => {
+													e.target.value = validator.blacklist(
 														e.target.value,
-														"ko-KR"
-													) &&
-													validator.isNumeric(e.target.value) &&
-													validator.isLength(e.target.value, 11)
-												) {
-													let first = e.target.value.substr(0, 3);
-													let second = e.target.value.substr(3, 4);
-													let third = e.target.value.substr(7, 4);
-													e.target.value = `${first}-${second}-${third}`;
-												}
-											}}
-											maxLength={11}
-											placeholder="'-' 을 뺀 전화번호 11자리"
-										/>
-									</td>
-									<td>
-										<p>카카오톡 ID</p>
-										<input
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											type="text"
-											id="std_for_mail"
-											name="std_info"
-											placeholder="4~15자의 영문과 숫자조합"
-										/>
-									</td>
-									<td>
-										<p>ZoomID</p>
-										<input
-											onKeyUp={(e) => handleEnterKey(e, handleSave)}
-											type="text"
-											id="std_for_zoom_id"
-											name="std_info"
-											onChange={(e) => {
-												if (validator.isNumeric(e.target.value)) {
-												} else {
-													e.target.value = "";
-												}
-											}}
-											maxLength={10}
-											placeholder="ex)1234567890"
-										/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						{/*  에러메세지 warn_txt */}
-						<p id="warning"></p>
-					</div>
-
-					<div className="btn_area right">
-						<div className="bbtn blue" onClick={handleSave}>
-							계정 생성하기
+														specialChar
+													);
+												}}
+											/>
+										</td>
+										<td>
+											<p>교번</p>
+											<input
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												type="text"
+												id="std_for_id"
+												name="std_info"
+												onChange={(e) => {
+													if (validator.isNumeric(e.target.value)) {
+													} else {
+														e.target.value = "";
+													}
+												}}
+												maxLength={7}
+												key="교번"
+											/>
+										</td>
+										<td>
+											<p>이름</p>
+											<input
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												type="text"
+												id="std_for_name"
+												name="std_info"
+												onChange={(e) => {
+													e.target.value = validator.blacklist(
+														e.target.value,
+														specialChar
+													);
+												}}
+											/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<p>학과</p>
+											<select
+												onChange={(e) => {
+													handleChange(e);
+												}}
+												id="std_for_dept"
+												name="std_info"
+											>
+												{departmentList &&
+													departmentList.map((v) => {
+														return (
+															<option value={v.dept_id}>
+																{v.dept_name[1]}
+															</option>
+														);
+													})}
+											</select>
+										</td>
+										<td>
+											<p>연락처</p>
+											<input
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												type="text"
+												id="std_for_phone"
+												name="std_info"
+												onChange={(e) => {
+													if (
+														validator.isMobilePhone(
+															e.target.value,
+															"ko-KR"
+														) &&
+														validator.isNumeric(e.target.value) &&
+														validator.isLength(e.target.value, 11)
+													) {
+														let first = e.target.value.substr(0, 3);
+														let second = e.target.value.substr(3, 4);
+														let third = e.target.value.substr(7, 4);
+														e.target.value = `${first}-${second}-${third}`;
+													}
+												}}
+												maxLength={11}
+												placeholder="'-' 을 뺀 전화번호 11자리"
+											/>
+										</td>
+										<td>
+											<p>카카오톡 ID</p>
+											<input
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												type="text"
+												id="std_for_mail"
+												name="std_info"
+												placeholder="4~15자의 영문과 숫자조합"
+											/>
+										</td>
+										<td>
+											<p>ZoomID</p>
+											<input
+												onKeyUp={(e) => handleEnterKey(e, handleSave)}
+												type="text"
+												id="std_for_zoom_id"
+												name="std_info"
+												onChange={(e) => {
+													if (validator.isNumeric(e.target.value)) {
+													} else {
+														e.target.value = "";
+													}
+												}}
+												maxLength={10}
+												placeholder="ex)1234567890"
+											/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							{/*  에러메세지 warn_txt */}
+							<p id="warning"></p>
 						</div>
-						{/* <div className="bbtn darkGray" onClick={handleClose}>
+
+						<div className="btn_area right">
+							<div className="bbtn blue" onClick={handleSave}>
+								계정 생성하기
+							</div>
+							{/* <div className="bbtn darkGray" onClick={handleClose}>
 							닫기
 						</div> */}
+						</div>
 					</div>
 				</div>
 			) : (
@@ -378,32 +380,33 @@ const InsertForeignerStudent = ({ handleClose }) => {
 			)}
 
 			{/*  유학생 계정 생성 리스트 */}
-
-			<div className="account_table">
-				<div className="table_area scroll_area">
-					<table>
-						<colgroup>
-							<col width="7%" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th scope="col">언어</th>
-								<th scope="col">국가</th>
-								<th scope="col">학번</th>
-								<th scope="col">이름</th>
-								<th scope="col">계열학과</th>
-								<th scope="col">연락처</th>
-								<th scope="col">카카오톡 ID</th>
-								<th scope="col">ZoomID</th>
-								<th scope="col">수정</th>
-								<th scope="col">삭제</th>
-							</tr>
-						</thead>
-						<tbody id="tbody"></tbody>
-					</table>
+			<div className="popup account">
+				<div className="account_table">
+					<div className="table_area scroll_area">
+						<table>
+							<colgroup>
+								<col width="7%" />
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">언어</th>
+									<th scope="col">국가</th>
+									<th scope="col">교번</th>
+									<th scope="col">이름</th>
+									<th scope="col">계열학과</th>
+									<th scope="col">연락처</th>
+									<th scope="col">카카오톡 ID</th>
+									<th scope="col">ZoomID</th>
+									<th scope="col">수정</th>
+									<th scope="col">삭제</th>
+								</tr>
+							</thead>
+							<tbody id="tbody"></tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

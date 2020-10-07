@@ -62,7 +62,7 @@ const InsertForeignerStudent = ({
 		let _validator = false;
 
 		document.getElementsByName("std_info").forEach((v) => {
-			if (v.value === "" && _validator === false) {
+			if (v.value === "" && _validator === false && v.id !== "std_for_phone") {
 				alert("값을 입력해주세요");
 				_validator = true;
 			} else {
@@ -113,7 +113,7 @@ const InsertForeignerStudent = ({
 	return (
 		<div className="popup account">
 			<div className="account_insert">
-				<p className="tit">유학생 계정 수정</p>
+				<p className="tit">교수 계정 수정</p>
 				<div className="input_area">
 					{currentInfo && (
 						<table>
@@ -163,7 +163,7 @@ const InsertForeignerStudent = ({
 										/>
 									</td>
 									<td>
-										<p>학번</p>
+										<p>교번</p>
 										<input
 											onKeyUp={(e) => handleEnterKey(e, handleSave)}
 											type="text"
@@ -212,7 +212,8 @@ const InsertForeignerStudent = ({
 														<option
 															value={v.dept_id}
 															selected={
-																v.dept_id === currentInfo.std_for_dept
+																v.dept_id ===
+																currentInfo.std_for_dept
 															}
 														>
 															{v.dept_name[1]}
@@ -230,7 +231,10 @@ const InsertForeignerStudent = ({
 											name="std_info"
 											onChange={(e) => {
 												if (
-													validator.isMobilePhone(e.target.value, "ko-KR") &&
+													validator.isMobilePhone(
+														e.target.value,
+														"ko-KR"
+													) &&
 													validator.isNumeric(e.target.value) &&
 													validator.isLength(e.target.value, 11)
 												) {

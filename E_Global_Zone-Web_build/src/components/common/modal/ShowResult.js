@@ -60,49 +60,51 @@ export default function PermissionScheduleResult({
 		<div className="popup not_attend">
 			<div className="left_wrap">
 				<p className="tit">승인 출석결과 목록</p>
-				<table className="pop_table3">
-					<colgroup>
-						<col width="15%" />
-					</colgroup>
-					<thead>
-						<tr>
-							<th scope="col">순번</th>
-							<th scope="col">일시</th>
-							<th scope="col">유학생 이름</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data &&
-							data.data &&
-							data.data.map((v, index) => {
-								if (v.sch_state_of_permission === true) {
-									return;
-								} else
-									return (
-										<tr
-											key={v.sch_id}
-											onClick={() => {
-												setSelectIndex(index);
-												setSelectedSch(v.sch_id);
-												setPending(true);
-											}}
-											style={{
-												cursor: "pointer",
-												backgroundColor:
-													v.sch_id === selectedSch ? "#faf3dd" : "",
-											}}
-										>
-											<td>{index + 1}</td>
-											<td>
-												{v.sch_start_date.substr(0, 16)} ~{" "}
-												{v.sch_end_date.substr(11, 5)}
-											</td>
-											<td>{v.std_for_name}</td>
-										</tr>
-									);
-							})}
-					</tbody>
-				</table>
+				<div className="scroll_area">
+					<table className="pop_table3">
+						<colgroup>
+							<col width="15%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">순번</th>
+								<th scope="col">일시</th>
+								<th scope="col">교수 이름</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data &&
+								data.data &&
+								data.data.map((v, index) => {
+									if (v.sch_state_of_permission === true) {
+										return;
+									} else
+										return (
+											<tr
+												key={v.sch_id}
+												onClick={() => {
+													setSelectIndex(index);
+													setSelectedSch(v.sch_id);
+													setPending(true);
+												}}
+												style={{
+													cursor: "pointer",
+													backgroundColor:
+														v.sch_id === selectedSch ? "#faf3dd" : "",
+												}}
+											>
+												<td>{index + 1}</td>
+												<td>
+													{v.sch_start_date.substr(0, 16)} ~{" "}
+													{v.sch_end_date.substr(11, 5)}
+												</td>
+												<td>{v.std_for_name}</td>
+											</tr>
+										);
+								})}
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 			<div className="right_wrap">

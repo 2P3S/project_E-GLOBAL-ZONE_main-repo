@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import d3 from "d3-array";
 import conf from "conf/conf";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
@@ -31,25 +32,6 @@ let j = 0;
  * @todo sorting
  */
 export default function Foreigner() {
-	let mockup = {
-		sort: null,
-		data: [
-			{
-				std_for_lang: conf.language.ENGLISH,
-				country: "미국",
-				favorite: false,
-				std_id: i++,
-				name: "Emma Stone",
-				dept: conf.shortDepartment[1],
-				curruntMonth: 120,
-				lastMonth: 150,
-				thePastMonth: 560,
-				count: j++,
-				delay: 0,
-				check: false,
-			},
-		],
-	};
 	const history = useHistory();
 	const params = useParams();
 
@@ -59,6 +41,7 @@ export default function Foreigner() {
 	const [searchFor, setSearchFor] = useState("std_for_name");
 	const [defaultData, setDefaultData] = useState();
 	const [sectOfYear, setSectOfYear] = useState();
+	const [selectYear, setSelectYear] = useState(moment().format("YYYY"));
 	const [selectSect, setSelectSect] = useState();
 	const [selectSectName, setSelectSectName] = useState();
 	const [monthArray, setMonthArray] = useState();
@@ -67,6 +50,7 @@ export default function Foreigner() {
 	const [toggle, setToggle] = useState(true);
 	const [index, setIndex] = useState();
 	const [modifyInfo, setModifyInfo] = useState();
+	const [yearChange, setYearChange] = useState(false);
 
 	const {
 		isOpen: contactIsOpen,
@@ -104,6 +88,14 @@ export default function Foreigner() {
 	}
 	const reRender = () => {
 		getAdminForeignerWork(selectSect).then((res) => {
+			res.data.hasOwnProperty("data") &&
+				res.data.data.forEach((v) => {
+					let total = 0;
+					Object.keys(v["work_time"]).forEach((m) => {
+						total += v["work_time"][`${m}`];
+					});
+					Object.defineProperty(v["work_time"], "total", { value: total });
+				});
 			setDataSet(res.data);
 			setDefaultData(res.data);
 		});
@@ -147,40 +139,65 @@ export default function Foreigner() {
 			setSectOfYear(res.data);
 			let index = 0;
 			res.data.data.forEach((v, i) => {
-				console.log(
-					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
-				);
 				if (
 					moment(Date.now()).isBetween(moment(v.sect_start_date), moment(v.sect_end_date))
 				) {
 					index = i;
 				}
 			});
-			console.log(res.data.data[index].sect_id);
+
 			history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
 			setIndex(index);
 		});
 	}, []);
 	useEffect(() => {
+		setYearChange(true);
+		getAdminSection({
+			year: `${moment(`${selectYear}-01-01`, "YYYY-MM-DD").format("YYYY")}`,
+		}).then((res) => {
+			const { data } = res;
+			if (data.data.length === 0) {
+				alert("해당년도에 학기가 없습니다.");
+			} else {
+				setSectOfYear(res.data);
+				let index = 0;
+				history.push(`/students/${res.data.data[index].sect_id}/foreigner`);
+				setIndex(index);
+			}
+		});
+	}, [selectYear]);
+
+	useEffect(() => {
 		if (index !== undefined && sectOfYear && sectOfYear.data) {
-			// getAdminForeignerWork(sectOfYear.data[index].sect_id).then((res) => {
-			// 	setDataSet(res.data);
-			// 	setDefaultData(res.data);
-			// });
 			setSelectSect(sectOfYear.data[index].sect_id);
 			setSelectSectName(sectOfYear.data[index].sect_name);
 		}
 	}, [sectOfYear, index]);
+
+	useEffect(() => {
+		setYearChange(false);
+		window.easydropdown.all();
+		//easydropdown 에러 잡아야함
+	}, [sectOfYear]);
 
 	/** @todo 7-8-9 월 표시 하다 말았슴 */
 	useEffect(() => {
 		setLoading(true);
 		selectSect &&
 			getAdminForeignerWork(selectSect).then((res) => {
+				res.data.hasOwnProperty("data") &&
+					res.data.data.forEach((v) => {
+						let total = 0;
+						Object.keys(v["work_time"]).forEach((m) => {
+							total += v["work_time"][`${m}`];
+						});
+						Object.defineProperty(v["work_time"], "total", { value: total });
+					});
 				setDataSet(res.data);
 				setDefaultData(res.data);
 			});
-		history.push(`/students/${selectSect}/foreigner`);
+
+		// history.push(`/students/${selectSect}/foreigner`);
 	}, [selectSect]);
 
 	useEffect(() => {
@@ -222,45 +239,103 @@ export default function Foreigner() {
 		return returnValue;
 	};
 
-	const sort = (sortBy) => {
+	const sort = (sortBy, isMonth = false) => {
 		setDataSet({ ...dataSet, data: [] }); // reset
-
-		if (toggle) {
-			setDataSet({
-				...dataSet,
-				data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
-			});
-			// mockup.sort = null;
+		if (isMonth) {
+			if (toggle) {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) =>
+						a["work_time"][sortBy] > b["work_time"][sortBy] ? -1 : 1
+					),
+				});
+				// mockup.sort = null;
+			} else {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) =>
+						a["work_time"][sortBy] > b["work_time"][sortBy] ? 1 : -1
+					),
+				});
+			}
 		} else {
-			setDataSet({
-				...dataSet,
-				data: defaultData.data.sort((a, b) => (a[sortBy] < b[sortBy] ? -1 : 1)),
-			});
+			if (toggle) {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? -1 : 1)),
+				});
+				// mockup.sort = null;
+			} else {
+				setDataSet({
+					...dataSet,
+					data: defaultData.data.sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1)),
+				});
+			}
 		}
 		setToggle(!toggle);
 	};
 
+	const handleYearChange = () => {
+		const year = document.getElementById("year").value;
+		try {
+			moment(year + "-01-01", "YYYY-MM-DD");
+		} catch (error) {
+			alert("error");
+		}
+		// setSelectYear("2021");
+	};
 	return sectOfYear ? (
 		<div>
 			<div className="content">
 				<div className="sub_title">
 					<div className="top_semester">
-						<p className="tit">유학생 관리</p>
-						<select name="catgo" className="dropdown" onChange={handleChange}>
-							{sectOfYear &&
-								sectOfYear.data &&
-								sectOfYear.data.map((v, i) => {
-									return (
-										<option
-											value={v.sect_id}
-											id={v.sect_name}
-											selected={index === i}
-										>
-											{v.sect_name}
-										</option>
-									);
-								})}
-						</select>
+						<p className="tit">교수진 관리</p>
+						<p
+							className="tit"
+							style={{ marginLeft: "40px", cursor: "pointer" }}
+							onClick={() => {
+								setSelectYear(parseInt(selectYear) - 1);
+							}}
+						>
+							<img src="/global/img/calender_arrow_prev.gif" />
+						</p>
+						<p
+							className="tit"
+							style={{ marginLeft: "10px", marginTop: "3px", fontSize: "14px" }}
+						>
+							{selectYear}학년도
+						</p>
+						<p
+							className="tit"
+							style={{ marginLeft: "10px", cursor: "pointer" }}
+							onClick={() => {
+								setSelectYear(parseInt(selectYear) + 1);
+							}}
+						>
+							<img src="/global/img/calender_arrow_next.gif" />
+						</p>
+						{yearChange ? (
+							<></>
+						) : (
+							<div>
+								<select name="" className="" onChange={handleChange}>
+									{sectOfYear &&
+										sectOfYear.data &&
+										sectOfYear.data.map((v, i) => {
+											console.log(sectOfYear.data);
+											return (
+												<option
+													value={v.sect_id}
+													id={v.sect_name}
+													selected={index === i || i === 0}
+												>
+													{v.sect_name}
+												</option>
+											);
+										})}
+								</select>
+							</div>
+						)}
 					</div>
 
 					<div className="top_search">
@@ -272,7 +347,7 @@ export default function Foreigner() {
 							}}
 						>
 							<option value="std_for_name">이름</option>
-							<option value="std_for_id">학번</option>
+							<option value="std_for_id">교번</option>
 						</select>
 						<input type="text" id="term" onChange={handleSearch} />
 						<input type="submit" value="검색" onClick={handleSearch} />
@@ -358,7 +433,7 @@ export default function Foreigner() {
 													alt="즐겨찾기 기준 정렬"
 												/>
 											</th>
-											<th colSpan="3">유학생 정보</th>
+											<th colSpan="3">교수진 정보</th>
 											<th
 												colSpan={
 													dataSet && dataSet.data
@@ -409,7 +484,7 @@ export default function Foreigner() {
 											</th>
 										</tr>
 										<tr>
-											<th>학번</th>
+											<th>ID</th>
 											<th>이름</th>
 											<th
 												rowSpan="2"
@@ -432,9 +507,9 @@ export default function Foreigner() {
 											<th
 												rowSpan="2"
 												className="align"
-												// onClick={() => {
-												// 		sort("");
-												// 	}}
+												onClick={() => {
+													sort("total", true);
+												}}
 											>
 												{/* <input type="hidden" id="" value={false}/> */}
 												합계
@@ -454,7 +529,7 @@ export default function Foreigner() {
 														rowSpan="2"
 														className="align"
 														onClick={() => {
-															sort(`${v}`);
+															sort(`${v}`, true);
 														}}
 													>
 														<input
@@ -629,19 +704,10 @@ export default function Foreigner() {
 																	deptList
 																)}
 															</td>
-															<td>
-																{(() => {
-																	let sum = 0;
-																	Object.values(
-																		value.work_time
-																	).map((v) => (sum += v));
-																	return sum * 60;
-																})()}
-																분
-															</td>
+															<td>{value.work_time.total * 30}분</td>
 															{Object.values(value.work_time).map(
 																(v) => {
-																	return <td>{v * 60}분</td>;
+																	return <td>{v * 30}분</td>;
 																}
 															)}
 															<td>
@@ -660,7 +726,7 @@ export default function Foreigner() {
 								</table>
 							</div>
 						) : (
-							<>해당 학기에 등록 된 학생이 없습니다.</>
+							<>해당 학기에 등록 된 교수가 없습니다.</>
 						)
 					) : (
 						<Loader />
@@ -685,7 +751,7 @@ export default function Foreigner() {
 						>
 							연락처 정보
 						</div>
-						<div onClick={handleOpenForAdd}>근로 유학생 등록</div>
+						<div onClick={handleOpenForAdd}>학기 교수 등록</div>
 						{dataSet && moment(Date.now()).isAfter(dataSet.time.sect_start_date) ? (
 							<></>
 						) : (
@@ -707,7 +773,7 @@ export default function Foreigner() {
 								getAdminExportForeignerSect(selectSect, selectSectName);
 							}}
 						>
-							근로 유학생 목록 저장
+							학기 교수진 목록 저장
 						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>

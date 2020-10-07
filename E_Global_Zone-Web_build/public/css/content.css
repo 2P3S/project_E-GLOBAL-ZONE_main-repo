@@ -46,7 +46,7 @@ body {
 	clear: both;
 	width: 100%;
 	height: 80px;
-	background: #373a44;
+	background: #364969;
 	min-width: 1200px;
 }
 
@@ -68,7 +68,7 @@ body {
 
 .head .head_area .menu li {
 	float: left;
-	margin-left: 100px;
+	margin-left: 80px;
 }
 
 .head .head_area .menu li a {
@@ -112,7 +112,7 @@ body {
 	float: left;
 	line-height: 90px;
 	font-size: 23px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 	letter-spacing: -1px;
 }
@@ -143,7 +143,7 @@ body {
 }
 
 .scroll_area::-webkit-scrollbar-thumb {
-	background-color: #373a44;
+	background-color: #182337;
 	border-radius: 10px;
 }
 
@@ -206,6 +206,7 @@ body {
 	display: inline-block;
 	background: #fbfafb;
 	height: 100vh;
+	min-width: 1200px;
 }
 .login_content .head {
 	height: 70px;
@@ -215,7 +216,7 @@ body {
 }
 .login_content .head .head_w {
 	width: 1200px;
-	margin: 0 auto; /* padding-top: 24px; */
+	margin: 0 auto;
 }
 .login_content .head .head_w .logo {
 	float: left;
@@ -328,26 +329,6 @@ body {
 	margin-top: 8px;
 }
 
-/* 스케줄 관리 _bak
-ul.sch_time {margin:0 0 20px 220px;overflow:hidden;}
-ul.sch_time li {float:left;font-family:'Lato', sans-serif; font-weight:600; font-size:12px;margin-left:75px;}
-ul.sch_time li:first-child {margin-left:0;}
-table.sch_table { width:100%; border-collapse:collapse; color:#373a44; font-size:12px; font-weight:500; text-align:center;}
-table.sch_table th,
-table.sch_table td {border:1px solid #d5d5db;}
-table.sch_table tbody th {background:#373a44; color:#fff;}
-table.sch_table tbody td {height:72px; letter-spacing:-0.05em;}
-table.sch_table tbody td .status {width:100%; min-height:42px; line-height:42px;}
-table.sch_table tbody td .status p {position:relative; margin-left:-1px; padding:7px 0; line-height:13px; font-size:10px; color:#fff; letter-spacing:0; font-weight:500;}
-table.sch_table tbody td .status p.blue {background:#2050e6; border:1px solid #2050e6;}
-table.sch_table tbody td .status p.mint {background:#34bcad; border:1px solid #34bcad;}
-table.sch_table tbody td .status p.yellow {background:#ffa400; border:1px solid #ffa400;}
-table.sch_table tbody td .status p.puple {background:#6e4bdd; border:1px solid #6e4bdd;}
-table.sch_table tbody td .status p.gray  {background:#e1e1ea; border:1px solid #e1e1ea; color:#373a44;}
-table.sch_table tbody td .status p.oneline {min-height:42px; line-height:42px; padding:0; border:none;}
-table.sch_table tbody tr:hover {background:#f7f7f7;}
-table.sch_table tbody tr:hover td:first-child {color:#2050e6; text-decoration:underline;} */
-
 /* 스케줄 관리  */
 ul.sch_time {
 	margin: 0px 0 15px 189px;
@@ -369,7 +350,7 @@ ul.sch_time li:first-child {
 table.sch_table {
 	width: 100%;
 	border-collapse: collapse;
-	color: #373a44;
+	color: #182337;
 	font-size: 12px;
 	font-weight: 500;
 	text-align: center;
@@ -381,7 +362,7 @@ table.sch_table td {
 }
 
 table.sch_table tbody th {
-	background: #373a44;
+	background: #364969;
 	color: #fff;
 	font-size: 11px;
 }
@@ -398,20 +379,12 @@ table.sch_table tbody td:first-child {
 
 .state_box {
 	float: left;
-	width: 50%;
+	width: 100%;
 	min-height: 42px;
 	line-height: 41px;
 	color: #fff;
 	position: relative;
 }
-
-/* .state_box.left {
-	float:left;
-}
-
-.state_box.right {
-	float:right;
-} */
 
 .state_box p {
 	padding-left: 20px;
@@ -419,7 +392,7 @@ table.sch_table tbody td:first-child {
 	display: inline-block;
 }
 
-/* state1 :: [예약현황] 미승인 / 총 신청 학생 */
+/* state1::[예약현황] 미승인 / 총 신청 학생 */
 .state_box.state1 {
 	background: #2050e6;
 }
@@ -433,7 +406,7 @@ table.sch_table tbody td:first-child {
 	color: #ffda10;
 }
 
-/* state2 :: [예약 승인 완료] */
+/* state2::[예약 승인 완료] */
 .state_box.state2 {
 	background: #34bcad;
 }
@@ -442,7 +415,7 @@ table.sch_table tbody td:first-child {
 	background: url(/global/img/state2_ico.gif) no-repeat left 50%;
 }
 
-/* state3 :: [결과 미입력] 출석 학생 */
+/* state3::[결과 미입력] 출석 학생 */
 .state_box.state3 {
 	background: #2050e6;
 }
@@ -451,12 +424,12 @@ table.sch_table tbody td:first-child {
 	background: url(/global/img/state3_ico.gif) no-repeat left 50%;
 }
 
-/* state4 :: [결과 입력 완료] */
+/* state4::[결과 입력 완료] */
 .state_box.state4 {
 	background: #43269e url(/global/img/state4_ico.gif) no-repeat center 50%;
 }
 
-/* state5 :: [관리자 미승인] 출석 학생 */
+/* state5::[관리자 미승인] 출석 학생 */
 .state_box.state5 {
 	background: #ffa400;
 }
@@ -465,23 +438,22 @@ table.sch_table tbody td:first-child {
 	background: url(/global/img/state5_ico.gif) no-repeat left 50%;
 }
 
-/* state6 :: [관리자 승인 완료] */
+/* state6::[관리자 승인 완료] */
 .state_box.state6 {
 	background: #6e4bdd url(/global/img/state6_ico.gif) no-repeat center 50%;
 }
 
-/* state7 :: 예약없음 */
+/* state7::예약없음 */
 .state_box.state7 {
 	background: #e1e1ea;
-	color: #373a44;
-	/* overflow: hidden; */
+	color: #182337;
 }
 
 .state_box.state7 .close {
 	width: 0px;
 	height: 0px;
 	border-bottom: 42px solid #c3cad6;
-	border-right: 55px solid rgba(0, 0, 0, 0);
+	border-right: 106px solid rgba(0, 0, 0, 0);
 	background: #dadfe8;
 }
 
@@ -517,7 +489,7 @@ table.sch_table tbody tr:hover td:first-child {
 .sch_info ul li {
 	float: left;
 	font-size: 12px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 500;
 	margin-left: 15px;
 	padding-left: 25px;
@@ -594,7 +566,7 @@ table.sch_table tbody tr:hover td:first-child {
 
 .hover_del .area div {
 	background: #eaeaea;
-	color: #373a44;
+	color: #182337;
 	border: 1px solid #cfcfcf;
 }
 
@@ -640,8 +612,8 @@ table.sch_table tbody tr:hover td:first-child {
 
 .top_search input[type="submit"] {
 	float: left;
-	background: #373a44;
-	border: 1px solid #373a44;
+	background: #364969;
+	border: 1px solid #364969;
 	color: #fff;
 	border-radius: 5px;
 	height: 33px;
@@ -702,13 +674,13 @@ table.sch_table tbody tr:hover td:first-child {
 }
 
 .hover_btn .area div.navy {
-	background: #373a44;
-	border: 1px solid #373a44;
+	background: #364969;
+	border: 1px solid #364969;
 }
 
 .hover_btn .area div.lightGray {
 	background: #eaeaea;
-	color: #373a44;
+	color: #182337;
 	border: 1px solid #cfcfcf;
 }
 
@@ -795,13 +767,13 @@ table.sch_table tbody tr:hover td:first-child {
 }
 
 .sch_hover_btn .area div.navy {
-	background: #373a44;
-	border: 1px solid #373a44;
+	background: #364969;
+	border: 1px solid #364969;
 }
 
 .sch_hover_btn .area div.lightGray {
 	background: #eaeaea;
-	color: #373a44;
+	color: #182337;
 	border: 1px solid #cfcfcf;
 }
 
@@ -819,7 +791,6 @@ table.sch_table tbody tr:hover td:first-child {
 }
 
 #pagenation {
-	/* width:100%; */
 	display: inline-block;
 	text-align: center;
 	margin-top: 30px;
@@ -850,19 +821,12 @@ table.sch_table tbody tr:hover td:first-child {
 	border: none !important;
 	color: none !important;
 }
-/* 스케줄관리 hover button [2020-08-29 추가] 
-.hover_btn.sch {
-	width: 53px;
-}
-.hover_btn.sch .area {
-	background-position: 50% bottom;
-}*/
 
 /* 유학생 관리, 한국인 학생 관리 공용 테이블 */
 table.student_manage_table {
 	width: 100%;
 	border-collapse: collapse;
-	color: #373a44;
+	color: #182337;
 	font-size: 12px;
 	font-weight: 500;
 	border-bottom: 1px solid #bcbfc7;
@@ -893,12 +857,12 @@ table.student_manage_table td.name:hover {
 }
 
 table.student_manage_table thead .bg {
-	background: #ebebec;
+	background: #e8ecf2;
 	height: 75px;
 }
 
 table.student_manage_table thead th {
-	border-top: 1px solid #373a44;
+	border-top: 1px solid #364969;
 }
 
 table.student_manage_table thead th.align {
@@ -906,7 +870,7 @@ table.student_manage_table thead th.align {
 }
 
 table.student_manage_table thead th.align:hover {
-	background: #f7f7f7;
+	background: #eceff3;
 }
 
 table.student_manage_table thead th.align img {
@@ -991,7 +955,7 @@ table.student_manage_table td:first-child {
 }
 
 .status_wrap .status_box div.gray {
-	background: #373a44;
+	background: #364969;
 }
 
 .week_wrap {
@@ -1014,7 +978,7 @@ table.student_manage_table td:first-child {
 	float: left;
 	width: 113px;
 	font-size: 13px;
-	color: #373a44;
+	color: #182337;
 	text-align: center;
 }
 
@@ -1066,7 +1030,7 @@ table.student_manage_table td:first-child {
 	float: right;
 	width: 95%;
 	border-collapse: collapse;
-	color: #373a44;
+	color: #182337;
 	font-size: 12px;
 	font-weight: 500;
 }
@@ -1120,7 +1084,7 @@ table.student_manage_table td:first-child {
 
 .week_wrap .week_table table tbody td div.gray {
 	background: #e1e1ea;
-	color: #373a44;
+	color: #182337;
 }
 
 /* 시스템 환경설정 */
@@ -1171,7 +1135,7 @@ table.student_manage_table td:first-child {
 
 .set_wrap p.tit {
 	font-size: 18px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 	padding-left: 35px;
 	margin-bottom: 20px;
@@ -1191,7 +1155,7 @@ table.student_manage_table td:first-child {
 
 .set_wrap .setting p.info {
 	font-size: 14px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 500;
 	letter-spacing: -0.05em;
 	line-height: 160%;
@@ -1213,7 +1177,7 @@ table.student_manage_table td:first-child {
 	margin-right: 45px;
 	line-height: 38px;
 	font-size: 14px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 400;
 }
 
@@ -1235,7 +1199,7 @@ table.student_manage_table td:first-child {
 	width: 75px;
 	height: 38px;
 	padding: 0 8px 0 20px;
-	color: #373a44;
+	color: #182337;
 	border-radius: 5px;
 	background: #fff;
 	border: 1px solid #ccc;
@@ -1243,8 +1207,13 @@ table.student_manage_table td:first-child {
 	color: #000;
 }
 
+.set_wrap .input .select_input .edd-head,
+.set_wrap .input .select_input .edd-value {
+	height: 38px;
+	line-height: 38px;
+}
 .set_wrap .input .select_input .edd-arrow {
-	top: calc(50% - 9px);
+	top: calc(50% - 5px);
 }
 
 .set_wrap .input .select_input input[type="number"] {
@@ -1282,7 +1251,6 @@ table.student_manage_table td:first-child {
 	width: 300px;
 	background: #f7f7f7;
 	border-radius: 10px;
-	overflow: hidden;
 	padding: 35px 40px;
 	min-height: 453px;
 }
@@ -1332,7 +1300,7 @@ table.student_manage_table td:first-child {
 	font-size: 12px;
 	color: #fff;
 	font-weight: 600;
-	background: #373a44;
+	background: #364969;
 	margin-left: 5px;
 }
 
@@ -1362,7 +1330,7 @@ table.student_manage_table td:first-child {
 
 .search_student .right_wrap p.tit {
 	font-size: 23px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 	letter-spacing: -1px;
 	margin-bottom: 20px;
@@ -1396,12 +1364,12 @@ table.student_manage_table td:first-child {
 }
 
 .search_student .right_wrap .section_btn .btn.reset {
-	color: #373a44;
-	border: 1px solid #373a44;
+	color: #182337;
+	border: 1px solid #364969;
 }
 
 .search_student .right_wrap .section_btn .btn.reset:hover {
-	background: #373a44;
+	background: #364969;
 	color: #fff;
 	transition-duration: 0.3s;
 }
@@ -1430,8 +1398,8 @@ table.student_manage_table td:first-child {
 
 .search_student .tsearch input[type="submit"] {
 	float: left;
-	background: #373a44;
-	border: 1px solid #373a44;
+	background: #364969;
+	border: 1px solid #364969;
 	color: #fff;
 	border-radius: 5px;
 	height: 33px;
@@ -1595,7 +1563,7 @@ table.work_time {
 	clear: both;
 	width: 100%;
 	border-collapse: collapse;
-	color: #373a44;
+	color: #182337;
 	font-size: 12px;
 	font-weight: 500;
 	border-bottom: 1px solid #bcbfc7;
@@ -1704,7 +1672,6 @@ table.work_time thead th {
 	text-align: center;
 }
 .join_add_wrap .input_area {
-	/* width: 350px; */
 	padding: 160px 40px 40px 40px;
 	margin: 50px auto;
 	border: 1px solid #ddd;
@@ -1712,7 +1679,6 @@ table.work_time thead th {
 	font-size: 14px;
 	background: url(/global/img/join_ico.gif) no-repeat center 45px;
 	display: inline-block;
-	/* text-align: center; */
 }
 .join_add_wrap .input_area .box {
 	text-align: left;
@@ -1720,7 +1686,7 @@ table.work_time thead th {
 }
 .join_add_wrap .input_area .box label {
 	display: block;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 	margin-bottom: 4px;
 }
@@ -1735,7 +1701,7 @@ table.work_time thead th {
 	border-radius: 7px;
 	padding: 0 15px;
 	margin-bottom: 7px;
-	color: #373a44;
+	color: #182337;
 	font-size: 13px;
 	font-weight: 600;
 }
@@ -1775,8 +1741,6 @@ table.work_time thead th {
 /********************* POPUP *********************/
 .popup {
 	padding: 40px;
-	/* background: #fff;
-	border-radius: 100px; */
 	overflow: hidden;
 }
 
@@ -1786,12 +1750,10 @@ table.work_time thead th {
 	top: 12px;
 	cursor: pointer;
 	z-index: 10;
-	width:15px;
+	width: 15px;
 	height: 15px;
 	background: url(/global/img/modalClose_ico.png) no-repeat 50% center;
 }
-
-
 
 .popup p.tit {
 	font-size: 25px;
@@ -1837,7 +1799,7 @@ table.work_time thead th {
 }
 
 .popup .btn_area .bbtn.darkGray {
-	background: #373a44;
+	background: #364969;
 }
 
 .popup .btn_area .bbtn.red {
@@ -1846,7 +1808,7 @@ table.work_time thead th {
 
 .popup .btn_area .bbtn.white {
 	background: #fff;
-	color: #373a44;
+	color: #182337;
 	border: 1px solid #d7d9e1;
 }
 
@@ -1882,7 +1844,7 @@ table.work_time thead th {
 }
 
 .popup .scroll_area::-webkit-scrollbar-thumb {
-	background-color: #373a44;
+	background-color: #182337;
 	border-radius: 10px;
 }
 
@@ -1895,7 +1857,7 @@ table.work_time thead th {
 .popup.restriction {
 	width: 430px;
 	text-align: center;
-	color: #373a44;
+	color: #182337;
 }
 
 .popup.restriction p.tit {
@@ -1904,10 +1866,6 @@ table.work_time thead th {
 
 .popup.restriction p.txt {
 	font-size: 16px;
-	/* letter-spacing: -1px; */
-	/* margin-bottom: 20px; */
-	/* border-bottom: 1px solid #ddd; */
-	/* padding-bottom: 30px; */
 }
 
 .popup.restriction p.date {
@@ -1930,7 +1888,7 @@ table.work_time thead th {
 
 .popup.restriction p.txt span.name {
 	text-decoration: underline;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 }
 
@@ -1944,7 +1902,6 @@ table.work_time thead th {
 }
 
 .popup.restriction textarea:-moz-read-only {
-	/* For Firefox */
 	background-color: #f1f1f1;
 }
 
@@ -1998,7 +1955,7 @@ table.work_time thead th {
 .popup.approval .tit_area p.person {
 	float: right;
 	font-size: 14px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 }
 
@@ -2054,7 +2011,7 @@ table.pop_table3 {
 	border-collapse: collapse;
 	text-align: center;
 	font-size: 13px;
-	border-top: 1px solid #373a44;
+	border-top: 1px solid #364969;
 }
 
 table.pop_table3 th,
@@ -2149,7 +2106,7 @@ table.pop_table3 td {
 .popup.enrol {
 	width: 500px;
 	text-align: left;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 }
 
@@ -2192,7 +2149,7 @@ table.pop_table3 td {
 .top_tit p.name {
 	float: right;
 	padding: 8px 20px;
-	background: #373a44;
+	background: #364969;
 	color: #fff;
 	border-radius: 5px;
 	font-size: 13px;
@@ -2297,7 +2254,7 @@ table.pop_table3 td {
 }
 
 .popup.not_attend .scroll_area {
-	height:425px;
+	height: 425px;
 }
 
 .popup.not_attend .left_wrap,
@@ -2322,7 +2279,6 @@ table.pop_table3 td {
 }
 
 /* 출석결과 입력 [파일업로드]*/
-
 .filebox {
 	margin-top: 15px;
 }
@@ -2577,7 +2533,7 @@ ul.img_file li p.file_name:hover {
 	left: 30px;
 	bottom: 2px;
 	font-size: 14px;
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 }
 
@@ -2594,8 +2550,8 @@ ul.img_file li p.file_name:hover {
 	position: relative;
 }
 .popup.regist .edd-root {
-	height:42px;
-	line-height:42px;
+	height: 42px;
+	line-height: 42px;
 }
 .popup.regist table {
 	font-size: 12px;
@@ -2708,10 +2664,6 @@ ul.img_file li p.file_name:hover {
 	width: 615px;
 }
 
-/* .popup.semester .calendar.modal {
-	left:50%;
-	margin-left:-145px;
-} */
 .popup.semester .top_select {
 	position: absolute;
 	top: 40px;
@@ -2730,7 +2682,7 @@ ul.img_file li p.file_name:hover {
 	font-size: 13px;
 	width: 85px;
 	padding: 5px 10px 5px 20px;
-	color: #373a44;
+	color: #182337;
 	border-radius: 5px;
 	border: 1px solid #ccc;
 	line-height: 28px;
@@ -2747,7 +2699,7 @@ ul.img_file li p.file_name:hover {
 	line-height: 43px;
 	border-radius: 5px;
 	padding: 0 16px;
-	background: #373a44;
+	background: #364969;
 	color: #fff;
 	font-size: 13px;
 }
@@ -2786,6 +2738,7 @@ ul.img_file li p.file_name:hover {
 	font-size: 13px;
 	border-radius: 5px;
 	font-family: "Lato", sans-serif;
+	border: 1px solid #ededed;
 	-webkit-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	-moz-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
@@ -2804,10 +2757,10 @@ ul.img_file li p.file_name:hover {
 	cursor: pointer;
 	display: inline-block;
 	text-align: center;
-	border: 1px solid #373a44;
+	border: 1px solid #364969;
 	border-radius: 3px;
 	font-size: 12px;
-	color: #373a44;
+	color: #182337;
 	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
@@ -2817,15 +2770,14 @@ ul.img_file li p.file_name:hover {
 }
 
 .setting_btn_wrap div.gray {
-	background: #373a44;
+	background: #364969;
 	color: #fff;
-	border: 1px solid #373a44;
+	border: 1px solid #364969;
 }
 
 .setting_btn_wrap div.save {
 	float: right;
 	padding-left: 18px;
-	/* background: #fff url(/global/img/setting_save_btn.png) no-repeat 38px 50%; */
 }
 .setting_btn_wrap div.save:hover {
 	background-color: #f5f5f5;
@@ -2919,7 +2871,7 @@ ul.img_file li p.file_name:hover {
 	color: #fff;
 	font-weight: 600;
 	border: none;
-	background: #373a44;
+	background: #364969;
 }
 
 /* 환경설정 - 학기 기간 조회 */
@@ -2999,7 +2951,7 @@ ul.img_file li p.file_name:hover {
 	padding: 0 10px;
 }
 .account_insert table td p {
-	color: #373a44;
+	color: #182337;
 	font-weight: 600;
 	margin-bottom: 5px;
 	text-align: left;
@@ -3038,11 +2990,11 @@ ul.img_file li p.file_name:hover {
 	width: 170px;
 	border: 1px solid #ced9e0;
 	border-radius: 5px;
-	color: #373a44;
+	color: #182337;
 }
 .account_insert table td input:focus {
 	outline: none !important;
-	border: 1px solid #373a44;
+	border: 1px solid #364969;
 	transition-duration: 0.3s;
 }
 .account_insert .btn_area {
@@ -3167,7 +3119,7 @@ ul.img_file li p.file_name:hover {
 
 .modal_notice button {
 	position: absolute;
-	background: #373a44;
+	background: #364969;
 	color: #fff;
 	border: none;
 	padding: 15px;
@@ -3204,12 +3156,40 @@ ul.img_file li p.file_name:hover {
 	color: #fff;
 	font-weight: 600;
 	margin: 0 3px;
-	background: #373a44;
+	background: #364969;
 	border: none;
 }
 
 .del_modal button.ok {
 	background: #e2574c;
+}
+
+/* 스케줄 목록 저장, 예약 목록 저장*/
+.save_exInfo {
+	height: 22px;
+	line-height: 22px;
+	padding: 10px 10px 10px 50px;
+	background: #fff4e8 url(/global/img/save_exInfo_ico.png) no-repeat 15px 50%;
+	color: #e48d23;
+	font-size: 13px;
+	font-weight: 500;
+	border-radius: 5px;
+	margin-top: 11px;
+	border: 1px solid #ffae27;
+}
+
+/* 스케줄 목록 저장, 예약 목록 저장*/
+.save_exInfo {
+	height: 22px;
+	line-height: 22px;
+	padding: 10px 10px 10px 50px;
+	background: #fff4e8 url(/global/img/save_exInfo_ico.png) no-repeat 15px 50%;
+	color: #e48d23;
+	font-size: 13px;
+	font-weight: 500;
+	border-radius: 5px;
+	margin-top: 11px;
+	border: 1px solid #ffae27;
 }
 
 /********************* DEFAULT *********************/
@@ -3235,7 +3215,7 @@ ul.img_file li p.file_name:hover {
 	border: 1px solid #cbcbd2;
 	border-radius: 3px;
 	font-size: 12px;
-	color: #373a44;
+	color: #182337;
 	min-width: 75px;
 	height: 35px;
 	line-height: 35px;
@@ -3250,9 +3230,9 @@ ul.img_file li p.file_name:hover {
 }
 
 .table_btn .darkGray {
-	background: #373a44;
+	background: #364969;
 	color: #fff;
-	border: 1px solid #373a44;
+	border: 1px solid #364969;
 }
 
 .table_btn .darkGray:hover {
@@ -3268,7 +3248,7 @@ ul.tab {
 ul.tab li {
 	cursor: pointer;
 	float: left;
-	border: 1px solid #373a44;
+	border: 1px solid #364969;
 	background: #fff;
 	font-size: 13px;
 	box-sizing: border-box;
@@ -3280,7 +3260,7 @@ ul.tab li {
 
 ul.tab li.on,
 ul.tab li:hover {
-	background: #373a44;
+	background: #364969;
 	transition-duration: 0.3s;
 	color: #fff;
 }
@@ -3359,7 +3339,7 @@ ul.tab.no5 li {
 }
 
 .check_box .check_box_input input[type="checkbox"]:checked + label {
-	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
+	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
 	float: left;
 }
 
@@ -3421,7 +3401,7 @@ ul.tab.no5 li {
 }
 
 .table_check input[type="checkbox"]:checked + label {
-	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
+	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
 }
 
 .table_check input[type="checkbox"] + label > span {
@@ -3484,4 +3464,144 @@ ul.tab.no5 li {
 
 .hover_off {
 	display: none;
+}
+
+/* 게시판 글쓰기, 글보기*/
+.popup.board {
+	width: 900px;
+}
+.popup.board p.tit {
+	margin-bottom: 30px;
+}
+.popup.board .board_form_row {
+	width: 100%;
+	margin-bottom: 10px;
+}
+.popup.board .board_form_row p {
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 3px;
+}
+.popup.board .board_form_row input[type="text"],
+.popup.board .board_form_row textarea {
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 15px 20px;
+	outline: none;
+	font-size: 13px;
+	color: #333;
+}
+.popup.board .board_form_row input[type="text"]::placeholder,
+.popup.board .board_form_row textarea::placeholder {
+	color: #a5a5a5;
+	font-size: 13px;
+}
+
+.popup.board .board_form_row textarea {
+	height: 400px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-right: 10px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar {
+	width: 5px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar-thumb {
+	background-color: #373a44;
+	border-radius: 10px;
+}
+.popup.board .board_form_row textarea::-webkit-scrollbar-track {
+	background-color: #e1e1ea;
+	border-radius: 10px;
+}
+.board_file_row {
+	width: 100%;
+	display: inline-block;
+	border: 1px solid #ccc;
+	background: #f5f5f5;
+	border-radius: 5px; /* height: 160px; */
+	font-size: 13px;
+}
+.board_file_row .tit {
+	float: left;
+	width: 200px;
+	text-align: center;
+	min-height: 160px;
+	line-height: 160px;
+	background: #fff;
+	border-right: 1px solid #ccc; /* height: 100%; */
+}
+.file_area {
+	width: 679px;
+	display: inline-block;
+	margin: 20px 0 0 20px;
+}
+.file_area ul {
+	float: left;
+	width: 535px;
+	margin-left: 15px;
+}
+.file_area ul li {
+	float: left;
+	height: 37px;
+	line-height: 37px;
+	padding: 0 15px;
+	width: 225px;
+	background: #fff;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	margin: 0 0 5px 10px;
+	overflow: hidden;
+}
+.file_area ul li span {
+	display: inline-block;
+	font-size: 12px;
+	color: #666;
+	display: inline-block;
+	width: 180px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.file_area ul li .del_btn {
+	float: right;
+	cursor: pointer;
+	margin-top: 13px;
+}
+.file_area .filebox {
+	float: left;
+}
+.file_area .filebox label {
+	display: inline-block;
+	padding: 8px 25px;
+	color: #fff;
+	font-size: inherit;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #34bcad;
+	cursor: pointer;
+	border: 1px solid #2eb1a1;
+	border-radius: 0.25em;
+	-webkit-transition: background-color 0.2s;
+	transition: background-color 0.2s;
+}
+
+.file_area .filebox label:hover {
+	background-color: #2fb1a2;
+}
+
+.file_area .filebox label:active {
+	background-color: #2fb1a2;
+}
+
+.file_area .filebox input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
 }
