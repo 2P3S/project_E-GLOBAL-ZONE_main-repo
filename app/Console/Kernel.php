@@ -55,8 +55,7 @@ class Kernel extends ConsoleKernel
                     $schedule->update([
                         'sch_state_of_permission' => true,
                     ]);
-                }
-                // 예약 한국인 학생이 있을 경우 결과 지연 입력 횟수 증가
+                } // 예약 한국인 학생이 있을 경우 결과 지연 입력 횟수 증가
                 else {
                     $tmp_student_foreigner = Student_foreigner::find($schedule['std_for_id']);
 
@@ -66,15 +65,24 @@ class Kernel extends ConsoleKernel
                 }
             }
             // -->>
+        })->daily();
+
+        $schedule->call(function () {
+            // 환경변수
+            $setting_obj = new Preference();
+            $setting_values = $setting_obj->getPreference();
 
             // <<-- 예약 미승인 횟수 카운팅
-            $now_date = date("Y-m-d");
+            $reservation_due_period = $setting_values['res_end_period'] - 1;
+            $reservation_due_date = date("Y-m-d", strtotime("-{$reservation_due_period} days"));
+
+//            $now_date = date("Y-m-d");
 
             $student_foreigners = ScheduleList::select('sch_id', 'std_for_id')
                 ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
                 ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
                 ->where('res_state_of_permission', 0)
-                ->whereDate('sch_start_date', '=', $now_date)
+                ->whereDate('sch_start_date', '=', $reservation_due_date)
                 ->groupBy('sch_id')
                 ->get();
 
@@ -86,7 +94,7 @@ class Kernel extends ConsoleKernel
                 ]);
             }
             // -->>
-        })->dailyAt('00:00');
+        })->daily();
     }
 
     /**
