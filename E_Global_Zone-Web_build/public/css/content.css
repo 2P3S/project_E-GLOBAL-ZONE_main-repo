@@ -3479,14 +3479,20 @@ ul.tab.no5 li {
 }
 .popup.board .board_form_row input[type="text"],
 .popup.board .board_form_row textarea {
-	width: 100%;
+	width: 857px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	padding: 15px 20px;
 	outline: none;
 	font-size: 13px;
 	color: #333;
+	border:1px solid #ddd;
 }
+.popup.board .board_form_row .rdw-editor-main {overflow-x:hidden; }
+.popup.board .board_form_row .rdw-editor-toolbar,
+.popup.board .board_form_row .rdw-dropdown-selectedtext {border:1px solid #ddd;}
+.popup.board .board_form_row .rdw-option-wrapper {border:1px solid #ddd; min-width:27px;}
+.notranslate {border:1px solid #ddd; padding:0 15px;}
 .popup.board .board_form_row input[type="text"]::placeholder,
 .popup.board .board_form_row textarea::placeholder {
 	color: #a5a5a5;
