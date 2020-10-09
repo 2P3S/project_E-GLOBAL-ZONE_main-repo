@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -204,6 +203,12 @@ Route::middleware('auth.multi')->group(static function () {
             Route::get('foreigner/sect/{sect_id}', 'DataExportController@export_std_for_by_section');
             Route::get('schedule', 'DataExportController@export_sch_by_date');
             Route::get('reservation', 'DataExportController@export_res_by_date');
+        });
+        // -->>
+
+        // <<-- DataExportImg : 결과 이미지 Zip 저장
+        Route::prefix('export')->group(function () {
+            Route::get("result/{sect_id}", "DataExportController@export_result_img");
         });
         // -->>
 
