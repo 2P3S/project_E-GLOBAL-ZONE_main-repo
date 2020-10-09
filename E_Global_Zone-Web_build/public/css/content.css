@@ -63,6 +63,7 @@ body {
 
 .head .head_area .menu {
 	float: right;
+	/* margin-top: 28px; */
 }
 
 .head .head_area .menu li {
@@ -91,6 +92,20 @@ body {
 	font-weight: 600;
 }
 
+.head .head_area .menu li div.logout {
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 0 0 10px;
+	border: 1px solid #ddd;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 15px;
+	font-size: 14px;
+	border-radius: 100px;
+	background: #fff;
+	font-weight: 600;
+	color: #364969;
+}
 .head .head_area .menu li .edd-root {
 	color: #fff;
 	font-weight: 600;
@@ -2347,7 +2362,7 @@ table.pop_table3 td {
 	cursor: pointer;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
-	width: 40px;
+	width: 85px;
 	text-align: center;
 	font-size: 12px;
 	margin-left: 6px;
@@ -2366,7 +2381,7 @@ table.pop_table3 td {
 	border-radius: 5px;
 	font-size: 13px;
 	overflow: hidden;
-	width: 280px;
+	width: 295px;
 	font-weight: 600;
 }
 
@@ -2425,10 +2440,10 @@ table.pop_table3 td {
 }
 
 .student_list ul li .edd-root {
-	width: 76px;
+	width: 112px;
 	height: 32px;
 	line-height: 32px;
-	margin: 18px 0 0 18px;
+	margin: 18px 0 0 20px;
 	padding: 0;
 	border: 1px solid #34bcad;
 	border-radius: 3px;
@@ -2473,11 +2488,11 @@ table.pop_table3 td {
 /* [유학생] 출석결과 입력, 신청 학생 명단보기 동일 */
 .popup.list {
 	position: relative;
-	width: 390px;
+	width: 450px;
 }
 
 .popup.list .student_list ul li {
-	width: 176px;
+	width: 207px;
 }
 
 .popup.list .attend_rate {
