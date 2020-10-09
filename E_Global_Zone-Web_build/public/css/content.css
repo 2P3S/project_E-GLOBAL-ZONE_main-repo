@@ -2935,7 +2935,7 @@ ul.img_file li p.file_name:hover {
 
 /* 환경설정 - 학기 기간 조회 */
 .popup.inquiry {
-	width: 555px;
+	width: 600px;
 	position: relative;
 }
 
@@ -3550,6 +3550,22 @@ ul.tab.no5 li {
 	outline: none;
 	font-size: 13px;
 	color: #333;
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-editor-main {
+	overflow-x: hidden;
+}
+.popup.board .board_form_row .rdw-editor-toolbar,
+.popup.board .board_form_row .rdw-dropdown-selectedtext {
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-option-wrapper {
+	border: 1px solid #ddd;
+	min-width: 27px;
+}
+.notranslate {
+	border: 1px solid #ddd;
+	padding: 0 15px;
 }
 .popup.board .board_form_row input[type="text"]::placeholder,
 .popup.board .board_form_row textarea::placeholder {
@@ -3664,4 +3680,16 @@ ul.tab.no5 li {
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 	border: 0;
+}
+.table_down_btn {
+	padding: 0px 15px;
+	height: 32px;
+	line-height: 35px;
+	font-size: 12px;
+	color: #222;
+	border-radius: 100px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	font-weight: 600;
+	cursor: pointer;
 }
