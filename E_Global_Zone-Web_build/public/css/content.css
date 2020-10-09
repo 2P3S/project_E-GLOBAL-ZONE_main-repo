@@ -68,9 +68,17 @@ body {
 
 .head .head_area .menu li {
 	float: left;
-	margin-left: 15px;
+	margin-left:35px;
 	height: 80px;
 	line-height: 80px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	letter-spacing: -1px;
+}
+
+.head .head_area .menu li a {
+	
 	font-size: 16px;
 	font-weight: 600;
 	color: #fff;
