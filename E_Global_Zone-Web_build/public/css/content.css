@@ -68,7 +68,7 @@ body {
 
 .head .head_area .menu li {
 	float: left;
-	margin-left:80px;
+	margin-left: 80px;
 }
 
 .head .head_area .menu li a {
@@ -1217,8 +1217,8 @@ table.student_manage_table td:first-child {
 }
 .set_wrap .input .select_input .edd-head,
 .set_wrap .input .select_input .edd-value {
-	height:38px;
-	line-height:38px;
+	height: 38px;
+	line-height: 38px;
 }
 
 .set_wrap .input .select_input .edd-arrow {
@@ -2747,7 +2747,7 @@ ul.img_file li p.file_name:hover {
 	font-size: 13px;
 	border-radius: 5px;
 	font-family: "Lato", sans-serif;
-	border:1px solid #ededed;
+	border: 1px solid #ededed;
 	-webkit-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	-moz-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
@@ -2885,7 +2885,7 @@ ul.img_file li p.file_name:hover {
 
 /* 환경설정 - 학기 기간 조회 */
 .popup.inquiry {
-	width: 555px;
+	width: 600px;
 	position: relative;
 }
 
@@ -3175,13 +3175,13 @@ ul.img_file li p.file_name:hover {
 
 /* 스케줄 목록 저장, 예약 목록 저장*/
 .save_exInfo {
-	height:22px;
-	line-height:22px;
+	height: 22px;
+	line-height: 22px;
 	padding: 10px 10px 10px 50px;
 	background: #fff4e8 url(/global/img/save_exInfo_ico.png) no-repeat 15px 50%;
 	color: #e48d23;
-	font-size:13px;
-	font-weight:500;
+	font-size: 13px;
+	font-weight: 500;
 	border-radius: 5px;
 	margin-top: 11px;
 	border: 1px solid #ffae27;
@@ -3486,13 +3486,23 @@ ul.tab.no5 li {
 	outline: none;
 	font-size: 13px;
 	color: #333;
-	border:1px solid #ddd;
+	border: 1px solid #ddd;
 }
-.popup.board .board_form_row .rdw-editor-main {overflow-x:hidden; }
+.popup.board .board_form_row .rdw-editor-main {
+	overflow-x: hidden;
+}
 .popup.board .board_form_row .rdw-editor-toolbar,
-.popup.board .board_form_row .rdw-dropdown-selectedtext {border:1px solid #ddd;}
-.popup.board .board_form_row .rdw-option-wrapper {border:1px solid #ddd; min-width:27px;}
-.notranslate {border:1px solid #ddd; padding:0 15px;}
+.popup.board .board_form_row .rdw-dropdown-selectedtext {
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-option-wrapper {
+	border: 1px solid #ddd;
+	min-width: 27px;
+}
+.notranslate {
+	border: 1px solid #ddd;
+	padding: 0 15px;
+}
 .popup.board .board_form_row input[type="text"]::placeholder,
 .popup.board .board_form_row textarea::placeholder {
 	color: #a5a5a5;
@@ -3606,4 +3616,16 @@ ul.tab.no5 li {
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 	border: 0;
+}
+.table_down_btn {
+	padding: 0px 15px;
+	height: 32px;
+	line-height: 35px;
+	font-size: 12px;
+	color: #222;
+	border-radius: 100px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	font-weight: 600;
+	cursor: pointer;
 }

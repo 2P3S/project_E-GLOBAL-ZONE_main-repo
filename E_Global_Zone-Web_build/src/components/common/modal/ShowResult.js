@@ -3,6 +3,7 @@ import {
 	getAdminScheduleUnapproved,
 	patchAdminScheduleApproval,
 	getAdminScheduleImage,
+	patchAdminScheduleUpdate,
 } from "../../../api/admin/schedule";
 import Modal from "./Modal";
 import useModal from "../../../modules/hooks/useModal";
@@ -25,6 +26,11 @@ export default function PermissionScheduleResult({
 	useEffect(() => {
 		getAdminScheduleUnapproved(date, 1).then((res) => {
 			setData(res.data);
+			res.data.data.forEach((v, i) => {
+				if (sch_id) {
+					v.sch_id === sch_id && setSelectIndex(i);
+				}
+			});
 			setLoading(false);
 		});
 		return reRender;
@@ -128,7 +134,14 @@ export default function PermissionScheduleResult({
 														name="catgo"
 														className="dropdown"
 														id={`${v.std_kor_id}`}
-														disabled
+														onChange={(e) => {
+															// console.log(data.data[selectIndex]);
+															patchAdminScheduleUpdate(
+																data.data[selectIndex].sch_id,
+																{ std_kor_id: v.std_kor_id }
+															);
+														}}
+														// disabled
 													>
 														<option
 															value="attendance"
