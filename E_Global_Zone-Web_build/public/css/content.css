@@ -2440,7 +2440,7 @@ table.pop_table3 td {
 }
 
 .student_list ul li .edd-root {
-	width: 112px;
+	width: 70px;
 	height: 32px;
 	line-height: 32px;
 	margin: 18px 0 0 20px;
@@ -2502,6 +2502,10 @@ table.pop_table3 td {
 
 .popup.list .btn_area {
 	margin-top: 50px;
+}
+
+.popup.list .student_list ul li .edd-root {
+	width: 112px;
 }
 
 .popup.not_attend .btn_area {
