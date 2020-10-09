@@ -63,26 +63,75 @@ body {
 
 .head .head_area .menu {
 	float: right;
-	margin-top: 28px;
+	/* margin-top: 28px; */
 }
 
 .head .head_area .menu li {
 	float: left;
-	margin-left: 80px;
+	margin-left:35px;
+	height: 80px;
+	line-height: 80px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	letter-spacing: -1px;
 }
 
 .head .head_area .menu li a {
+	
 	font-size: 16px;
-	color: #fff;
 	font-weight: 600;
+	color: #fff;
 	letter-spacing: -1px;
 }
+
 .head .head_area .menu li div {
-	font-size: 16px;
+	cursor: pointer;
+}
+
+.head .head_area .menu li span {
+	font-weight: 600;
+}
+
+.head .head_area .menu li div.logout {
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 0 0 10px;
+	border: 1px solid #ddd;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 15px;
+	font-size: 14px;
+	border-radius: 100px;
+	background: #fff;
+	font-weight: 600;
+	color: #364969;
+}
+.head .head_area .menu li .edd-root {
 	color: #fff;
 	font-weight: 600;
 	letter-spacing: -1px;
 	cursor: pointer;
+	margin-top: 18px;
+	border-radius: 5px;
+	border: 1px solid #25344c;
+	background: #2e4161;
+	width: 170px;
+}
+.head .head_area .menu li .edd-value {
+	font-size:15px;
+}
+.head .head_area .menu li .edd-arrow {
+	top:calc(50% - 10px);
+}
+
+.head .head_area .menu li .edd-option {
+	font-size: 14px;
+	color: #222;
+	font-weight: 600;
+	letter-spacing: -1px;
+	cursor: pointer;
+	padding: 6px 10px 6px 25px;
 }
 .head .head_area .menu li .edd-option {
 	font-size: 16px;
@@ -2319,7 +2368,7 @@ table.pop_table3 td {
 	cursor: pointer;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
-	width: 40px;
+	width: 85px;
 	text-align: center;
 	font-size: 12px;
 	margin-left: 6px;
@@ -2338,7 +2387,7 @@ table.pop_table3 td {
 	border-radius: 5px;
 	font-size: 13px;
 	overflow: hidden;
-	width: 280px;
+	width: 295px;
 	font-weight: 600;
 }
 
@@ -2397,10 +2446,10 @@ table.pop_table3 td {
 }
 
 .student_list ul li .edd-root {
-	width: 76px;
+	width: 112px;
 	height: 32px;
 	line-height: 32px;
-	margin: 18px 0 0 18px;
+	margin: 18px 0 0 20px;
 	padding: 0;
 	border: 1px solid #34bcad;
 	border-radius: 3px;
@@ -2445,11 +2494,11 @@ table.pop_table3 td {
 /* [유학생] 출석결과 입력, 신청 학생 명단보기 동일 */
 .popup.list {
 	position: relative;
-	width: 390px;
+	width: 450px;
 }
 
 .popup.list .student_list ul li {
-	width: 176px;
+	width: 207px;
 }
 
 .popup.list .attend_rate {

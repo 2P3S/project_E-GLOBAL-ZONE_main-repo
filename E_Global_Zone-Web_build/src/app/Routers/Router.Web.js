@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { selectToday } from "../../redux/confSlice/confSlice";
 import { selectUser } from "../../redux/userSlice/userSlice";
 import ModifySection from "../../routes/Web/Manager/Section/ModifySection";
+import Notice from "../../routes/Web/Manager/Notice/Notice";
 
 /**
  * ManagerRouter - Router for Manager
@@ -43,6 +44,7 @@ export function ManagerRouter() {
 					{/* category => foreigner, Korean */}
 
 					<Route exact path="/settings" component={Settings} />
+					<Route exact path="/notice" component={Notice} />
 
 					<Route exact path="/section/:sect_id/:std_for_id" component={Section} />
 					<Route
