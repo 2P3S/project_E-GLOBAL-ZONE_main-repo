@@ -125,6 +125,13 @@ body {
 	cursor: pointer;
 	padding: 6px 10px 6px 25px;
 }
+.head .head_area .menu li .edd-option {
+	font-size: 16px;
+	color: black;
+	font-weight: 600;
+	letter-spacing: -1px;
+	cursor: pointer;
+}
 
 /********************* CONTENT *********************/
 .wrapper {

@@ -49,7 +49,9 @@ export default function Header() {
 			<div className="head_area" style={{ overflow: "visible" }}>
 				<div className="logo">
 					<Link to="/">
+
 						<img src="/global/img/logo.gif" alt="영진전문대학교 글로벌존 로고" />
+
 						{/* 
 							/global/img/logo_globalzone.gif 글로벌존 로고
 							/global/img/logo_globalcenter.gif 글로벌센터 로고
@@ -90,6 +92,62 @@ export default function Header() {
 					</ul>
 				) : (
 					<ul className="menu">
+						<li>
+							<select
+								name="catgo"
+								className="dropdown"
+								onChange={(e) => {
+									console.log(e.target.value);
+									window.localStorage.setItem("global-zone-lang", e.target.value);
+									window.location.reload();
+								}}
+							>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "kor"
+									}
+									value="kor"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.korean
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "eng"
+									}
+									value="eng"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.english
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "jp"
+									}
+									value="jp"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.japanese
+									}
+								</option>
+								<option
+									selected={
+										window.localStorage.getItem("global-zone-lang") === "cn"
+									}
+									value="cn"
+								>
+									{
+										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
+											.language.chinese
+									}
+								</option>
+							</select>
+						</li>
 						<li>
 							<div
 								onClick={() => {
