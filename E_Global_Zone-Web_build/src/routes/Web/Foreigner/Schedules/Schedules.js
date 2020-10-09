@@ -331,7 +331,7 @@ export default function Schedules() {
 					p.innerText =
 						LANGUAGE[
 							window.localStorage.getItem("global-zone-lang")
-						].reseultInputComplete;
+						].resultInputComplete;
 					break;
 				case STATE_NOTHING:
 					Date.now() > new Date(sch_end_date)

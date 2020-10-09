@@ -68,7 +68,7 @@ body {
 
 .head .head_area .menu li {
 	float: left;
-	margin-left:35px;
+	margin-left: 35px;
 	height: 80px;
 	line-height: 80px;
 	font-size: 16px;
@@ -78,7 +78,6 @@ body {
 }
 
 .head .head_area .menu li a {
-	
 	font-size: 16px;
 	font-weight: 600;
 	color: #fff;
@@ -119,10 +118,10 @@ body {
 	width: 170px;
 }
 .head .head_area .menu li .edd-value {
-	font-size:15px;
+	font-size: 15px;
 }
 .head .head_area .menu li .edd-arrow {
-	top:calc(50% - 10px);
+	top: calc(50% - 10px);
 }
 
 .head .head_area .menu li .edd-option {
