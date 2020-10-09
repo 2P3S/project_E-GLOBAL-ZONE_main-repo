@@ -87,7 +87,7 @@ export const getAdminExportResult = (sect_id, sect_name) =>
 		var tempLink = document.createElement("a");
 		tempLink.style.display = "none";
 		tempLink.href = blobURL;
-		tempLink.setAttribute("download", `${sect_name} 결과사진`);
+		tempLink.setAttribute("download", `${sect_name} 결과사진.zip`);
 		document.body.appendChild(tempLink);
 		tempLink.click();
 		document.body.removeChild(tempLink);
