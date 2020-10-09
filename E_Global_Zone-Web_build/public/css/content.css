@@ -3606,7 +3606,7 @@ ul.tab.no5 li {
 	height: 37px;
 	line-height: 37px;
 	padding: 0 15px;
-	width: 225px;
+	width: 210px;
 	background: #fff;
 	border-radius: 5px;
 	border: 1px solid #ddd;
@@ -3626,10 +3626,10 @@ ul.tab.no5 li {
 .file_area ul li .del_btn {
 	float: right;
 	cursor: pointer;
-	margin-top: 13px;
 }
 .file_area .filebox {
 	float: left;
+	margin: 0;
 }
 .file_area .filebox label {
 	display: inline-block;
@@ -3644,6 +3644,7 @@ ul.tab.no5 li {
 	border-radius: 0.25em;
 	-webkit-transition: background-color 0.2s;
 	transition: background-color 0.2s;
+	width: 70px;
 }
 
 .file_area .filebox label:hover {
