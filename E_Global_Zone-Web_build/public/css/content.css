@@ -68,7 +68,11 @@ body {
 
 .head .head_area .menu li {
 	float: left;
+<<<<<<< HEAD
 	margin-left: 35px;
+=======
+	margin-left:35px;
+>>>>>>> 529f6982... Web::Header Css Fix
 	height: 80px;
 	line-height: 80px;
 	font-size: 16px;
@@ -78,6 +82,10 @@ body {
 }
 
 .head .head_area .menu li a {
+<<<<<<< HEAD
+=======
+	
+>>>>>>> 529f6982... Web::Header Css Fix
 	font-size: 16px;
 	font-weight: 600;
 	color: #fff;
