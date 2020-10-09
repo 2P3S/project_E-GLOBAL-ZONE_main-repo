@@ -93,62 +93,6 @@ export default function Header() {
 				) : (
 					<ul className="menu">
 						<li>
-							<select
-								name="catgo"
-								className="dropdown"
-								onChange={(e) => {
-									console.log(e.target.value);
-									window.localStorage.setItem("global-zone-lang", e.target.value);
-									window.location.reload();
-								}}
-							>
-								<option
-									selected={
-										window.localStorage.getItem("global-zone-lang") === "kor"
-									}
-									value="kor"
-								>
-									{
-										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-											.language.korean
-									}
-								</option>
-								<option
-									selected={
-										window.localStorage.getItem("global-zone-lang") === "eng"
-									}
-									value="eng"
-								>
-									{
-										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-											.language.english
-									}
-								</option>
-								<option
-									selected={
-										window.localStorage.getItem("global-zone-lang") === "jp"
-									}
-									value="jp"
-								>
-									{
-										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-											.language.japanese
-									}
-								</option>
-								<option
-									selected={
-										window.localStorage.getItem("global-zone-lang") === "cn"
-									}
-									value="cn"
-								>
-									{
-										LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-											.language.chinese
-									}
-								</option>
-							</select>
-						</li>
-						<li>
 							<div
 								onClick={() => {
 									postForeignerLogout().then(() => {
