@@ -36,7 +36,7 @@ export default function InsertSchedule({ closeSch }) {
 					</select>
 				</div>
 				<div className="area student">
-					<p>유학생 선택</p>
+					<p>교수 선택</p>
 					<select name="catgo3" className="dropdown">
 						<option>바라트벡 울잔</option>
 						<option>카와이 히나코</option>

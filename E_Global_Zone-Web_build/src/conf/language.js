@@ -10,7 +10,7 @@ const language = {
 				},
 				forLogin: {
 					loginBtn: "Login",
-					placeholderId: "학번을 입력해주세요.",
+					placeholderId: "교번을 입력해주세요.",
 					placeholderPw: "비밀번호를 입력해주세요",
 				},
 				adminLogin: {

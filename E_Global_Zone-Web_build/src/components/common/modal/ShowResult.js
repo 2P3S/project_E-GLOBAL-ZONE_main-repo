@@ -75,7 +75,9 @@ export default function PermissionScheduleResult({
 							<tr>
 								<th scope="col">순번</th>
 								<th scope="col">일시</th>
-								<th scope="col">유학생 이름</th>
+
+								<th scope="col">교수 이름</th>
+
 							</tr>
 						</thead>
 						<tbody>
