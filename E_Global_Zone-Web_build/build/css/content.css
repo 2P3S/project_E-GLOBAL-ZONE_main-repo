@@ -63,26 +63,74 @@ body {
 
 .head .head_area .menu {
 	float: right;
-	margin-top: 28px;
+	/* margin-top: 28px; */
 }
 
 .head .head_area .menu li {
 	float: left;
-	margin-left: 80px;
+	margin-left: 35px;
+	height: 80px;
+	line-height: 80px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	letter-spacing: -1px;
 }
 
 .head .head_area .menu li a {
 	font-size: 16px;
-	color: #fff;
 	font-weight: 600;
+	color: #fff;
 	letter-spacing: -1px;
 }
+
 .head .head_area .menu li div {
-	font-size: 16px;
+	cursor: pointer;
+}
+
+.head .head_area .menu li span {
+	font-weight: 600;
+}
+
+.head .head_area .menu li div.logout {
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 0 0 10px;
+	border: 1px solid #ddd;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 15px;
+	font-size: 14px;
+	border-radius: 100px;
+	background: #fff;
+	font-weight: 600;
+	color: #364969;
+}
+.head .head_area .menu li .edd-root {
 	color: #fff;
 	font-weight: 600;
 	letter-spacing: -1px;
 	cursor: pointer;
+	margin-top: 18px;
+	border-radius: 5px;
+	border: 1px solid #25344c;
+	background: #2e4161;
+	width: 170px;
+}
+.head .head_area .menu li .edd-value {
+	font-size: 15px;
+}
+.head .head_area .menu li .edd-arrow {
+	top: calc(50% - 10px);
+}
+
+.head .head_area .menu li .edd-option {
+	font-size: 14px;
+	color: #222;
+	font-weight: 600;
+	letter-spacing: -1px;
+	cursor: pointer;
+	padding: 6px 10px 6px 25px;
 }
 .head .head_area .menu li .edd-option {
 	font-size: 16px;
@@ -2319,7 +2367,7 @@ table.pop_table3 td {
 	cursor: pointer;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
-	width: 40px;
+	width: 85px;
 	text-align: center;
 	font-size: 12px;
 	margin-left: 6px;
@@ -2338,7 +2386,7 @@ table.pop_table3 td {
 	border-radius: 5px;
 	font-size: 13px;
 	overflow: hidden;
-	width: 280px;
+	width: 295px;
 	font-weight: 600;
 }
 
@@ -2397,10 +2445,10 @@ table.pop_table3 td {
 }
 
 .student_list ul li .edd-root {
-	width: 76px;
+	width: 70px;
 	height: 32px;
 	line-height: 32px;
-	margin: 18px 0 0 18px;
+	margin: 18px 0 0 20px;
 	padding: 0;
 	border: 1px solid #34bcad;
 	border-radius: 3px;
@@ -2445,11 +2493,11 @@ table.pop_table3 td {
 /* [유학생] 출석결과 입력, 신청 학생 명단보기 동일 */
 .popup.list {
 	position: relative;
-	width: 390px;
+	width: 450px;
 }
 
 .popup.list .student_list ul li {
-	width: 176px;
+	width: 207px;
 }
 
 .popup.list .attend_rate {
@@ -2459,6 +2507,10 @@ table.pop_table3 td {
 
 .popup.list .btn_area {
 	margin-top: 50px;
+}
+
+.popup.list .student_list ul li .edd-root {
+	width: 112px;
 }
 
 .popup.not_attend .btn_area {
@@ -2883,7 +2935,7 @@ ul.img_file li p.file_name:hover {
 
 /* 환경설정 - 학기 기간 조회 */
 .popup.inquiry {
-	width: 555px;
+	width: 600px;
 	position: relative;
 }
 
@@ -3498,6 +3550,22 @@ ul.tab.no5 li {
 	outline: none;
 	font-size: 13px;
 	color: #333;
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-editor-main {
+	overflow-x: hidden;
+}
+.popup.board .board_form_row .rdw-editor-toolbar,
+.popup.board .board_form_row .rdw-dropdown-selectedtext {
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-option-wrapper {
+	border: 1px solid #ddd;
+	min-width: 27px;
+}
+.notranslate {
+	border: 1px solid #ddd;
+	padding: 0 15px;
 }
 .popup.board .board_form_row input[type="text"]::placeholder,
 .popup.board .board_form_row textarea::placeholder {
@@ -3554,7 +3622,7 @@ ul.tab.no5 li {
 	height: 37px;
 	line-height: 37px;
 	padding: 0 15px;
-	width: 225px;
+	width: 210px;
 	background: #fff;
 	border-radius: 5px;
 	border: 1px solid #ddd;
@@ -3574,10 +3642,10 @@ ul.tab.no5 li {
 .file_area ul li .del_btn {
 	float: right;
 	cursor: pointer;
-	margin-top: 13px;
 }
 .file_area .filebox {
 	float: left;
+	margin: 0;
 }
 .file_area .filebox label {
 	display: inline-block;
@@ -3592,6 +3660,7 @@ ul.tab.no5 li {
 	border-radius: 0.25em;
 	-webkit-transition: background-color 0.2s;
 	transition: background-color 0.2s;
+	width: 70px;
 }
 
 .file_area .filebox label:hover {
@@ -3611,4 +3680,16 @@ ul.tab.no5 li {
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 	border: 0;
+}
+.table_down_btn {
+	padding: 0px 15px;
+	height: 32px;
+	line-height: 35px;
+	font-size: 12px;
+	color: #222;
+	border-radius: 100px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	font-weight: 600;
+	cursor: pointer;
 }
