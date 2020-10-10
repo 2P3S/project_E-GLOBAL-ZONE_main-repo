@@ -1,6 +1,6 @@
 # 영진전문대학교 글로벌 존 온라인 예약 시스템
 ### [YJU E-global-zone](http://global.yju.ac.kr)
-
+ 
 <p align="center">
     <a href="https://www.yju.ac.kr/" target="_blank">
         <img src="https://www.yju.ac.kr/sites/kr/masterSkin/kr_JW_MS_K2WT003_M/images/logo/m_h-logo.png" width="400">
