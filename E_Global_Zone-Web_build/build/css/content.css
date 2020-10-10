@@ -63,33 +63,74 @@ body {
 
 .head .head_area .menu {
 	float: right;
-	margin-top: 28px;
+	/* margin-top: 28px; */
 }
 
 .head .head_area .menu li {
 	float: left;
-	margin-left:80px;
+	margin-left: 35px;
+	height: 80px;
+	line-height: 80px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	letter-spacing: -1px;
 }
 
 .head .head_area .menu li a {
 	font-size: 16px;
-	color: #fff;
 	font-weight: 600;
+	color: #fff;
 	letter-spacing: -1px;
 }
+
 .head .head_area .menu li div {
-	font-size: 16px;
+	cursor: pointer;
+}
+
+.head .head_area .menu li span {
+	font-weight: 600;
+}
+
+.head .head_area .menu li div.logout {
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 0 0 10px;
+	border: 1px solid #ddd;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 15px;
+	font-size: 14px;
+	border-radius: 100px;
+	background: #fff;
+	font-weight: 600;
+	color: #364969;
+}
+.head .head_area .menu li .edd-root {
 	color: #fff;
 	font-weight: 600;
 	letter-spacing: -1px;
 	cursor: pointer;
+	margin-top: 18px;
+	border-radius: 5px;
+	border: 1px solid #40444e;
+	background: #2e313a;
+	width: 170px;
 }
+.head .head_area .menu li .edd-value {
+	font-size: 15px;
+}
+.head .head_area .menu li .edd-arrow {
+	top: calc(50% - 10px);
+}
+
 .head .head_area .menu li .edd-option {
-	font-size: 16px;
-	color: black;
+	font-size: 14px;
+	color: #222;
 	font-weight: 600;
 	letter-spacing: -1px;
 	cursor: pointer;
+	padding: 6px 10px 6px 25px;
 }
 
 /********************* CONTENT *********************/
@@ -815,6 +856,7 @@ table.sch_table tbody tr:hover td:first-child {
 	cursor: pointer;
 	padding: 0 5px;
 	outline: none;
+	font-family: "Lato", sans-serif;
 }
 #pagenation button img {
 	height: 32px;
@@ -1216,8 +1258,8 @@ table.student_manage_table td:first-child {
 }
 .set_wrap .input .select_input .edd-head,
 .set_wrap .input .select_input .edd-value {
-	height:38px;
-	line-height:38px;
+	height: 38px;
+	line-height: 38px;
 }
 
 .set_wrap .input .select_input .edd-arrow {
@@ -2320,7 +2362,7 @@ table.pop_table3 td {
 	cursor: pointer;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
-	width: 40px;
+	width: 85px;
 	text-align: center;
 	font-size: 12px;
 	margin-left: 6px;
@@ -2339,7 +2381,7 @@ table.pop_table3 td {
 	border-radius: 5px;
 	font-size: 13px;
 	overflow: hidden;
-	width: 280px;
+	width: 295px;
 	font-weight: 600;
 }
 
@@ -2398,10 +2440,10 @@ table.pop_table3 td {
 }
 
 .student_list ul li .edd-root {
-	width: 76px;
+	width: 70px;
 	height: 32px;
 	line-height: 32px;
-	margin: 18px 0 0 18px;
+	margin: 18px 0 0 20px;
 	padding: 0;
 	border: 1px solid #34bcad;
 	border-radius: 3px;
@@ -2446,11 +2488,11 @@ table.pop_table3 td {
 /* [유학생] 출석결과 입력, 신청 학생 명단보기 동일 */
 .popup.list {
 	position: relative;
-	width: 390px;
+	width: 450px;
 }
 
 .popup.list .student_list ul li {
-	width: 176px;
+	width: 207px;
 }
 
 .popup.list .attend_rate {
@@ -2460,6 +2502,10 @@ table.pop_table3 td {
 
 .popup.list .btn_area {
 	margin-top: 50px;
+}
+
+.popup.list .student_list ul li .edd-root {
+	width: 112px;
 }
 
 .popup.not_attend .btn_area {
@@ -2746,7 +2792,7 @@ ul.img_file li p.file_name:hover {
 	font-size: 13px;
 	border-radius: 5px;
 	font-family: "Lato", sans-serif;
-	border:1px solid #ededed;
+	border: 1px solid #ededed;
 	-webkit-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	-moz-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
@@ -2884,7 +2930,7 @@ ul.img_file li p.file_name:hover {
 
 /* 환경설정 - 학기 기간 조회 */
 .popup.inquiry {
-	width: 555px;
+	width: 600px;
 	position: relative;
 }
 
@@ -3174,13 +3220,13 @@ ul.img_file li p.file_name:hover {
 
 /* 스케줄 목록 저장, 예약 목록 저장*/
 .save_exInfo {
-	height:22px;
-	line-height:22px;
+	height: 22px;
+	line-height: 22px;
 	padding: 10px 10px 10px 50px;
 	background: #fff4e8 url(/global/img/save_exInfo_ico.png) no-repeat 15px 50%;
 	color: #e48d23;
-	font-size:13px;
-	font-weight:500;
+	font-size: 13px;
+	font-weight: 500;
 	border-radius: 5px;
 	margin-top: 11px;
 	border: 1px solid #ffae27;
@@ -3478,13 +3524,29 @@ ul.tab.no5 li {
 }
 .popup.board .board_form_row input[type="text"],
 .popup.board .board_form_row textarea {
-	width: 100%;
+	width: 857px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	padding: 15px 20px;
 	outline: none;
 	font-size: 13px;
 	color: #333;
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-editor-main {
+	overflow-x: hidden;
+}
+.popup.board .board_form_row .rdw-editor-toolbar,
+.popup.board .board_form_row .rdw-dropdown-selectedtext {
+	border: 1px solid #ddd;
+}
+.popup.board .board_form_row .rdw-option-wrapper {
+	border: 1px solid #ddd;
+	min-width: 27px;
+}
+.notranslate {
+	border: 1px solid #ddd;
+	padding: 0 15px;
 }
 .popup.board .board_form_row input[type="text"]::placeholder,
 .popup.board .board_form_row textarea::placeholder {
@@ -3541,7 +3603,7 @@ ul.tab.no5 li {
 	height: 37px;
 	line-height: 37px;
 	padding: 0 15px;
-	width: 225px;
+	width: 210px;
 	background: #fff;
 	border-radius: 5px;
 	border: 1px solid #ddd;
@@ -3561,10 +3623,10 @@ ul.tab.no5 li {
 .file_area ul li .del_btn {
 	float: right;
 	cursor: pointer;
-	margin-top: 13px;
 }
 .file_area .filebox {
 	float: left;
+	margin: 0;
 }
 .file_area .filebox label {
 	display: inline-block;
@@ -3579,6 +3641,7 @@ ul.tab.no5 li {
 	border-radius: 0.25em;
 	-webkit-transition: background-color 0.2s;
 	transition: background-color 0.2s;
+	width: 70px;
 }
 
 .file_area .filebox label:hover {
@@ -3598,4 +3661,16 @@ ul.tab.no5 li {
 	overflow: hidden;
 	clip: rect(0, 0, 0, 0);
 	border: 0;
+}
+.table_down_btn {
+	padding: 0px 15px;
+	height: 32px;
+	line-height: 35px;
+	font-size: 12px;
+	color: #222;
+	border-radius: 100px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	font-weight: 600;
+	cursor: pointer;
 }

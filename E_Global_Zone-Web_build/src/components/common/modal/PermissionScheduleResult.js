@@ -25,6 +25,11 @@ export default function PermissionScheduleResult({
 	useEffect(() => {
 		getAdminScheduleUnapproved(date, 0).then((res) => {
 			setData(res.data);
+			res.data.data.forEach((v, i) => {
+				if (sch_id) {
+					v.sch_id === sch_id && setSelectIndex(i);
+				}
+			});
 			setLoading(false);
 		});
 		return reRender;

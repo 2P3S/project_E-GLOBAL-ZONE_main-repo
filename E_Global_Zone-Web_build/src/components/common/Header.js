@@ -94,6 +94,23 @@ export default function Header() {
 				) : (
 					<ul className="menu">
 						<li>
+							<div
+								onClick={() => {
+									postForeignerLogout().then(() => {
+										alert(
+											LANGUAGE[
+												window.localStorage.getItem("global-zone-lang")
+											].logout
+										);
+										window.localStorage.clear();
+										window.location.replace("/");
+									});
+								}}
+							>
+								{LANGUAGE[window.localStorage.getItem("global-zone-lang")].logout}
+							</div>
+						</li>
+						<li>
 							<select
 								name="catgo"
 								className="dropdown"
@@ -148,23 +165,6 @@ export default function Header() {
 									}
 								</option>
 							</select>
-						</li>
-						<li>
-							<div
-								onClick={() => {
-									postForeignerLogout().then(() => {
-										alert(
-											LANGUAGE[
-												window.localStorage.getItem("global-zone-lang")
-											].logout
-										);
-										window.localStorage.clear();
-										window.location.replace("/");
-									});
-								}}
-							>
-								{LANGUAGE[window.localStorage.getItem("global-zone-lang")].logout}
-							</div>
 						</li>
 					</ul>
 				)}
