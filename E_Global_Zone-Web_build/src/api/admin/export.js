@@ -77,6 +77,22 @@ export const getAdminExportForeignerSect = (sect_id, sect_name) =>
 			document.body.removeChild(tempLink);
 			window.URL.revokeObjectURL(blobURL);
 		});
+export const getAdminExportResult = (sect_id, sect_name) =>
+	admin.get(`export/result/${sect_id}`, { responseType: "arraybuffer" }).then((response) => {
+		var blob = new Blob([response.data], {
+			type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;",
+		});
+
+		var blobURL = window.URL.createObjectURL(blob);
+		var tempLink = document.createElement("a");
+		tempLink.style.display = "none";
+		tempLink.href = blobURL;
+		tempLink.setAttribute("download", `${sect_name} 결과사진.zip`);
+		document.body.appendChild(tempLink);
+		tempLink.click();
+		document.body.removeChild(tempLink);
+		window.URL.revokeObjectURL(blobURL);
+	});
 export const getAdminExportKorean = () =>
 	admin.get(`export/korean`, { responseType: "arraybuffer" }).then((response) => {
 		let filename = "";

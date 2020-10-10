@@ -289,7 +289,7 @@ export default function Foreigner() {
 			<div className="content">
 				<div className="sub_title">
 					<div className="top_semester">
-						<p className="tit">유학생 관리</p>
+						<p className="tit">교수진 관리</p>
 						<p
 							className="tit"
 							style={{ marginLeft: "40px", cursor: "pointer" }}
@@ -347,7 +347,7 @@ export default function Foreigner() {
 							}}
 						>
 							<option value="std_for_name">이름</option>
-							<option value="std_for_id">학번</option>
+							<option value="std_for_id">교번</option>
 						</select>
 						<input type="text" id="term" onChange={handleSearch} />
 						<input type="submit" value="검색" onClick={handleSearch} />
@@ -433,7 +433,7 @@ export default function Foreigner() {
 													alt="즐겨찾기 기준 정렬"
 												/>
 											</th>
-											<th colSpan="3">유학생 정보</th>
+											<th colSpan="3">교수진 정보</th>
 											<th
 												colSpan={
 													dataSet && dataSet.data
@@ -484,7 +484,7 @@ export default function Foreigner() {
 											</th>
 										</tr>
 										<tr>
-											<th>학번</th>
+											<th>ID</th>
 											<th>이름</th>
 											<th
 												rowSpan="2"
@@ -726,7 +726,7 @@ export default function Foreigner() {
 								</table>
 							</div>
 						) : (
-							<>해당 학기에 등록 된 학생이 없습니다.</>
+							<>해당 학기에 등록 된 교수가 없습니다.</>
 						)
 					) : (
 						<Loader />
@@ -751,7 +751,7 @@ export default function Foreigner() {
 						>
 							연락처 정보
 						</div>
-						<div onClick={handleOpenForAdd}>근로 유학생 등록</div>
+						<div onClick={handleOpenForAdd}>학기 교수 등록</div>
 						{dataSet && moment(Date.now()).isAfter(dataSet.time.sect_start_date) ? (
 							<></>
 						) : (
@@ -773,7 +773,7 @@ export default function Foreigner() {
 								getAdminExportForeignerSect(selectSect, selectSectName);
 							}}
 						>
-							근로 유학생 목록 저장
+							학기 교수진 목록 저장
 						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>

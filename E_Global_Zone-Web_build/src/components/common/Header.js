@@ -49,10 +49,9 @@ export default function Header() {
 			<div className="head_area" style={{ overflow: "visible" }}>
 				<div className="logo">
 					<Link to="/">
-						<img
-							src="/global/img/logo_globalzone.gif"
-							alt="영진전문대학교 글로벌존 로고"
-						/>
+
+						<img src="/global/img/logo.gif" alt="영진전문대학교 글로벌존 로고" />
+
 						{/* 
 							/global/img/logo_globalzone.gif 글로벌존 로고
 							/global/img/logo_globalcenter.gif 글로벌센터 로고
@@ -68,7 +67,7 @@ export default function Header() {
 							<Link to="/students/now/korean">학생관리</Link>
 						</li>
 						<li>
-							<Link to="/students/now/foreigner">유학생관리</Link>
+							<Link to="/students/now/foreigner">교수진관리</Link>
 						</li>
 						<li>
 							<Link to="/settings">시스템 환경설정</Link>
@@ -93,6 +92,23 @@ export default function Header() {
 					</ul>
 				) : (
 					<ul className="menu">
+						<li>
+							<div
+								onClick={() => {
+									postForeignerLogout().then(() => {
+										alert(
+											LANGUAGE[
+												window.localStorage.getItem("global-zone-lang")
+											].logout
+										);
+										window.localStorage.clear();
+										window.location.replace("/");
+									});
+								}}
+							>
+								{LANGUAGE[window.localStorage.getItem("global-zone-lang")].logout}
+							</div>
+						</li>
 						<li>
 							<select
 								name="catgo"
@@ -148,23 +164,6 @@ export default function Header() {
 									}
 								</option>
 							</select>
-						</li>
-						<li>
-							<div
-								onClick={() => {
-									postForeignerLogout().then(() => {
-										alert(
-											LANGUAGE[
-												window.localStorage.getItem("global-zone-lang")
-											].logout
-										);
-										window.localStorage.clear();
-										window.location.replace("/");
-									});
-								}}
-							>
-								{LANGUAGE[window.localStorage.getItem("global-zone-lang")].logout}
-							</div>
 						</li>
 					</ul>
 				)}

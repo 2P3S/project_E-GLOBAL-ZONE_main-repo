@@ -125,7 +125,7 @@ export default function Results() {
 						<thead>
 							<tr>
 								<th scope="col">일시</th>
-								<th scope="col">유학생</th>
+								<th scope="col">교수님</th>
 							</tr>
 						</thead>
 						<tbody>
