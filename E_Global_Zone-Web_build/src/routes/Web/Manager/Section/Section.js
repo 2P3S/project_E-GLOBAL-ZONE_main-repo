@@ -218,7 +218,7 @@ export default function Section(props) {
 							<table>
 								<thead>
 									<tr>
-										<th scope="col">학번</th>
+										<th scope="col">교번</th>
 										<th scope="col">이름</th>
 										{/* <th scope="col">근무시간</th> */}
 									</tr>
@@ -256,7 +256,7 @@ export default function Section(props) {
 							<table>
 								<thead>
 									<tr>
-										<th scope="col">학번</th>
+										<th scope="col">교번</th>
 										<th scope="col">이름</th>
 										<th scope="col">삭제</th>
 									</tr>

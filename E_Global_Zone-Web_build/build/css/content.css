@@ -68,6 +68,7 @@ body {
 
 .head .head_area .menu li {
 	float: left;
+
 	margin-left: 35px;
 	height: 80px;
 	line-height: 80px;
@@ -75,6 +76,7 @@ body {
 	font-weight: 600;
 	color: #fff;
 	letter-spacing: -1px;
+
 }
 
 .head .head_area .menu li a {
@@ -3232,6 +3234,8 @@ ul.img_file li p.file_name:hover {
 	color: #e48d23;
 	font-size: 13px;
 	font-weight: 500;
+
+
 	border-radius: 5px;
 	margin-top: 11px;
 	border: 1px solid #ffae27;
