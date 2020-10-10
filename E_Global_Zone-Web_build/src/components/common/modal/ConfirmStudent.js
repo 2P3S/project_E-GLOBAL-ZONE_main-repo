@@ -79,7 +79,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 								</div>
 							</th>
 							<th scope="col">계열학과</th>
-							<th scope="col">교번</th>
+							<th scope="col">학번</th>
 							<th scope="col">이름</th>
 							<th scope="col">연락처</th>
 							<th scope="col">G Suite 계정</th>
@@ -116,7 +116,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 											onClick={() => {
 												if (
 													window.confirm(
-														`[경고]정말 삭제 하시겠습니까?\n교번 : ${v.std_kor_id}\n이름 : ${v.std_kor_name}`
+														`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_kor_id}\n이름 : ${v.std_kor_name}`
 													) === true
 												) {
 													deleteAdminKoreanAccount(v.std_kor_id).then(

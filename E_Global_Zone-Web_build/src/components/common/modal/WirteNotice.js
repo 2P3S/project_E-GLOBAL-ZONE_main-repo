@@ -36,7 +36,7 @@ export default function WirteNotice() {
 		// let file = e.target.files[0];
 	};
 	const handleSubmit = () => {
-		data.append("noti_url", "center");
+		data.append("noti_url", "zone");
 		data.append("noti_title", document.getElementById("title").value);
 		data.append("noti_content", draftToHtml(convertToRaw(editorState.getCurrentContent())));
 		console.log(noti_imgs);

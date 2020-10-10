@@ -565,7 +565,7 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
 								{countOfCh === 0 && countOfEng === 0 && countOfJp === 0 && (
-									<th style={{ height: "50px", backgroundColor: "#27354d" }}>
+									<th style={{ height: "50px", backgroundColor: "#888" }}>
 										데이터가 없습니다.
 									</th>
 								)}
