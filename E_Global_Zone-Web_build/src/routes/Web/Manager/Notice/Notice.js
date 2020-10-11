@@ -27,7 +27,7 @@ export default function Notice() {
 	} = useModal();
 	const rendering = () => {
 		setList([]);
-		getNotice({ noti_url: "zone", num_of_notice: 20, page: 1 }).then((res) => {
+		getNotice({ noti_url: "center", num_of_notice: 20, page: 1 }).then((res) => {
 			console.log(res.data.data.data);
 			setList(res.data.data.data);
 			if (res.data.last_page) {
