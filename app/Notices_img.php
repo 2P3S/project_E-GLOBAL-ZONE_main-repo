@@ -31,7 +31,6 @@ class Notices_img extends Model
             }
         } catch (Exception $e) {
             $notice->delete();
-            dd($e);
             return false;
         }
 
