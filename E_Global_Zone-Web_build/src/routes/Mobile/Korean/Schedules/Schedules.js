@@ -14,7 +14,7 @@ export default function Schedules() {
 	const [data, setData] = useState();
 	const [defaultData, setDefaultData] = useState();
 	const [dates, setDates] = useState();
-	const [setting, setSetting] = useState();
+	const [setting, setSetting] = useState({ max_std_once: "-" });
 	const [calset, setCalset] = useState(false);
 	const [pending, setPending] = useState(true);
 	const history = useHistory();
