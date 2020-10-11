@@ -42,11 +42,6 @@ export default function Settings() {
 		handleOpen: handleOpenForCreateDept,
 		handleClose: handleCloseForCreateDept,
 	} = useModal();
-	const {
-		isOpen: isOpenForWriteNotice,
-		handleOpen: handleOpenForWriteNotice,
-		handleClose: handleCloseForWriteNotice,
-	} = useModal();
 
 	const handleChange = (key, value) => {
 		setPostSettings({ ...postSettings, [key]: parseInt(value) });
@@ -465,12 +460,10 @@ export default function Settings() {
 				<div className="gray" onClick={handleOpenForGetSectIsOpen}>
 					학기 기간 조회
 				</div>
-				<div className="gray" onClick={handleOpenForWriteNotice}>
-					공지사항 작성
-				</div>
-				{/* <div className="gray" onClick={handleOpenForCreateDept}>
+
+				<div className="gray" onClick={handleOpenForCreateDept}>
 					학과 등록
-				</div> */}
+				</div>
 
 				<div
 					className="save"
@@ -483,9 +476,7 @@ export default function Settings() {
 					저장
 				</div>
 			</div>
-			<Modal isOpen={isOpenForWriteNotice} handleClose={handleCloseForWriteNotice}>
-				<WirteNotice handleClose={handleCloseForWriteNotice} />
-			</Modal>
+
 			<Modal isOpen={isOpenForCreateDept} handleClose={handleCloseForCreateDept}>
 				<CreateDept handleClose={handleCloseForCreateDept} />
 			</Modal>

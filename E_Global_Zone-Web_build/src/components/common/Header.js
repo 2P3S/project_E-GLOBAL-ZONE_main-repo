@@ -70,6 +70,9 @@ export default function Header() {
 							<Link to="/students/now/foreigner">교수진관리</Link>
 						</li>
 						<li>
+							<Link to="/notice">공지사항</Link>
+						</li>
+						<li>
 							<Link to="/settings">시스템 환경설정</Link>
 						</li>
 						<li>
