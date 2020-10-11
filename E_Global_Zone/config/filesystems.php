@@ -48,6 +48,12 @@ return [
             'root' => storage_path('app'),
         ],
 
+        /* 결과 이미지 Zip 저장 */
+        'zip' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public')
+        ],
+
         // 이미지 업로드 시스템 구성.
         'public' => [
             'driver' => 'local',
