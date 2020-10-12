@@ -565,7 +565,7 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
 								{countOfCh === 0 && countOfEng === 0 && countOfJp === 0 && (
-									<th style={{ height: "50px", backgroundColor: "#27354d" }}>
+									<th style={{ height: "50px", backgroundColor: "#888" }}>
 										데이터가 없습니다.
 									</th>
 								)}
@@ -655,47 +655,46 @@ export default function Schedules() {
 							<Loader />
 						</div>
 					)}
-					<div className="table_btn">
-						{moment(selectDate).isAfter(Date.now()) && (
-							<div
-								onClick={() => {
-									if (
-										window.confirm(
-											moment(selectDate).format("YYYY년 MM월 DD일") +
-												"의 스케줄을 삭제하시겠습니까?"
-										)
-									) {
-										deleteAdminScheduleDate({
-											date: moment(selectDate).format("YYYY-MM-DD"),
-										}).then((res) => {
-											reRender();
-										});
-									}
-								}}
-							>
-								스케줄 삭제
-							</div>
-						)}
-						<div
-							onClick={() => {
-								handleOpenForDownload();
-								setKindOfData("schedule");
-							}}
-						>
-							스케줄 목록 저장
-						</div>
-						<div
-							onClick={() => {
-								handleOpenForDownload();
-								setKindOfData("reservation");
-							}}
-						>
-							예약 목록 저장
-						</div>
-					</div>
 				</div>
 
-				<div className="table_btn">{/* <div>CSV 입력</div> */}</div>
+				<div className="table_btn">
+					{moment(selectDate).isAfter(Date.now()) && (
+						<div
+							onClick={() => {
+								if (
+									window.confirm(
+										moment(selectDate).format("YYYY년 MM월 DD일") +
+											"의 스케줄을 삭제하시겠습니까?"
+									)
+								) {
+									deleteAdminScheduleDate({
+										date: moment(selectDate).format("YYYY-MM-DD"),
+									}).then((res) => {
+										reRender();
+									});
+								}
+							}}
+						>
+							스케줄 삭제
+						</div>
+					)}
+					<div
+						onClick={() => {
+							handleOpenForDownload();
+							setKindOfData("schedule");
+						}}
+					>
+						스케줄 목록 저장
+					</div>
+					<div
+						onClick={() => {
+							handleOpenForDownload();
+							setKindOfData("reservation");
+						}}
+					>
+						예약 목록 저장
+					</div>
+				</div>
 			</div>
 			<Modal isOpen={downloadIsOpen} handleClose={handleCloseForDownload}>
 				<ScheduleDownload kindOfData={kindOfData}></ScheduleDownload>

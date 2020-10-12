@@ -113,7 +113,7 @@ const InsertForeignerStudent = ({
 	return (
 		<div className="popup account">
 			<div className="account_insert">
-				<p className="tit">교수 계정 수정</p>
+				<p className="tit">유학생 계정 수정</p>
 				<div className="input_area">
 					{currentInfo && (
 						<table>
@@ -163,7 +163,7 @@ const InsertForeignerStudent = ({
 										/>
 									</td>
 									<td>
-										<p>교번</p>
+										<p>학번</p>
 										<input
 											onKeyUp={(e) => handleEnterKey(e, handleSave)}
 											type="text"
