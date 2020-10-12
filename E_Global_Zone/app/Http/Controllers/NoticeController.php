@@ -7,6 +7,7 @@ use App\Notices_img;
 use App\SchedulesResultImg;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NoticeController extends Controller
 {
@@ -112,10 +113,39 @@ class NoticeController extends Controller
 
         $imgs = $this->notice_img->get_imgs($noti_id);
 
-        foreach($imgs as $img) {
+        foreach ($imgs as $img) {
             $img['noti_img'] = $this->result_img->get_base64_img($img['noti_img']);
         }
 
         return self::response_json("공지사항 게시글 사진 조회에 성공하였습니다.", 200, $imgs);
+    }
+
+    /**
+     * 공지사항 삭제
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function destroy(Request $request, Notice $noti_id): JsonResponse
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        $imgs = $this->notice_img->get_imgs($noti_id);
+
+        if (!empty($imgs)) {
+            foreach ($imgs as $img) {
+                Storage::delete('public/' . $img['noti_img']);
+            }
+        }
+
+        $noti_id->delete();
+
+        return self::response_json("공지사항 삭제에 성공하였습니다.", 200);
     }
 }

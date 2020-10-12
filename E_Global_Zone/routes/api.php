@@ -220,6 +220,9 @@ Route::middleware('auth.multi')->group(static function () {
 
         /** 공지사항 작성 */
         Route::post('notice', 'NoticeController@store');
+
+        /** 공지사항 삭제 */
+        Route::delete('notice/{noti_id}', 'NoticeController@destroy');
     });
 
 
