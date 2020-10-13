@@ -72,7 +72,7 @@ const PatchDepartment = ({ handleClick, dept, deptShort, dept_id, cancel }) => {
 							});
 						}}
 					>
-						저장
+						수정
 					</div>
 					<div class="bbtn red" onClick={cancel}>
 						취소
