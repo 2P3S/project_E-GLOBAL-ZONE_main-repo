@@ -5,7 +5,7 @@ import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
 import "./css/react-draft-wysiwyg.css";
 import { postAdminNotice } from "../../../api/admin/notice";
-export default function WirteNotice({ reRendering, handleClose }) {
+export default function WirteNotice({ reRendering, handleClose, area }) {
 	const option = { maxSizeMb: 5, useWebWorker: true };
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 	const [noti_imgs, setNoti_imgs] = useState([]);
@@ -36,7 +36,7 @@ export default function WirteNotice({ reRendering, handleClose }) {
 		// let file = e.target.files[0];
 	};
 	const handleSubmit = () => {
-		data.append("noti_url", "zone");
+		data.append("noti_url", area);
 		data.append("noti_title", document.getElementById("title").value);
 		data.append("noti_content", draftToHtml(convertToRaw(editorState.getCurrentContent())));
 		console.log(noti_imgs);

@@ -9,6 +9,7 @@ import useModal from "../../../../modules/hooks/useModal";
 export default function Notice() {
 	const [current, setCurrent] = useState(1);
 	const [list, setList] = useState([]);
+	const [area, setArea] = useState("zone");
 	const [board, setBoard] = useState({
 		noti_id: "",
 		title: "",
@@ -28,7 +29,7 @@ export default function Notice() {
 	} = useModal();
 	const rendering = () => {
 		setList([]);
-		getNotice({ noti_url: "zone", num_of_notice: 10, page: current }).then((res) => {
+		getNotice({ noti_url: area, num_of_notice: 10, page: current }).then((res) => {
 			console.log(res.data.data);
 			setList(res.data.data.data);
 			if (res.data.data.last_page) {
@@ -89,18 +90,36 @@ export default function Notice() {
 			}
 		});
 	};
+
+	const handleChange = (e) => {
+		setArea(e.target.value);
+	};
+
 	// did mount
 	useEffect(() => {
 		rendering();
 	}, []);
+
+	// update
 	useEffect(() => {
 		rendering();
-	}, [current]);
+	}, [current, area]);
+
+	// every rendering
+	useEffect(() => {
+		window.easydropdown.all();
+	});
 	return (
 		<div className="content">
 			<div className="sub_title">
 				<div className="top_semester">
 					<p className="tit">공지사항 관리</p>
+					<div>
+						<select onChange={handleChange}>
+							<option value="zone">글로벌 존</option>
+							<option value="center">글로벌 센터</option>
+						</select>
+					</div>
 				</div>
 			</div>
 
@@ -191,7 +210,11 @@ export default function Notice() {
 				</div>
 			</div>
 			<Modal isOpen={isOpenForWriteNotice} handleClose={handleCloseForWriteNotice}>
-				<WirteNotice handleClose={handleCloseForWriteNotice} reRendering={rendering} />
+				<WirteNotice
+					handleClose={handleCloseForWriteNotice}
+					reRendering={rendering}
+					area={area}
+				/>
 			</Modal>
 			<Modal isOpen={isOpenForBoard} handleClose={handleCloseForBoard}>
 				<Board {...board} reRendering={rendering} />
