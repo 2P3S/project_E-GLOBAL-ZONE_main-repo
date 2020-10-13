@@ -3,6 +3,7 @@ import { getAdminSection, deleteAdminSection } from "../../../api/admin/section"
 import moment from "moment";
 import useModal from "../../../modules/hooks/useModal";
 import Modal from "./Modal";
+import Loader from "../Loader";
 import CreateSection from "./CreateSection";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
 import { getAdminExportResult } from "../../../api/admin/export";
@@ -10,6 +11,7 @@ import { getAdminExportResult } from "../../../api/admin/export";
 export default function GetSections({ handleClose }) {
 	const [sectList, setSectList] = useState({});
 	const [selectSect, setSelectSect] = useState();
+	const [loading, setLoading] = useState(false);
 
 	const { isOpen, handleClose: handleCloseForModal, handleOpen } = useModal();
 
@@ -57,6 +59,7 @@ export default function GetSections({ handleClose }) {
 							<th scope="col">수정/삭제</th>
 						</tr>
 					</thead>
+
 					<tbody>
 						{sectList.data &&
 							sectList.data.map((v) => {
@@ -82,7 +85,13 @@ export default function GetSections({ handleClose }) {
 												// }}
 												className="table_down_btn"
 												onClick={(e) => {
-													getAdminExportResult(v.sect_id, v.sect_name);
+													setLoading(true);
+													getAdminExportResult(
+														v.sect_id,
+														v.sect_name
+													).then(() => {
+														setLoading(false);
+													});
 												}}
 											>
 												다운로드
@@ -131,6 +140,9 @@ export default function GetSections({ handleClose }) {
 					</tbody>
 				</table>
 			</div>
+			<Modal isOpen={loading}>
+				<Loader />
+			</Modal>
 			<Modal isOpen={isOpen} handleClose={handleCloseForModal}>
 				<CreateSection handleClose={handleCloseForModal} selectSect={selectSect} />
 			</Modal>
