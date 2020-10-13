@@ -264,12 +264,12 @@ const InsertForeignerStudent = ({ handleClose }) => {
 												type="text"
 												id="std_for_name"
 												name="std_info"
-												onChange={(e) => {
-													e.target.value = validator.blacklist(
-														e.target.value,
-														specialChar
-													);
-												}}
+												// onChange={(e) => {
+												// 	e.target.value = validator.blacklist(
+												// 		e.target.value,
+												// 		specialChar
+												// 	);
+												// }}
 											/>
 										</td>
 									</tr>

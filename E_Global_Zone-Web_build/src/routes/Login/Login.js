@@ -56,7 +56,7 @@ const Login = () => {
 		const { value: idValue } = id.current;
 		const { value: pwValue } = pw.current;
 		if (blankValidator(idValue, pwValue));
-		postForeignerLogin({ std_for_id: idValue, password: pwValue }).then((res) => {
+		postForeignerLogin({ std_for_id: parseInt(idValue), password: pwValue }).then((res) => {
 			setPending(true);
 			res.status === 200 && setData(res.data);
 		});
