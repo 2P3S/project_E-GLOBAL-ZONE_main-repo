@@ -5,7 +5,7 @@ import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
 import "./css/react-draft-wysiwyg.css";
 import { postAdminNotice } from "../../../api/admin/notice";
-export default function WirteNotice() {
+export default function WirteNotice({ reRendering, handleClose }) {
 	const option = { maxSizeMb: 5, useWebWorker: true };
 	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 	const [noti_imgs, setNoti_imgs] = useState([]);
@@ -44,11 +44,16 @@ export default function WirteNotice() {
 			noti_imgs.forEach((v, i) => {
 				data.append(`noti_imgs[${i}]`, v);
 			});
-		postAdminNotice(data);
+		postAdminNotice(data).then(() => {
+			handleClose();
+		});
 	};
 	useEffect(() => {
 		if (loading) setLoading(false);
 	}, [loading]);
+	useEffect(() => {
+		return reRendering;
+	}, []);
 	return (
 		<div className="popup board">
 			<p className="tit mb20">글쓰기</p>
