@@ -7,7 +7,9 @@ import WirteNotice from "../../../../components/common/modal/WirteNotice";
 import useModal from "../../../../modules/hooks/useModal";
 
 export default function Notice() {
+	const [current, setCurrent] = useState(1);
 	const [list, setList] = useState([]);
+	const [area, setArea] = useState("zone");
 	const [board, setBoard] = useState({
 		noti_id: "",
 		title: "",
@@ -27,52 +29,97 @@ export default function Notice() {
 	} = useModal();
 	const rendering = () => {
 		setList([]);
-		getNotice({ noti_url: "zone", num_of_notice: 20, page: 1 }).then((res) => {
-			console.log(res.data.data.data);
+		getNotice({ noti_url: area, num_of_notice: 10, page: current }).then((res) => {
+			console.log(res.data.data);
 			setList(res.data.data.data);
-			if (res.data.last_page) {
+			if (res.data.data.last_page) {
+				const { current_page, last_page } = res.data.data;
+				let firstIndex =
+					current_page % 10 === 0
+						? current_page - 10
+						: current_page - (current_page % 10);
+				let lastIndex = firstIndex + 10 > last_page ? last_page : firstIndex + 10;
 				const pagenation = document.getElementById("pagenation");
 				pagenation.innerHTML = "";
 				let first = document.createElement("button");
-				// first.innerText = "<<";
 				first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 				first.addEventListener("click", () => {
-					// history.push(`/students/1/korean`);
-					// setPending(true);
+					setCurrent(current === 1 ? 1 : current_page - 1);
 				});
 				pagenation.appendChild(first);
-				for (let i = 0; i < res.data.last_page; i++) {
+				if (firstIndex !== 0) {
+					let firstPage = document.createElement("button");
+					firstPage.innerText = "1";
+					firstPage.addEventListener("click", () => {
+						setCurrent(1);
+					});
+					pagenation.appendChild(firstPage);
+					let dots = document.createElement("button");
+					dots.innerText = "...";
+					pagenation.appendChild(dots);
+				}
+				for (let i = firstIndex; i < lastIndex; i++) {
 					let btn = document.createElement("button");
 					btn.innerText = i + 1;
-					// if (i + 1 == params.page) {
-					// 	btn.classList.add("on");
-					// }
+					if (i + 1 == current_page) {
+						btn.classList.add("on");
+					}
 					btn.addEventListener("click", () => {
-						// history.push(`/students/${i + 1}/korean`);
-						// setPending(true);
+						setCurrent(i + 1);
 					});
 					pagenation.appendChild(btn);
 				}
+				if (lastIndex !== last_page) {
+					let dots = document.createElement("button");
+					dots.innerText = "...";
+					pagenation.appendChild(dots);
+					let lastPage = document.createElement("button");
+					lastPage.innerText = last_page;
+					lastPage.addEventListener("click", () => {
+						setCurrent(last_page);
+					});
+					pagenation.appendChild(lastPage);
+				}
+
 				let last = document.createElement("button");
-				// last.innerText = ">>";
 				last.innerHTML += '<img src="/global/img/paging_next_ico.gif" />';
 				pagenation.appendChild(last);
 				last.addEventListener("click", () => {
-					// history.push(`/students/${resData.data.last_page}/korean`);
-					// setPending(true);
+					setCurrent(current === last_page ? last_page : current_page + 1);
 				});
 			}
 		});
 	};
+
+	const handleChange = (e) => {
+		setArea(e.target.value);
+	};
+
 	// did mount
 	useEffect(() => {
 		rendering();
 	}, []);
+
+	// update
+	useEffect(() => {
+		rendering();
+	}, [current, area]);
+
+	// every rendering
+	useEffect(() => {
+		window.easydropdown.all();
+	});
 	return (
 		<div className="content">
 			<div className="sub_title">
 				<div className="top_semester">
 					<p className="tit">공지사항 관리</p>
+					<div>
+						<select onChange={handleChange}>
+							<option value="zone">글로벌 존</option>
+							<option value="center">글로벌 센터</option>
+						</select>
+					</div>
 				</div>
 			</div>
 
@@ -163,7 +210,11 @@ export default function Notice() {
 				</div>
 			</div>
 			<Modal isOpen={isOpenForWriteNotice} handleClose={handleCloseForWriteNotice}>
-				<WirteNotice handleClose={handleCloseForWriteNotice} />
+				<WirteNotice
+					handleClose={handleCloseForWriteNotice}
+					reRendering={rendering}
+					area={area}
+				/>
 			</Modal>
 			<Modal isOpen={isOpenForBoard} handleClose={handleCloseForBoard}>
 				<Board {...board} reRendering={rendering} />
