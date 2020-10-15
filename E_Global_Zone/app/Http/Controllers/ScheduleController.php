@@ -213,7 +213,7 @@ class ScheduleController extends Controller
     {
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
-            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|distinct|min:1|max:9999999',
             'schedule.*' => 'array',
             'schedule.*.*' => 'integer',
             'ecept_date' => 'array',
@@ -409,7 +409,7 @@ class ScheduleController extends Controller
     {
         $rules = [
             'sect_id' => 'required|integer|distinct|min:0|max:999',
-            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|distinct|min:1|max:9999999',
             'guard' => 'required|string|in:admin'
         ];
 
@@ -447,7 +447,7 @@ class ScheduleController extends Controller
     ): JsonResponse {
         $rules = [
             'sch_start_date' => 'required|date',
-            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|distinct|min:1|max:9999999',
             'guard' => 'required|string|in:admin'
         ];
 

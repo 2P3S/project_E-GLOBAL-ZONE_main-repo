@@ -32,7 +32,7 @@ class ForeignerController extends Controller
     {
         $rules = [
             'foreigners' => 'required|array',
-            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'foreigners.*' => 'required|integer|distinct|min:1|max:9999999',
             'guard' => 'required|string|in:admin'
         ];
 
@@ -60,13 +60,13 @@ class ForeignerController extends Controller
     public function store(Request $request): JsonResponse
     {
         $rules = [
-            'std_for_id' => 'required|integer|unique:student_foreigners,std_for_id|unique:student_koreans,std_kor_id|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|unique:student_foreigners,std_for_id|unique:student_koreans,std_kor_id|distinct|min:1|max:9999999',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
             'std_for_country' => 'required|string|min:2',
             'std_for_phone' => 'phone_number|unique:student_foreigners_contacts,std_for_phone|nullable',
-            'std_for_mail' => 'kakao_id|unique:student_foreigners_contacts,std_for_mail|nullable',
+            'std_for_mail' => 'email|unique:student_foreigners_contacts,std_for_mail|nullable',
             'std_for_zoom_id' => 'required|integer|unique:student_foreigners_contacts,std_for_zoom_id|between:1000000000,9999999999',
             'guard' => 'required|string|in:admin'
         ];
@@ -121,7 +121,7 @@ class ForeignerController extends Controller
         $contact_data = $this->std_for_contact->get_std_for_contact($std_for_id);
 
         $rules = [
-            'std_for_id' => 'required|integer|distinct|min:1000000|max:9999999',
+            'std_for_id' => 'required|integer|distinct|min:1|max:9999999',
             'std_for_dept' => 'required|integer',
             'std_for_name' => 'required|string|min:2',
             'std_for_lang' => 'required|string|min:2|in:영어,중국어,일본어',
@@ -132,7 +132,7 @@ class ForeignerController extends Controller
                 'nullable'
             ],
             'std_for_mail' => [
-                'kakao_id',
+                'email',
                 Rule::unique('student_foreigners_contacts', 'std_for_mail')->ignore($contact_data['std_for_mail'], 'std_for_mail'),
                 'nullable'
             ],
