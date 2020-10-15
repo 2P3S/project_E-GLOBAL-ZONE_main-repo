@@ -3094,9 +3094,9 @@ ul.img_file li p.file_name:hover {
 	cursor: pointer;
 }
 
-/* 학과명 입력*/
+/* 계열/학과 관리 */
 .popup.depart_regist {
-	width: 360px;
+	width: 460px;
 }
 .popup.depart_regist .gray_bg {
 	border: 1px solid #e8e8ee;
@@ -3126,6 +3126,40 @@ ul.img_file li p.file_name:hover {
 .popup.depart_regist label input[type="text"]::placeholder {
 	font-size: 11px;
 	color: #a5a5a5;
+}
+.depart_list_box {
+	margin-top: 20px;
+	padding: 15px;
+	background: #f7f7f9;
+	border: 1px solid #e8e8ee;
+	border-radius: 10px;
+	min-height: 10px;
+}
+.depart_list_box table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12px;
+}
+.depart_list_box table th,
+.depart_list_box table td {
+	padding: 12px 0;
+	text-align: center;
+	border: 1px solid #dfdfdf;
+	border-left: none;
+	border-right: none;
+}
+.depart_list_box table thead th {
+	color: #444;
+	font-weight: 600;
+	border-top: 1px solid #333;
+	background: #fff;
+}
+.depart_list_box table tbody td {
+	color: #555;
+}
+.depart_list_box table tbody td .btn {
+	cursor: pointer;
+	display: inline-block;
 }
 /* 로딩중 */
 .popup.loading {
@@ -3692,4 +3726,64 @@ ul.tab.no5 li {
 	display: inline-block;
 	font-weight: 600;
 	cursor: pointer;
+}
+
+.popup .modal-imgs::-webkit-scrollbar {
+	width: 5px;
+}
+
+.popup .modal-imgs::-webkit-scrollbar-thumb {
+	background-color: #373a44;
+	border-radius: 10px;
+}
+
+.popup .modal-imgs::-webkit-scrollbar-track {
+	background-color: #e1e1ea;
+	border-radius: 10px;
+}
+
+.view_area p.noti_tit {
+	font-size: 23px;
+	color: #000;
+	font-weight: 600;
+	margin-bottom: 10px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #ddd;
+}
+
+.view_area ul.noti_info {
+	width: 100%;
+	text-align: right;
+	display: inline-block;
+}
+
+.view_area ul.noti_info li {
+	float: right;
+	margin-left: 10px;
+	color: #999;
+	font-size: 13px;
+}
+
+.view_area ul.noti_info li span {
+	color: #555;
+	font-weight: 600;
+	letter-spacing: -0.05em;
+}
+
+.noti_view {
+	width: 100%;
+	margin-top: 10px;
+	font-size: 15px;
+}
+
+.modal-imgs {
+	height: 630px;
+	margin-top: 20px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-right: 10px;
+}
+
+.modal-img {
+	width: 100%;
 }

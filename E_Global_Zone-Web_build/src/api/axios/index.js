@@ -61,6 +61,8 @@ export const adminLogin = createInstanceLogin("admin");
 
 // commons
 export const getDepartment = () => instance.get("department");
+export const getNotice = (params) => instance.get("notice", { params });
+export const getNoticeImg = (noti_id) => instance.get(`notice/${noti_id}`);
 
 export const getRestDate = (solYear, solMonth) =>
 	createRestDate(process.env.REACT_APP_REST_DATE_SERVICE_KEY).get("", {
