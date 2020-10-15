@@ -204,7 +204,7 @@ class WorkStudentForeignerController extends Controller
     ): JsonResponse {
         $rules = [
             'foreigners' => 'required|array',
-            'foreigners.*' => 'required|integer|distinct|min:1000000|max:9999999',
+            'foreigners.*' => 'required|integer|distinct|min:1|max:9999999',
             'guard' => 'required|string|in:admin'
         ];
 

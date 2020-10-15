@@ -195,7 +195,7 @@ class LoginController extends Controller
         $language = self::get_http_accept_language($request);
 
         $rules = [
-            'std_for_id' => 'required|string',
+            'std_for_id' => 'required|integer|distinct|min:1|max:9999999',
             'password' => 'required|string|min:8',
             'provider' => 'required|string|in:foreigners'
         ];
