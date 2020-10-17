@@ -174,7 +174,7 @@ class DataExportController extends Controller
 
         $rules = [
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
 
         $validated_result = self::request_validator(
@@ -233,7 +233,7 @@ class DataExportController extends Controller
 
         $rules = [
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
 
         $validated_result = self::request_validator(
