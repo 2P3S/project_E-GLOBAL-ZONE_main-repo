@@ -1,4 +1,4 @@
-# 永進専門大学　「Global Zone ・ Center」　オンライン予約システム
+# 永進専門大学「Global Zone ・ Center」オンライン予約システム
 
 ### [YJU E-global-zone ・ Center](http://global.yju.ac.kr)
 
