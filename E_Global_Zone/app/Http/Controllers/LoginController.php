@@ -39,7 +39,8 @@ class LoginController extends Controller
     private function login_authenticator(
         Request $request,
         string $key
-    ): ?array {
+    ): ?array
+    {
         $credentials = array_values($request->only($key, 'password', 'provider'));
         $credentials[] = $key;
 
@@ -266,7 +267,8 @@ class LoginController extends Controller
     public function request_user_data(
         Request $request,
         bool $is_response_json = true
-    ) {
+    )
+    {
         $user_data = $request->user($request->input('guard'));
 
         if (!$is_response_json) {
@@ -279,7 +281,8 @@ class LoginController extends Controller
 
     public function remeber_token(
         array $request
-    ) {
+    )
+    {
         $provider = $request['provider'];
         $users = [
             'admins' => new Admin(),
@@ -290,37 +293,63 @@ class LoginController extends Controller
     }
 
     public function update_password_url(
-        array $request,
-        string $expire_time
-    ) {
-        $is_possible_password = $this->validate_password($request, $expire_time);
-
-        $provider = $request['provider'];
-        $password = trim($request['password']);
-
-        if ($is_possible_password) {
-            $users = [
-                'admins' => new Admin(),
-                'foreigners' => new Student_foreigner()
-            ];
-
-            $user = $users[$provider]->get_user_info($request);
-            $is_no_users = !$user->count();
-
-            if ($is_no_users) {
-                return false;
-            }
-
-            return $users[$provider]->update_user_info($user, Hash::make($password));
+        string $provider,
+        string $account,
+        string $password,
+        string $password_confirmation
+    )
+    {
+        if ($password !== $password_confirmation) {
+            return false;
         }
 
-        return false;
+        switch ($provider) {
+            case 'admins':
+                $admin = new Admin();
+                return $admin->update_user_info($account, Hash::make($password));
+            case 'foreigners':
+                $student_foreigner = new Student_foreigner();
+                return $student_foreigner->update_user_info($account, Hash::make($password));
+            default:
+                return false;
+        }
     }
+//    public function update_password_url(
+//        array $request,
+//        string $expire_time
+//    )
+//    {
+//        $is_possible_password = $this->validate_password($request, $expire_time);
+//
+//        $provider = $request['provider'];
+//        $password = trim($request['password']);
+//
+//        if ($is_possible_password) {
+//            $users = [
+//                'admins' => new Admin(),
+//                'foreigners' => new Student_foreigner()
+//            ];
+//
+//            var_dump($users[$provider]);
+//            die();
+//            $user = $users[$provider]->get_user_info($request);
+//            $is_no_users = !$user->count();
+//
+//            if ($is_no_users) {
+//                return false;
+//            }
+//
+//            return $users[$provider]->update_user_info($user, Hash::make($password));
+//        }
+//
+//        return false;
+//    }
 
     private function validate_password(
         array $request,
         string $expire_time
-    ): bool {
+    ): bool
+    {
 
         $provider = $request['provider'];
         $password = trim($request['password']);
@@ -340,7 +369,7 @@ class LoginController extends Controller
             $is_password_confirm &&
             $is_possible_provider &&
             !$is_initial_password &&
-            $is_possible_password &&
-            $expire_time < date("Y-m-d H:i:s");
+            $is_possible_password;
+//            $expire_time < date("Y-m-d H:i:s");
     }
 }
