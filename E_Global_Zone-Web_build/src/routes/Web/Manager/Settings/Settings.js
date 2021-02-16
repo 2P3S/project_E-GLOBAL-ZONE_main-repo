@@ -417,7 +417,7 @@ export default function Settings() {
 				</div>
 
 				<div className='gray' onClick={handleOpenForReset}>
-					무서운 버튼...
+					학기 이관
 				</div>
 
 				<div
@@ -434,7 +434,7 @@ export default function Settings() {
 			<Modal isOpen={isOpenForReset} handleClose={handleCloseForReset}>
 				<DeleteModal
 					onSubmit={handleReset}
-					message={'테스트메세지입니당'}
+					message={`[경고] 전체 학생의 '이용제한', '활동 횟수', '미참석 횟수'를 초기화합니다.`}
 					handleClose={handleCloseForReset}
 				/>
 			</Modal>
