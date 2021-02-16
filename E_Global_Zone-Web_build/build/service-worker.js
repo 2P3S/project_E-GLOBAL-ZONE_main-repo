@@ -14,11 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-<<<<<<< HEAD
-  "/precache-manifest.7e40d4c4ef14f02fd1428abe2a1bc79c.js"
-=======
-  "/precache-manifest.77afb4aea6eb5186383fbd31eb5d5a01.js"
->>>>>>> 62e9dd2f... footer selectbox is working now
+  "/precache-manifest.066025837f6218841296113859207a3a.js"
 );
 
 self.addEventListener('message', (event) => {
