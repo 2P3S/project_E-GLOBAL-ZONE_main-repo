@@ -862,10 +862,6 @@ table.sch_table tbody tr:hover td:first-child {
 	cursor: pointer;
 	padding: 0 5px;
 	outline: none;
-<<<<<<< HEAD
-=======
-	font-family: 'Lato', sans-serif;
->>>>>>> 4f4e30a2... 1.1.2 Korean Reasult bug fix
 }
 #pagenation button img {
 	height: 32px;
@@ -3436,13 +3432,8 @@ ul.tab.no5 li {
 	content: '';
 }
 
-<<<<<<< HEAD
-.check_box .check_box_input input[type="checkbox"]:checked + label {
-	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
-=======
 .check_box .check_box_input input[type='checkbox']:checked + label {
-	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
->>>>>>> 4f4e30a2... 1.1.2 Korean Reasult bug fix
+	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
 	float: left;
 }
 
@@ -3503,13 +3494,8 @@ ul.tab.no5 li {
 	content: '';
 }
 
-<<<<<<< HEAD
-.table_check input[type="checkbox"]:checked + label {
-	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
-=======
 .table_check input[type='checkbox']:checked + label {
-	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
->>>>>>> 4f4e30a2... 1.1.2 Korean Reasult bug fix
+	background: url(/global/img/checkBox_ico.png) #364969 no-repeat center/12px 10px;
 }
 
 .table_check input[type='checkbox'] + label > span {

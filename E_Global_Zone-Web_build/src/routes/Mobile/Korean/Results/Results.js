@@ -123,13 +123,8 @@ export default function Results() {
 						</colgroup>
 						<thead>
 							<tr>
-<<<<<<< HEAD
-								<th scope="col">일시</th>
-								<th scope="col">교수님</th>
-=======
 								<th scope='col'>일시</th>
-								<th scope='col'>유학생</th>
->>>>>>> 4f4e30a2... 1.1.2 Korean Reasult bug fix
+								<th scope='col'>교수님</th>
 							</tr>
 						</thead>
 						<tbody>
