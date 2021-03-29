@@ -12,33 +12,33 @@ a:focus {
 	text-decoration: none;
 }
 
-input[type="text"] {
+input[type='text'] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
 
-input[type="button"] {
+input[type='button'] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
 
-input[type="image"] {
+input[type='image'] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
 
-input[type="submit"] {
+input[type='submit'] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
 
-input[type="password"] {
+input[type='password'] {
 	-webkit-border-radius: 5px;
 	-webkit-appearance: none;
 }
 
 body {
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 }
 
 /********************* HEAD *********************/
@@ -209,7 +209,7 @@ body {
 
 .login_wrap .tit {
 	font-size: 43px;
-	font-family: "Roboto", sans-serif;
+	font-family: 'Roboto', sans-serif;
 	margin-bottom: 10px;
 	font-weight: 200;
 	color: #8d8f94;
@@ -288,8 +288,8 @@ body {
 	font-weight: 600;
 }
 
-.login_wrap .login_input input[type="text"],
-.login_wrap .login_input input[type="password"] {
+.login_wrap .login_input input[type='text'],
+.login_wrap .login_input input[type='password'] {
 	border: 1px solid #e0e0e0;
 	border-radius: 100px;
 	height: 55px;
@@ -300,24 +300,24 @@ body {
 	display: inline-block;
 	background: #fbfafb;
 }
-.login_wrap .login_input input[type="text"]:hover,
-.login_wrap .login_input input[type="password"]:hover {
+.login_wrap .login_input input[type='text']:hover,
+.login_wrap .login_input input[type='password']:hover {
 	background: #f1f6f6;
 	transition-duration: 0.3s;
 	border: 1px solid #30addc;
 }
 
-.login_wrap .login_input input[type="text"]::placeholder,
-.login_wrap .login_input input[type="password"]::placeholder {
+.login_wrap .login_input input[type='text']::placeholder,
+.login_wrap .login_input input[type='password']::placeholder {
 	color: #aaa;
 	font-size: 13px;
 }
 
-.login_wrap .login_input input[type="text"]:first-child {
+.login_wrap .login_input input[type='text']:first-child {
 	margin-top: 0px;
 }
 
-.login_wrap .login_input input[type="text"]::placeholder {
+.login_wrap .login_input input[type='text']::placeholder {
 	font-size: 13px;
 	color: #999;
 }
@@ -333,7 +333,7 @@ body {
 	text-align: center;
 	margin-top: 30px;
 	cursor: pointer;
-	font-family: "Roboto", sans-serif;
+	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
 }
 
@@ -342,7 +342,7 @@ body {
 	bottom: 3%;
 	text-align: center;
 	width: 1200px;
-	font-family: "Roboto", sans-serif;
+	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
 	color: #aaa;
 	font-size: 13px;
@@ -385,7 +385,7 @@ ul.sch_time {
 
 ul.sch_time li {
 	float: left;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 600;
 	font-size: 11px;
 	margin-left: 82px;
@@ -648,7 +648,7 @@ table.sch_table tbody tr:hover td:first-child {
 	width: 90px;
 }
 
-.top_search input[type="text"] {
+.top_search input[type='text'] {
 	float: left;
 	background: #fff;
 	border: 1px solid #cbcbd2;
@@ -659,7 +659,7 @@ table.sch_table tbody tr:hover td:first-child {
 	padding: 0 10px;
 }
 
-.top_search input[type="submit"] {
+.top_search input[type='submit'] {
 	float: left;
 	background: #373a44;
 	border: 1px solid #373a44;
@@ -856,7 +856,7 @@ table.sch_table tbody tr:hover td:first-child {
 	cursor: pointer;
 	padding: 0 5px;
 	outline: none;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 }
 #pagenation button img {
 	height: 32px;
@@ -984,7 +984,7 @@ table.student_manage_table td:first-child {
 }
 
 .status_wrap .status_box div p span {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-size: 20px;
 }
 
@@ -1039,7 +1039,7 @@ table.student_manage_table td:first-child {
 	display: block;
 	margin: 8px auto 0 auto;
 	font-size: 22px;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 400;
 }
 
@@ -1060,7 +1060,7 @@ table.student_manage_table td:first-child {
 }
 
 .week_wrap .week_table ul li {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 800;
 	font-size: 12px;
 	height: 15px;
@@ -1242,7 +1242,7 @@ table.student_manage_table td:first-child {
 }
 
 .set_wrap .input .select_input .edd-root,
-.set_wrap .input .select_input input[type="number"] {
+.set_wrap .input .select_input input[type='number'] {
 	float: left;
 	margin: 0;
 	font-size: 13px;
@@ -1266,7 +1266,7 @@ table.student_manage_table td:first-child {
 	top: calc(50% - 5px);
 }
 
-.set_wrap .input .select_input input[type="number"] {
+.set_wrap .input .select_input input[type='number'] {
 	width: 45px;
 }
 
@@ -1435,7 +1435,7 @@ table.student_manage_table td:first-child {
 	margin-bottom: 10px;
 }
 
-.search_student .tsearch input[type="text"] {
+.search_student .tsearch input[type='text'] {
 	float: left;
 	background: #fff;
 	border: 1px solid #cbcbd2;
@@ -1446,7 +1446,7 @@ table.student_manage_table td:first-child {
 	padding: 0 10px;
 }
 
-.search_student .tsearch input[type="submit"] {
+.search_student .tsearch input[type='submit'] {
 	float: left;
 	background: #373a44;
 	border: 1px solid #373a44;
@@ -1771,7 +1771,7 @@ table.work_time thead th {
 	background-color: #f1f1f1;
 	color: #666;
 }
-.join_add_wrap .input_area input[type="text"]::placeholder {
+.join_add_wrap .input_area input[type='text']::placeholder {
 	font-size: 13px;
 	color: #999;
 	font-weight: 600;
@@ -1921,7 +1921,7 @@ table.work_time thead th {
 .popup.restriction p.date {
 	font-size: 15px;
 	margin-bottom: 10px;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 600;
 	color: #ffa400;
 	padding: 5px 15px;
@@ -1975,7 +1975,7 @@ table.work_time thead th {
 	display: inline-block;
 }
 
-.popup.restriction .date_input input[type="text"] {
+.popup.restriction .date_input input[type='text'] {
 	width: 35px;
 	height: 35px;
 	line-height: 35px;
@@ -2010,7 +2010,7 @@ table.work_time thead th {
 }
 
 .popup.approval .tit_area p.person span {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	color: #2050e6;
 	font-size: 26px;
 	font-weight: 900;
@@ -2073,6 +2073,7 @@ table.pop_table3 td {
 /* 스케줄 입력 */
 .popup.sch {
 	width: 685px;
+	overflow: unset;
 }
 
 .popup.sch .select_area {
@@ -2105,7 +2106,7 @@ table.pop_table3 td {
 	font-size: 13px;
 	border: 1px solid #bcbfc7;
 	border-radius: 5px;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 }
 
 .popup.sch .select_area .area .date {
@@ -2179,13 +2180,13 @@ table.pop_table3 td {
 .top_tit .left p.txt {
 	font-size: 13px;
 	font-weight: 800;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	margin-bottom: 4px;
 	line-height: 19px;
 }
 
 .top_tit .left p.txt span {
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 	display: inline-block;
 	padding: 3px 10px;
 	background: #34bcad;
@@ -2336,7 +2337,7 @@ table.pop_table3 td {
 	font-size: 11px;
 	margin-bottom: 5px;
 }
-.filebox input[type="button"] {
+.filebox input[type='button'] {
 	position: absolute;
 	width: 0;
 	height: 0;
@@ -2344,7 +2345,7 @@ table.pop_table3 td {
 	overflow: hidden;
 	border: 0;
 }
-.filebox input[type="file"] {
+.filebox input[type='file'] {
 	position: absolute;
 	width: 0;
 	height: 0;
@@ -2594,7 +2595,7 @@ ul.img_file li p.file_name:hover {
 .attend_rate span {
 	font-size: 24px;
 	color: #34bcad;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 900;
 }
 
@@ -2709,7 +2710,7 @@ ul.img_file li p.file_name:hover {
 	border-radius: 5px;
 	font-weight: 600;
 	font-size: 13px;
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 환경설정 - 학기 기간 설정 */
@@ -2791,7 +2792,7 @@ ul.img_file li p.file_name:hover {
 	line-height: 53px;
 	font-size: 13px;
 	border-radius: 5px;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	border: 1px solid #ededed;
 	-webkit-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
 	-moz-box-shadow: 2px 3px 12px 0px rgba(48, 152, 127, 0.25);
@@ -2871,7 +2872,7 @@ ul.img_file li p.file_name:hover {
 	border-radius: 5px;
 	font-weight: 600;
 	font-size: 13px;
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 	margin-left: 5px;
 }
 
@@ -2959,7 +2960,7 @@ ul.img_file li p.file_name:hover {
 	border-radius: 5px;
 	font-weight: 600;
 	font-size: 13px;
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 }
 
 .popup.inquiry table td img {
@@ -3118,7 +3119,7 @@ ul.img_file li p.file_name:hover {
 	margin-left: 10px;
 	font-size: 13px;
 }
-.popup.depart_regist label input[type="text"]::placeholder {
+.popup.depart_regist label input[type='text']::placeholder {
 	font-size: 11px;
 	color: #a5a5a5;
 }
@@ -3169,7 +3170,7 @@ ul.img_file li p.file_name:hover {
 }
 .popup.loading p {
 	font-size: 17px;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 600;
 	color: #1c233d;
 }
@@ -3392,11 +3393,11 @@ ul.tab.no5 li {
 	width: 31px;
 }
 
-.check_box .check_box_input input[type="checkbox"] {
+.check_box .check_box_input input[type='checkbox'] {
 	display: none;
 }
 
-.check_box .check_box_input input[type="checkbox"] + label {
+.check_box .check_box_input input[type='checkbox'] + label {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
@@ -3409,15 +3410,15 @@ ul.tab.no5 li {
 .check_box .check_box_input:after {
 	display: block;
 	clear: both;
-	content: "";
+	content: '';
 }
 
-.check_box .check_box_input input[type="checkbox"]:checked + label {
+.check_box .check_box_input input[type='checkbox']:checked + label {
 	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
 	float: left;
 }
 
-.check_box .check_box_input input[type="checkbox"] + label > span {
+.check_box .check_box_input input[type='checkbox'] + label > span {
 	position: absolute;
 	top: 2px;
 	left: 42px;
@@ -3425,11 +3426,11 @@ ul.tab.no5 li {
 	font-size: 12px;
 	font-weight: 600;
 	color: #6a6a6a;
-	font-family: "Noto Sans KR", sans-serif;
+	font-family: 'Noto Sans KR', sans-serif;
 }
 
 .check_box .check_box_input span {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 900;
 }
 
@@ -3454,11 +3455,11 @@ ul.tab.no5 li {
 	position: relative;
 }
 
-.table_check input[type="checkbox"] {
+.table_check input[type='checkbox'] {
 	display: none;
 }
 
-.table_check input[type="checkbox"] + label {
+.table_check input[type='checkbox'] + label {
 	display: inline-block;
 	width: 20px;
 	height: 20px;
@@ -3471,14 +3472,14 @@ ul.tab.no5 li {
 .table_check:after {
 	display: block;
 	clear: both;
-	content: "";
+	content: '';
 }
 
-.table_check input[type="checkbox"]:checked + label {
+.table_check input[type='checkbox']:checked + label {
 	background: url(/global/img/checkBox_ico.png) #373a44 no-repeat center/12px 10px;
 }
 
-.table_check input[type="checkbox"] + label > span {
+.table_check input[type='checkbox'] + label > span {
 	position: absolute;
 	top: 50%;
 	left: 50;
@@ -3489,7 +3490,7 @@ ul.tab.no5 li {
 }
 
 .table_check span {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 900;
 }
 
@@ -3517,7 +3518,7 @@ ul.tab.no5 li {
 
 .footer p.copyright span {
 	display: block;
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	font-weight: 600;
 }
 
@@ -3526,7 +3527,7 @@ ul.tab.no5 li {
 }
 
 .footer .family_site p {
-	font-family: "Lato", sans-serif;
+	font-family: 'Lato', sans-serif;
 	color: #071985;
 	font-size: 13px;
 	font-weight: 600;
@@ -3556,7 +3557,7 @@ ul.tab.no5 li {
 	font-weight: 600;
 	margin-bottom: 3px;
 }
-.popup.board .board_form_row input[type="text"],
+.popup.board .board_form_row input[type='text'],
 .popup.board .board_form_row textarea {
 	width: 857px;
 	border: 1px solid #ccc;
@@ -3582,7 +3583,7 @@ ul.tab.no5 li {
 	border: 1px solid #ddd;
 	padding: 0 15px;
 }
-.popup.board .board_form_row input[type="text"]::placeholder,
+.popup.board .board_form_row input[type='text']::placeholder,
 .popup.board .board_form_row textarea::placeholder {
 	color: #a5a5a5;
 	font-size: 13px;
@@ -3686,7 +3687,7 @@ ul.tab.no5 li {
 	background-color: #2fb1a2;
 }
 
-.file_area .filebox input[type="file"] {
+.file_area .filebox input[type='file'] {
 	position: absolute;
 	width: 1px;
 	height: 1px;
