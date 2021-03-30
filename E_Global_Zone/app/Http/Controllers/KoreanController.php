@@ -48,8 +48,7 @@ class KoreanController extends Controller
         // 대기중인 학생이 없을 경우
         if ($approval_count == 0) {
             return self::response_json(Config::get('constants.kor.std_kor.index_approval.no_value'), 202);
-        }
-        // 대기중인 학생이 있을 경우
+        } // 대기중인 학생이 있을 경우
         else {
             $msg = Config::get('constants.kor.std_kor.index_approval.success1') . $approval_count . Config::get('constants.kor.std_kor.index_approval.success2');
             return self::response_json($msg, 200, $approval_result);
@@ -123,6 +122,13 @@ class KoreanController extends Controller
 
         // 검색 후 조회된 데이터가 없을 경우
         if ($is_non_kor_data) return self::response_json(Config::get('constants.kor.std_kor.index.no_value'), 202);
+
+        // 이용제한 학생인경우 제한 사유 같이 보내기.
+        foreach ($std_kor_info as $korean) {
+            if ($korean['std_kor_state_of_restriction'] == true) {
+                $korean['std_stricted_info'] = $this->restricted->get_korean_restricted_info($korean['std_kor_id'], true);
+            }
+        }
 
         return self::response_json(Config::get('constants.kor.std_kor.index.success'), 200, $std_kor_info);
     }
