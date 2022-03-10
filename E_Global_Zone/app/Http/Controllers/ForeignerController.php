@@ -21,6 +21,27 @@ class ForeignerController extends Controller
         $this->std_for = new Student_foreigner();
         $this->std_for_contact = new Student_foreigners_contact();
     }
+    
+    /**
+     * 모든 유학생 정보 조회
+     * 
+     * @return JsonResponse
+     */
+    public function show_all(Request $request): JsonResponse
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        return response()->json([
+            // 'message' => '유학생 정보 조회에 성공하셨습니다.',
+            'data' => $this->std_for->get_all_users()
+        ]);
+    }
 
     /**
      * 특정 유학생 정보 조회

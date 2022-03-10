@@ -24,6 +24,9 @@ Route::middleware('auth.multi')->group(static function () {
 
         /* 유학생 관리 */
         Route::prefix('/foreigner')->group(function () {
+            /** 모든 유학생 정보 조회 */
+            Route::get('all', 'ForeignerController@show_all')->name('foreigners.show_all');
+
             /** 특정 유학생 정보 조회 */
             Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
