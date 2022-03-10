@@ -51,6 +51,11 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 		}
 	};
 
+	const findDeptName = (std_kor_dept) => {
+		if (!dept) return;
+		return dept.find(dept => dept.dept_id === std_kor_dept)?.dept_name[1]
+	}
+
 	return (
 		<div className="popup approval">
 			<div className="tit_area">
@@ -103,7 +108,7 @@ export default function ConfirmStudent({ handleClose, reRender }) {
 											<label htmlFor={v.std_kor_id}></label>
 										</div>
 									</td>
-									<td>{dept[parseInt(v.std_kor_dept) - 1].dept_name[1]}</td>
+									<td>{findDeptName(v.std_kor_dept)}</td>
 									<td>{v.std_kor_id}</td>
 									<td>{v.std_kor_name}</td>
 									<td>{v.std_kor_phone}</td>
