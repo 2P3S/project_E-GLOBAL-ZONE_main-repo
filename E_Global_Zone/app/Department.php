@@ -73,7 +73,7 @@ class Department extends Model
             return Controller::response_json_error($message);
         }
 
-        $message = $new_dept_name . Config::get('constants.kor.dept.store.failure');
+        $message = $new_dept_name . Config::get('constants.kor.dept.store.success');
         return Controller::response_json(
             $message, 201, $created_department
         );
