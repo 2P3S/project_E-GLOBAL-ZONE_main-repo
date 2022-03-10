@@ -57,7 +57,7 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 
 	const findDeptName = (std_for_dept) => {
 		if (!dept) return;
-		return dept.find(dept => dept.dept_id === std_for_dept)?.dept_name[0];
+		return dept.find(dept => dept.dept_id === std_for_dept)?.dept_name[1];
 	}
 
 	useEffect(() => {
