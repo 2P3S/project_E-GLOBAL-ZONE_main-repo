@@ -35,15 +35,15 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 
 		const idConfirmed = window.confirm(`[경고] ${currentInfo.std_for_name} 학생의 계정을 정말로 삭제하시겠습니까?`)
 
-		if(idConfirmed) {
+		if (idConfirmed) {
 			deleteAdminForeignerAccount(currentInfo.std_for_id).then((res) => {
 				alert(`${currentInfo.std_for_name} 학생의 계정이 삭제되었습니다.`)
 				setCurrentInfo(null)
 				getAllUsers()
 			})
-			.catch((err) => {
-				console.error(err)
-			})
+				.catch((err) => {
+					console.error(err)
+				})
 		}
 	}
 
@@ -53,6 +53,11 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 			setDefaultList(res.data.data);
 			console.log(res.data.data);
 		});
+	}
+
+	const findDeptName = (std_for_dept) => {
+		if (!dept) return;
+		return dept.find(dept => dept.dept_id === std_for_dept)?.dept_name[0];
 	}
 
 	useEffect(() => {
@@ -91,7 +96,7 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 								<td>{currentInfo.std_for_country}</td>
 								<td>{currentInfo.std_for_id}</td>
 								<td>{currentInfo.std_for_name}</td>
-								<td>{dept[parseInt(currentInfo.std_for_dept) - 1]?.dept_name[0]}</td>
+								<td>{findDeptName(currentInfo.std_for_dept)}</td>
 								<td>{currentInfo.contact.std_for_phone}</td>
 								<td>{currentInfo.contact.std_for_mail}</td>
 								<td>{currentInfo.contact.std_for_zoom_id}</td>
@@ -166,7 +171,7 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 									<td>{v.std_for_country}</td>
 									<td>{v.std_for_id}</td>
 									<td>{v.std_for_name}</td>
-									<td>{dept[parseInt(v.std_for_dept) - 1]?.dept_name[0]}</td>
+									<td>{findDeptName(v.std_for_dept)}</td>
 									<td>{v.contact.std_for_phone}</td>
 									<td>{v.contact.std_for_mail}</td>
 									<td>{v.contact.std_for_zoom_id}</td>
