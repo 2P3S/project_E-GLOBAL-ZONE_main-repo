@@ -50,18 +50,6 @@ class Student_foreigner extends Authenticatable
         'password',
         'remember_token'
     ];
-    
-    /** One To One 관계 설정 */
-    public function contact()
-    {
-        return $this->hasOne('App\Student_foreigners_contact', 'std_for_id', 'std_for_id');
-    }
-
-    // 모든 유학생 정보 불러오기
-    public function get_all_users()
-    {
-        return self::with('contact')->get();
-    }
 
     /** One To One 관계 설정 */
     public function contact()
@@ -77,8 +65,7 @@ class Student_foreigner extends Authenticatable
 
     public function set_user_info(
         array $request
-    ): int
-    {
+    ): int {
         try {
             $admin = self::where('std_for_id', $request['account']);
             $ran_num = random_int(0, strlen($request['token']) - 101);
@@ -95,52 +82,51 @@ class Student_foreigner extends Authenticatable
 
     public function get_user_info(
         array $request
-    ): ?Builder
-    {
-//        $admin = null;
-//        try {
-//        $ran_num = $request['ran_num'];
-//        $ran_token = substr($request['token'], $ran_num, 100);
+    ): ?Builder {
+        //        $admin = null;
+        //        try {
+        //        $ran_num = $request['ran_num'];
+        //        $ran_token = substr($request['token'], $ran_num, 100);
 
         $admin = self::where('std_for_id', $request['account']);
-//        $admin = self::where('std_for_id', $request['account'])
-//            ->where('remember_token', $ran_token);
+        //        $admin = self::where('std_for_id', $request['account'])
+        //            ->where('remember_token', $ran_token);
 
-//        } catch (\Exception $e) {
-//            return null;
-//        }
+        //        } catch (\Exception $e) {
+        //            return null;
+        //        }
 
         return $admin;
     }
 
 
-//    public function update_user_info(
-//        Builder $user, string $hashed_password
-//    ): bool
-//    {
-//        try {
-//            $user->update([
-//                'password' => $hashed_password
-//            ]);
-//        } catch (\Exception $e) {
-//            return false;
-//        }
-//
-//        return true;
-//    }
+    //    public function update_user_info(
+    //        Builder $user, string $hashed_password
+    //    ): bool
+    //    {
+    //        try {
+    //            $user->update([
+    //                'password' => $hashed_password
+    //            ]);
+    //        } catch (\Exception $e) {
+    //            return false;
+    //        }
+    //
+    //        return true;
+    //    }
 
     public function update_user_info(
-        string $user, string $hashed_password
-    ): bool
-    {
+        string $user,
+        string $hashed_password
+    ): bool {
         try {
             self::where('std_for_id', $user)
                 ->update([
                     'password' => $hashed_password
                 ]);
-//            $user->update([
-//                'password' => $hashed_password
-//            ]);
+            //            $user->update([
+            //                'password' => $hashed_password
+            //            ]);
         } catch (\Exception $e) {
             return false;
         }
@@ -148,11 +134,9 @@ class Student_foreigner extends Authenticatable
         return true;
     }
 
-    public function get_sect_not_work_std_for_list
-    (
+    public function get_sect_not_work_std_for_list(
         array $work_std_for_id
-    ): Collection
-    {
+    ): Collection {
 
         $select_column = [
             'student_foreigners.std_for_lang',
@@ -173,11 +157,9 @@ class Student_foreigner extends Authenticatable
     }
 
     // 선택한 유학생의 연락처 정보를 조회
-    public function get_std_for_contacts
-    (
+    public function get_std_for_contacts(
         array $std_for_list
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $data_std_for = null;
         $select_column = [
             'student_foreigners.std_for_id',
@@ -189,24 +171,24 @@ class Student_foreigner extends Authenticatable
 
         // <<-- foreach 제거 -> wherein 으로 변경
         // 학생 정보 저장
-//        foreach ($std_for_list as $std_for_id) {
-//            // 학번 기준 검색
-//            $search_result =
-//                self::select($select_column)
-//                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-//                    ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
-//
-//            // 검색 결과 저장
-//            if ($search_result) {
-//                $data_std_for[] = $search_result;
-//            }
-//        }
+        //        foreach ($std_for_list as $std_for_id) {
+        //            // 학번 기준 검색
+        //            $search_result =
+        //                self::select($select_column)
+        //                    ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+        //                    ->where('student_foreigners.std_for_id', $std_for_id)->get()->first();
+        //
+        //            // 검색 결과 저장
+        //            if ($search_result) {
+        //                $data_std_for[] = $search_result;
+        //            }
+        //        }
         // -->>
 
         $data_std_for =
             self::select($select_column)
-                ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
-                ->whereIn('student_foreigners.std_for_id', $std_for_list)->get();
+            ->join('student_foreigners_contacts as contact', 'student_foreigners.std_for_id', 'contact.std_for_id')
+            ->whereIn('student_foreigners.std_for_id', $std_for_list)->get();
 
         if (empty($data_std_for)) {
             return
@@ -215,14 +197,15 @@ class Student_foreigner extends Authenticatable
 
         return
             Controller::response_json(
-                Config::get('constants.kor.std_for_contacts.index.success'), 200, (object)$data_std_for
+                Config::get('constants.kor.std_for_contacts.index.success'),
+                200,
+                (object)$data_std_for
             );
     }
 
     public function store_std_for_info(
         array $std_for_data
-    ): ?self
-    {
+    ): ?self {
         $std_for = null;
         try {
             $std_for = self::create($std_for_data);
@@ -235,8 +218,7 @@ class Student_foreigner extends Authenticatable
 
     public function destroy_std_for(
         self $std_for
-    ): bool
-    {
+    ): bool {
         try {
             $std_for->delete();
         } catch (\Exception $e) {
