@@ -31,8 +31,7 @@ class Department extends Model
      */
     public function get_departments_list(
         bool $flag_make_json = true
-    ): ?object
-    {
+    ): ?object {
         $departments = null;
         try {
             $departments = self::all();
@@ -55,35 +54,37 @@ class Department extends Model
 
         return $flag_make_json ?
             Controller::response_json(
-                $message, 200, $departments
+                $message,
+                200,
+                $departments
             ) :
             $departments;
     }
 
     public function store_department(
         string $new_dept_name
-    ): JsonResponse
-    {
+    ): JsonResponse {
         try {
             $created_department = self::create([
                 'dept_name' => $new_dept_name
             ]);
         } catch (\Exception $e) {
-            $message = Config::get('constants.kor.dept.store.failure');
+            $message = Config::get('constants.kor.dept.store.success');
             return Controller::response_json_error($message);
         }
 
         $message = $new_dept_name . Config::get('constants.kor.dept.store.success');
         return Controller::response_json(
-            $message, 201, $created_department
+            $message,
+            201,
+            $created_department
         );
     }
 
     public function update_department(
         Department $department,
         string $update_dept_name
-    ): JsonResponse
-    {
+    ): JsonResponse {
         try {
             $department->update([
                 'dept_name' => $update_dept_name
@@ -95,14 +96,14 @@ class Department extends Model
 
         $message = $update_dept_name . Config::get('constants.kor.dept.update.success');
         return Controller::response_json(
-            $message, 200
+            $message,
+            200
         );
     }
 
     public function destroy_department(
         Department $department
-    ): JsonResponse
-    {
+    ): JsonResponse {
         try {
             $deleted_dept_name = $department['dept_name'];
             $department->delete();
@@ -113,7 +114,8 @@ class Department extends Model
 
         $message = $deleted_dept_name . Config::get('constants.kor.dept.destroy.success');
         return Controller::response_json(
-            $message, 200
+            $message,
+            200
         );
     }
 }
