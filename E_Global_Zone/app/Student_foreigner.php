@@ -50,6 +50,18 @@ class Student_foreigner extends Authenticatable
         'password',
         'remember_token'
     ];
+    
+    /** One To One 관계 설정 */
+    public function contact()
+    {
+        return $this->hasOne('App\Student_foreigners_contact', 'std_for_id', 'std_for_id');
+    }
+
+    // 모든 유학생 정보 불러오기
+    public function get_all_users()
+    {
+        return self::with('contact')->get();
+    }
 
     /** One To One 관계 설정 */
     public function contact()
