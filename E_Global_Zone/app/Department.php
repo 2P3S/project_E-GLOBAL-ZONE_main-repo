@@ -69,7 +69,7 @@ class Department extends Model
                 'dept_name' => $new_dept_name
             ]);
         } catch (\Exception $e) {
-            $message = Config::get('constants.kor.dept.store.success');
+            $message = Config::get('constants.kor.dept.store.failure');
             return Controller::response_json_error($message);
         }
 
