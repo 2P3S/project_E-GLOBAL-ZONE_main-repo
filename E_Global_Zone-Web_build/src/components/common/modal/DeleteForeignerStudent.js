@@ -3,9 +3,8 @@ import { useSelector } from "react-redux";
 import { getAdminForeignerAll, deleteAdminForeignerAccount } from "../../../api/admin/foreigner";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
-const DeleteForeignerStudent = ({ handleClose }) => {
+const DeleteForeignerStudent = () => {
 	const dept = useSelector(selectDept);
-	const [pending, setPending] = useState(false);
 	const [forList, setForList] = useState();
 	const [currentInfo, setCurrentInfo] = useState();
 	const [defaultList, setDefaultList] = useState();
@@ -158,13 +157,13 @@ const DeleteForeignerStudent = ({ handleClose }) => {
 										<div className="table_check">
 											<input
 												type="checkbox"
-												id={v.std_for_id}
+												id={v.std_for_id + "_delete"}
 												value={v.std_for_id}
 												key={v.std_for_id}
 												onChange={handleChange}
 												checked={currentInfo?.std_for_id === v.std_for_id}
 											/>
-											<label htmlFor={v.std_for_id}></label>
+											<label htmlFor={v.std_for_id + "_delete"}></label>
 										</div>
 									</td>
 									<td>{v.std_for_lang}</td>
