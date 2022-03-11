@@ -410,9 +410,6 @@ export default function Settings() {
 					}}>
 					유학생 목록 저장
 				</div>
-				<div className='gray' onClick={handleOpenStdDelete}>
-					유학생 계정 삭제
-				</div>
 
 				<div className='gray' onClick={handleOpenForCreatSectIsOpen}>
 					학기 기간 설정
@@ -461,9 +458,6 @@ export default function Settings() {
 				isOpen={isOpenForInsertForeignerStudent}
 				handleClose={handleCloseForInsertForeignerStudent}>
 				<InsertForeignerStudent handleClose={handleCloseForInsertForeignerStudent} />
-			</Modal>
-			<Modal isOpen={isOpenStdDelete} handleClose={handleCloseStdDelete}>
-				<DeleteForeignerStudent handleClose={handleCloseStdDelete}/>
 			</Modal>
 		</div>
 	) : (
