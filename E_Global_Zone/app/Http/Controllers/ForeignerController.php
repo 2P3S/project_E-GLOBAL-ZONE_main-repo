@@ -38,7 +38,6 @@ class ForeignerController extends Controller
         // -->>
 
         return response()->json([
-            // 'message' => '유학생 정보 조회에 성공하셨습니다.',
             'data' => $this->std_for->get_all_users()
         ]);
     }

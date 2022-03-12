@@ -90,6 +90,7 @@ class Reservation extends Model
             ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
             ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
             ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
+            ->whereNotNull('sch.sch_std_for')
             ->where('reservations.res_std_kor', $std_kor_id)
             ->whereDate('sch.sch_start_date', date("Y-m-d", strtotime($search_date)))
             ->get();
@@ -117,6 +118,8 @@ class Reservation extends Model
             ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
             ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
             ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
+            ->whereNotNull('sch.sch_std_for')
+            ->whereNotNull('reservations.res_std_kor')
             ->where('sch.sch_state_of_result_input', false)
             ->where('reservations.res_std_kor', $std_kor_id)
             ->orderBy("sch_start_date")

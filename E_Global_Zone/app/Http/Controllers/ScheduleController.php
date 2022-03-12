@@ -102,6 +102,7 @@ class ScheduleController extends Controller
             return
                 Schedule::select('std_for_id', 'std_for_name', 'std_for_lang')
                 ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+                ->whereNotNull('sch_std_for')
                 ->whereDate('sch_start_date', '=', $date)
                 ->where('std_for_lang', $std_for_lang)
                 ->groupBy('for.std_for_id')
@@ -121,10 +122,16 @@ class ScheduleController extends Controller
                     $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
                     // 전체 예약 한국인 인원수
-                    $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+                    $reservated_count = $reservation_data
+                        ->whereNotNull('res.res_std_kor')
+                        ->where('res.res_sch', '=', $schedule->sch_id)
+                        ->count();
 
                     // 예약 미승인 한국인 인원수
-                    $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
+                    $un_permission_count = $reservation_data
+                        ->whereNotNull('res.res_std_kor')
+                        ->where('res.res_state_of_permission', '=', false)
+                        ->count();
 
                     $schedule['reservated_count'] = $reservated_count;
                     $schedule['un_permission_count'] = $un_permission_count;
@@ -191,7 +198,10 @@ class ScheduleController extends Controller
             $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
 
             // 전체 예약 한국인 인원수
-            $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+            $reservated_count = $reservation_data
+                ->whereNotNull('res.res_std_kor')
+                ->where('res.res_sch', '=', $schedule->sch_id)
+                ->count();
 
             // 예약 미승인 한국인 인원수
             $un_permission_count = $reservation_data->where('res.res_state_of_permission', '=', false)->count();
@@ -572,7 +582,7 @@ class ScheduleController extends Controller
         }
         // -->>
 
-        $schedules_by_date = Schedule::whereDate('sch_start_date', '=', $request->input('date'));
+        $schedules_by_date = Schedule::whereNotNull('sch_std_for')->whereDate('sch_start_date', '=', $request->input('date'));
         $schedule_exists = $schedules_by_date->count() > 0;
 
         if ($schedule_exists) {
@@ -622,6 +632,7 @@ class ScheduleController extends Controller
 
         $uninput_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
+            ->whereNotNull('sch_std_for')
             ->whereDate('sch_start_date', $date)
             ->where('sch_state_of_result_input', false)
             ->get();
@@ -629,6 +640,7 @@ class ScheduleController extends Controller
         foreach ($uninput_list as $schedule) {
             $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->whereNotNull('reservations.res_std_kor')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
             // 한국인 학생 정보 추가.
@@ -669,6 +681,7 @@ class ScheduleController extends Controller
         $unapproved_list = Schedule::select('schedules.sch_id', 'std_for_id', 'std_for_name', 'sch_start_date', 'sch_end_date', 'start_img_url', 'end_img_url')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'for.std_for_id')
             ->join('schedules_result_imgs as img', 'schedules.sch_id', '=', 'img.sch_id')
+            ->whereNotNull('sch_std_for')
             ->whereDate('sch_start_date', $date)
             ->where('sch_state_of_result_input', true)
             ->where('sch_state_of_permission', $request->input('sch_state_of_permission'))
@@ -677,6 +690,7 @@ class ScheduleController extends Controller
         foreach ($unapproved_list as $schedule) {
             $kor_data = Reservation::select('std_kor_id', 'std_kor_name', 'res_state_of_permission', 'res_state_of_attendance')
                 ->join('student_koreans as kor', 'reservations.res_std_kor', '=', 'std_kor_id')
+                ->whereNotNull('reservations.res_std_kor')
                 ->where('res_sch', $schedule['sch_id'])
                 ->get();
 
@@ -787,6 +801,7 @@ class ScheduleController extends Controller
         $sch_end_date = date("Y-m-d", strtotime("+{$setting_value->res_start_period} days"));
 
         $allSchdules = Schedule::select('sch_id', 'std_for_name', 'std_for_lang', 'sch_start_date', 'sch_end_date')
+            ->whereNotNull('schedules.sch_std_for')
             ->whereDate('schedules.sch_start_date', '>', $sch_start_date)
             ->whereDate('schedules.sch_end_date', '<=', $sch_end_date)
             ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
@@ -794,7 +809,7 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($allSchdules as $schedule) {
-            $schedule['std_res_count'] = Reservation::where('res_sch', $schedule['sch_id'])->count();
+            $schedule['std_res_count'] = Reservation::whereNotNull('res_std_kor')->where('res_sch', $schedule['sch_id'])->count();
             $schedule['sch_res_available'] = ($schedule['std_res_count'] <= $max_std_once) ? true : false;
         }
 
