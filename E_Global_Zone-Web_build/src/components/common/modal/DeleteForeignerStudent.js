@@ -74,7 +74,10 @@ const DeleteForeignerStudent = () => {
 				currentInfo && (
 					<table className="pop_table">
 						<colgroup>
-							<col width="5%" span="3" />
+							<col width="6%" span="2" />
+							<col width="8%" span="1" />
+							<col width="10%" span="1" />
+							<col width="20%" span="1" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -133,7 +136,11 @@ const DeleteForeignerStudent = () => {
 			<div className="scroll_area mt20">
 				<table className="pop_table">
 					<colgroup>
-						<col width="5%" span="3" />
+						<col width="5%" span="1" />
+						<col width="6%" span="2" />
+						<col width="8%" span="1" />
+						<col width="10%" span="1" />
+						<col width="20%" span="1" />
 					</colgroup>
 					<thead>
 						<tr>
