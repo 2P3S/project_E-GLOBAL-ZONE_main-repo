@@ -4,10 +4,10 @@ import ConfirmStudent from "../../../../components/common/modal/ConfirmStudent";
 import useClick from "../../../../modules/hooks/useClick";
 import ConfirmRestriction from "../../../../components/common/modal/ConfirmRestriction";
 import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnrestriction";
+import DeleteKoreanStudent from "../../../../components/common/modal/DeleteKoreanStudent";
 import useModal from "../../../../modules/hooks/useModal";
 import {
 	getAdminKorean,
-	deleteAdminKoreanAccount,
 	postAdminKorean,
 } from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
@@ -125,6 +125,11 @@ export default function Students() {
 		isOpen: isUnrestrict,
 		handleOpen: handleOpenForUnrestrict,
 		handleClose: handleCloseForUnrestrict,
+	} = useModal();
+	const {
+		isOpen: isOpenStdDelete,
+		handleOpen: handleOpenStdDelete,
+		handleClose: handleCloseStdDelete,
 	} = useModal();
 
 	/**
@@ -358,19 +363,19 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											// onClick={() => {
-											// 	if (
-											// 		window.confirm(
-											// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
-											// 		) === true
-											// 	) {
-											// 		deleteAdminKoreanAccount(v.std_id).then(
-											// 			(res) => {
-											// 				setPending(true);
-											// 			}
-											// 		);
-											// 	}
-											// }}
+										// onClick={() => {
+										// 	if (
+										// 		window.confirm(
+										// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+										// 		) === true
+										// 	) {
+										// 		deleteAdminKoreanAccount(v.std_id).then(
+										// 			(res) => {
+										// 				setPending(true);
+										// 			}
+										// 		);
+										// 	}
+										// }}
 										>
 											{v.name}
 											{/* <div className="hover_off" id={`hover_btn_${index}`}>
@@ -468,6 +473,9 @@ export default function Students() {
 					>
 						한국인 학생 목록 저장
 					</div>
+					<div className="delete" onClick={handleOpenStdDelete}>
+						한국인 학생 계정 삭제
+					</div>
 					{/*<div*/}
 					{/*	ref={useClick(function () {*/}
 					{/*		alert("엑셀 다운");*/}
@@ -504,6 +512,9 @@ export default function Students() {
 					std_kor_name={selectedKor.std_kor_name}
 					reRender={reRender}
 				/>
+			</Modal>
+			<Modal isOpen={isOpenStdDelete} handleClose={handleCloseStdDelete}>
+				<DeleteKoreanStudent />
 			</Modal>
 		</div>
 	);
