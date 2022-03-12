@@ -45,8 +45,7 @@ class Schedule extends Model
     // 오늘 기준 예약 신청 가능 여부를 검사
     public function check_res_possibility(
         Schedule $schedule
-    ): bool
-    {
+    ): bool {
         $date_sch = date("Y-m-d", strtotime($schedule['sch_start_date']));
 
         $settings = new Setting();
@@ -70,17 +69,18 @@ class Schedule extends Model
         Schedule $schedule,
         string $column_name = "",
         int $std_id = 0
-    ): ?object
-    {
+    ): ?object {
         $result = $schedule
             ->join('reservations as res', 'schedules.sch_id', 'res.res_sch')
             ->join('student_koreans as kor', 'kor.std_kor_id', 'res.res_std_kor')
+            ->whereNotNull('schedules.sch_std_for')
+            ->whereNotNull('res.res_std_kor')
             ->where('schedules.sch_id', $schedule['sch_id']);
 
         $result =
             $column_name === "" ?
-                $result :
-                $result->where($column_name, $std_id);
+            $result :
+            $result->where($column_name, $std_id);
 
         $lookup_columns = [
             'res_id', 'std_kor_id',
@@ -102,14 +102,14 @@ class Schedule extends Model
      */
     public function get_sch_by_id(
         Schedule $sch_id
-    ): object
-    {
+    ): object {
         // 환경변수
         $setting_obj = new Preference();
         $setting_values = $setting_obj->getPreference();
 
         $result = $sch_id
             ->join('student_foreigners as for', 'for.std_for_id', 'schedules.sch_std_for')
+            ->whereNotNull('schedules.sch_std_for')
             ->where('sch_id', $sch_id['sch_id'])
             ->first();
 
@@ -119,7 +119,7 @@ class Schedule extends Model
             date('A h시 i분', strtotime($result['sch_end_date']));
 
         $sch_ava_count = $setting_values['max_std_once'];
-        $sch_res_count = Reservation::where('res_sch', $sch_id['sch_id'])->count();
+        $sch_res_count = Reservation::whereNotNull('res_std_kor')->where('res_sch', $sch_id['sch_id'])->count();
 
         $response_data = (object)[
             'sch_res_count' => $sch_res_count,
@@ -141,9 +141,8 @@ class Schedule extends Model
     public function get_sch_by_date(
         string $search_date,
         int $std_for_id = 0
-    ): Collection
-    {
-        $result = Schedule::whereDate('sch_start_date', $search_date);
+    ): Collection {
+        $result = Schedule::whereNotNull('sch_std_for')->whereDate('sch_start_date', $search_date);
 
         $is_search_by_std_for_id = $std_for_id >= 1000000 && $std_for_id <= 9999999;
         if ($is_search_by_std_for_id) {
@@ -163,8 +162,7 @@ class Schedule extends Model
     public function get_sch_by_sect(
         int $sect_id,
         int $std_for_id = 0
-    ): ?object
-    {
+    ): ?object {
         return self::where('sch_sect', $sect_id)->where('sch_std_for', $std_for_id);
     }
 
@@ -179,21 +177,21 @@ class Schedule extends Model
         int $sect_id,
         int $std_for_id = 0,
         string $sch_start_date
-    ): ?object
-    {
-        return self::where('sch_sect', $sect_id)->whereDate('sch_start_date', '>=', $sch_start_date)->where('sch_std_for', $std_for_id);
+    ): ?object {
+        return self::where('sch_sect', $sect_id)
+            ->whereDate('sch_start_date', '>=', $sch_start_date)
+            ->where('sch_std_for', $std_for_id);
     }
 
     public function get_sch_count_by_std_for(
         Section $section,
         int $std_for_id,
         string $tmp_sect_mont
-    )
-    {
+    ) {
         return self::where('sch_std_for', $std_for_id)
-                ->where('sch_sect', $section['sect_id'])
-                ->where('sch_state_of_permission', true)
-                ->whereMonth('sch_start_date', $tmp_sect_mont)
-                ->count();
+            ->where('sch_sect', $section['sect_id'])
+            ->where('sch_state_of_permission', true)
+            ->whereMonth('sch_start_date', $tmp_sect_mont)
+            ->count();
     }
 }
