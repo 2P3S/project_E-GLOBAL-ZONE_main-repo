@@ -72,6 +72,9 @@ Route::middleware('auth.multi')->group(static function () {
 
         /* 한국인학생 관리 */
         Route::prefix('/korean')->group(function () {
+            /** 전체 한국인 학생 정보 조회 - No paginate */
+            Route::get('all', 'KoreanController@show_all')->name('koreans.show_all');
+
             /** 전체 한국인 학생 정보 조회 */
             Route::get('', 'KoreanController@index')->name('koreans.index');
 

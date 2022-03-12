@@ -36,4 +36,9 @@ class Student_korean extends Model
 
         return $std_kor;
     }
+
+    public function get_all_users()
+    {
+        return self::all();
+    }
 }
