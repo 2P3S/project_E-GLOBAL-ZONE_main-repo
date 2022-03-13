@@ -514,7 +514,7 @@ export default function Students() {
 				/>
 			</Modal>
 			<Modal isOpen={isOpenStdDelete} handleClose={handleCloseStdDelete}>
-				<DeleteKoreanStudent />
+				<DeleteKoreanStudent reRender={reRender} handleClose={handleCloseStdDelete} />
 			</Modal>
 		</div>
 	);
