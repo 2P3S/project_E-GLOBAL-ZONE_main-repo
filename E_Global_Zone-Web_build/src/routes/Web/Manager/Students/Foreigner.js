@@ -818,7 +818,7 @@ export default function Foreigner() {
 						<ModifyForeignerStudent currentInfo={modifyInfo} reRender={reRender} />
 					</Modal>
 					<Modal isOpen={isOpenStdDelete} handleClose={handleCloseStdDelete}>
-						<DeleteForeignerStudent />
+						<DeleteForeignerStudent reRender={reRender} handleClose={handleCloseStdDelete} />
 					</Modal>
 				</div>
 			</div>

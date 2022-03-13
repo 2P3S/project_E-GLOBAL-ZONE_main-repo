@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { getAdminAllKorean, deleteAdminKoreanAccount } from "../../../api/admin/korean";
 import { selectDept } from "../../../redux/confSlice/confSlice";
 
-const DeleteKoreanStudent = () => {
+const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 	const dept = useSelector(selectDept);
 	const [korList, setKorList] = useState();
 	const [currentInfo, setCurrentInfo] = useState();
@@ -36,15 +36,12 @@ const DeleteKoreanStudent = () => {
 	}
 
 	const handleDelete = () => {
-		console.log(currentInfo)
-
-		const idConfirmed = window.confirm(`[경고] ${currentInfo.std_kor_name} 학생의 계정을 정말로 삭제하시겠습니까?`)
+		const idConfirmed = window.confirm(`[경고] ${currentInfo.std_kor_name} 학생의 계정을 정말로 삭제하시겠습니까? 관련된 모든 정보가 삭제됩니다.`)
 
 		if (idConfirmed) {
-			deleteAdminKoreanAccount(currentInfo.std_kor_id).then((res) => {
+			deleteAdminKoreanAccount(currentInfo.std_kor_id).then(() => {
 				alert(`${currentInfo.std_kor_name} 학생의 계정이 삭제되었습니다.`)
-				setCurrentInfo(null)
-				getAllUsers()
+				handleClose()
 			})
 				.catch((err) => {
 					console.error(err)
@@ -66,12 +63,10 @@ const DeleteKoreanStudent = () => {
 	}
 
 	useEffect(() => {
-		getAllUsers()
-	}, []);
-
-	useEffect(() => {
 		window.easydropdown.all();
-	});
+		getAllUsers()
+		return reRender
+	}, []);
 
 	return (
 		<div className="popup regist">
