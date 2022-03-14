@@ -3314,6 +3314,16 @@ ul.img_file li p.file_name:hover {
 	background: #292b33;
 }
 
+.table_btn .delete {
+	background: #e24b33;
+	color: white;
+}
+
+.table_btn .delete:hover {
+	background: #db4a34;
+	color: white;
+}
+
 /* TAP */
 ul.tab {
 	width: 100%;

@@ -160,6 +160,7 @@ export default function Schedules() {
 		}
 		pending &&
 			getAdminSchedule({ search_date: params.date }).then((res) => {
+				console.log(res.data)
 				setSchedules(res.data);
 				setFirstRendering(false);
 			});
@@ -376,7 +377,7 @@ export default function Schedules() {
 									let btn = document.createElement("div");
 									deleteBtn.className =
 										document.getElementById("tbody").children[1] ===
-										td.parentElement
+											td.parentElement
 											? "sch_hover_btn bottom hover_off"
 											: "sch_hover_btn top hover_off";
 									area.className = "area";
@@ -444,7 +445,7 @@ export default function Schedules() {
 							handleClose={() => {
 								handleOpenForCalendar();
 							}}
-							setState={() => {}}
+							setState={() => { }}
 							selectDate={selectDate}
 						/>
 					)}
@@ -664,7 +665,7 @@ export default function Schedules() {
 								if (
 									window.confirm(
 										moment(selectDate).format("YYYY년 MM월 DD일") +
-											"의 스케줄을 삭제하시겠습니까?"
+										"의 스케줄을 삭제하시겠습니까?"
 									)
 								) {
 									deleteAdminScheduleDate({
