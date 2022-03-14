@@ -1,33 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { getAdminAllKorean, deleteAdminKoreanAccount } from "../../../api/admin/korean";
+import { getAdminKorean, deleteAdminKoreanAccount, postAdminKorean } from "../../../api/admin/korean";
+import { handleEnterKey } from "../../../modules/handleEnterKey";
 import { selectDept } from "../../../redux/confSlice/confSlice";
+import Loader from "../Loader";
 
 const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 	const dept = useSelector(selectDept);
-	const [korList, setKorList] = useState();
+	const termRef = useRef(null);
+	const observerRef = useRef(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(false);
+	const [pageNum, setPageNum] = useState(1);
+	const [korList, setKorList] = useState([]);
 	const [currentInfo, setCurrentInfo] = useState();
-	const [defaultList, setDefaultList] = useState();
+	const [defaultList, setDefaultList] = useState([]);
 	const [searchMode, setSearchMode] = useState("std_kor_name");
 
 	const handleSearch = (e) => {
-		const term = e.target.value;
-		let array = [];
-		if (term === "") {
+		const column_data = termRef.current.value;
+		if (column_data.trim() === '') {
 			setKorList(defaultList);
 		} else {
-			defaultList.forEach((v) => {
-				let searchTerm = v[searchMode];
-
-				if (typeof v[searchMode] === 'number') {
-					searchTerm = v[searchMode].toString();
-				}
-
-				if (searchTerm.match(term)) {
-					array.push(v);
-				}
+			postAdminKorean({ column: searchMode, column_data }).then((res) => {
+				setKorList(res.data.data)
 			});
-			setKorList(array);
 		}
 	};
 
@@ -49,11 +46,14 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 		}
 	}
 
-	const getAllUsers = () => {
-		getAdminAllKorean().then((res) => {
-			setKorList(res.data.data);
-			setDefaultList(res.data.data);
-			console.log(res.data.data);
+	const getAllUsers = (page) => {
+		setIsLoading(true)
+		getAdminKorean({ page, orderby: 'std_kor_dept' }).then((res) => {
+			const response = res.data.data
+			setKorList((prev) => [...prev, ...response.data]);
+			setDefaultList((prev) => [...prev, ...response.data]);
+			setHasMore(response.next_page_url)
+			setIsLoading(false)
 		});
 	}
 
@@ -62,9 +62,22 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 		return dept.find(dept => dept.dept_id === std_kor_dept)?.dept_name[1];
 	}
 
+	const observer = (node) => {
+		if (isLoading) return;
+		if (observerRef.current) observerRef.current.disconnect();
+		observerRef.current = new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting && hasMore) {
+				getAllUsers(pageNum + 1)
+				setPageNum((page) => page + 1)
+			}
+		})
+
+		node && observerRef.current.observe(node)
+	}
+
 	useEffect(() => {
 		window.easydropdown.all();
-		getAllUsers()
+		getAllUsers(1)
 		return reRender
 	}, []);
 
@@ -89,7 +102,6 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 								<th scope="col">연락처</th>
 								<th scope="col">G Suite 계정</th>
 								<th scope="col">이용제한</th>
-								<th scope="col">승인여부</th>
 								<th scope="col">삭제</th>
 							</tr>
 						</thead>
@@ -112,15 +124,6 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 											src="/global/img/restriction_off.png"
 											alt="이용제한"
 										/>
-								}</td>
-								<td>{
-									currentInfo.std_kor_state_of_permission
-										?
-										<img
-											src="/global/img/sch_state_ico02.gif"
-											alt="승인여부"
-										/>
-										: null
 								}</td>
 								<td>
 									<img
@@ -148,8 +151,10 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 						<option value="std_kor_name">이름</option>
 						<option value="std_kor_id">학번</option>
 					</select>
-					<input type="text" id="term" onChange={handleSearch} />
-					<button>검색</button>
+					<input onKeyUp={(e) => handleEnterKey(e, handleSearch)} type="text" ref={termRef} />
+					{/* <input type="submit" value="검색" onClick={handleSearch} />
+					<input type="text" id="term" /> */}
+					<button onClick={handleSearch}>검색</button>
 				</div>
 			</div>
 
@@ -157,7 +162,7 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 				<table className="pop_table">
 					<colgroup>
 						<col width="5%" span="1" />
-						<col width="20%" span="1" />
+						<col width="25%" span="1" />
 						<col width="10%" span="1" />
 						<col width="8%" span="1" />
 						<col width="17%" span="1" />
@@ -172,14 +177,13 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 							<th scope="col">연락처</th>
 							<th scope="col">G Suite 계정</th>
 							<th scope="col">이용제한</th>
-							<th scope="col">승인여부</th>
 						</tr>
 					</thead>
 					<tbody>
 						{
 							korList &&
 							korList.map((v) => (
-								<tr>
+								<tr key={v.std_kor_id}>
 									<td>
 										<div className="table_check">
 											<input
@@ -211,19 +215,12 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 												alt="이용제한"
 											/>
 									}</td>
-									<td>{
-										v.std_kor_state_of_permission
-											?
-											<img
-												src="/global/img/sch_state_ico02.gif"
-												alt="승인여부"
-											/>
-											: null
-									}</td>
 								</tr>
 							))}
 					</tbody>
 				</table>
+				<div ref={observer} />
+				{isLoading && <Loader />}
 			</div>
 		</div>
 	);
