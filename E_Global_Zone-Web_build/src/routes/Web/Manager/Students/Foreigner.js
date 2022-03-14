@@ -21,6 +21,7 @@ import { useHistory, useParams } from "react-router-dom";
 import CreateSchedule from "../../../../components/common/modal/CreateSchedule";
 import Loader from "../../../../components/common/Loader";
 import { getAdminExportForeignerSect } from "../../../../api/admin/export";
+import DeleteForeignerStudent from "../../../../components/common/modal/DeleteForeignerStudent";
 
 let i = 1601214;
 let j = 0;
@@ -77,6 +78,11 @@ export default function Foreigner() {
 		isOpen: isOpenForModify,
 		handleClose: handleCloseForModify,
 		handleOpen: handleOpenForModify,
+	} = useModal();
+	const {
+		isOpen: isOpenStdDelete,
+		handleOpen: handleOpenStdDelete,
+		handleClose: handleCloseStdDelete,
 	} = useModal();
 
 	const deptList = useSelector(selectDept);
@@ -438,7 +444,7 @@ export default function Foreigner() {
 												colSpan={
 													dataSet && dataSet.data
 														? Object.keys(dataSet.data[0].work_time)
-																.length + 1
+															.length + 1
 														: 5
 												}
 											>
@@ -558,12 +564,12 @@ export default function Foreigner() {
 														<tr
 															className={
 																value.std_for_lang ===
-																conf.language.ENGLISH
+																	conf.language.ENGLISH
 																	? "eng"
 																	: value.std_for_lang ===
-																	  conf.language.JAPANESE
-																	? "jp"
-																	: "ch"
+																		conf.language.JAPANESE
+																		? "jp"
+																		: "ch"
 															}
 															key={value.std_for_id}
 														>
@@ -775,6 +781,9 @@ export default function Foreigner() {
 						>
 							학기 교수진 목록 저장
 						</div>
+						<div className="delete" onClick={handleOpenStdDelete}>
+							유학생 계정 삭제
+						</div>
 					</div>
 					<Modal isOpen={addIsOpen} handleClose={handleCloseForAdd}>
 						{/* <InsertForeignerStudent handleClose={handleCloseForAdd} /> */}
@@ -807,6 +816,9 @@ export default function Foreigner() {
 					</Modal>
 					<Modal isOpen={isOpenForModify} handleClose={handleCloseForModify}>
 						<ModifyForeignerStudent currentInfo={modifyInfo} reRender={reRender} />
+					</Modal>
+					<Modal isOpen={isOpenStdDelete} handleClose={handleCloseStdDelete}>
+						<DeleteForeignerStudent reRender={reRender} handleClose={handleCloseStdDelete} />
 					</Modal>
 				</div>
 			</div>

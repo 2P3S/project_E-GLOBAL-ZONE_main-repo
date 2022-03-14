@@ -14,6 +14,7 @@ export const patchAdminForeignerAccount = (std_for_id) =>
 export const deleteAdminForeignerAccount = (std_for_id) =>
 	admin.delete(foreigner(`account/${std_for_id}`));
 
+export const getAdminForeignerAll = () => admin.get(foreigner('all'));
 export const getAdminForeignerWork = (sect_id) => admin.get(foreigner(`work/${sect_id}`));
 export const getAdminForeignerWorkSpecial = (sect_id, params) =>
 	admin.get(foreigner(`work/special/${sect_id}`), { params });

@@ -17,6 +17,8 @@ import { getAdminExportForeigner } from '../../../../api/admin/export';
 import WirteNotice from '../../../../components/common/modal/WirteNotice';
 import DeleteModal from '../../../../components/common/modal/DeleteModal';
 
+import DeleteForeignerStudent from '../../../../components/common/modal/DeleteForeignerStudent'
+
 /**
  * Manager :: 시스템 환경설정
  * @returns {JSX.Element}
@@ -51,6 +53,11 @@ export default function Settings() {
 		isOpen: isOpenForReset,
 		handleOpen: handleOpenForReset,
 		handleClose: handleCloseForReset,
+	} = useModal();
+	const {
+		isOpen: isOpenStdDelete,
+		handleOpen: handleOpenStdDelete,
+		handleClose: handleCloseStdDelete,
 	} = useModal();
 
 	const handleChange = (key, value) => {
@@ -405,6 +412,7 @@ export default function Settings() {
 					}}>
 					교수진 목록 저장
 				</div>
+
 				<div className='gray' onClick={handleOpenForCreatSectIsOpen}>
 					학기 기간 설정
 				</div>
@@ -419,6 +427,7 @@ export default function Settings() {
 				<div className='gray' onClick={handleOpenForReset}>
 					학기 이관
 				</div>
+
 
 				<div
 					className='save'
