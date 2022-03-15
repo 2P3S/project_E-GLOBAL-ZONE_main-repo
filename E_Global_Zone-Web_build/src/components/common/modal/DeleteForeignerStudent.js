@@ -1,55 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { getAdminForeignerAll, deleteAdminForeignerAccount } from "../../../api/admin/foreigner";
+import { getAdminForeignerAll, deleteAdminForeignerAccount, postAdminForeignerSearch } from "../../../api/admin/foreigner";
+import { handleEnterKey } from "../../../modules/handleEnterKey";
 import { selectDept } from "../../../redux/confSlice/confSlice";
+import Loader from "../Loader";
 
 const DeleteForeignerStudent = ({ reRender, handleClose }) => {
 	const dept = useSelector(selectDept);
-	const [forList, setForList] = useState();
+	const termRef = useRef(null);
+	const observerRef = useRef(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(false);
+	const [pageNum, setPageNum] = useState(1);
+	const [forList, setForList] = useState([]);
 	const [currentInfo, setCurrentInfo] = useState();
-	const [defaultList, setDefaultList] = useState();
+	const [defaultList, setDefaultList] = useState([]);
 	const [searchMode, setSearchMode] = useState("std_for_name");
+	const [isSearching, setIsSearching] = useState(false);
 
 	const handleSearch = (e) => {
-		const term = e.target.value;
-		let array = [];
-		if (term === "") {
+		const column_data = termRef.current.value;
+		if (column_data.trim() === '') {
+			setIsSearching(false);
 			setForList(defaultList);
 		} else {
-			defaultList.forEach((v) => {
-				if (v[searchMode].match(term)) {
-					array.push(v);
-				}
+			setIsSearching(true);
+			postAdminForeignerSearch({ column: searchMode, column_data }).then((res) => {
+				setForList(res.data.data);
 			});
-			setForList(array);
 		}
 	};
 
 	const handleChange = (e) => {
-		setCurrentInfo(forList.find(v => v.std_for_id == e.target.value))
+		setCurrentInfo(forList.find(v => v.std_for_id == e.target.value));
 	}
 
 	const handleDelete = () => {
-		console.log(currentInfo)
-
 		const idConfirmed = window.confirm(`[경고] ${currentInfo.std_for_name} 학생의 계정을 정말로 삭제하시겠습니까? 관련된 모든 정보가 삭제됩니다.`)
 
 		if (idConfirmed) {
 			deleteAdminForeignerAccount(currentInfo.std_for_id).then(() => {
-				alert(`${currentInfo.std_for_name} 학생의 계정이 삭제되었습니다.`)
-				handleClose()
+				alert(`${currentInfo.std_for_name} 학생의 계정이 삭제되었습니다.`);
+				handleClose();
 			})
 				.catch((err) => {
-					console.error(err)
-				})
+					console.error(err);
+				});
 		}
 	}
 
-	const getAllUsers = () => {
-		getAdminForeignerAll().then((res) => {
-			setForList(res.data.data);
-			setDefaultList(res.data.data);
-			console.log(res.data.data);
+	const getAllUsers = (page) => {
+		setIsLoading(true)
+		getAdminForeignerAll({ page }).then((res) => {
+			const response = res.data.data
+			setForList((prev) => [...prev, ...response.data]);
+			setDefaultList((prev) => [...prev, ...response.data]);
+			setHasMore(response.next_page_url);
+			setIsLoading(false);
 		});
 	}
 
@@ -58,9 +65,22 @@ const DeleteForeignerStudent = ({ reRender, handleClose }) => {
 		return dept.find(dept => dept.dept_id === std_for_dept)?.dept_name[1];
 	}
 
+	const observer = (node) => {
+		if (isLoading || isSearching) return;
+		if (observerRef.current) observerRef.current.disconnect();
+		observerRef.current = new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting && hasMore) {
+				getAllUsers(pageNum + 1)
+				setPageNum((page) => page + 1)
+			}
+		})
+
+		node && observerRef.current.observe(node)
+	}
+
 	useEffect(() => {
 		window.easydropdown.all();
-		getAllUsers()
+		getAllUsers(1)
 		return reRender
 	}, []);
 
@@ -123,10 +143,10 @@ const DeleteForeignerStudent = ({ reRender, handleClose }) => {
 						}}
 					>
 						<option value="std_for_name">이름</option>
-						<option value="std_for_lang">언어</option>
+						<option value="std_for_id">학번</option>
 					</select>
-					<input type="text" id="term" onChange={handleSearch} />
-					<button>검색</button>
+					<input onKeyUp={(e) => handleEnterKey(e, handleSearch)} type="text" ref={termRef} />
+					<button onClick={handleSearch}>검색</button>
 				</div>
 			</div>
 
@@ -156,7 +176,7 @@ const DeleteForeignerStudent = ({ reRender, handleClose }) => {
 						{
 							forList &&
 							forList.map((v) => (
-								<tr>
+								<tr key={v.std_for_id}>
 									<td>
 										<div className="table_check">
 											<input
@@ -182,6 +202,8 @@ const DeleteForeignerStudent = ({ reRender, handleClose }) => {
 							))}
 					</tbody>
 				</table>
+				<div ref={observer} />
+				{isLoading && <Loader />}
 			</div>
 		</div>
 	);

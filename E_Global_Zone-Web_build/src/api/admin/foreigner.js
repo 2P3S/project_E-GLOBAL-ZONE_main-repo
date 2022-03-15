@@ -5,6 +5,7 @@ function foreigner(url) {
 }
 
 export const postAdminForeignerAccount = (data) => admin.post(foreigner("account"), data);
+export const postAdminForeignerSearch = (data) => admin.post(foreigner('search'), data);
 
 export const updateAdminForeignerAccount = (std_for_id, data) =>
 	admin.patch(foreigner(`account/update/${std_for_id}`), data);
@@ -14,7 +15,7 @@ export const patchAdminForeignerAccount = (std_for_id) =>
 export const deleteAdminForeignerAccount = (std_for_id) =>
 	admin.delete(foreigner(`account/${std_for_id}`));
 
-export const getAdminForeignerAll = () => admin.get(foreigner('all'));
+export const getAdminForeignerAll = (params) => admin.get(foreigner('all'), { params });
 export const getAdminForeignerWork = (sect_id) => admin.get(foreigner(`work/${sect_id}`));
 export const getAdminForeignerWorkSpecial = (sect_id, params) =>
 	admin.get(foreigner(`work/special/${sect_id}`), { params });
