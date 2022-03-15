@@ -60,7 +60,9 @@ class Student_foreigner extends Authenticatable
     // 모든 유학생 정보 불러오기
     public function get_all_users()
     {
-        return self::with('contact')->get();
+        return self::with('contact')
+            ->orderBy('std_for_id', 'DESC')
+            ->paginate(10);
     }
 
     public function set_user_info(

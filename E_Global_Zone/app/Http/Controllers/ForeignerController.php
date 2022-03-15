@@ -23,8 +23,8 @@ class ForeignerController extends Controller
     }
 
     /**
-     * 모든 유학생 정보 조회
-     * 
+     * 전체 유학생 정보 조희
+     * 페이지 url => api/admin/foreigner/all?page=1  ->  page = n 번호에 따라서 바뀜.
      * @return JsonResponse
      */
     public function show_all(Request $request): JsonResponse
@@ -37,13 +37,53 @@ class ForeignerController extends Controller
         }
         // -->>
 
+        $std_foreigners = $this->std_for->get_all_users();
+
         return response()->json([
-            'data' => $this->std_for->get_all_users()
+            'message' => Config::get('constants.for.std_for.index.success'),
+            'data' => $std_foreigners
         ]);
     }
 
     /**
-     * 특정 유학생 정보 조회
+     * 특정 유학생 이름 또는 학번으로 정보 조회
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search_std_for_data(Request $request): JsonResponse
+    {
+        $rules = [
+            'column' => 'required|in:std_for_id,std_for_name,std_for_phone,std_for_mail',
+            'column_data' => 'required',
+            'guard' => 'required|string|in:admin'
+        ];
+
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            Config::get('constants.kor.std_for.index.failure')
+        );
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $column = $request->input('column');
+        $column_data = $request->input('column_data');
+
+        $std_foreigners = Student_foreigner::with('contact')->where($column, $column_data)->get();
+
+        $is_non_for_data = $std_foreigners->count() === 0;
+
+        // 검색 후 조회된 데이터가 없을 경우
+        if ($is_non_for_data) return self::response_json(Config::get('constants.kor.std_for.index.no_value'), 202);
+
+        return self::response_json(Config::get('constants.kor.std_for.index.success'), 200, $std_foreigners);
+    }
+
+    /**
+     * 특정 유학생 정보 조회 - 체크박스
      *
      * @param Request $request
      * @return JsonResponse
