@@ -40,11 +40,11 @@ export function setInterceptors(instance, guard, isGoogle = false) {
 					window.localStorage.clear();
 					window.location.reload();
 					break;
-				case 422:
-					alert(message, 422);
-					window.localStorage.clear();
-					window.location.reload();
-					break;
+				// case 422:
+				// 	alert(message, 422);
+				// 	window.localStorage.clear();
+				// 	window.location.reload();
+				// 	break;
 				default:
 					message && alert(message);
 					break;

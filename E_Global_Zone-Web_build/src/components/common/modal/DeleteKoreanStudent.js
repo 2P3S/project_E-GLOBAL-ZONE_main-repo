@@ -16,12 +16,15 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 	const [currentInfo, setCurrentInfo] = useState();
 	const [defaultList, setDefaultList] = useState([]);
 	const [searchMode, setSearchMode] = useState("std_kor_name");
+	const [isSearching, setIsSearching] = useState(false);
 
 	const handleSearch = (e) => {
 		const column_data = termRef.current.value;
 		if (column_data.trim() === '') {
+			setIsSearching(false)
 			setKorList(defaultList);
 		} else {
+			setIsSearching(true);
 			postAdminKorean({ column: searchMode, column_data }).then((res) => {
 				setKorList(res.data.data)
 			});
@@ -63,7 +66,7 @@ const DeleteKoreanStudent = ({ reRender, handleClose }) => {
 	}
 
 	const observer = (node) => {
-		if (isLoading) return;
+		if (isLoading || isSearching) return;
 		if (observerRef.current) observerRef.current.disconnect();
 		observerRef.current = new IntersectionObserver(([entry]) => {
 			if (entry.isIntersecting && hasMore) {
