@@ -24,32 +24,6 @@ class KoreanController extends Controller
     }
 
     /**
-     * 전체 계정 목록 - No paginate
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    public function show_all(Request $request): JsonResponse
-    {
-        $rules = [
-            'guard' => 'required|string|in:admin'
-        ];
-
-        $validated_result = self::request_validator(
-            $request,
-            $rules,
-            Config::get('constants.kor.std_kor.index.failure')
-        );
-
-        if (is_object($validated_result)) {
-            return $validated_result;
-        }
-
-        return response()->json([
-            'data' => $this->std_kor->get_all_users()
-        ]);
-    }
-
-    /**
      * 계정 등록 - 대기 명단 조회
      *
      * @return \Illuminate\Http\Response

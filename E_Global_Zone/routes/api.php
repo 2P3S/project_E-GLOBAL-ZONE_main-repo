@@ -27,6 +27,9 @@ Route::middleware('auth.multi')->group(static function () {
             /** 모든 유학생 정보 조회 */
             Route::get('all', 'ForeignerController@show_all')->name('foreigners.show_all');
 
+            /** 특정 유학생 학번 또는 이름으로 정보 조회 */
+            Route::post('search', 'ForeignerController@search_std_for_data')->name('foreigners.search_std_for_data');
+
             /** 특정 유학생 정보 조회 */
             Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
@@ -72,9 +75,6 @@ Route::middleware('auth.multi')->group(static function () {
 
         /* 한국인학생 관리 */
         Route::prefix('/korean')->group(function () {
-            /** 전체 한국인 학생 정보 조회 - No paginate */
-            Route::get('all', 'KoreanController@show_all')->name('koreans.show_all');
-
             /** 전체 한국인 학생 정보 조회 */
             Route::get('', 'KoreanController@index')->name('koreans.index');
 
