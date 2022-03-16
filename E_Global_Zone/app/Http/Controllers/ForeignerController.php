@@ -21,30 +21,6 @@ class ForeignerController extends Controller
         $this->std_for = new Student_foreigner();
         $this->std_for_contact = new Student_foreigners_contact();
     }
-
-    /**
-     * 전체 유학생 정보 조희
-     * 페이지 url => api/admin/foreigner/all?page=1  ->  page = n 번호에 따라서 바뀜.
-     * @return JsonResponse
-     */
-    public function show_all(Request $request): JsonResponse
-    {
-        // <<-- Request 요청 관리자 권한 검사.
-        $is_admin = self::is_admin($request);
-
-        if (is_object($is_admin)) {
-            return $is_admin;
-        }
-        // -->>
-
-        $std_foreigners = $this->std_for->get_all_users();
-
-        return response()->json([
-            'message' => Config::get('constants.for.std_for.index.success'),
-            'data' => $std_foreigners
-        ]);
-    }
-
     /**
      * 특정 유학생 이름 또는 학번으로 정보 조회
      * 
