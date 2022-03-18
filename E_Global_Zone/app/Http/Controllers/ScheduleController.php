@@ -195,11 +195,12 @@ class ScheduleController extends Controller
             ->get();
 
         foreach ($result_foreigner_schedules as $schedule) {
-            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+            $reservation_data = Schedule::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch')
+                ->whereNotNull('res.res_std_kor')
+                ->whereNotNull('sch_std_for');
 
             // 전체 예약 한국인 인원수
             $reservated_count = $reservation_data
-                ->whereNotNull('res.res_std_kor')
                 ->where('res.res_sch', '=', $schedule->sch_id)
                 ->count();
 
