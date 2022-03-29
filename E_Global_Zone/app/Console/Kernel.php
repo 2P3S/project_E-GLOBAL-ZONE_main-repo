@@ -45,10 +45,13 @@ class Kernel extends ConsoleKernel
                 ->get();
 
             foreach ($student_foreigners as $schedule) {
-                $reservation_data = ScheduleList::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch');
+                $reservation_data = ScheduleList::join('reservations as res', 'schedules.sch_id', '=', 'res.res_sch')
+                    ->whereNotNull('res.res_std_kor')
+                    ->whereNotNull('sch_std_for');
 
                 // 전체 예약 한국인 인원수
-                $reservated_count = $reservation_data->where('res.res_sch', '=', $schedule->sch_id)->count();
+                $reservated_count = $reservation_data
+                    ->where('res.res_sch', '=', $schedule->sch_id)->count();
 
                 // 예약 한국인이 0 명일 경우 자동 관리자 승인 ( 근로 시간 인증 )
                 if ($reservated_count == 0) {
@@ -76,7 +79,7 @@ class Kernel extends ConsoleKernel
             $reservation_due_period = $setting_values['res_end_period'] - 1;
             $reservation_due_date = date("Y-m-d", strtotime("-{$reservation_due_period} days"));
 
-//            $now_date = date("Y-m-d");
+            //            $now_date = date("Y-m-d");
 
             $student_foreigners = ScheduleList::select('sch_id', 'std_for_id')
                 ->join('student_foreigners as for', 'schedules.sch_std_for', 'for.std_for_id')
