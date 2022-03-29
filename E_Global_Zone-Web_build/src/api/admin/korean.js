@@ -3,7 +3,6 @@ import { admin } from "../axios";
 export const postAdminKorean = (data) => admin.post("korean", data);
 
 export const getAdminKorean = (params) => admin.get("korean", { params });
-export const getAdminAllKorean = () => admin.get("korean/all");
 
 export const postAdminKoreanRestrict = (data) => admin.post("korean/restrict", data);
 export const patchAdminKoreanRestrict = (id) => admin.patch(`korean/restrict/${id}`);
