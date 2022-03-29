@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        // class를 못찾을 때 composer dump-autoload
+        // php artisan db:seed
+        $this->call(Student_foreignersTableSeeder::class);
     }
 }

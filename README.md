@@ -1,7 +1,5 @@
-# 永進専門大学「Global Zone ・ Center」オンライン予約システム
-
-### [YJU E-global-zone ・ Center](http://global.yju.ac.kr)
-
+# 영진전문대학교 글로벌 존 온라인 예약 시스템
+### [YJU E-global-zone](http://global.yju.ac.kr)
 <p align="center">
     <a href="https://www.yju.ac.kr/" target="_blank">
         <img src="https://www.yju.ac.kr/sites/kr/masterSkin/kr_JW_MS_K2WT003_M/images/logo/m_h-logo.png" width="400">
@@ -200,8 +198,11 @@
 - 실 서버 배포 : 2020-09-16 ~ 09-18
 - 베타 오픈 : 2020-09-21
 
-## 開発者
+## 서비스 오픈
+- 글로벌 존 : 2020-10-05
+- 글로벌 센터 : 2020-10-12 
 
+## developers
 <table>
     <tr>
         <td align="center">

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Department;
 use App\Reservation;
 use App\Schedule;
-use Illuminate\Support\Collection;
 use App\Section;
 use App\Student_foreigner;
 use App\Student_korean;
@@ -15,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class DataExportController extends Controller
@@ -174,7 +174,7 @@ class DataExportController extends Controller
 
         $rules = [
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
 
         $validated_result = self::request_validator(
@@ -233,7 +233,7 @@ class DataExportController extends Controller
 
         $rules = [
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
 
         $validated_result = self::request_validator(
@@ -282,5 +282,37 @@ class DataExportController extends Controller
         } catch (SpoutException $e) {
             return $this->get_download_error();
         }
+    }
+
+    public function export_result_img(Section $sect_id, Request $request)
+    {
+        // <<-- Request 요청 관리자 권한 검사.
+        $is_admin = self::is_admin($request);
+
+        if (is_object($is_admin)) {
+            return $is_admin;
+        }
+        // -->>
+
+        $sect_name = $sect_id['sect_name'];
+        $file_name = "{$sect_name}.zip";
+        $dir_name = str_replace(" ", "\ ", $sect_name);
+        $zip_info = [
+            "dir" => "../storage/app/public",
+            "create_file_name" => "{$dir_name}.zip",
+            "target" => "./{$dir_name}/*"
+        ];
+
+        $command = "cd {$zip_info['dir']} && zip {$zip_info['create_file_name']} {$zip_info['target']}";
+        exec($command, $output, $return_var);
+
+        $storage = Storage::disk("zip");
+        $is_file_exists = $storage->exists($file_name);
+
+        if ($is_file_exists) {
+            return $storage->download($file_name);
+        }
+
+        return self::response_json_error("{$sect_name} 결과 사진 저장에 실패하였습니다.");
     }
 }

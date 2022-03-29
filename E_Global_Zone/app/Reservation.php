@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @method static find(int $res_id)
@@ -52,6 +53,7 @@ class Reservation extends Model
 
         return
             self::join('schedules', 'reservations.res_sch', 'schedules.sch_id')
+            ->whereNotNull('schedules.sch_std_for')
             ->whereDate('sch_start_date', '>=', $date_sch_res_possible['from'])
             ->whereDate("sch_start_date", "<", $date_sch_res_possible['to'])
             ->whereIn('res_std_kor', $std_kor_id)
@@ -88,6 +90,7 @@ class Reservation extends Model
             ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
             ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
             ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
+            ->whereNotNull('sch.sch_std_for')
             ->where('reservations.res_std_kor', $std_kor_id)
             ->whereDate('sch.sch_start_date', date("Y-m-d", strtotime($search_date)))
             ->get();
@@ -107,7 +110,7 @@ class Reservation extends Model
             'std_for_lang', 'std_for_name',
             'sch_start_date', 'sch_end_date', 'res_id',
             'res_state_of_permission', 'res_state_of_attendance',
-            'for.std_for_id', 'std_for_zoom_id', 'sch_for_zoom_pw'
+            'for.std_for_id', 'std_for_zoom_id'
         ];
 
         $result =
@@ -115,18 +118,25 @@ class Reservation extends Model
             ->join('schedules as sch', 'sch.sch_id', 'reservations.res_sch')
             ->join('student_foreigners as for', 'for.std_for_id', 'sch.sch_std_for')
             ->join('student_foreigners_contacts as contact', 'for.std_for_id', 'contact.std_for_id')
-            ->where('reservations.res_std_kor', $std_kor_id)
+            ->whereNotNull('sch.sch_std_for')
+            ->whereNotNull('reservations.res_std_kor')
             ->where('sch.sch_state_of_result_input', false)
+            ->where('reservations.res_std_kor', $std_kor_id)
+            ->orderBy("sch_start_date")
+            ->addSelect(['sch_for_zoom_pw' => function ($query) {
+                $query->where('res_state_of_permission', true)
+                    ->select('sch.sch_for_zoom_pw');
+            }])
             ->get();
 
         $is_std_kor_res_no_date = $result->count();
 
         if (!$is_std_kor_res_no_date) {
             return
-                Controller::response_json(self::_STD_KOR_RES_INDEX_NO_DATE, 202);
+                Controller::response_json(Config::get('constants.kor.reservation.kor_index.no_value'), 202);
         }
 
-        $message_template = self::_STD_KOR_RES_INDEX_SUCCESS;
+        $message_template = Config::get('constants.kor.reservation.kor_index.success');
         return
             Controller::response_json($message_template, 200, $result);
     }

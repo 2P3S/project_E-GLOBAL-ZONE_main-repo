@@ -45,29 +45,49 @@ class Admin extends Authenticatable
         array $request
     ): ?Builder
     {
-        $admin = null;
-        try {
-            $ran_num = $request['ran_num'];
-            $ran_token = substr($request['token'], $ran_num, 100);
+//        $admin = null;
+//        try {
+//        $ran_num = $request['ran_num'];
+//        $ran_token = substr($request['token'], $ran_num, 100);
 
-            $admin = self::where('account', $request['account'])
-                ->where('remember_token', $ran_token);
+        $admin = self::where('std_for_id', $request['account']);
+//        $admin = self::where('std_for_id', $request['account'])
+//            ->where('remember_token', $ran_token);
 
-        } catch (\Exception $e) {
-            return null;
-        }
+//        } catch (\Exception $e) {
+//            return null;
+//        }
 
         return $admin;
     }
 
+//    public function update_user_info(
+//        Builder $user, string $hashed_password
+//    ): bool
+//    {
+//        try {
+//            $user->update([
+//                'password' => $hashed_password
+//            ]);
+//        } catch (\Exception $e) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
+
     public function update_user_info(
-        Builder $user, string $hashed_password
+        string $user, string $hashed_password
     ): bool
     {
         try {
-            $user->update([
-                'password' => $hashed_password
-            ]);
+            self::where('account', $user)
+                ->update([
+                    'password' => $hashed_password
+                ]);
+//            $user->update([
+//                'password' => $hashed_password
+//            ]);
         } catch (\Exception $e) {
             return false;
         }

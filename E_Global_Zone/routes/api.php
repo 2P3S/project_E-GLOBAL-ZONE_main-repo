@@ -19,8 +19,14 @@ Route::middleware('auth.multi')->group(static function () {
 
     /* 관리자 라우터 */
     Route::prefix('/admin')->group(function () {
+
+        Route::get('holiday', 'ScheduleController@index_holiday');
+
         /* 유학생 관리 */
         Route::prefix('/foreigner')->group(function () {
+            /** 특정 유학생 학번으로 정보 조회 */
+            Route::post('search', 'ForeignerController@search_std_for_data')->name('foreigners.search_std_for_data');
+
             /** 특정 유학생 정보 조회 */
             Route::get('', 'ForeignerController@show')->name('foreigners.show');
 
@@ -163,6 +169,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 출석 결과 미승인 건 승인 */
             Route::patch('approval/{sch_id}', 'ScheduleController@updateApprovalOfUnapprovedCase')->name('schedules.updateApprovalOfUnapprovedCase');
+
+            /* 출석 결과 완료 된 학생의 상태 변경 로직 */
+            Route::patch('update/{sch_id}', 'ScheduleController@update_attendance_result');
         });
 
         /* 계열 / 학과 관리 라우터 */
@@ -184,6 +193,9 @@ Route::middleware('auth.multi')->group(static function () {
 
             /** 환경변수 저장 */
             Route::post('', 'SettingController@store')->name('settings.store');
+
+            /** 한국인 && 유학생 정보 초기화 */
+            Route::get('/reset', 'SettingController@reset_restriction_info')->name('settings.reset_restriction_info');
         });
 
         // <<-- DataExport : DB 엑셀 출력
@@ -197,11 +209,23 @@ Route::middleware('auth.multi')->group(static function () {
         });
         // -->>
 
+        // <<-- DataExportImg : 결과 이미지 Zip 저장
+        Route::prefix('export')->group(function () {
+            Route::get("result/{sect_id}", "DataExportController@export_result_img");
+        });
+        // -->>
+
         /** 해당 스케줄 신청 학생 명단 조회 */
         Route::get('reservation/{sch_id}', 'ReservationController@std_for_show_res_by_id')->name('reservations.showReservation');
 
         /** 해당 스케줄 신청 학생 명단 승인 */
         Route::patch('reservation/permission/{sch_id}', 'ReservationController@std_for_update_res_permission')->name('reservations.updateReservaion');
+
+        /** 공지사항 작성 */
+        Route::post('notice', 'NoticeController@store');
+
+        /** 공지사항 삭제 */
+        Route::delete('notice/{noti_id}', 'NoticeController@destroy');
     });
 
 
@@ -286,3 +310,9 @@ Route::get('department', 'DepartmentController@index')->name('departments.index'
 Route::post('/password/update', function () {
     return view('password_update');
 });
+
+/** 공지사항 불러오기 */
+Route::get('notice', 'NoticeController@index');
+
+/** 공지사항 이미지 불러오기 */
+Route::get('notice/{noti_id}', 'NoticeController@index_imgs');

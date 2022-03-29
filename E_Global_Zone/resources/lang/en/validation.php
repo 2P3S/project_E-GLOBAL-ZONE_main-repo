@@ -90,7 +90,7 @@ return [
         'string' => ':attribute 값이 :min 글자 이상으로 작성하셔야합니다.',
         'array' => ':attribute 값이 :max 개보다 적습니다.',
     ],
-    'phone_number' => ':value 는 휴대폰 형식이 아닙니다.',
+    'phone_number' => ':values 는 휴대폰 형식이 아닙니다.',
     'g_suite_mail' => 'G - Suite 계정만 가입 가능합니다.',
     'kakao_id' => '영문과 숫자로 된 4~15자의 카카오톡 아이디만 가능합니다.',
     'not_regex' => 'The :attribute format is invalid.',

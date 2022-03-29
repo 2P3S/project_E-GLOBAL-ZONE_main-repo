@@ -128,34 +128,32 @@
 <body>
 @inject('login_controller', 'App\Http\Controllers\LoginController')
 
-@php
-    session_start();
-    $expire_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
-    $url = "/api/password/update?expire_time=" . "'{$expire_time}'";
+<?php
+//$expire_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
+//$url = "/api/password/update?expire_time=" . "'{$expire_time}'";
+$url = "/api/password/update";
 
-    $request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
-@endphp
+$request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
+?>
 
-@if (isset(
-    $_SESSION['provider'], $_SESSION['account'], $_SESSION['token'], $_SESSION['ran_num'],
-    $_POST['password'], $_POST['password_confirmation'], $_POST['uri'], $login_controller
-))
-    @php
-        $is_password_update_success = $login_controller
-            ->update_password_url(array_merge($_SESSION, $_POST), $_GET['expire_time']);
+@if (isset($_POST['provider']))
+    <?php
+    $is_password_update_success = $login_controller
+        ->update_password_url($_POST['provider'], $_POST['account'], $_POST['password'], $_POST['password_confirmation']);
+    //        ->update_password_url($_POST, $_POST['expire_time']);
 
-        $target_uri = $_POST['uri'];
-        $result_message = $is_password_update_success ?
-                        '비밀번호 변경을 성공하였습니다.' :
-                        '비밀번호 변경을 실패하였습니다.';
-        $append_message = '다시 로그인해주세요.';
+    $target_uri = $_POST['uri'];
+    $result_message = $is_password_update_success ?
+        '비밀번호 변경을 성공하였습니다.' :
+        '비밀번호 변경을 실패하였습니다.';
+    $append_message = '다시 로그인해주세요.';
 
-        echo "&nbsp;";
-        echo "
+    echo "&nbsp;";
+    echo "
             <script>
                 go_main_page(`{$result_message}\n{$append_message}`, '{$target_uri}')
             </script>";
-    @endphp
+    ?>
 
 @elseif (
     isset($account, $provider, $name, $token) && (
@@ -195,14 +193,12 @@
                         action="{{ $url }}"
                         method="POST"
                     >
-                        <?php
-                        $_SESSION = [
-                            'provider' => $provider,
-                            'account' => $account,
-                            'token' => $token,
-                            'ran_num' => $ran_num
-                        ];
-                        ?>
+
+                        <input type="hidden" name="provider" value="{{$provider}}">
+                        <input type="hidden" name="account" value="{{$account}}">
+                        <input type="hidden" name="token" value="{{$token}}">
+                        <input type="hidden" name="$ran_num" value="{{$ran_num}}">
+                        {{--                        <input type="hidden" name="expire_time" value="{{$expire_time}}">--}}
                         <input type="password" name="password" placeholder="Password" required>
                         <input type="password" name="password_confirmation" placeholder="Password 확인"
                                required>
