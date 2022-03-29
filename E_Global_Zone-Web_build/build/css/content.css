@@ -2838,6 +2838,17 @@ ul.img_file li p.file_name:hover {
 	background-color: #f5f5f5;
 }
 
+.setting_btn_wrap div.delete {
+	background: #e24b33;
+	color: white;
+	border: 1px solid #db4a34
+}
+
+.setting_btn_wrap div.delete:hover {
+	background: #db4a34;
+	color: white;
+}
+
 /* 신청학생 명단보기 - 학생추가 */
 .popup.student_plus {
 	width: 400px;
@@ -3312,16 +3323,6 @@ ul.img_file li p.file_name:hover {
 
 .table_btn .darkGray:hover {
 	background: #292b33;
-}
-
-.table_btn .delete {
-	background: #e24b33;
-	color: white;
-}
-
-.table_btn .delete:hover {
-	background: #db4a34;
-	color: white;
 }
 
 /* TAP */

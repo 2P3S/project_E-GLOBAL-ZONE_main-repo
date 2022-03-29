@@ -17,7 +17,7 @@ import { getAdminExportForeigner } from '../../../../api/admin/export';
 import WirteNotice from '../../../../components/common/modal/WirteNotice';
 import DeleteModal from '../../../../components/common/modal/DeleteModal';
 
-import DeleteForeignerStudent from '../../../../components/common/modal/DeleteForeignerStudent'
+import DeleteStudent from '../../../../components/common/modal/DeleteStudent';
 
 /**
  * Manager :: 시스템 환경설정
@@ -426,6 +426,10 @@ export default function Settings() {
 					학기 이관
 				</div>
 
+				<div className='delete' onClick={handleOpenStdDelete}>
+					학생 계정 삭제
+				</div>
+
 
 				<div
 					className='save'
@@ -458,6 +462,11 @@ export default function Settings() {
 				isOpen={isOpenForInsertForeignerStudent}
 				handleClose={handleCloseForInsertForeignerStudent}>
 				<InsertForeignerStudent handleClose={handleCloseForInsertForeignerStudent} />
+			</Modal>
+			<Modal
+				isOpen={isOpenStdDelete}
+				handleClose={handleCloseStdDelete}>
+				<DeleteStudent handleClose={handleCloseStdDelete} />
 			</Modal>
 		</div>
 	) : (
