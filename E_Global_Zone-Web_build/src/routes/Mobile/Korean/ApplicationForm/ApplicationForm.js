@@ -52,7 +52,7 @@ export default function ApplicationForm() {
 				<input type="text" value={data.sch_time} readOnly />
 			</div>
 			<div className="input_box">
-				<p>교수님</p>
+				<p>유학생</p>
 				<input type="text" value={data.std_for_name} readOnly />
 			</div>
 			<div className="input_box">

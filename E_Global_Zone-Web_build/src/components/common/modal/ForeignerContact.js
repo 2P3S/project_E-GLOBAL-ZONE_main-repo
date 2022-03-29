@@ -16,7 +16,7 @@ export default function ForeignerContact({ list, handleClose }) {
 
 	return (
 		<div className="popup contact">
-			<p className="tit">교수 연락처 정보</p>
+			<p className="tit">유학생 연락처 정보</p>
 			<div className="scroll_area">
 				<table className="pop_table">
 					<thead>

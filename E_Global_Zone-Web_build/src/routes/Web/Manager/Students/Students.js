@@ -7,7 +7,6 @@ import ConfirmUnrestriction from "../../../../components/common/modal/ConfirmUnr
 import useModal from "../../../../modules/hooks/useModal";
 import {
 	getAdminKorean,
-	deleteAdminKoreanAccount,
 	postAdminKorean,
 } from "../../../../api/admin/korean";
 import { selectDept } from "../../../../redux/confSlice/confSlice";
@@ -164,20 +163,39 @@ export default function Students() {
 					});
 				dispatch(setData(new Data(dataArray)));
 				if (resData.data.last_page) {
+					const { current_page, last_page } = resData.data;
+					let firstIndex =
+						current_page % 10 === 0
+							? current_page - 10
+							: current_page - (current_page % 10);
+					let lastIndex = firstIndex + 10 > last_page ? last_page : firstIndex + 10;
 					const pagenation = document.getElementById("pagenation");
 					pagenation.innerHTML = "";
 					let first = document.createElement("button");
-					// first.innerText = "<<";
 					first.innerHTML += '<img src="/global/img/paging_prev_ico.gif" />';
 					first.addEventListener("click", () => {
-						history.push(`/students/1/korean`);
+						history.push(
+							`/students/${current_page === 1 ? 1 : current_page - 1}/korean`
+						);
 						setPending(true);
 					});
 					pagenation.appendChild(first);
-					for (let i = 0; i < resData.data.last_page; i++) {
+					if (firstIndex !== 0) {
+						let firstPage = document.createElement("button");
+						firstPage.innerText = "1";
+						firstPage.addEventListener("click", () => {
+							history.push(`/students/1/korean`);
+							setPending(true);
+						});
+						pagenation.appendChild(firstPage);
+						let dots = document.createElement("button");
+						dots.innerText = "...";
+						pagenation.appendChild(dots);
+					}
+					for (let i = firstIndex; i < lastIndex; i++) {
 						let btn = document.createElement("button");
 						btn.innerText = i + 1;
-						if (i + 1 == params.page) {
+						if (i + 1 == resData.data.current_page) {
 							btn.classList.add("on");
 						}
 						btn.addEventListener("click", () => {
@@ -186,12 +204,25 @@ export default function Students() {
 						});
 						pagenation.appendChild(btn);
 					}
+					if (lastIndex !== last_page) {
+						let dots = document.createElement("button");
+						dots.innerText = "...";
+						pagenation.appendChild(dots);
+						let lastPage = document.createElement("button");
+						lastPage.innerText = last_page;
+						lastPage.addEventListener("click", () => {
+							history.push(`/students/${last_page}/korean`);
+							setPending(true);
+						});
+						pagenation.appendChild(lastPage);
+					}
+
 					let last = document.createElement("button");
 					// last.innerText = ">>";
 					last.innerHTML += '<img src="/global/img/paging_next_ico.gif" />';
 					pagenation.appendChild(last);
 					last.addEventListener("click", () => {
-						history.push(`/students/${resData.data.last_page}/korean`);
+						history.push(`/students/${current_page + 1}/korean`);
 						setPending(true);
 					});
 				}
@@ -326,19 +357,19 @@ export default function Students() {
 										<td>{v.std_id}</td>
 										<td
 											className="name"
-											// onClick={() => {
-											// 	if (
-											// 		window.confirm(
-											// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
-											// 		) === true
-											// 	) {
-											// 		deleteAdminKoreanAccount(v.std_id).then(
-											// 			(res) => {
-											// 				setPending(true);
-											// 			}
-											// 		);
-											// 	}
-											// }}
+										// onClick={() => {
+										// 	if (
+										// 		window.confirm(
+										// 			`[경고]정말 삭제 하시겠습니까?\n학번 : ${v.std_id}\n이름 : ${v.name}`
+										// 		) === true
+										// 	) {
+										// 		deleteAdminKoreanAccount(v.std_id).then(
+										// 			(res) => {
+										// 				setPending(true);
+										// 			}
+										// 		);
+										// 	}
+										// }}
 										>
 											{v.name}
 											{/* <div className="hover_off" id={`hover_btn_${index}`}>

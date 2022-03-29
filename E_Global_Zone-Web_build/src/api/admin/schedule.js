@@ -19,3 +19,7 @@ export const patchAdminScheduleApproval = (sch_id, data) =>
 	admin.patch(`schedule/approval/${sch_id}`, data);
 
 export const getAdminHoliday = (params) => admin.get("holiday", { params });
+export const patchAdminScheduleUpdate = (sch_id, params) =>
+	admin.patch(`schedule/update/${sch_id}`, params).then((res) => {
+		alert(res.data.message);
+	});

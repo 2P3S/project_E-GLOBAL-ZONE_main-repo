@@ -82,9 +82,14 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_
 		}
 	};
 
+	const findDeptName = (std_for_dept) => {
+		if (!dept) return;
+		return dept.find(dept => dept.dept_id === std_for_dept)?.dept_name[0];
+	}
+
 	return (
 		<div className="popup regist">
-			<p className="tit">{sect_name} 교수진 등록</p>
+			<p className="tit">{sect_name} 근로 유학생 등록</p>
 
 			<div className="top_search">
 				<div className="search_box">
@@ -119,7 +124,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_
 							</th>
 							<th scope="col">언어</th>
 							<th scope="col">국가</th>
-							<th scope="col">교번</th>
+							<th scope="col">학번</th>
 							<th scope="col">이름</th>
 							<th scope="col">계열학과</th>
 							<th scope="col">연락처</th>
@@ -147,7 +152,7 @@ export default function SetSectForeigner({ sect_id, handleClose, reRender, sect_
 									<td>{v.std_for_country}</td>
 									<td>{v.std_for_id}</td>
 									<td>{v.std_for_name}</td>
-									<td>{dept[parseInt(v.std_for_dept) - 1].dept_name[0]}</td>
+									<td>{findDeptName(v.std_for_dept)}</td>
 									<td>{v.std_for_phone}</td>
 									<td>{v.std_for_mail}</td>
 									<td>{v.std_for_zoom_id}</td>

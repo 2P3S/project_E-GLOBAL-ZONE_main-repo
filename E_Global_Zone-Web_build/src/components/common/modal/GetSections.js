@@ -3,12 +3,15 @@ import { getAdminSection, deleteAdminSection } from "../../../api/admin/section"
 import moment from "moment";
 import useModal from "../../../modules/hooks/useModal";
 import Modal from "./Modal";
+import Loader from "../Loader";
 import CreateSection from "./CreateSection";
 import { handleEnterKey } from "../../../modules/handleEnterKey";
+import { getAdminExportResult } from "../../../api/admin/export";
 
 export default function GetSections({ handleClose }) {
 	const [sectList, setSectList] = useState({});
 	const [selectSect, setSelectSect] = useState();
+	const [loading, setLoading] = useState(false);
 
 	const { isOpen, handleClose: handleCloseForModal, handleOpen } = useModal();
 
@@ -43,7 +46,8 @@ export default function GetSections({ handleClose }) {
 						<col />
 						<col />
 						<col />
-						<col width="12%" />
+						<col />
+						<col />
 					</colgroup>
 					<thead>
 						<tr>
@@ -51,9 +55,11 @@ export default function GetSections({ handleClose }) {
 							<th scope="col">시작일</th>
 							<th scope="col">종료일</th>
 							<th scope="col">근무 학생 수</th>
-							<th scope="col"></th>
+							<th scope="col">결과 사진</th>
+							<th scope="col">수정/삭제</th>
 						</tr>
 					</thead>
+
 					<tbody>
 						{sectList.data &&
 							sectList.data.map((v) => {
@@ -71,6 +77,26 @@ export default function GetSections({ handleClose }) {
 											)}
 										</td>
 										<td>{v.std_for_count}명</td>
+										<td>
+											<div
+												// style={{
+												// 	border: "1px solid black",
+												// 	borderRadius: "5px",
+												// }}
+												className="table_down_btn"
+												onClick={(e) => {
+													setLoading(true);
+													getAdminExportResult(
+														v.sect_id,
+														v.sect_name
+													).then(() => {
+														setLoading(false);
+													});
+												}}
+											>
+												다운로드
+											</div>
+										</td>
 										<td>
 											{moment(v.sect_start_date, "YYYY-MM-DD").isAfter(
 												moment(Date.now())
@@ -105,7 +131,7 @@ export default function GetSections({ handleClose }) {
 													alt="학기 수정 버튼"
 												/>
 											) : (
-												<></>
+												<>-</>
 											)}
 										</td>
 									</tr>
@@ -114,6 +140,9 @@ export default function GetSections({ handleClose }) {
 					</tbody>
 				</table>
 			</div>
+			<Modal isOpen={loading}>
+				<Loader />
+			</Modal>
 			<Modal isOpen={isOpen} handleClose={handleCloseForModal}>
 				<CreateSection handleClose={handleCloseForModal} selectSect={selectSect} />
 			</Modal>
