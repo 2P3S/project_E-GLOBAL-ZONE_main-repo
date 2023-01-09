@@ -222,7 +222,7 @@
             </a>
         </td>
         <td align="center">
-            <a href="https://github.com/kokomade98"><img src="https://avatars1.githubusercontent.com/u/52916934?s=400&u=98dc80246851616122330b0f96146e6c8f562454&v=4" width="100px;" alt=""/><br />
+            <a href="https://github.com/hyunnnn98"><img src="https://avatars1.githubusercontent.com/u/52916934?s=400&u=98dc80246851616122330b0f96146e6c8f562454&v=4" width="100px;" alt=""/><br />
                 <sub><b>SeungHyun Cho</b></sub>
             </a>
         </td>    
