@@ -63,6 +63,7 @@ export default function ShowList({
       : getForeignerReservation(sch_id).then((res) => setData(res.data));
     return thisReRender;
   }, []);
+
   useEffect(() => {
     if (data && data.data) {
       let array = [];
@@ -74,6 +75,7 @@ export default function ShowList({
     }
     window.easydropdown.all();
   }, [data]);
+
   useEffect(() => {
     pending && handleClose();
   }, [pending]);
@@ -95,7 +97,7 @@ export default function ShowList({
   const saveZoomLink = () => {
     updateScheduleZoomLink(sch_id, { sch_for_zoom_link: zoomLink })
       .then((res) => {
-        alert(std_for_name + res.data.message);
+        alert(res.data.message);
         handleClose();
       })
       .catch((error) => {
