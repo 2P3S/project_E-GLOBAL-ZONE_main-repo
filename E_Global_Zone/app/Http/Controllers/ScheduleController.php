@@ -27,6 +27,32 @@ class ScheduleController extends Controller
         $this->reservation = new Reservation();
     }
 
+    // 줌 링크 등록 및 편집
+    public function update_sch_for_zoom_link(Request $request, Schedule $sch_id): JsonResponse
+    {
+        $rules = [
+            'sch_for_zoom_link' => 'required|string'
+        ];
+
+        // <<-- Request 유효성 검사
+        $validated_result = self::request_validator(
+            $request,
+            $rules,
+            Config::get('constants.kor.schedule.update_zoom_link.failure')
+        );
+        // -->>
+
+        if (is_object($validated_result)) {
+            return $validated_result;
+        }
+
+        $sch_id->update([
+            'sch_for_zoom_link' => $request->input('sch_for_zoom_link'),
+        ]);
+
+        return self::response_json(Config::get('constants.kor.schedule.update_zoom_link.success'), 200);
+    }
+
     // 출석 결과 완료 된 학생의 상태 변경 로직.
     public function update_attendance_result(Request $request, Schedule $sch_id): JsonResponse
     {
@@ -112,7 +138,7 @@ class ScheduleController extends Controller
         function std_for_add_schedule_data($response_data, $date)
         {
             foreach ($response_data as $student) {
-                $student['schedules'] = Schedule::select('sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+                $student['schedules'] = Schedule::select('sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_for_zoom_link', 'sch_state_of_result_input', 'sch_state_of_permission')
                     ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
                     ->whereDate('sch_start_date', '=', $date)
                     ->where('std_for_id', $student->std_for_id)
@@ -186,7 +212,7 @@ class ScheduleController extends Controller
 
         $std_for_id = $request->user($request->input('guard'))['std_for_id'];
 
-        $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_state_of_result_input', 'sch_state_of_permission')
+        $result_foreigner_schedules = Schedule::select('std_for_id', 'sch_id', 'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_for_zoom_link', 'sch_state_of_result_input', 'sch_state_of_permission')
             ->join('student_foreigners as for', 'schedules.sch_std_for', '=', 'std_for_id')
             ->where('std_for_id', $std_for_id)
             ->whereDate('sch_start_date', '>=', $request->input('start_date'))
