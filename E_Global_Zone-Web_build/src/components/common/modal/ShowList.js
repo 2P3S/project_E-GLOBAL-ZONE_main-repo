@@ -144,44 +144,35 @@ export default function ShowList({
         </p>
       </div>
 
-      {sch_for_zoom_link.trim() !== "" ? (
-        <div>
-          <span>
-            접속정보 :{" "}
-            {updateMode ? (
-              <input
-                onChange={(e) => setZoomLink(e.target.value)}
-                value={zoomLink}
-              />
-            ) : (
-              <a href={zoomLink} target="_blank" rel="noopener noreferrer">
-                {zoomLink}
-              </a>
-            )}
-          </span>
+      <div className="link_container">
+        <div className="link_top_tit">
+          <p className="tit">접속정보</p>
           {updateMode ? (
-            <button onClick={saveZoomLink}>저장</button>
+            <label
+              htmlFor="link_input"
+              className="link_bbtn save"
+              onClick={saveZoomLink}
+            >
+              저장
+            </label>
           ) : (
-            <button onClick={() => setUpdateMode(true)}>편집</button>
+            <label
+              htmlFor="link_input"
+              className="link_bbtn"
+              onClick={() => setUpdateMode(true)}
+            >
+              편집
+            </label>
           )}
         </div>
-      ) : (
-        <div>
-          {updateMode ? (
-            <input
-              onChange={(e) => setZoomLink(e.target.value)}
-              value={zoomLink}
-            />
-          ) : (
-            <span>접속정보가 없습니다.</span>
-          )}
-          {updateMode ? (
-            <button onClick={saveZoomLink}>저장</button>
-          ) : (
-            <button onClick={() => setUpdateMode(true)}>등록</button>
-          )}
-        </div>
-      )}
+        <input
+          id="link_input"
+          className="link_input"
+          onChange={(e) => setZoomLink(e.target.value)}
+          value={zoomLink}
+          disabled={!updateMode}
+        />
+      </div>
 
       <div className="area">
         <ul>
