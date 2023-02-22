@@ -197,18 +197,30 @@ export default function Reservation() {
                         <p
                           className="right zoom_info"
                           onClick={() => {
-                            prompt(
-                              `Zoom ID : ${v.std_for_zoom_id
-                                .toString()
-                                .substr(0, 3)} ${v.std_for_zoom_id
-                                .toString()
-                                .substr(3, 3)} ${v.std_for_zoom_id
-                                .toString()
-                                .substr(6, 4)}\nZoom PW : ${
-                                v.sch_for_zoom_pw
-                              }\n\n링크를 복사하여 사용하세요!`,
-                              v.sch_for_zoom_link
-                            );
+                            v.sch_for_zoom_link.trim() !== ""
+                              ? prompt(
+                                  `Zoom ID : ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(0, 3)} ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(3, 3)} ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(6, 4)}\nZoom PW : ${
+                                    v.sch_for_zoom_pw
+                                  }\n\n링크를 복사하여 사용하세요!`,
+                                  v.sch_for_zoom_link
+                                )
+                              : alert(
+                                  `Zoom ID : ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(0, 3)} ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(3, 3)} ${v.std_for_zoom_id
+                                    .toString()
+                                    .substr(6, 4)}\nZoom PW : ${
+                                    v.sch_for_zoom_pw
+                                  }`
+                                );
                           }}
                         >
                           접속 정보
