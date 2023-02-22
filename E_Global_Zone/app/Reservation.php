@@ -82,7 +82,7 @@ class Reservation extends Model
             'sch_start_date', 'sch_end_date',
             'res_state_of_permission', 'res_state_of_attendance',
             'sch_state_of_result_input', 'sch_state_of_permission',
-            'for.std_for_id', 'std_for_zoom_id', 'sch_for_zoom_pw'
+            'for.std_for_id', 'std_for_zoom_id', 'sch_for_zoom_pw', 'sch_for_zoom_link'
         ];
 
         $result =
@@ -126,6 +126,10 @@ class Reservation extends Model
             ->addSelect(['sch_for_zoom_pw' => function ($query) {
                 $query->where('res_state_of_permission', true)
                     ->select('sch.sch_for_zoom_pw');
+            }])
+            ->addSelect(['sch_for_zoom_link' => function ($query) {
+                $query->where('res_state_of_permission', true)
+                    ->select('sch.sch_for_zoom_link');
             }])
             ->get();
 
