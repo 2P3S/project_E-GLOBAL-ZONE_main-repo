@@ -14,7 +14,7 @@ class AddSchForZoomLinkToSchedules extends Migration
     public function up()
     {
         Schema::table('schedules', function (Blueprint $table) {
-            $table->string('sch_for_zoom_link');
+            $table->string('sch_for_zoom_link')->default("")->nullable();
         });
     }
 
