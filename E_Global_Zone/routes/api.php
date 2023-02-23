@@ -316,3 +316,6 @@ Route::get('notice', 'NoticeController@index');
 
 /** 공지사항 이미지 불러오기 */
 Route::get('notice/{noti_id}', 'NoticeController@index_imgs');
+
+/* 줌 접속 정보 업데이트 */
+Route::post('/schedule/update/{sch_id}/zoom-link', 'ScheduleController@update_sch_for_zoom_link');

@@ -37,7 +37,8 @@ class Schedule extends Model
         'sch_end_date',
         'sch_state_of_result_input',
         'sch_state_of_permission',
-        'sch_for_zoom_pw'
+        'sch_for_zoom_pw',
+        'sch_for_zoom_link'
     ];
 
     public $timestamps = false;
@@ -85,7 +86,7 @@ class Schedule extends Model
         $lookup_columns = [
             'res_id', 'std_kor_id',
             'std_kor_name', 'std_kor_phone',
-            'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw',
+            'sch_start_date', 'sch_end_date', 'sch_for_zoom_pw', 'sch_for_zoom_link',
             'res_state_of_permission', 'res_state_of_attendance'
         ];
 
