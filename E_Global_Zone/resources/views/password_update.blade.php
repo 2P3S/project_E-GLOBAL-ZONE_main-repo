@@ -131,7 +131,7 @@
 <?php
 //$expire_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
 //$url = "/api/password/update?expire_time=" . "'{$expire_time}'";
-$url = "/api/password/update";
+$url = "http://localhost:8000/api/password/update";
 
 $request_uri = explode("?", $_SERVER['REQUEST_URI'])[0];
 ?>

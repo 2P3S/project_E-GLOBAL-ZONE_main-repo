@@ -304,3 +304,6 @@ Route::get('department', 'DepartmentController@index')->name('departments.index'
 Route::post('/password/update', function () {
     return view('password_update');
 });
+
+/* 줌 접속 정보 업데이트 */
+Route::post('/schedule/update/{sch_id}/zoom-link', 'ScheduleController@update_sch_for_zoom_link');
