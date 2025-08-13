@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import useClick from "../../modules/hooks/useClick";
-import { GoogleLogout } from "react-google-login";
+import React from "react";
+import { Link } from "react-router-dom";
+import { googleLogout } from '@react-oauth/google';
 
 /**
  * Header for Mobile
@@ -9,6 +8,12 @@ import { GoogleLogout } from "react-google-login";
  * @constructor
  */
 export default function Header() {
+    const handleLogout = () => {
+        googleLogout();
+        window.localStorage.clear();
+        window.location.href = '/';
+    };
+
 	return (
 		<>
 			<div className="mhead">
@@ -20,18 +25,8 @@ export default function Header() {
 						/>
 					</Link>
 				</div>
-				<div className="login">
-					<GoogleLogout
-						clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-						buttonText="Logout"
-						onLogoutSuccess={(res) => {
-							window.localStorage.clear();
-							window.location.reload();
-						}}
-						onFailure={() => {
-							window.localStorage.clear();
-						}}
-					/>
+				<div className="login" onClick={handleLogout} style={{cursor: 'pointer'}}>
+					Logout
 				</div>
 			</div>
 		</>
