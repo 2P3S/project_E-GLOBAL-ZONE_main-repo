@@ -3508,6 +3508,43 @@ ul.tab.no5 li {
   color: #6e4bdd;
 }
 
+/* 토글 버튼 스타일 */
+.toggle_buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.toggle_btn {
+  display: inline-block;
+  margin-top: 4px;
+  background: #f5f5f5;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s ease;
+  text-align: center;
+  min-width: 56px;
+  max-height: 28px;
+  line-height: 28px;
+}
+
+.toggle_btn:hover {
+  background: #e9e9e9;
+  border-color: #ccc;
+}
+
+.toggle_btn.active {
+  background: #2050e6;
+  border-color: #2050e6;
+  color: white;
+}
+
+.toggle_buttons input[type="radio"] {
+  display: none;
+}
+
 /* CHECK BOX - 테이블 안 */
 .table_check {
   position: relative;

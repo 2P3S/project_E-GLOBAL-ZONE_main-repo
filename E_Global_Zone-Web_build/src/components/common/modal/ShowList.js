@@ -3,6 +3,7 @@ import {
   deleteAdminScheduleAdd,
   deleteAdminScheduleSome,
   postAdminScheduleAdd,
+  patchAdminScheduleLocation,
 } from "../../../api/admin/schedule";
 import {
   getForeignerReservation,
@@ -38,10 +39,14 @@ export default function ShowList({
   sch_end_date,
   sch_for_zoom_pw,
   sch_for_zoom_link,
+  sch_type,
+  sch_location,
   reRender: thisReRender = () => {},
 }) {
   const [updateMode, setUpdateMode] = useState(false);
   const [zoomLink, setZoomLink] = useState(sch_for_zoom_link);
+  const [locationEditMode, setLocationEditMode] = useState(false);
+  const [location, setLocation] = useState(sch_location);
   const [data, setData] = useState();
   const [selectedResId, setSelectedResId] = useState();
   const [studentList, setStudentList] = useState();
@@ -57,6 +62,9 @@ export default function ShowList({
   } = useModal();
 
   useEffect(() => {
+    console.log("ShowList props:", { sch_type, sch_location, sch_for_zoom_pw });
+    console.log("sch_location raw:", sch_location);
+    console.log("sch_location type:", typeof sch_location);
     window.easydropdown.all();
     user.userClass === conf.userClass.MANAGER
       ? getAdminReservation(sch_id).then((res) => setData(res.data))
@@ -92,6 +100,33 @@ export default function ShowList({
         document.getElementById(v.std_kor_id).value = true;
       });
     }
+  };
+
+  const handleLocationEdit = () => {
+    setLocationEditMode(true);
+  };
+
+  const handleLocationSave = () => {
+    if (location.trim() === "") {
+      alert("장소를 입력해주세요.");
+      return;
+    }
+
+    patchAdminScheduleLocation(sch_id, location)
+      .then(() => {
+        setLocationEditMode(false);
+        // 부모 컴포넌트에 변경 알림
+        thisReRender();
+      })
+      .catch((error) => {
+        console.error("장소 업데이트 실패:", error);
+        alert("장소 업데이트에 실패했습니다.");
+      });
+  };
+
+  const handleLocationCancel = () => {
+    setLocation(sch_location); // 원래 값으로 복원
+    setLocationEditMode(false);
   };
 
   const saveZoomLink = () => {
@@ -140,10 +175,146 @@ export default function ShowList({
             {sch_end_date}
           </p>
         </div>
-        <p className="name">
-          {user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}{" "}
-          / PW : {sch_for_zoom_pw}
-        </p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          <p className="name">
+            {user.userClass === conf.userClass.MANAGER
+              ? std_for_name
+              : user.name}{" "}
+            /{" "}
+            {sch_type === "offline" ? (
+              <span style={{ display: "inline-flex", alignItems: "center" }}>
+                <span style={{ whiteSpace: "nowrap" }}>장소 :</span>
+                <span
+                  style={{
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    marginLeft: "4px",
+                    minWidth: "40px",
+                    maxWidth: "60px",
+                  }}
+                >
+                  {locationEditMode ? (
+                    <input
+                      type="text"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      style={{
+                        border: "1px solid #ddd",
+                        borderRadius: "4px",
+                        padding: "1px 6px",
+                        fontSize: "12px",
+                        width: "100%",
+                        outline: "none",
+                        flexShrink: 0,
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") handleLocationSave();
+                      }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        minWidth: "60px",
+                        display: "inline-block",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {location}
+                    </span>
+                  )}
+                </span>
+              </span>
+            ) : (
+              `PW : ${sch_for_zoom_pw}`
+            )}
+          </p>
+          {sch_type === "offline" &&
+            user.userClass === conf.userClass.MANAGER && (
+              <div style={{ marginTop: "4px" }}>
+                {locationEditMode ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "4px",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <button
+                      onClick={handleLocationSave}
+                      style={{
+                        background: "#007bff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        padding: "4px 8px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        height: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      title="저장"
+                    >
+                      저장
+                    </button>
+                    <button
+                      onClick={handleLocationCancel}
+                      style={{
+                        background: "#6c757d",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "3px",
+                        padding: "4px 8px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                        height: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      title="취소"
+                    >
+                      취소
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleLocationEdit}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#007bff",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      padding: "2px 6px",
+                      borderRadius: "3px",
+                      transition: "background-color 0.2s",
+                      flexShrink: 0,
+                    }}
+                    onMouseOver={(e) =>
+                      (e.target.style.backgroundColor = "#f8f9fa")
+                    }
+                    onMouseOut={(e) =>
+                      (e.target.style.backgroundColor = "transparent")
+                    }
+                    title="편집"
+                  >
+                    변경
+                  </button>
+                )}
+              </div>
+            )}
+        </div>
       </div>
 
       <div className="link_container">

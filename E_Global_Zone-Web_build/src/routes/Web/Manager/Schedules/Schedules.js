@@ -13,6 +13,8 @@ import Modal from "../../../../components/common/modal/Modal";
 import {
   deleteAdminScheduleDate,
   getAdminSchedule,
+  getAdminScheduleOnline,
+  getAdminScheduleOffline,
 } from "../../../../api/admin/schedule";
 
 import ModalCalendar from "../../../../components/common/modal/ModalCalendar";
@@ -43,6 +45,7 @@ export default function Schedules() {
   const [calIsOpen, setCalIsOpen] = useState(false);
   const [kindOfData, setKindOfData] = useState(false);
   const [firstRendering, setFirstRendering] = useState(true);
+  const [reservationType, setReservationType] = useState("online"); // 'online' 또는 'offline'
   const {
     isOpen: scheduleIsOpen,
     handleClose: scheduleClose,
@@ -110,17 +113,17 @@ export default function Schedules() {
   };
 
   const handleClick = (e) => {
+    // 온라인/오프라인 예약 토글은 별도 처리
+    if (e.target.name === "reservationType") {
+      setReservationType(e.target.value);
+      return;
+    }
+
+    // 기존 상태 체크박스 처리
     document
       .getElementsByName("checkBox")
       .forEach((v) => v.value !== e.target.value && (v.checked = false));
     e.target.checked = true;
-    // alert(e.target.value);
-    // if (e.target.value === "state1") {
-    // 	handleCheck(e.target.value, true);
-    // 	handleCheck("state2", true);
-    // } else {
-    // 	handleCheck(e.target.value, e.target.checked);
-    // }
   };
   useMemo(() => {
     if (moment(params.date).format("YYYY-MM-DD") !== _selectDate) {
@@ -137,7 +140,13 @@ export default function Schedules() {
       v.addEventListener("click", handleClick);
       v.addEventListener("change", handleChange);
     });
+
+    // 온라인/오프라인 예약 토글 버튼 이벤트 리스너 추가
+    document.getElementsByName("reservationType").forEach((v) => {
+      v.addEventListener("click", handleClick);
+    });
   }, []);
+
   useEffect(() => {
     if (!firstRendering) {
       history.push(`/schedules/${moment(_selectDate).format("YYYY-MM-DD")}`);
@@ -170,12 +179,34 @@ export default function Schedules() {
       });
     }
     pending &&
-      getAdminSchedule({ search_date: params.date }).then((res) => {
-        console.log(res.data);
-        setSchedules(res.data);
-        setFirstRendering(false);
-      });
-  }, [pending]);
+      (() => {
+        // 예약 유형에 따라 다른 API 호출
+        let apiCall;
+        switch (reservationType) {
+          case "online":
+            apiCall = getAdminScheduleOnline({ search_date: params.date });
+            break;
+          case "offline":
+            apiCall = getAdminScheduleOffline({ search_date: params.date });
+            break;
+          default:
+            apiCall = getAdminSchedule({ search_date: params.date });
+            break;
+        }
+
+        apiCall
+          .then((res) => {
+            console.log("API Response:", res.data);
+            console.log("Reservation Type:", reservationType);
+            setSchedules(res.data);
+            setFirstRendering(false);
+          })
+          .catch((error) => {
+            console.error("API Error:", error);
+            console.error("Error Response:", error.response);
+          });
+      })();
+  }, [pending, reservationType]);
 
   useEffect(() => {
     if (
@@ -190,6 +221,13 @@ export default function Schedules() {
       setCountOfCh(schedules.data.Chinese.length);
     }
   }, [schedules]);
+
+  // 예약 유형이 변경될 때마다 스케줄 다시 조회
+  useEffect(() => {
+    if (!firstRendering) {
+      setPending(true);
+    }
+  }, [reservationType]);
 
   const reRender = () => {
     setPending(true);
@@ -325,6 +363,8 @@ export default function Schedules() {
                         std_for_name: v.std_for_name,
                         sch_end_date: schedule.sch_end_date,
                         sch_start_date: schedule.sch_start_date,
+                        sch_type: schedule.sch_type,
+                        sch_location: schedule.sch_location,
                       });
                       scheduleOpen();
                     } else if (div.classList.contains("state3")) {
@@ -376,6 +416,8 @@ export default function Schedules() {
                         std_for_name: v.std_for_name,
                         sch_end_date: schedule.sch_end_date,
                         sch_start_date: schedule.sch_start_date,
+                        sch_type: schedule.sch_type,
+                        sch_location: schedule.sch_location,
                       });
                       scheduleOpen();
                     }
@@ -480,6 +522,47 @@ export default function Schedules() {
               <label htmlFor="allCheck"></label>
             </div>
           </div>
+
+          <div className="check_box">
+            <div className="check_box_input">
+              <div className="toggle_buttons">
+                <input
+                  type="radio"
+                  id="online_reservation"
+                  name="reservationType"
+                  value="online"
+                  checked={reservationType === "online"}
+                  onChange={(e) => setReservationType(e.target.value)}
+                />
+                <label
+                  htmlFor="online_reservation"
+                  className={`toggle_btn ${
+                    reservationType === "online" ? "active" : ""
+                  }`}
+                >
+                  <span>온라인</span>
+                </label>
+
+                <input
+                  type="radio"
+                  id="offline_reservation"
+                  name="reservationType"
+                  value="offline"
+                  checked={reservationType === "offline"}
+                  onChange={(e) => setReservationType(e.target.value)}
+                />
+                <label
+                  htmlFor="offline_reservation"
+                  className={`toggle_btn ${
+                    reservationType === "offline" ? "active" : ""
+                  }`}
+                >
+                  <span>오프라인</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div className="check_box">
             <div className="check_box_input">
               <input
@@ -598,18 +681,34 @@ export default function Schedules() {
                                 state7 :: 예약없음 
                             --> */}
                 {countOfCh === 0 && countOfEng === 0 && countOfJp === 0 && (
-                  <th style={{ height: "50px", backgroundColor: "#888" }}>
-                    데이터가 없습니다.
-                  </th>
+                  <tr>
+                    <td
+                      colSpan="10"
+                      style={{
+                        height: "50px",
+                        backgroundColor: "#888",
+                        textAlign: "center",
+                      }}
+                    >
+                      데이터가 없습니다.
+                    </td>
+                  </tr>
                 )}
                 {schedules &&
                   schedules.data &&
                   schedules.data.English.length > 0 && (
                     <tr>
-                      <th scope="row" rowSpan={countOfEng + 1}>
+                      <td
+                        scope="row"
+                        rowSpan={countOfEng + 1}
+                        style={{
+                          backgroundColor: "#f5f5f5",
+                          fontWeight: "bold",
+                        }}
+                      >
                         {/* rowSpan = 해당 언어 학생 수 */}
                         영어
-                      </th>
+                      </td>
                     </tr>
                   )}
                 {schedules &&
@@ -634,10 +733,17 @@ export default function Schedules() {
                   schedules.data &&
                   schedules.data.Japanese.length > 0 && (
                     <tr>
-                      <th scope="row" rowSpan={countOfJp + 1}>
+                      <td
+                        scope="row"
+                        rowSpan={countOfJp + 1}
+                        style={{
+                          backgroundColor: "#f5f5f5",
+                          fontWeight: "bold",
+                        }}
+                      >
                         {/* rowSpan = 해당 언어 학생 수 */}
                         일본어
-                      </th>
+                      </td>
                     </tr>
                   )}
 
@@ -663,10 +769,17 @@ export default function Schedules() {
                   schedules.data &&
                   schedules.data.Chinese.length > 0 && (
                     <tr>
-                      <th scope="row" rowSpan={countOfCh + 1}>
+                      <td
+                        scope="row"
+                        rowSpan={countOfCh + 1}
+                        style={{
+                          backgroundColor: "#f5f5f5",
+                          fontWeight: "bold",
+                        }}
+                      >
                         {/* rowSpan = 해당 언어 학생 수 */}
                         중국어
-                      </th>
+                      </td>
                     </tr>
                   )}
                 {schedules &&
@@ -753,6 +866,8 @@ export default function Schedules() {
             std_for_name={selectedSchedule && selectedSchedule.std_for_name}
             sch_start_date={selectedSchedule && selectedSchedule.sch_start_date}
             sch_end_date={selectedSchedule && selectedSchedule.sch_end_date}
+            sch_type={selectedSchedule && selectedSchedule.sch_type}
+            sch_location={selectedSchedule && selectedSchedule.sch_location}
             reRender={reRender}
           />
         ) : selectedSchedule.component === "InsertResult" ? (
