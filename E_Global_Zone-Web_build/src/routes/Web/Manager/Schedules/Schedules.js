@@ -258,6 +258,14 @@ export default function Schedules() {
                     )}`
                   );
 
+                  // td가 null인 경우 처리
+                  if (!td) {
+                    console.warn(
+                      `TD element not found for schedule: ${schedule.sch_id}`
+                    );
+                    return;
+                  }
+
                   let div = document.createElement("div");
                   // if(moment(schedule.sch_start_date))
                   if (
@@ -436,8 +444,10 @@ export default function Schedules() {
                   let area = document.createElement("div");
                   let btn = document.createElement("div");
                   deleteBtn.className =
+                    td &&
+                    document.getElementById("tbody") &&
                     document.getElementById("tbody").children[1] ===
-                    td.parentElement
+                      td.parentElement
                       ? "sch_hover_btn bottom hover_off"
                       : "sch_hover_btn top hover_off";
                   area.className = "area";

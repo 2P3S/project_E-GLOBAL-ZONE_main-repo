@@ -130,15 +130,20 @@ export default function Section(props) {
 	};
 
 	const setHoliday = (date) => {
-		getAdminHoliday({ year: moment(date).format("YYYY") }).then((res) => {
-			console.log(res.data.data);
-			for (const key in res.data.data) {
-				if (res.data.data.hasOwnProperty(key)) {
-					const element = res.data.data[key];
-					eceptDate.push(moment(element, "YYYYMMDD").format("YYYY-MM-DD"));
+		getAdminHoliday({ year: moment(date).format("YYYY") })
+			.then((res) => {
+				console.log(res.data.data);
+				for (const key in res.data.data) {
+					if (res.data.data.hasOwnProperty(key)) {
+						const element = res.data.data[key];
+						eceptDate.push(moment(element, "YYYYMMDD").format("YYYY-MM-DD"));
+					}
 				}
-			}
-		});
+			})
+			.catch((error) => {
+				console.warn("공휴일 정보를 가져오는데 실패했습니다:", error);
+				// 공휴일 정보가 없어도 계속 진행
+			});
 	};
 
 	const rendering = (std_for_id = params["std_for_id"]) => {

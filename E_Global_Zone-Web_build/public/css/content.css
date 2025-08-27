@@ -2074,7 +2074,7 @@ table.pop_table3 td {
 
 /* 스케줄 입력 */
 .popup.sch {
-  width: 685px;
+  width: 900px;
   overflow: unset;
 }
 
@@ -2099,9 +2099,40 @@ table.pop_table3 td {
 
 .popup.sch .select_area .area .date,
 .popup.sch .select_area .area .edd-root {
+  width: 90px;
+  height: 53px;
+  color: #1c233d;
+  margin: 0;
+  box-sizing: initial;
+  line-height: 53px;
+  font-size: 13px;
+  border: 1px solid #bcbfc7;
+  border-radius: 5px;
+  font-family: "Lato", sans-serif;
+}
+
+.popup.sch .select_area .area button {
+  width: 60px;
+  height: 53px;
+  color: #1c233d;
+  padding: 0;
+  margin: 0;
+  box-sizing: initial;
+  line-height: 53px;
+  font-size: 13px;
+  border: 1px solid #bcbfc7;
+  border-radius: 5px;
+  font-family: "Lato", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.popup.sch .select_area .area .input_field {
   width: 100px;
   height: 53px;
   color: #1c233d;
+  padding: 0 0 0 10px;
   margin: 0;
   box-sizing: initial;
   line-height: 53px;
@@ -2137,7 +2168,7 @@ table.pop_table3 td {
 }
 
 .popup.sch .select_area .area.student .edd-root {
-  width: 175px;
+  width: 100px;
 }
 
 .regist_btn {
@@ -2304,10 +2335,6 @@ table.pop_table3 td {
   border-radius: 3px;
   background: #cff6f2;
   color: #109586;
-}
-
-.popup.enrol .area ul li .edd-root::after {
-  background: #109586;
 }
 
 .popup.enrol .area ul li .edd-option-selected::before {
