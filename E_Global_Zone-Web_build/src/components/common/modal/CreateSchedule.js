@@ -91,6 +91,9 @@ export default function CreateSchedule({
       name.innerText = _data[i].std_for_name;
       let type = document.createElement("td");
       type.innerText = _data[i].sch_type === "offline" ? "오프라인" : "온라인";
+      type.style.color =
+        _data[i].sch_type === "offline" ? "#9370db" : "#007bff";
+      type.style.fontWeight = "bold";
       let location = document.createElement("td");
       location.innerText = _data[i].sch_location || "-";
       let button = document.createElement("td");
@@ -212,7 +215,7 @@ export default function CreateSchedule({
             <button
               type="button"
               style={{
-                background: sch_type === "online" ? "#9370db" : "#fff",
+                background: sch_type === "online" ? "#007bff" : "#fff",
                 color: sch_type === "online" ? "#fff" : "#333",
               }}
               onClick={() => setSchType("online")}
@@ -251,22 +254,36 @@ export default function CreateSchedule({
         <table className="pop_table2">
           <colgroup>
             <col width="10%" />
+            <col width="17.5%" />
+            <col width="17.5%" />
             <col width="15%" />
             <col width="15%" />
             <col width="15%" />
-            <col width="15%" />
-            <col width="15%" />
-            <col width="15%" />
+            <col width="10%" />
           </colgroup>
           <thead>
-            <tr>
-              <th>번호</th>
-              <th>날짜</th>
-              <th>시간</th>
-              <th>유학생</th>
-              <th>온라인/오프라인</th>
-              <th>장소</th>
-              <th>삭제</th>
+            <tr className="th_box">
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                번호
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                날짜
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                시간
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                유학생
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                온라인/오프라인
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                장소
+              </th>
+              <th style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+                삭제
+              </th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>

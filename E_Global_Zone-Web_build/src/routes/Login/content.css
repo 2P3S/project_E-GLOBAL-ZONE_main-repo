@@ -1624,6 +1624,7 @@ table.pop_table2 {
   text-align: center;
   font-size: 13px;
   border-top: 1px solid #2050e6;
+  margin-top: 10px;
 }
 
 table.pop_table2 th,
@@ -1756,6 +1757,10 @@ table.pop_table3 td {
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+}
+
+.th_box {
+  padding: 10px 0;
 }
 
 /* 신청 학생 명단보기 */
