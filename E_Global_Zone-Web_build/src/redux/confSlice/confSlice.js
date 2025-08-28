@@ -1,55 +1,58 @@
-import { createSlice } from "@reduxjs/toolkit";
-import parseDate from "../../modules/parseDate";
-import moment from "moment";
+import { createSlice } from '@reduxjs/toolkit';
+import parseDate from '../../modules/parseDate';
+import moment from 'moment';
 /**
  * ReduxSlice - conf
  * @type {Slice<{dept: {}}, {setDept: reducers.setDept}, string>}
  */
 export const confSlice = createSlice({
-	name: "conf",
-	initialState: {
-		dept: {},
-		today: moment(Date.now()).format("YYYY-MM-DD"),
-		selectDate: moment(Date.now()).format("YYYY-MM-DD"),
-		language: "korean",
-	},
-	reducers: {
-		setDept: (state, action) => {
-			let data = action.payload.data;
-			if (typeof data === "object") {
-				for (let index in data) {
-					data[index].dept_name = data[index].dept_name.split("_");
-				}
-			}
-			state.dept = data;
-		},
-		/**
-		 * setSelectDate
-		 * @param {Date} action.payload
-		 */
-		setSelectDate: (state, action) => {
-			state.selectDate = moment(action.payload, "YYYY-MM-DD").format("YYYY-MM-DD");
-		},
-		setLanguage: (state, action) => {
-			state.language = action.payload;
-		},
+  name: 'conf',
+  initialState: {
+    dept: {},
+    today: moment(Date.now()).format('YYYY-MM-DD'),
+    selectDate: moment(Date.now()).format('YYYY-MM-DD'),
+    language: 'korean',
+    isOnline: true,
+  },
+  reducers: {
+    setDept: (state, action) => {
+      let data = action.payload.data;
+      if (typeof data === 'object') {
+        for (let index in data) {
+          data[index].dept_name = data[index].dept_name.split('_');
+        }
+      }
+      state.dept = data;
+    },
+    /**
+     * setSelectDate
+     * @param {Date} action.payload
+     */
+    setSelectDate: (state, action) => {
+      state.selectDate = moment(action.payload, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    },
+    setLanguage: (state, action) => {
+      state.language = action.payload;
+    },
+    /**
+     * setOnlineOffline
+     * @param {boolean} action.payload
+     */
+    setOnlineOffline: (state, action) => {
+      state.isOnline = action.payload;
+    },
 
-		setTodayToday: (state) => {
-			state.today = parseDate(new Date(Date.now()));
-		},
-		setTodayFuture: (state) => {
-			state.today = parseDate(new Date(Date.now() + 2));
-		},
-	},
+    setTodayToday: (state) => {
+      state.today = parseDate(new Date(Date.now()));
+    },
+    setTodayFuture: (state) => {
+      state.today = parseDate(new Date(Date.now() + 2));
+    },
+  },
 });
 
-export const {
-	setDept,
-	setSelectDate,
-	setTodayFuture,
-	setTodayToday,
-	setLanguage,
-} = confSlice.actions;
+export const { setDept, setSelectDate, setTodayFuture, setTodayToday, setLanguage, setOnlineOffline } =
+  confSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -68,5 +71,6 @@ export const selectDept = (state) => state.conf.dept;
 export const selectToday = (state) => state.conf.today;
 export const selectSelectDate = (state) => state.conf.selectDate;
 export const selectLanguage = (state) => state.conf.language;
+export const selectIsOnline = (state) => state.conf.isOnline;
 
 export default confSlice.reducer;
