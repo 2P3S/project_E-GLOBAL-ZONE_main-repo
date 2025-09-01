@@ -23,16 +23,15 @@ export default function Schedules() {
   const fetchSchedules = () => {
     setPending(true);
 
-    Promise.all([getKoreanSchedule(null, false), getKoreanSchedule(null, true)])
-      .then(([onlineRes, offlineRes]) => {
-        const onlineData = onlineRes.data.data || [];
-        const offlineData = offlineRes.data.data || [];
-        const allData = [...onlineData, ...offlineData];
+    const isOffline = isOnline ? null : 1;
 
-        const filteredData = allData.filter((schedule) => {
+    getKoreanSchedule(null, isOffline)
+      .then((res) => {
+        const scheduleData = res.data.data || [];
+
+        const filteredData = scheduleData.filter((schedule) => {
           const isJapanese = schedule.std_for_lang === '일본어';
-          const isCorrectType = isOnline ? schedule.sch_type === 'online' : schedule.sch_type === 'offline';
-          return isJapanese && isCorrectType;
+          return isJapanese;
         });
 
         if (filteredData.length === 0) {

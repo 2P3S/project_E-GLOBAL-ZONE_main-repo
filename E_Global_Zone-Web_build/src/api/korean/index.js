@@ -15,7 +15,7 @@ export const postKoreanAccount = (data) => korean.post('account', data);
 /**
  * get a schedule list that is can applicate today
  * @param {string} sch_id - optional schedule ID
- * @param {boolean} isOffline - optional filter for offline schedules
+ * @param {number} isOffline - optional filter for offline schedules (1: 오프라인, null: 온라인)
  */
 export const getKoreanSchedule = (sch_id, isOffline = null) => {
   let url = 'schedule';
