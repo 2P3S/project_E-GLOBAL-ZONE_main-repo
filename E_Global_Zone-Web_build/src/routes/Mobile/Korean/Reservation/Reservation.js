@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from "react";
-import moment from "moment";
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 
-import Loader from "../../../../components/common/Loader";
+import Loader from '../../../../components/common/Loader';
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectSelectDate,
-  selectToday,
-} from "../../../../redux/confSlice/confSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSelectDate, selectToday } from '../../../../redux/confSlice/confSlice';
 
-import { selectUser } from "../../../../redux/userSlice/userSlice";
-import {
-  deleteKoreanReservation,
-  getKoreanReservation,
-} from "../../../../api/korean/reservation";
-import { getKoreanSetting } from "../../../../api/korean";
+import { selectUser } from '../../../../redux/userSlice/userSlice';
+import { deleteKoreanReservation, getKoreanReservation } from '../../../../api/korean/reservation';
+import { getKoreanSetting } from '../../../../api/korean';
 
 /**
  * Korean :: 예약 조회
@@ -45,7 +39,12 @@ export default function Reservation() {
   useEffect(() => {
     pending &&
       getKoreanReservation().then((res) => {
-        console.log(res.data);
+        console.log('예약 데이터 전체:', res.data);
+        if (res.data && res.data.data && res.data.data.length > 0) {
+          console.log('첫 번째 예약 데이터:', res.data.data[0]);
+          console.log('sch_type:', res.data.data[0].sch_type);
+          console.log('sch_location:', res.data.data[0].sch_location);
+        }
         setData(res.data);
       });
   }, [pending]);
@@ -93,9 +92,7 @@ export default function Reservation() {
             <p className="tit">실시간 예약 현황</p>
             <ul>
               <li className="yellow">
-                <span>
-                  {dataSet && dataSet.arrayOfWatingForPermission.length}
-                </span>
+                <span>{dataSet && dataSet.arrayOfWatingForPermission.length}</span>
                 예약 대기
               </li>
               <li>
@@ -123,25 +120,21 @@ export default function Reservation() {
                         <p className="left">
                           [{v.std_for_lang}] {v.std_for_name}
                           <span>
-                            {moment(v.sch_start_date).format(
-                              "MM월 DD일 hh:mm "
-                            )}
-                            ~ {moment(v.sch_end_date).format("hh:mm")}
+                            {moment(v.sch_start_date).format('MM월 DD일 hh:mm ')}~{' '}
+                            {moment(v.sch_end_date).format('hh:mm')}
                           </span>
                         </p>
                         {moment(v.sch_start_date)
-                          .subtract(setting.res_end_period, "day")
-                          .isAfter(moment(Date.now()).format("YYYY-MM-DD")) ? (
+                          .subtract(setting.res_end_period, 'day')
+                          .isAfter(moment(Date.now()).format('YYYY-MM-DD')) ? (
                           <div className="reserv_del_btn">
                             <img
                               onClick={() => {
                                 if (window)
-                                  deleteKoreanReservation(v.res_id).then(
-                                    (res) => {
-                                      alert(res.data.message);
-                                      window.location.reload();
-                                    }
-                                  );
+                                  deleteKoreanReservation(v.res_id).then((res) => {
+                                    alert(res.data.message);
+                                    window.location.reload();
+                                  });
                               }}
                               src="/global/img/reservation_del.gif"
                               alt="예약 삭제 버튼"
@@ -166,26 +159,22 @@ export default function Reservation() {
                         <p className="left">
                           [{v.std_for_lang}] {v.std_for_name}
                           <span>
-                            {moment(v.sch_start_date).format(
-                              "MM월 DD일 hh:mm "
-                            )}
-                            ~ {moment(v.sch_end_date).format("hh:mm")}
+                            {moment(v.sch_start_date).format('MM월 DD일 hh:mm ')}~{' '}
+                            {moment(v.sch_end_date).format('hh:mm')}
                           </span>
                         </p>
 
                         {moment(v.sch_start_date)
-                          .subtract(setting.res_end_period, "day")
-                          .isAfter(moment(Date.now()).format("YYYY-MM-DD")) ? (
+                          .subtract(setting.res_end_period, 'day')
+                          .isAfter(moment(Date.now()).format('YYYY-MM-DD')) ? (
                           <div className="reserv_del_btn">
                             <img
                               onClick={() => {
                                 if (window)
-                                  deleteKoreanReservation(v.res_id).then(
-                                    (res) => {
-                                      alert(res.data.message);
-                                      window.location.reload();
-                                    }
-                                  );
+                                  deleteKoreanReservation(v.res_id).then((res) => {
+                                    alert(res.data.message);
+                                    window.location.reload();
+                                  });
                               }}
                               src="/global/img/reservation_del.gif"
                               alt="예약 삭제 버튼"
@@ -194,37 +183,44 @@ export default function Reservation() {
                         ) : (
                           <div></div>
                         )}
-                        <p
-                          className="right zoom_info"
-                          onClick={() => {
-                            v.sch_for_zoom_link.trim() !== ""
-                              ? prompt(
-                                  `Zoom ID : ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(0, 3)} ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(3, 3)} ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(6, 4)}\nZoom PW : ${
-                                    v.sch_for_zoom_pw
-                                  }\n\n링크를 복사하여 사용하세요!`,
-                                  v.sch_for_zoom_link
-                                )
-                              : alert(
-                                  `Zoom ID : ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(0, 3)} ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(3, 3)} ${v.std_for_zoom_id
-                                    .toString()
-                                    .substr(6, 4)}\nZoom PW : ${
-                                    v.sch_for_zoom_pw
-                                  }`
-                                );
-                          }}
-                        >
-                          접속 정보
-                        </p>
+                        {v.sch_type === 'offline' ? (
+                          <p
+                            className="right location_info"
+                            onClick={() => {
+                              if (v.sch_location && v.sch_location.trim() !== '') {
+                                alert(`장소: ${v.sch_location}`);
+                              } else {
+                                alert('장소 정보가 없습니다.');
+                              }
+                            }}
+                          >
+                            🌏 장소 정보
+                          </p>
+                        ) : (
+                          <p
+                            className="right zoom_info"
+                            onClick={() => {
+                              v.sch_for_zoom_link.trim() !== ''
+                                ? prompt(
+                                    `Zoom ID : ${v.std_for_zoom_id.toString().substr(0, 3)} ${v.std_for_zoom_id
+                                      .toString()
+                                      .substr(3, 3)} ${v.std_for_zoom_id.toString().substr(6, 4)}\nZoom PW : ${
+                                      v.sch_for_zoom_pw
+                                    }\n\n링크를 복사하여 사용하세요!`,
+                                    v.sch_for_zoom_link
+                                  )
+                                : alert(
+                                    `Zoom ID : ${v.std_for_zoom_id.toString().substr(0, 3)} ${v.std_for_zoom_id
+                                      .toString()
+                                      .substr(3, 3)} ${v.std_for_zoom_id.toString().substr(6, 4)}\nZoom PW : ${
+                                      v.sch_for_zoom_pw
+                                    }`
+                                  );
+                            }}
+                          >
+                            접속 정보
+                          </p>
+                        )}
                       </div>
                     ))}
                 </div>
@@ -240,10 +236,8 @@ export default function Reservation() {
                         <p className="left">
                           [{v.std_for_lang}] {v.std_for_name}
                           <span>
-                            {moment(v.sch_start_date).format(
-                              "MM월 DD일 hh:mm "
-                            )}
-                            ~ {moment(v.sch_end_date).format("hh:mm")}
+                            {moment(v.sch_start_date).format('MM월 DD일 hh:mm ')}~{' '}
+                            {moment(v.sch_end_date).format('hh:mm')}
                           </span>
                         </p>
                         <p className="right">결과 대기</p>
