@@ -93,6 +93,8 @@ class Schedule {
   sch_end_date;
   sch_for_zoom_pw;
   sch_for_zoom_link;
+  sch_type;
+  sch_location;
 
   constructor(schObj, today) {
     this.sch_id = schObj.sch_id;
@@ -107,6 +109,8 @@ class Schedule {
     this.reservated_count = schObj.reservated_count;
     this.un_permission_count = schObj.un_permission_count;
     this.sch_for_zoom_pw = schObj.sch_for_zoom_pw;
+    this.sch_type = schObj.sch_type;
+    this.sch_location = schObj.sch_location;
     this.setDate(schObj.sch_start_date);
     this.sch_end_date = schObj.sch_end_date;
     this.sch_start_date = schObj.sch_start_date;
@@ -194,12 +198,12 @@ export default function Schedules() {
 
   const handleOnlineClick = () => {
     dispatch(setOnlineOffline(true));
-    alert('온라인으로 변경되었습니다.');
+    alert('Changed to Online');
   };
 
   const handleOfflineClick = () => {
     dispatch(setOnlineOffline(false));
-    alert('오프라인으로 변경되었습니다.');
+    alert('Changed to Offline');
   };
 
   const makeWeek = (weekStartDate) => {
@@ -209,6 +213,7 @@ export default function Schedules() {
     }
     return weeks;
   };
+
   const today = Date.now();
   const user = useSelector(selectUser);
   const selectedDate = useSelector(selectSelectDate);
@@ -246,7 +251,18 @@ export default function Schedules() {
     setWeekStartDate(moment(selectedDate).subtract(i, 'd').format('YYYY-MM-DD'));
     setWeekEndDate(startDate.add(6, 'd').format('YYYY-MM-DD'));
   };
-  const buildDiv = (td, state, value, sch_id, sch_start_date, sch_end_date, sch_for_zoom_pw = 0, sch_for_zoom_link) => {
+  const buildDiv = (
+    td,
+    state,
+    value,
+    sch_id,
+    sch_start_date,
+    sch_end_date,
+    sch_for_zoom_pw = 0,
+    sch_for_zoom_link,
+    sch_type,
+    sch_location
+  ) => {
     let div = document.createElement('div');
     switch (state) {
       case STATE_PENDING:
@@ -261,6 +277,8 @@ export default function Schedules() {
               reRender={reRender}
               sch_for_zoom_pw={sch_for_zoom_pw}
               sch_for_zoom_link={sch_for_zoom_link}
+              sch_type={sch_type}
+              sch_location={sch_location}
             />
           );
           handleOpen();
@@ -279,6 +297,8 @@ export default function Schedules() {
               reRender={reRender}
               sch_for_zoom_pw={sch_for_zoom_pw}
               sch_for_zoom_link={sch_for_zoom_link}
+              sch_type={sch_type}
+              sch_location={sch_location}
             />
           );
           handleOpen();
@@ -381,7 +401,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -392,7 +414,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -405,7 +429,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -416,7 +442,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -437,7 +465,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -448,7 +478,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -461,7 +493,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -472,7 +506,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -493,7 +529,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -504,7 +542,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -517,7 +557,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -528,7 +570,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -549,7 +593,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -560,7 +606,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -573,7 +621,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -584,7 +634,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -605,7 +657,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -616,7 +670,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -629,7 +685,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -640,7 +698,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -736,7 +796,7 @@ export default function Schedules() {
                 }}
                 onClick={handleOnlineClick}
               >
-                온라인
+                Online
               </button>
               <button
                 type="button"
@@ -754,7 +814,7 @@ export default function Schedules() {
                 }}
                 onClick={handleOfflineClick}
               >
-                오프라인
+                Offline
               </button>
             </div>
           </div>
