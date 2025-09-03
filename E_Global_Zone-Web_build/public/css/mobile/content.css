@@ -848,6 +848,18 @@ body {
   cursor: pointer;
   background: #fff url(/global/mobile/img/zoom_ico.gif) no-repeat 8px 50%;
   padding-left: 34px;
+  margin-top: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.subMenu div .right.location_info {
+  cursor: pointer;
+  background: #fff;
+  padding: 10px 12px;
+  margin-top: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .item:target .subMenu {
   max-height: calc(100em - (20em + 30em));
