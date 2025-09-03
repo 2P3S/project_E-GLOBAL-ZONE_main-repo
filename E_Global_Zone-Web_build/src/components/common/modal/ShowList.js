@@ -1,27 +1,17 @@
-import React, { useEffect, useState } from "react";
-import {
-  deleteAdminScheduleAdd,
-  deleteAdminScheduleSome,
-  postAdminScheduleAdd,
-} from "../../../api/admin/schedule";
-import {
-  getForeignerReservation,
-  patchForeignerReservationPermission,
-} from "../../../api/foreigner/reservation";
-import {
-  getAdminReservation,
-  patchAdminReservationPermission,
-} from "../../../api/admin/foreigner";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../../redux/userSlice/userSlice";
-import { Link, useHistory } from "react-router-dom";
-import conf from "../../../conf/conf";
-import Modal from "./Modal";
-import useModal from "../../../modules/hooks/useModal";
-import AddScheduleStudent from "./AddScheduleStudent";
-import DeleteModal from "./DeleteModal";
-import { LANGUAGE } from "../../../conf/language";
-import { updateScheduleZoomLink } from "../../../api/axios";
+import React, { useEffect, useState } from 'react';
+import { deleteAdminScheduleAdd, deleteAdminScheduleSome, postAdminScheduleAdd } from '../../../api/admin/schedule';
+import { getForeignerReservation, patchForeignerReservationPermission } from '../../../api/foreigner/reservation';
+import { getAdminReservation, patchAdminReservationPermission } from '../../../api/admin/foreigner';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../redux/userSlice/userSlice';
+import { Link, useHistory } from 'react-router-dom';
+import conf from '../../../conf/conf';
+import Modal from './Modal';
+import useModal from '../../../modules/hooks/useModal';
+import AddScheduleStudent from './AddScheduleStudent';
+import DeleteModal from './DeleteModal';
+import { LANGUAGE } from '../../../conf/language';
+import { updateScheduleZoomLink } from '../../../api/axios';
 
 /**
  * Modal - 신청 학생 명단보기
@@ -38,6 +28,8 @@ export default function ShowList({
   sch_end_date,
   sch_for_zoom_pw,
   sch_for_zoom_link,
+  sch_type,
+  sch_location,
   reRender: thisReRender = () => {},
 }) {
   const [updateMode, setUpdateMode] = useState(false);
@@ -50,13 +42,12 @@ export default function ShowList({
   const user = useSelector(selectUser);
   const history = useHistory();
   const { isOpen, handleOpen, handleClose: thisHandleClose } = useModal();
-  const {
-    isOpen: isOpenForDelete,
-    handleOpen: handleOpenForDelete,
-    handleClose: handleCloseForDelete,
-  } = useModal();
+  const { isOpen: isOpenForDelete, handleOpen: handleOpenForDelete, handleClose: handleCloseForDelete } = useModal();
 
   useEffect(() => {
+    console.log('ShowList props:', { sch_type, sch_location, sch_for_zoom_pw });
+    console.log('sch_location raw:', sch_location);
+    console.log('sch_location type:', typeof sch_location);
     window.easydropdown.all();
     user.userClass === conf.userClass.MANAGER
       ? getAdminReservation(sch_id).then((res) => setData(res.data))
@@ -101,7 +92,7 @@ export default function ShowList({
         handleClose();
       })
       .catch((error) => {
-        alert("줌 접속 정보 등록에 실패하였습니다.");
+        alert('줌 접속 정보 등록에 실패하였습니다.');
       });
   };
 
@@ -116,64 +107,59 @@ export default function ShowList({
       <div className="top_tit">
         <div className="left">
           <p className="tit">
-            {
-              LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                .viewStudentApplicationRegistry
-            }
+            {LANGUAGE[window.localStorage.getItem('global-zone-lang')].viewStudentApplicationRegistry}
           </p>
           <p className="txt">
-            <span>
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .startTime
-              }
-            </span>{" "}
-            {sch_start_date}
+            <span>{LANGUAGE[window.localStorage.getItem('global-zone-lang')].startTime}</span> {sch_start_date}
           </p>
           <p className="txt">
-            <span>
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .endTime
-              }
-            </span>{" "}
-            {sch_end_date}
+            <span>{LANGUAGE[window.localStorage.getItem('global-zone-lang')].endTime}</span> {sch_end_date}
           </p>
         </div>
-        <p className="name">
-          {user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}{" "}
-          / PW : {sch_for_zoom_pw}
-        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+          }}
+        >
+          <p className="name">
+            {user.userClass === conf.userClass.MANAGER ? std_for_name : user.name}
+            {sch_type === 'online' && ` / PW : ${sch_for_zoom_pw}`}
+          </p>
+        </div>
       </div>
 
       <div className="link_container">
         <div className="link_top_tit">
-          <p className="tit">접속정보</p>
-          {updateMode ? (
-            <label
-              htmlFor="link_input"
-              className="link_bbtn save"
-              onClick={saveZoomLink}
-            >
-              저장
-            </label>
-          ) : (
-            <label
-              htmlFor="link_input"
-              className="link_bbtn"
-              onClick={() => setUpdateMode(true)}
-            >
-              편집
-            </label>
-          )}
+          <p className="tit">{sch_type === 'offline' ? '장소' : '접속정보'}</p>
+          {sch_type === 'online' &&
+            (updateMode ? (
+              <label htmlFor="link_input" className="link_bbtn save" onClick={saveZoomLink}>
+                저장
+              </label>
+            ) : (
+              <label htmlFor="link_input" className="link_bbtn" onClick={() => setUpdateMode(true)}>
+                편집
+              </label>
+            ))}
         </div>
-        <input
-          id="link_input"
-          className="link_input"
-          onChange={(e) => setZoomLink(e.target.value)}
-          value={zoomLink}
-          disabled={!updateMode}
-        />
+        {sch_type === 'offline' ? (
+          <div
+            className="link_input"
+            style={{ padding: '8px', backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '4px' }}
+          >
+            {sch_location || '장소 정보가 없습니다'}
+          </div>
+        ) : (
+          <input
+            id="link_input"
+            className="link_input"
+            onChange={(e) => setZoomLink(e.target.value)}
+            value={zoomLink}
+            disabled={!updateMode}
+          />
+        )}
       </div>
 
       <div className="area">
@@ -181,12 +167,12 @@ export default function ShowList({
           {data && data.data ? (
             <>
               {data.data.map((v, index) => {
-                if (v === null || v === "null" || typeof v !== "object") {
+                if (v === null || v === 'null' || typeof v !== 'object') {
                   return (
-                    <li key={index + "null"}>
+                    <li key={index + 'null'}>
                       <div className="student">
                         <p className="name">삭제된 학생</p>
-                        <select name={"catgo"} className={"dropdown"} disabled>
+                        <select name={'catgo'} className={'dropdown'} disabled>
                           <option>---</option>
                         </select>
                       </div>
@@ -195,7 +181,7 @@ export default function ShowList({
                 }
                 let permission = v.res_state_of_permission;
                 return (
-                  <li key={v.std_kor_id + "index"}>
+                  <li key={v.std_kor_id + 'index'}>
                     <div className="student">
                       {user.userClass === conf.userClass.MANAGER && (
                         <div
@@ -205,25 +191,13 @@ export default function ShowList({
                             setSelectedResId(v.res_id);
                           }}
                         >
-                          <img
-                            src="/global/img/enrol_del_btn.gif"
-                            alt="신청 학생 삭제"
-                          />
+                          <img src="/global/img/enrol_del_btn.gif" alt="신청 학생 삭제" />
                         </div>
                       )}
                       <p className="name">{v.std_kor_name}</p>
-                      <select
-                        name={"catgo"}
-                        className={"dropdown"}
-                        id={v.std_kor_id}
-                        key={`${v.std_kor_id}`}
-                      >
+                      <select name={'catgo'} className={'dropdown'} id={v.std_kor_id} key={`${v.std_kor_id}`}>
                         <option value={true} selected={permission}>
-                          {
-                            LANGUAGE[
-                              window.localStorage.getItem("global-zone-lang")
-                            ].agree
-                          }
+                          {LANGUAGE[window.localStorage.getItem('global-zone-lang')].agree}
                         </option>
 
                         <option
@@ -231,11 +205,7 @@ export default function ShowList({
                           selected={!permission}
                           disabled={user.userClass !== conf.userClass.MANAGER}
                         >
-                          {
-                            LANGUAGE[
-                              window.localStorage.getItem("global-zone-lang")
-                            ].disagree
-                          }
+                          {LANGUAGE[window.localStorage.getItem('global-zone-lang')].disagree}
                         </option>
                       </select>
                     </div>
@@ -246,15 +216,8 @@ export default function ShowList({
                 <li>
                   {user.userClass === conf.userClass.MANAGER && (
                     <div onClick={handleOpen} class="add_student">
-                      {
-                        LANGUAGE[
-                          window.localStorage.getItem("global-zone-lang")
-                        ].addAStudent
-                      }
-                      <img
-                        src="/global/img/add_student_ico.gif"
-                        alt="학생 추가 아이콘"
-                      />
+                      {LANGUAGE[window.localStorage.getItem('global-zone-lang')].addAStudent}
+                      <img src="/global/img/add_student_ico.gif" alt="학생 추가 아이콘" />
                     </div>
                   )}
                 </li>
@@ -265,14 +228,8 @@ export default function ShowList({
               {user.userClass === conf.userClass.MANAGER && (
                 <li>
                   <div onClick={handleOpen} class="add_student">
-                    {
-                      LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                        .addAStudent
-                    }
-                    <img
-                      src="/global/img/add_student_ico.gif"
-                      alt="학생 추가 아이콘"
-                    />
+                    {LANGUAGE[window.localStorage.getItem('global-zone-lang')].addAStudent}
+                    <img src="/global/img/add_student_ico.gif" alt="학생 추가 아이콘" />
                   </div>
                 </li>
               )}
@@ -283,7 +240,7 @@ export default function ShowList({
 
       <div className="btn_area">
         <div className="bbtn white left" onClick={handlePermissionAll}>
-          {LANGUAGE[window.localStorage.getItem("global-zone-lang")].agreeToAll}
+          {LANGUAGE[window.localStorage.getItem('global-zone-lang')].agreeToAll}
         </div>
         <div className="right">
           <div
@@ -292,9 +249,7 @@ export default function ShowList({
               let permission_std_kor_id_list = [];
               let not_permission_std_kor_id_list = [];
               data.data.map((v) => {
-                if (
-                  document.getElementById(`${v.std_kor_id}`).value === "true"
-                ) {
+                if (document.getElementById(`${v.std_kor_id}`).value === 'true') {
                   permission_std_kor_id_list.push(v.std_kor_id);
                 } else {
                   not_permission_std_kor_id_list.push(v.std_kor_id);
@@ -317,7 +272,7 @@ export default function ShowList({
                   });
             }}
           >
-            {LANGUAGE[window.localStorage.getItem("global-zone-lang")].save}
+            {LANGUAGE[window.localStorage.getItem('global-zone-lang')].save}
           </div>
           {/* <div className="bbtn darkGray" onClick={handleClose}>
 						닫기
@@ -328,18 +283,12 @@ export default function ShowList({
         <AddScheduleStudent
           handleClose={thisHandleClose}
           sch_id={sch_id}
-          std_for_id={
-            user.userClass === conf.userClass.MANAGER ? std_for_id : user.id
-          }
+          std_for_id={user.userClass === conf.userClass.MANAGER ? std_for_id : user.id}
           _setData={setData}
         />
       </Modal>
       <Modal isOpen={isOpenForDelete} handleClose={handleCloseForDelete}>
-        <DeleteModal
-          onSubmit={handleDelete}
-          onCancel={handleCloseForDelete}
-          handleReRender={reRender}
-        />
+        <DeleteModal onSubmit={handleDelete} onCancel={handleCloseForDelete} handleReRender={reRender} />
       </Modal>
     </div>
   );

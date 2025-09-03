@@ -1,0 +1,12 @@
+services:
+  react_0.1:
+    image: node:18-alpine
+    container_name: react_0.1
+    volumes:
+      - ./E_Global_Zone-Web_build/:/src
+    working_dir: /src
+    ports:
+      - "8080:3000"
+    stdin_open: true
+    tty: true
+    command: sh -c "npm install && npm run start"

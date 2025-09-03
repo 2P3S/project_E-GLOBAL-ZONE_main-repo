@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import d3 from "d3-array";
-import conf from "conf/conf";
+import conf from "../../../../conf/conf";
 import useModal from "../../../../modules/hooks/useModal";
 import Modal from "../../../../components/common/modal/Modal";
 import ForeignerContact from "../../../../components/common/modal/ForeignerContact";

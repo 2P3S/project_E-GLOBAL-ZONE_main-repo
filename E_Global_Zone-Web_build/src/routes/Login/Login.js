@@ -6,7 +6,7 @@ import { blankValidator } from "../../modules/validator";
 import conf from "../../conf/conf";
 // import { postLoginForeigner } from "../../modules/hooks/useAxios";
 import { postForeignerLogin } from "../../api/foreigner";
-import { GoogleLogin } from "react-google-login";
+import { useGoogleLogin } from '@react-oauth/google';
 import { isMobile } from "react-device-detect";
 import { postKoreanLogin } from "../../api/korean";
 import { getDepartment } from "../../api/axios";
@@ -124,47 +124,50 @@ const Login = () => {
 export const MobileLogin = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const onSuccess = (res) => {
+  
+  const onSuccess = (tokenResponse) => {
     window.localStorage.clear();
-    if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-      alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
-    } else {
-      window.localStorage.setItem("global-zone-korean-token", res.accessToken);
-      postKoreanLogin()
-        .then((response) => {
-          if (response.status === 202) {
-            history.push("/korean/signup", {
-              email: res.profileObj.email,
-              name: res.profileObj.name,
-            });
-          } else if (response.status === 200) {
-            alert(response.data.message);
-            const { std_kor_id, std_kor_name } = response.data.data;
-            dispatch(
-              setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name])
-            );
-            window.localStorage.setItem("global-zone-loginId", std_kor_id);
-            window.localStorage.setItem("global-zone-loginName", std_kor_name);
-            window.localStorage.setItem(
-              "global-zone-userClass",
-              conf.userClass.KOREAN
-            );
-            window.localStorage.setItem("global-zone-isLogin", true);
-            dispatch(logIn());
-            history.push("/");
-          } else if (response.status === 203) {
-            alert(response.data.message);
-            window.localStorage.clear();
-          }
-        })
-        .catch((e) => {
+    window.localStorage.setItem("global-zone-korean-token", tokenResponse.access_token);
+    postKoreanLogin()
+      .then((response) => {
+        if (response.status === 202) {
+          // Backend must now handle the email domain check and redirect to signup if needed.
+          // The email and name are no longer available on the frontend at this stage.
+          history.push("/korean/signup");
+        } else if (response.status === 200) {
+          alert(response.data.message);
+          const { std_kor_id, std_kor_name } = response.data.data;
+          dispatch(
+            setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name])
+          );
+          window.localStorage.setItem("global-zone-loginId", std_kor_id);
+          window.localStorage.setItem("global-zone-loginName", std_kor_name);
+          window.localStorage.setItem(
+            "global-zone-userClass",
+            conf.userClass.KOREAN
+          );
+          window.localStorage.setItem("global-zone-isLogin", true);
+          dispatch(logIn());
+          history.push("/");
+        } else if (response.status === 203) {
+          alert(response.data.message);
           window.localStorage.clear();
-        });
-    }
+        }
+      })
+      .catch((e) => {
+        window.localStorage.clear();
+      });
   };
-  const onFailure = (e) => {
+
+  const onError = (e) => {
     window.localStorage.clear();
   };
+
+  const login = useGoogleLogin({
+      onSuccess,
+      onError,
+  });
+
   useEffect(() => {
     getDepartment().then((res) => dispatch(setDept(res.data)));
     let link = document.getElementById("content");
@@ -176,6 +179,7 @@ export const MobileLogin = () => {
     link_.id = "content";
     document.head.appendChild(link_);
   }, []);
+
   return (
     <div className="wrap mobile_login">
       <LoginHeader />
@@ -183,24 +187,15 @@ export const MobileLogin = () => {
       <p class="tit">
         Global Zone <span>Reservation Service</span>
       </p>
-      <p class="txt">
+      <p className="txt">
         <span>영진전문대학교 글로벌존</span>예약시스템에 오신 것을 환영합니다.
       </p>
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-        buttonText="Google"
-        render={(renderProps) => (
-          <div
-            className="btn"
-            onClick={renderProps.onClick}
-            disabled={renderProps.disabled}
-          >
-            G-suite 계정으로 로그인하기
-          </div>
-        )}
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-      />
+      <div
+        className="btn"
+        onClick={() => login()}
+      >
+        G-suite 계정으로 로그인하기
+      </div>
       <p className="info">
         @g.yju.ac.kr 로 끝나는 G-suite 계정만 사용이 가능합니다.
       </p>
@@ -212,46 +207,48 @@ export const KoreanLogin = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const selectedLanguage = useSelector(selectLanguage);
-  const onSuccess = (res) => {
+
+  const onSuccess = (tokenResponse) => {
     window.localStorage.clear();
-    if (res.profileObj.email.split("@")[1] !== "g.yju.ac.kr") {
-      alert("영진전문대학교 g-suite 계정을 사용하셔야 합니다.");
-    } else {
-      window.localStorage.setItem("global-zone-korean-token", res.accessToken);
-      postKoreanLogin()
-        .then((response) => {
-          if (response.status === 202) {
-            history.push("/korean/signup", {
-              email: res.profileObj.email,
-              name: res.profileObj.name,
-            });
-          } else if (response.status === 200) {
-            alert(response.data.message);
-            const { std_kor_id, std_kor_name } = response.data.data;
-            dispatch(
-              setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name])
-            );
-            window.localStorage.setItem("global-zone-loginId", std_kor_id);
-            window.localStorage.setItem("global-zone-loginName", std_kor_name);
-            window.localStorage.setItem(
-              "global-zone-userClass",
-              conf.userClass.KOREAN
-            );
-            window.localStorage.setItem("global-zone-isLogin", true);
-            dispatch(logIn());
-            // history.push("/");
-            window.location.replace("/");
-          } else if (response.status === 203) {
-            alert(response.data.message);
-            window.localStorage.clear();
-          }
-        })
-        .catch((e) => window.localStorage.clear());
-    }
+    window.localStorage.setItem("global-zone-korean-token", tokenResponse.access_token);
+    postKoreanLogin()
+      .then((response) => {
+        if (response.status === 202) {
+          // Backend must now handle the email domain check and redirect to signup if needed.
+          // The email and name are no longer available on the frontend at this stage.
+          history.push("/korean/signup");
+        } else if (response.status === 200) {
+          alert(response.data.message);
+          const { std_kor_id, std_kor_name } = response.data.data;
+          dispatch(
+            setClass([std_kor_id, conf.userClass.KOREAN, std_kor_name])
+          );
+          window.localStorage.setItem("global-zone-loginId", std_kor_id);
+          window.localStorage.setItem("global-zone-loginName", std_kor_name);
+          window.localStorage.setItem(
+            "global-zone-userClass",
+            conf.userClass.KOREAN
+          );
+          window.localStorage.setItem("global-zone-isLogin", true);
+          dispatch(logIn());
+          window.location.replace("/");
+        } else if (response.status === 203) {
+          alert(response.data.message);
+          window.localStorage.clear();
+        }
+      })
+      .catch((e) => window.localStorage.clear());
   };
-  const onFailure = (e) => {
+
+  const onError = (e) => {
     window.localStorage.clear();
   };
+
+  const login = useGoogleLogin({
+      onSuccess,
+      onError,
+  });
+
   useEffect(() => {
     getDepartment().then((res) => dispatch(setDept(res.data)));
   }, []);
@@ -274,28 +271,14 @@ export const KoreanLogin = () => {
         </p>
         <p className="txt">
           {language[`${selectedLanguage}`].login.body.subTitle}
-          {/* <span>글로벌존 예약시스템</span>에 오신 것을 환영합니다. */}
         </p>
         <div className="gsuite_login">
-          {/* <div className="btn"> */}
-          {/* {" "} */}
-          <GoogleLogin
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            buttonText="Google"
-            render={(renderProps) => (
-              <div
-                className="btn"
-                onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
-                {language[`${selectedLanguage}`].login.body.korLogin.loginBtn}
-              </div>
-            )}
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            // isSignedIn={true}
-          />
-          {/* </div> */}
+          <div
+            className="btn"
+            onClick={() => login()}
+          >
+            {language[`${selectedLanguage}`].login.body.korLogin.loginBtn}
+          </div>
           <p>
             {language[`${selectedLanguage}`].login.body.korLogin.nofication}
           </p>

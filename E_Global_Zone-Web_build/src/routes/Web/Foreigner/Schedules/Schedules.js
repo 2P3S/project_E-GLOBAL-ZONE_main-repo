@@ -1,28 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
-import Calendar from "../../../../components/mobile/Calendar";
-import moment from "moment";
-import { useSelector } from "react-redux";
-import {
-  selectSelectDate,
-  selectToday,
-} from "../../../../redux/confSlice/confSlice";
+import React, { useState, useEffect, useRef } from 'react';
+import Calendar from '../../../../components/mobile/Calendar';
+import moment from 'moment';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectSelectDate, selectToday, selectIsOnline, setOnlineOffline } from '../../../../redux/confSlice/confSlice';
 
-import { selectUser } from "../../../../redux/userSlice/userSlice";
-import Modal from "../../../../components/common/modal/Modal";
-import useModal from "../../../../modules/hooks/useModal";
-import ShowList from "../../../../components/common/modal/ShowList";
-import ShowListDone from "../../../../components/common/modal/ShowListDone";
-import InsertResult from "../../../../components/common/modal/InsertResult";
-import Loader from "../../../../components/common/Loader";
+import { selectUser } from '../../../../redux/userSlice/userSlice';
+import Modal from '../../../../components/common/modal/Modal';
+import useModal from '../../../../modules/hooks/useModal';
+import ShowList from '../../../../components/common/modal/ShowList';
+import ShowListDone from '../../../../components/common/modal/ShowListDone';
+import InsertResult from '../../../../components/common/modal/InsertResult';
+import Loader from '../../../../components/common/Loader';
 
-import { getForeignerSchedule } from "../../../../api/foreigner/schedule";
-import { LANGUAGE } from "../../../../conf/language";
+import { getForeignerSchedule } from '../../../../api/foreigner/schedule';
+import { LANGUAGE } from '../../../../conf/language';
 
-const STATE_PENDING = "pending";
-const STATE_RESERVED = "reserved";
-const STATE_DONE = "done";
-const STATE_CONFIRM = "confirm";
-const STATE_NOTHING = "nothing";
+const STATE_PENDING = 'pending';
+const STATE_RESERVED = 'reserved';
+const STATE_DONE = 'done';
+const STATE_CONFIRM = 'confirm';
+const STATE_NOTHING = 'nothing';
 
 class ScheduleData {
   countOfWeek = 0;
@@ -96,6 +93,8 @@ class Schedule {
   sch_end_date;
   sch_for_zoom_pw;
   sch_for_zoom_link;
+  sch_type;
+  sch_location;
 
   constructor(schObj, today) {
     this.sch_id = schObj.sch_id;
@@ -110,6 +109,8 @@ class Schedule {
     this.reservated_count = schObj.reservated_count;
     this.un_permission_count = schObj.un_permission_count;
     this.sch_for_zoom_pw = schObj.sch_for_zoom_pw;
+    this.sch_type = schObj.sch_type;
+    this.sch_location = schObj.sch_location;
     this.setDate(schObj.sch_start_date);
     this.sch_end_date = schObj.sch_end_date;
     this.sch_start_date = schObj.sch_start_date;
@@ -118,52 +119,46 @@ class Schedule {
 
   setDate(sch_start_date) {
     let date = sch_start_date;
-    this.day = moment(sch_start_date).format("d");
+    this.day = moment(sch_start_date).format('d');
   }
 
   setIndex(sch_start_date) {
     let time = sch_start_date.substr(11, 2);
     let minute = sch_start_date.substr(14, 2);
     switch (time) {
-      case "09":
-        this.index = [0, minute === "00" ? 0 : 1];
+      case '09':
+        this.index = [0, minute === '00' ? 0 : 1];
         break;
-      case "10":
-        this.index = [1, minute === "00" ? 0 : 1];
+      case '10':
+        this.index = [1, minute === '00' ? 0 : 1];
         break;
-      case "11":
-        this.index = [2, minute === "00" ? 0 : 1];
+      case '11':
+        this.index = [2, minute === '00' ? 0 : 1];
         break;
-      case "12":
-        this.index = [3, minute === "00" ? 0 : 1];
+      case '12':
+        this.index = [3, minute === '00' ? 0 : 1];
         break;
-      case "13":
-        this.index = [4, minute === "00" ? 0 : 1];
+      case '13':
+        this.index = [4, minute === '00' ? 0 : 1];
         break;
-      case "14":
-        this.index = [5, minute === "00" ? 0 : 1];
+      case '14':
+        this.index = [5, minute === '00' ? 0 : 1];
         break;
-      case "15":
-        this.index = [6, minute === "00" ? 0 : 1];
+      case '15':
+        this.index = [6, minute === '00' ? 0 : 1];
         break;
-      case "16":
-        this.index = [7, minute === "00" ? 0 : 1];
+      case '16':
+        this.index = [7, minute === '00' ? 0 : 1];
         break;
-      case "17":
-        this.index = [8, minute === "00" ? 0 : 1];
+      case '17':
+        this.index = [8, minute === '00' ? 0 : 1];
         break;
       default:
         this.index = [false, 0];
     }
   }
 
-  setState(
-    sch_end_date,
-    un_permission_count,
-    sch_state_of_result_input,
-    reservated_count,
-    today
-  ) {
+  setState(sch_end_date, un_permission_count, sch_state_of_result_input, reservated_count, today) {
     if (un_permission_count === 0 && reservated_count === 0) {
       this.state = STATE_NOTHING;
     } else {
@@ -198,13 +193,27 @@ class Schedule {
  * @todo 구현바람
  */
 export default function Schedules() {
+  const dispatch = useDispatch();
+  const isOnline = useSelector(selectIsOnline);
+
+  const handleOnlineClick = () => {
+    dispatch(setOnlineOffline(true));
+    alert('Changed to Online');
+  };
+
+  const handleOfflineClick = () => {
+    dispatch(setOnlineOffline(false));
+    alert('Changed to Offline');
+  };
+
   const makeWeek = (weekStartDate) => {
     let weeks = [];
     for (let i = 0; i < 7; i++) {
-      weeks.push(moment(weekStartDate).add(i, "d"));
+      weeks.push(moment(weekStartDate).add(i, 'd'));
     }
     return weeks;
   };
+
   const today = Date.now();
   const user = useSelector(selectUser);
   const selectedDate = useSelector(selectSelectDate);
@@ -218,24 +227,29 @@ export default function Schedules() {
   const [modal, setModal] = useState(<></>);
   const [pending, setPending] = useState(false);
   const reRender = () => {
-    getForeignerSchedule(weekStartDate, weekEndDate).then((res) => {
-      setData(res.data);
-    });
+    const isOffline = isOnline ? null : 1;
+
+    getForeignerSchedule(weekStartDate, weekEndDate, isOffline)
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((error) => {
+        console.error('API 호출 에러:', error);
+        setData({ data: [] });
+      });
     setPending(false);
   };
 
   const getWeekStart = (currentDay) => {
     let startDate = currentDay;
     let i = 0;
-    while (startDate.format("dddd") !== "Sunday") {
-      startDate = startDate.subtract(1, "d");
+    while (startDate.format('dddd') !== 'Sunday') {
+      startDate = startDate.subtract(1, 'd');
       i++;
       // setWeekStartDate(startDate);
     }
-    setWeekStartDate(
-      moment(selectedDate).subtract(i, "d").format("YYYY-MM-DD")
-    );
-    setWeekEndDate(startDate.add(6, "d").format("YYYY-MM-DD"));
+    setWeekStartDate(moment(selectedDate).subtract(i, 'd').format('YYYY-MM-DD'));
+    setWeekEndDate(startDate.add(6, 'd').format('YYYY-MM-DD'));
   };
   const buildDiv = (
     td,
@@ -245,13 +259,15 @@ export default function Schedules() {
     sch_start_date,
     sch_end_date,
     sch_for_zoom_pw = 0,
-    sch_for_zoom_link
+    sch_for_zoom_link,
+    sch_type,
+    sch_location
   ) => {
-    let div = document.createElement("div");
+    let div = document.createElement('div');
     switch (state) {
       case STATE_PENDING:
-        div.className = "blue";
-        div.addEventListener("click", () => {
+        div.className = 'blue';
+        div.addEventListener('click', () => {
           setModal(
             <ShowList
               handleClose={handleClose}
@@ -261,15 +277,17 @@ export default function Schedules() {
               reRender={reRender}
               sch_for_zoom_pw={sch_for_zoom_pw}
               sch_for_zoom_link={sch_for_zoom_link}
+              sch_type={sch_type}
+              sch_location={sch_location}
             />
           );
           handleOpen();
         });
-        div.style.cursor = "pointer";
+        div.style.cursor = 'pointer';
         break;
       case STATE_RESERVED:
-        div.className = "mint";
-        div.addEventListener("click", () => {
+        div.className = 'mint';
+        div.addEventListener('click', () => {
           setModal(
             <ShowList
               handleClose={handleClose}
@@ -279,14 +297,16 @@ export default function Schedules() {
               reRender={reRender}
               sch_for_zoom_pw={sch_for_zoom_pw}
               sch_for_zoom_link={sch_for_zoom_link}
+              sch_type={sch_type}
+              sch_location={sch_location}
             />
           );
           handleOpen();
         });
         break;
       case STATE_DONE:
-        div.className = "yellow";
-        div.addEventListener("click", () => {
+        div.className = 'yellow';
+        div.addEventListener('click', () => {
           setModal(
             <InsertResult
               handleClose={handleClose}
@@ -298,11 +318,11 @@ export default function Schedules() {
           );
           handleOpen();
         });
-        div.style.cursor = "pointer";
+        div.style.cursor = 'pointer';
         break;
       case STATE_CONFIRM:
-        div.className = "puple";
-        div.addEventListener("click", () => {
+        div.className = 'puple';
+        div.addEventListener('click', () => {
           setModal(
             <ShowListDone
               handleClose={handleClose}
@@ -314,54 +334,37 @@ export default function Schedules() {
           );
           handleOpen();
         });
-        div.style.cursor = "pointer";
+        div.style.cursor = 'pointer';
         break;
       case STATE_NOTHING:
-        div.className = "gray";
+        div.className = 'gray';
 
         break;
     }
-    if (typeof value === "object") {
-      let p = document.createElement("p");
-      p.innerText = LANGUAGE[
-        window.localStorage.getItem("global-zone-lang")
-      ].numberReservationsCount(
+    if (typeof value === 'object') {
+      let p = document.createElement('p');
+      p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].numberReservationsCount(
         value[0],
         parseInt(value[0]) - parseInt(value[1])
       );
 
       div.appendChild(p);
     } else {
-      let p = document.createElement("p");
+      let p = document.createElement('p');
       switch (state) {
         case STATE_RESERVED:
-          p.innerText =
-            LANGUAGE[
-              window.localStorage.getItem("global-zone-lang")
-            ].numberReservationsComplete(value);
+          p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].numberReservationsComplete(value);
           break;
         case STATE_DONE:
-          p.innerText =
-            LANGUAGE[
-              window.localStorage.getItem("global-zone-lang")
-            ].numberPresentStudents(value);
+          p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].numberPresentStudents(value);
           break;
         case STATE_CONFIRM:
-          p.innerText =
-            LANGUAGE[
-              window.localStorage.getItem("global-zone-lang")
-            ].resultInputComplete;
+          p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].resultInputComplete;
           break;
         case STATE_NOTHING:
           Date.now() > new Date(sch_end_date)
-            ? (p.innerText =
-                LANGUAGE[
-                  window.localStorage.getItem("global-zone-lang")
-                ].shutDown)
-            : (p.innerText =
-                LANGUAGE[
-                  window.localStorage.getItem("global-zone-lang")
-                ].noReservations);
+            ? (p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].shutDown)
+            : (p.innerText = LANGUAGE[window.localStorage.getItem('global-zone-lang')].noReservations);
           break;
       }
       div.appendChild(p);
@@ -370,19 +373,19 @@ export default function Schedules() {
   };
   const buildTable = (scheduleData) => {
     const { monday, tuesday, wednesday, thursday, friday } = scheduleData;
-    const tbody = document.getElementById("tbody");
-    tbody.innerText = "";
+    const tbody = document.getElementById('tbody');
+    tbody.innerText = '';
     for (let i = 0; i < 2; i++) {
-      let tr = document.createElement("tr");
+      let tr = document.createElement('tr');
       for (let j = 0; j < 7; j++) {
-        tr.appendChild(document.createElement("td"));
+        tr.appendChild(document.createElement('td'));
       }
       tbody.appendChild(tr);
     }
     for (let i = 0; i < 9; i++) {
-      let tr = document.createElement("tr");
+      let tr = document.createElement('tr');
       for (let j = 0; j < 7; j++) {
-        let td = document.createElement("td");
+        let td = document.createElement('td');
         switch (j) {
           case 1:
             td.id = `monday${i}`;
@@ -393,15 +396,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -412,7 +414,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -420,15 +424,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -439,7 +442,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -455,15 +460,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -474,7 +478,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -482,15 +488,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -501,7 +506,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -517,15 +524,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -536,7 +542,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -544,15 +552,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -563,7 +570,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -579,15 +588,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -598,7 +606,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -606,15 +616,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -625,7 +634,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -641,15 +652,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -660,7 +670,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 } else {
@@ -668,15 +680,14 @@ export default function Schedules() {
                     buildDiv(
                       td,
                       v.state,
-                      [
-                        v.reservated_count.toString(),
-                        v.un_permission_count.toString(),
-                      ],
+                      [v.reservated_count.toString(), v.un_permission_count.toString()],
                       v.sch_id,
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   } else {
                     buildDiv(
@@ -687,7 +698,9 @@ export default function Schedules() {
                       v.sch_start_date,
                       v.sch_end_date,
                       v.sch_for_zoom_pw,
-                      v.sch_for_zoom_link
+                      v.sch_for_zoom_link,
+                      v.sch_type,
+                      v.sch_location
                     );
                   }
                 }
@@ -727,6 +740,14 @@ export default function Schedules() {
       setScheduleData(new WeekData(data.data, today));
     }
   }, [data]);
+
+  useEffect(() => {
+    // isOnline 상태가 변경될 때마다 스케줄 재조회
+    if (weekStartDate !== undefined) {
+      setPending(true);
+    }
+  }, [isOnline]);
+
   useEffect(() => {
     // console.log(scheduleData);
     if (scheduleData) buildTable(scheduleData);
@@ -737,11 +758,66 @@ export default function Schedules() {
       <div className="content">
         <div className="sub_title">
           <p className="tit">
-            {
-              LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                .scheduleAndReservationManagement
-            }
+            {LANGUAGE[window.localStorage.getItem('global-zone-lang')].scheduleAndReservationManagement}
           </p>
+          {/* 온라인/오프라인 선택 버튼 */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              alignContent: 'center',
+              justifyContent: 'flex-end',
+              marginTop: '10px',
+            }}
+          >
+            <div
+              style={{
+                border: '1px solid #ddd',
+                borderRadius: '20px',
+                padding: '2px',
+                display: 'flex',
+                backgroundColor: '#f8f9fa',
+              }}
+            >
+              <button
+                type="button"
+                style={{
+                  width: '80px',
+                  background: isOnline ? '#182F9E' : '#fff',
+                  color: isOnline ? '#fff' : '#182F9E',
+                  border: 'none',
+                  padding: '8px 12px',
+                  borderRadius: '18px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  marginRight: '2px',
+                  fontWeight: isOnline ? 'bold' : 'normal',
+                  transition: 'all 0.2s ease',
+                }}
+                onClick={handleOnlineClick}
+              >
+                Online
+              </button>
+              <button
+                type="button"
+                style={{
+                  width: '80px',
+                  background: !isOnline ? '#182F9E' : '#fff',
+                  color: !isOnline ? '#fff' : '#182F9E',
+                  border: 'none',
+                  padding: '8px 12px',
+                  borderRadius: '18px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: !isOnline ? 'bold' : 'normal',
+                  transition: 'all 0.2s ease',
+                }}
+                onClick={handleOfflineClick}
+              >
+                Offline
+              </button>
+            </div>
+          </div>
         </div>
         <div className="status_wrap">
           <div className="mt50 mr20">
@@ -751,16 +827,10 @@ export default function Schedules() {
             <div
               className="gray"
               style={{
-                fontSize:
-                  window.localStorage.getItem("global-zone-lang") === "eng"
-                    ? "10px"
-                    : "",
+                fontSize: window.localStorage.getItem('global-zone-lang') === 'eng' ? '10px' : '',
               }}
             >
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .thisWeeksSchedule
-              }
+              {LANGUAGE[window.localStorage.getItem('global-zone-lang')].thisWeeksSchedule}
               <p>
                 <span>{scheduleData ? scheduleData.countOfWeek : 0}</span>
               </p>
@@ -768,16 +838,10 @@ export default function Schedules() {
             <div
               className="blue"
               style={{
-                fontSize:
-                  window.localStorage.getItem("global-zone-lang") === "eng"
-                    ? "10px"
-                    : "",
+                fontSize: window.localStorage.getItem('global-zone-lang') === 'eng' ? '10px' : '',
               }}
             >
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .waitingForReservationConfirmation
-              }
+              {LANGUAGE[window.localStorage.getItem('global-zone-lang')].waitingForReservationConfirmation}
               <p>
                 <span>{scheduleData ? scheduleData.countOfPending : 0}</span>
               </p>
@@ -785,16 +849,10 @@ export default function Schedules() {
             <div
               className="mint"
               style={{
-                fontSize:
-                  window.localStorage.getItem("global-zone-lang") === "eng"
-                    ? "10px"
-                    : "",
+                fontSize: window.localStorage.getItem('global-zone-lang') === 'eng' ? '10px' : '',
               }}
             >
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .reservationConfirmationComplete
-              }
+              {LANGUAGE[window.localStorage.getItem('global-zone-lang')].reservationConfirmationComplete}
               <p>
                 <span>{scheduleData ? scheduleData.countOfReserved : 0}</span>
               </p>
@@ -802,16 +860,10 @@ export default function Schedules() {
             <div
               className="yellow"
               style={{
-                fontSize:
-                  window.localStorage.getItem("global-zone-lang") === "eng"
-                    ? "10px"
-                    : "",
+                fontSize: window.localStorage.getItem('global-zone-lang') === 'eng' ? '10px' : '',
               }}
             >
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .attendanceWasNotRecorded
-              }
+              {LANGUAGE[window.localStorage.getItem('global-zone-lang')].attendanceWasNotRecorded}
               <p>
                 <span>{scheduleData ? scheduleData.countOfDone : 0}</span>
               </p>
@@ -819,16 +871,10 @@ export default function Schedules() {
             <div
               className="puple"
               style={{
-                fontSize:
-                  window.localStorage.getItem("global-zone-lang") === "eng"
-                    ? "10px"
-                    : "",
+                fontSize: window.localStorage.getItem('global-zone-lang') === 'eng' ? '10px' : '',
               }}
             >
-              {
-                LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                  .noReservations
-              }
+              {LANGUAGE[window.localStorage.getItem('global-zone-lang')].noReservations}
               <p>
                 <span>{scheduleData ? scheduleData.countOfConfirm : 0}</span>
               </p>
@@ -841,108 +887,45 @@ export default function Schedules() {
             {!pending ? (
               <>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .sunday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[0], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[0].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].sunday}
+                  <span className={moment(selectedDate).diff(week[0], 'days') === 0 ? `today` : ``}>
+                    {week[0].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .monday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[1], "days") === 0
-                        ? "today"
-                        : ``
-                    }
-                  >
-                    {week[1].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].monday}
+                  <span className={moment(selectedDate).diff(week[1], 'days') === 0 ? 'today' : ``}>
+                    {week[1].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .tuesday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[2], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[2].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].tuesday}
+                  <span className={moment(selectedDate).diff(week[2], 'days') === 0 ? `today` : ``}>
+                    {week[2].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .wednesday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[3], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[3].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].wednesday}
+                  <span className={moment(selectedDate).diff(week[3], 'days') === 0 ? `today` : ``}>
+                    {week[3].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .thursday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[4], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[4].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].thursday}
+                  <span className={moment(selectedDate).diff(week[4], 'days') === 0 ? `today` : ``}>
+                    {week[4].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .friday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[5], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[5].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].friday}
+                  <span className={moment(selectedDate).diff(week[5], 'days') === 0 ? `today` : ``}>
+                    {week[5].format('DD')}
                   </span>
                 </li>
                 <li>
-                  {
-                    LANGUAGE[window.localStorage.getItem("global-zone-lang")]
-                      .saturday
-                  }
-                  <span
-                    className={
-                      moment(selectedDate).diff(week[6], "days") === 0
-                        ? `today`
-                        : ``
-                    }
-                  >
-                    {week[6].format("DD")}
+                  {LANGUAGE[window.localStorage.getItem('global-zone-lang')].saturday}
+                  <span className={moment(selectedDate).diff(week[6], 'days') === 0 ? `today` : ``}>
+                    {week[6].format('DD')}
                   </span>
                 </li>
               </>

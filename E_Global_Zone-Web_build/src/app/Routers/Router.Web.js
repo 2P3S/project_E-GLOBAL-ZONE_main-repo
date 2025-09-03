@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Switch, Redirect, Route } from "react-router-dom";
 
-import { Schedules, Students, Settings, Section } from "routes/Web/Manager";
+import { Schedules, Students, Settings, Section } from "../../routes/Web/Manager";
 
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
